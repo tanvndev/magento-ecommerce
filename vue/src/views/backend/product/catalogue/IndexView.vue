@@ -30,6 +30,11 @@
             @change="handleTableChange"
           >
             <template #bodyCell="{ column, record }">
+              <template v-if="column.dataIndex === 'image'">
+                <div>
+                  <img class="w-20 object-contain" :src="record.image" :alt="record.name" />
+                </div>
+              </template>
               <template v-if="column.dataIndex === 'publish'">
                 <PublishSwitchComponent
                   :record="record"
@@ -81,12 +86,23 @@ const columns = [
     sorter: (a, b) => a.name.localeCompare(b.name)
   },
   {
-    title: 'Mã nhóm sản phẩm',
-    dataIndex: 'code',
-    key: 'code',
-    sorter: (a, b) => a.code.localeCompare(b.code)
+    title: 'Ảnh',
+    dataIndex: 'image',
+    key: 'image',
+    width: '10%'
   },
-
+  {
+    title: 'Đường dẫn',
+    dataIndex: 'canonical',
+    key: 'canonical',
+    sorter: (a, b) => a.canonical.localeCompare(b.canonical)
+  },
+  {
+    title: 'Vị trí',
+    dataIndex: 'order',
+    key: 'order',
+    sorter: (a, b) => a.order.localeCompare(b.order)
+  },
   {
     title: 'Tình trạng',
     dataIndex: 'publish',
@@ -127,6 +143,7 @@ const fetchData = async () => {
     ...filterOptions.value
   };
   const response = await getAll(endpoint, payload);
+  console.log(response);
   dataSource.value = response.data;
   pagination.current = response.current_page;
   pagination.total = response.total;

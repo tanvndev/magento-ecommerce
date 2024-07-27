@@ -16,10 +16,13 @@ class ProductCatalogueResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'code' => $this->code,
+            'canonical' => $this->canonical,
             'name' => $this->name,
             'description' => $this->description,
             'publish' => $this->publish,
+            'order' => $this->order,
+            'parent_id' => $this->parent_id,
+            'image' => $this->image,
         ];
     }
 }

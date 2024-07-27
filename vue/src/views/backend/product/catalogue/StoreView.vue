@@ -4,28 +4,65 @@
       <div class="container mx-auto h-screen">
         <BreadcrumbComponent :titlePage="pageTitle" />
         <form @submit.prevent="onSubmit">
-          <a-card class="mt-3">
-            <AleartError :errors="errors" />
-            <a-row :gutter="[16, 10]">
-              <a-col :span="12">
-                <InputComponent name="name" label="Tên nhóm sản phẩm" :required="true" />
-              </a-col>
-              <a-col :span="12">
-                <InputComponent
-                  name="code"
-                  label="Mã nhóm sản phẩm"
-                  placeholder="Tự động tạo nếu không nhập."
+          <a-row :gutter="16">
+            <a-col :span="16">
+              <a-card class="mt-3" title="Thông tin chung">
+                <AleartError :errors="errors" />
+                <a-row :gutter="[16, 16]">
+                  <a-col :span="10">
+                    <InputComponent
+                      name="name"
+                      label="Tên nhóm sản phẩm"
+                      :required="true"
+                      placeholder="Tên nhóm sản phẩm"
+                    />
+                  </a-col>
+                  <a-col :span="10">
+                    <InputComponent
+                      name="canonical"
+                      label="Đường dẫn nhóm sản phẩm"
+                      placeholder="Tự động tạo nếu không nhập"
+                    />
+                  </a-col>
+                  <a-col :span="4">
+                    <InputNumberComponent
+                      name="order"
+                      label="Vị trí nhóm sản phẩm"
+                      placeholder="Vị trí"
+                    />
+                  </a-col>
+                  <a-col :span="24">
+                    <InputComponent
+                      typeInput="textarea"
+                      name="description"
+                      label="Mô tả nhóm sản phẩm"
+                      placeholder="Tạo mô tả cho nhóm sản phẩm"
+                    />
+                  </a-col>
+                </a-row>
+              </a-card>
+            </a-col>
+
+            <a-col :span="8">
+              <a-card class="mt-3" title="Ảnh danh mục">
+                <InputFinderComponent name="image" />
+              </a-card>
+
+              <a-card class="mt-3">
+                <template #title>
+                  <span>
+                    Danh mục cha
+                    <small class="text-red-500">(Không chọn mặc định là danh mục cha)</small>
+                  </span>
+                </template>
+                <TreeSelectComponent
+                  name="parent_id"
+                  :options="productCatalogues"
+                  :placeholder="'Chọn danh mục cha'"
                 />
-              </a-col>
-              <a-col :span="24">
-                <InputComponent
-                  typeInput="textarea"
-                  name="description"
-                  label="Mô tả nhóm sản phẩm"
-                />
-              </a-col>
-            </a-row>
-          </a-card>
+              </a-card>
+            </a-col>
+          </a-row>
 
           <div class="fixed bottom-0 right-[19px] p-10">
             <a-button html-type="submit" type="primary">
@@ -44,21 +81,26 @@ import {
   MasterLayout,
   BreadcrumbComponent,
   AleartError,
-  InputComponent
+  InputComponent,
+  InputFinderComponent,
+  TreeSelectComponent,
+  InputNumberComponent
 } from '@/components/backend';
 import { computed, onMounted, ref } from 'vue';
 import { useForm } from 'vee-validate';
-import { formatMessages } from '@/utils/format';
+import { formatDataToTreeSelect, formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
+// VARIABLES
 const pageTitle = ref('Thêm mới nhóm sản phẩm');
 const errors = ref({});
 const store = useStore();
 const endpoint = 'products/catalogues';
-const { getOne, create, update, messages, data } = useCRUD();
+const productCatalogues = ref();
+const { getOne, create, update, getAll, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 
 const { handleSubmit, setValues } = useForm({
@@ -83,7 +125,19 @@ const onSubmit = handleSubmit(async (values) => {
 
 const fetchOne = async () => {
   await getOne(endpoint, id.value);
-  setValues({ name: data.value.name, description: data.value.description, code: data.value.code });
+  setValues({
+    name: data.value.name,
+    description: data.value.description,
+    canonical: data.value.canonical,
+    order: data.value.order,
+    parent_id: data.value.parent_id,
+    image: data.value.image
+  });
+};
+
+const getProductCatalogues = async () => {
+  await getAll('products/catalogues');
+  productCatalogues.value = formatDataToTreeSelect(data.value);
 };
 
 onMounted(() => {
@@ -91,5 +145,6 @@ onMounted(() => {
     pageTitle.value = 'Cập nhập nhóm sản phẩm.';
     fetchOne();
   }
+  getProductCatalogues();
 });
 </script>

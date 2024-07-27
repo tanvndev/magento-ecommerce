@@ -13,16 +13,40 @@ const sidebar = [
     route: '',
     subMenu: [
       {
-        name: 'QL Thành viên',
+        name: 'Quản lý thành viên',
         route: 'user.index'
       },
       {
-        name: 'QL Nhóm thành viên',
+        name: 'Quản lý nhóm thành viên',
         route: 'user.catalogue.index'
       },
       {
-        name: 'QL Quyền',
+        name: 'Quản lý quyền',
         route: 'permission.index'
+      }
+    ]
+  },
+  {
+    id: 'product_sidebar',
+    icon: 'fas fa-boxes',
+    name: 'QL Sản phẩm',
+    route: '',
+    subMenu: [
+      // {
+      //   name: 'Quản lý thuộc tính',
+      //   route: 'user.index'
+      // },
+      // {
+      //   name: 'Quản lý nhóm thuộc tính',
+      //   route: 'user.catalogue.index'
+      // },
+      {
+        name: 'Quản lý sản phẩm',
+        route: 'product.index'
+      },
+      {
+        name: 'Quản lý nhóm sản phẩm',
+        route: 'product.catalogue.index'
       }
     ]
   }

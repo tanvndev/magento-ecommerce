@@ -26,13 +26,15 @@ class StoreProductCatalogueRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'canonical' => 'unique',
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên nhóm thành viên',
+            'name' => 'Tên nhóm nhóm sản phẩm',
+            'canonical' => 'Đường dẫn',
         ];
     }
 

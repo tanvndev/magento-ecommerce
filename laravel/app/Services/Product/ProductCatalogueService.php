@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\Product\ProductCatalogueRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductCatalogueServiceInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductCatalogueService extends BaseService implements ProductCatalogueServiceInterface
 {
@@ -22,23 +23,37 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
         $condition['search'] = addslashes(request('search'));
         $condition['publish'] = request('publish');
-        $select = ['id', 'name', 'code', 'publish'];
+        $select = ['id', 'name', 'canonical', 'publish', 'parent_id', 'order', 'image'];
 
         if (request('pageSize') && request('page')) {
             $productCatalogues = $this->productCatalogueRepository->pagination(
                 $select,
                 $condition,
                 request('pageSize'),
-                ['id' => 'desc'],
-                [],
-                []
+                ['order' => 'desc'],
+
             );
-            foreach ($productCatalogues as $key => $productCatalogue) {
-                $productCatalogue->key = $productCatalogue->id;
-            }
-        } else {
-            $productCatalogues = $this->productCatalogueRepository->all($select);
+
+            // dd($productCatalogues);
+
+            $formattedData = $this->formatDataToTable($productCatalogues);
+
+            return [
+                'status' => 'success',
+                'messages' => '',
+                'data' => [
+                    'data' => $formattedData,
+                    'total' => $productCatalogues->total(),
+                    'current_page' => $productCatalogues->currentPage(),
+                    'per_page' => $productCatalogues->perPage(),
+                ]
+            ];
         }
+        $productCatalogues = $this->productCatalogueRepository->all(
+            $select,
+            ['children'],
+            ['order' => 'desc']
+        );
 
         return [
             'status' => 'success',
@@ -47,15 +62,44 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         ];
     }
 
+    private function formatDataToTable($data, $parentId = 0)
+    {
+        $formattedData = [];
+
+        foreach ($data as $item) {
+            if ($item->parent_id == $parentId) {
+                $formattedItem = [
+                    'key' => $item->id,
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'canonical' => $item->canonical,
+                    'publish' => $item->publish,
+                    'parent_id' => $item->parent_id,
+                    'order' => $item->order,
+                    'image' => $item->image,
+                    'children' => $this->formatDataToTable($data, $item->id)
+                ];
+                $formattedData[] = $formattedItem;
+            }
+        }
+
+        return $formattedData;
+    }
+
     public function create()
     {
         DB::beginTransaction();
         try {
             // Lấy ra tất cả các trường và loại bỏ trường bên dưới
             $payload = request()->except('_token');
-            if (!isset($payload['code']) || empty($payload['code'])) {
-                $payload['code'] = $this->convertToCode($payload['name']);
+
+            if (!isset($payload['canonical']) || empty($payload['canonical'])) {
+                $payload['canonical'] = Str::slug($payload['name']);
             }
+            if ($payload['parent_id'] == 0) {
+                $payload['parent_id'] = null;
+            }
+
             $this->productCatalogueRepository->create($payload);
             DB::commit();
             return [
@@ -67,7 +111,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             DB::rollBack();
             return [
                 'status' => 'error',
-                'messages' => 'Thêm mới thất bại.',
+                'messages' => $e->getMessage(),
                 'data' => null
             ];
         }
@@ -81,11 +125,12 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         try {
             // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
             $payload = request()->except('_token', '_method');
-            if (!isset($payload['code']) || empty($payload['code'])) {
-                $payload['code'] = $this->convertToCode($payload['name']);
-            } else {
-                $payload['code'] = strtoupper($payload['code']);
+
+            // Convert to slug
+            if (!isset($payload['canonical']) || empty($payload['canonical'])) {
+                $payload['canonical'] = Str::slug($payload['name']);
             }
+
             $this->productCatalogueRepository->update($id, $payload);
 
             DB::commit();

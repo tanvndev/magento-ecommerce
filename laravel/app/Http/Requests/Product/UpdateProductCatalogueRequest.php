@@ -26,15 +26,15 @@ class UpdateProductCatalogueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'description' => 'required',
+            'canonical' => 'unique|product_catalogues,canonical,' . $this->catalogue,
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên nhóm thành viên',
-            'description' => 'Mô tả nhóm thành viên',
+            'name' => 'Tên nhóm nhóm sản phẩm',
+            'canonical' => 'Đường dẫn',
         ];
     }
 

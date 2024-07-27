@@ -1,3 +1,4 @@
+import _ from 'lodash';
 const formatMessages = (messages) => {
   if (messages && typeof messages === 'string') {
     return [messages];
@@ -16,6 +17,45 @@ const formatDataToSelect = (data, value = 'id', label = 'name') => {
     formattedData.push({ label: item[label], value: item[value] });
   });
   return formattedData;
+};
+
+const formatDataToTreeSelect = (data, value = 'id', label = 'name', parentId = 0) => {
+  if (_.isEmpty(data)) {
+    return [
+      {
+        label: 'Root',
+        value: 0,
+        children: []
+      }
+    ];
+  }
+
+  const itemMap = new Map();
+
+  data.forEach((item) => {
+    itemMap.set(item[value], { ...item, children: [] });
+  });
+
+  const tree = [];
+
+  data.forEach((item) => {
+    if (item.parent_id) {
+      const parent = itemMap.get(item.parent_id);
+      if (parent) {
+        parent.children.push(itemMap.get(item[value]));
+      }
+    } else {
+      tree.push(itemMap.get(item[value]));
+    }
+  });
+
+  const formatNode = (node) => ({
+    label: node[label],
+    value: node[value],
+    children: node.children.length ? node.children.map(formatNode) : undefined
+  });
+
+  return tree.map(formatNode);
 };
 
 const formatTimestampToDate = (timestamp, dateFormat = 'YYYY-MM-DD') => {
@@ -44,4 +84,10 @@ function formatBytesToKBMB(bytes) {
   }
 }
 
-export { formatMessages, formatDataToSelect, formatTimestampToDate, formatBytesToKBMB };
+export {
+  formatMessages,
+  formatDataToSelect,
+  formatTimestampToDate,
+  formatBytesToKBMB,
+  formatDataToTreeSelect
+};
