@@ -1,5 +1,5 @@
 {
-  "name": "high_school_management_system",
+  "name": "magento-ecommerce",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,6 +14,7 @@
     "ant-design-vue": "^4.2.3",
     "axios": "^1.7.2",
     "js-cookie": "^3.0.5",
+    "lodash": "^4.17.21",
     "vee-validate": "^4.13.1",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",

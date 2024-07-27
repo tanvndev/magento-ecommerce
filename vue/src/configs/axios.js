@@ -8,8 +8,10 @@ const instance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
+    // Start loading
+    store.dispatch('loadingStore/startLoading');
 
+    // Get token
     const token = store.getters['authStore/getToken'];
     if (token && token != null) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -25,26 +27,16 @@ instance.interceptors.request.use(
 // Add a response interceptor
 instance.interceptors.response.use(
   function (response) {
+    // Stop loading
+    store.dispatch('loadingStore/stopLoading');
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response.data;
   },
   async function (error) {
-    console.log(error);
-
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     const originalRequest = error.config;
-
-    // Xu ly thong bao quyen truy cap
-    if (error.response.status === 403) {
-      store.dispatch('antStore/showMessage', {
-        type: 'error',
-        message: 'Bạn không có quyền thực hiện thao tác.'
-      });
-    }
-
-    // Xu ly refresh token
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
@@ -55,6 +47,8 @@ instance.interceptors.response.use(
         return Promise.reject(e);
       }
     }
+    // Stop loading
+    store.dispatch('loadingStore/stopLoading');
     return Promise.reject(error);
   }
 );
