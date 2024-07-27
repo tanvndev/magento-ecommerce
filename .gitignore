@@ -1,0 +1,67 @@
+# Logs
+/logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+/node_modules
+/.DS_Store
+/dist
+/dist-ssr
+/coverage
+/*.local
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+/.vscode/*
+!/.vscode/extensions.json
+
+/.idea
+/*.suo
+/*.ntvs*
+/*.njsproj
+/*.sln
+/*.sw?
+
+/*.tsbuildinfo
+
+
+# Backend
+# Laravel specific ignores
+
+# PHPUnit
+.phpunit.cache
+/.phpunit.result.cache
+
+# Node.js & npm/yarn
+/node_modules
+
+# Laravel build and cache folders
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+
+# Composer
+/vendor
+
+# Environment variables
+/.env
+/.env.backup
+/.env.production
+
+# Laravel Homestead
+/Homestead.json
+/Homestead.yaml
+
+# Other IDE/editor specific files
+/.fleet
+/.idea
+/.vscode
+
+
