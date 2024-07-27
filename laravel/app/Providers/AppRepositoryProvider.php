@@ -23,6 +23,16 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Location\ProvinceRepositoryInterface' => 'App\Repositories\Location\ProvinceRepository',
         // District
         'App\Repositories\Interfaces\Location\DistrictRepositoryInterface' => 'App\Repositories\Location\DistrictRepository',
+        // ProductCatalogue
+        'App\Repositories\Interfaces\Product\ProductCatalogueRepositoryInterface' => 'App\Repositories\Product\ProductCatalogueRepository',
+        // Product
+        'App\Repositories\Interfaces\Product\ProductRepositoryInterface' => 'App\Repositories\Product\ProductRepository',
+        // AttributeCatalogue
+        'App\Repositories\Interfaces\Attribute\AttributeCatalogueRepositoryInterface' => 'App\Repositories\Attribute\AttributeCatalogueRepository',
+        // Attribute
+        'App\Repositories\Interfaces\Attribute\AttributeRepositoryInterface' => 'App\Repositories\Attribute\AttributeRepository',
+        // Warehouse
+        'App\Repositories\Interfaces\Warehouse\WarehouseRepositoryInterface' => 'App\Repositories\Warehouse\WarehouseRepository',
 
     ];
 

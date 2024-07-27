@@ -4,6 +4,16 @@
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
   >
   <div>
+    <!-- INPUT HIDDEN -->
+    <input
+      v-if="props.typeInput == 'hidden'"
+      type="hidden"
+      :name="props.name"
+      :v-model:value="value"
+      :value="props.defaultValue"
+    />
+
+    <!-- INPUT TEXT -->
     <a-input
       v-if="props.typeInput == 'text' && props.type != 'password'"
       v-model:value="value"
@@ -16,6 +26,7 @@
       :allowClear="true"
     />
 
+    <!-- INPUT PASSWORD -->
     <a-input-password
       v-if="props.typeInput == 'text' && props.type == 'password'"
       v-model:value="value"
@@ -28,6 +39,7 @@
       :allowClear="true"
     />
 
+    <!-- INPUT TEXTAREA -->
     <a-textarea
       v-if="props.typeInput == 'textarea'"
       v-model:value="value"
