@@ -33,6 +33,7 @@
               <template v-if="column.dataIndex === 'image'">
                 <img class="w-20 object-contain" :src="record.image" :alt="record.name" />
               </template>
+
               <template v-if="column.dataIndex === 'publish'">
                 <PublishSwitchComponent
                   :record="record"
@@ -71,38 +72,41 @@ import {
 import { useCRUD, usePagination } from '@/composables';
 
 // Data static
-const pageTitle = 'Danh sách nhóm sản phẩm';
-const modelName = 'ProductCatalogue';
-const routeCreate = 'product.catalogue.store';
-const routeUpdate = 'product.catalogue.update';
-const endpoint = 'products/catalogues';
+const pageTitle = 'Danh sách nhà cung cấp';
+const modelName = 'Supplier';
+const routeCreate = 'supplier.store';
+const routeUpdate = 'supplier.update';
+const endpoint = 'suppliers';
 const columns = [
   {
-    title: 'Tên nhóm sản phẩm',
-    dataIndex: 'name',
-    key: 'name'
+    title: 'Tên công ty',
+    dataIndex: 'company_name',
+    key: 'company_name',
+    sorter: (a, b) => a.company_name.localeCompare(b.company_name)
   },
   {
-    title: 'Ảnh',
-    dataIndex: 'image',
-    key: 'image',
-    width: '10%'
+    title: 'Tên nhà cung cấp',
+    dataIndex: 'contact_name',
+    key: 'contact_name',
+    sorter: (a, b) => a.contact_name.localeCompare(b.contact_name)
   },
   {
-    title: 'Đường dẫn',
-    dataIndex: 'canonical',
-    key: 'canonical'
+    title: 'Địa chỉ email',
+    dataIndex: 'contact_email',
+    key: 'contact_email',
+    sorter: (a, b) => a.contact_email.localeCompare(b.contact_email)
   },
   {
-    title: 'Vị trí',
-    dataIndex: 'order',
-    key: 'order'
+    title: 'Số điện thoại',
+    dataIndex: 'contact_phone',
+    key: 'contact_phone',
+    sorter: (a, b) => a.contact_phone.localeCompare(b.contact_phone)
   },
   {
-    title: 'Tình trạng',
-    dataIndex: 'publish',
-    key: 'publish',
-    width: '7%'
+    title: 'Địa chỉ',
+    dataIndex: 'address',
+    key: 'address',
+    sorter: (a, b) => a.address.localeCompare(b.address)
   },
   {
     title: 'Thực thi',
@@ -130,7 +134,7 @@ const {
   selectedRows
 } = usePagination();
 
-// Methods
+// Fetchdata
 const fetchData = async () => {
   const payload = {
     page: pagination.current,
@@ -138,7 +142,6 @@ const fetchData = async () => {
     ...filterOptions.value
   };
   const response = await getAll(endpoint, payload);
-  console.log(response);
   dataSource.value = response.data;
   pagination.current = response.current_page;
   pagination.total = response.total;

@@ -33,7 +33,7 @@ const filterOptions = reactive({
   search: ''
 });
 const removeRouteHide = () => {
-  const routeHide = ['permission.index'];
+  const routeHide = ['permission.index', 'supplier.index'];
   if (routeHide.includes(route.name)) {
     return false;
   }

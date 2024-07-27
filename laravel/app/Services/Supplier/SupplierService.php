@@ -1,48 +1,50 @@
 <?php
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
-namespace App\Services\Brand;
+namespace App\Services\Supplier;
 
-use App\Repositories\Interfaces\Brand\BrandRepositoryInterface;
+use App\Repositories\Interfaces\Supplier\SupplierRepositoryInterface;
 use App\Services\BaseService;
-use App\Services\Interfaces\Brand\BrandServiceInterface;
+use App\Services\Interfaces\Supplier\SupplierServiceInterface;
 use Illuminate\Support\Facades\DB;
 
-class BrandService extends BaseService implements BrandServiceInterface
+class SupplierService extends BaseService implements SupplierServiceInterface
 {
-    protected $brandRepository;
+    protected $supplierRepository;
     public function __construct(
-        BrandRepositoryInterface $brandRepository,
+        SupplierRepositoryInterface $supplierRepository,
     ) {
-        $this->brandRepository = $brandRepository;
+        $this->supplierRepository = $supplierRepository;
     }
     public function paginate()
     {
         // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
         $condition['search'] = addslashes(request('search'));
         $condition['publish'] = request('publish');
-        $select = ['id', 'name', 'publish', 'description', 'canonical', 'image'];
+        $select = [
+            'id', 'description', 'company_name', 'address',
+            'contact_name', 'contact_phone', 'contact_email',
+        ];
 
         if (request('pageSize') && request('page')) {
-
-            $brands = $this->brandRepository->pagination(
+            $suppliers = $this->supplierRepository->pagination(
                 $select,
                 $condition,
                 request('pageSize'),
                 ['id' => 'desc'],
             );
 
-            foreach ($brands as $key => $brandCatalogue) {
-                $brandCatalogue->key = $brandCatalogue->id;
+            foreach ($suppliers as $key => $supplierCatalogue) {
+                $supplierCatalogue->key = $supplierCatalogue->id;
             }
         } else {
-            $brands = $this->brandRepository->all($select);
+            $suppliers = $this->supplierRepository->all($select);
         }
 
 
         return [
             'status' => 'success',
             'messages' => '',
-            'data' => $brands
+            'data' => $suppliers
         ];
     }
 
@@ -53,7 +55,7 @@ class BrandService extends BaseService implements BrandServiceInterface
             // Lấy ra tất cả các trường và loại bỏ trường bên dưới
             $payload = request()->except('_token');
 
-            $this->brandRepository->create($payload);
+            $this->supplierRepository->create($payload);
 
             DB::commit();
             return [
@@ -79,7 +81,7 @@ class BrandService extends BaseService implements BrandServiceInterface
             // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
             $payload = request()->except('_token', '_method');
 
-            $this->brandRepository->update($id, $payload);
+            $this->supplierRepository->update($id, $payload);
 
             DB::commit();
             return [
@@ -103,7 +105,7 @@ class BrandService extends BaseService implements BrandServiceInterface
         DB::beginTransaction();
         try {
             // Xoá mềm
-            $this->brandRepository->delete($id);
+            $this->supplierRepository->delete($id);
             DB::commit();
             return [
                 'status' => 'success',

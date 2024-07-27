@@ -30,6 +30,10 @@
             @change="handleTableChange"
           >
             <template #bodyCell="{ column, record }">
+              <template v-if="column.dataIndex === 'image'">
+                <img class="w-20 object-contain" :src="record.image" :alt="record.name" />
+              </template>
+
               <template v-if="column.dataIndex === 'publish'">
                 <PublishSwitchComponent
                   :record="record"
@@ -74,6 +78,12 @@ const routeCreate = 'brand.store';
 const routeUpdate = 'brand.update';
 const endpoint = 'brands';
 const columns = [
+  {
+    title: 'Ảnh',
+    dataIndex: 'image',
+    key: 'image',
+    width: '10%'
+  },
   {
     title: 'Tên thương hiệu',
     dataIndex: 'name',

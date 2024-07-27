@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\Upload\{UploadController};
 use App\Http\Controllers\Api\V1\Location\{LocationController};
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Product\{ProductCatalogueController, ProductController};
+use App\Http\Controllers\Api\V1\Supplier\SupplierController;
 use App\Http\Controllers\Api\V1\User\{UserCatalogueController, UserController};
 use Illuminate\Support\Facades\Route;
 
@@ -62,8 +63,10 @@ Route::prefix('v1')->group(function () {
         Route::prefix('/')->name('users.')->group(function () {
             Route::apiResource('users/catalogues', UserCatalogueController::class);
         });
-        Route::put('users/catalogues/permissions/{id}', [UserCatalogueController::class, 'updatePermissions'])->name('users.catalogues.permissions');
         Route::apiResource('users', UserController::class);
+
+        // PERMISSION ROUTE
+        Route::put('users/catalogues/permissions/{id}', [UserCatalogueController::class, 'updatePermissions'])->name('users.catalogues.permissions');
         Route::apiResource('permissions', PermissionController::class);
 
         // PRODUCT ROUTE
@@ -75,7 +78,10 @@ Route::prefix('v1')->group(function () {
         // BRAND ROUTE
         Route::apiResource('brands', BrandController::class);
 
-        // Upload ROUTE
+        // SUPPLIER ROUTE
+        Route::apiResource('suppliers', SupplierController::class);
+
+        // UPLOAD ROUTE
         Route::apiResource('uploads', UploadController::class);
     });
 });

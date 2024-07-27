@@ -39,6 +39,18 @@ const sidebar = [
     ]
   },
   {
+    id: 'supplier_sidebar',
+    icon: 'fas fa-parachute-box',
+    name: 'QL Nhà cung cấp',
+    route: '',
+    subMenu: [
+      {
+        name: 'Quản lý nhà cung cấp',
+        route: 'supplier.index'
+      }
+    ]
+  },
+  {
     id: 'product_sidebar',
     icon: 'fas fa-boxes',
     name: 'QL Sản phẩm',

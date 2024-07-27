@@ -2,7 +2,7 @@
   <a-card>
     <a-space :size="12" class="flex justify-end">
       <div v-if="props.isShowToolbox">
-        <a-dropdown trigger="click" class="mr-3">
+        <a-dropdown trigger="click" class="mr-3" v-if="removeRouteHide()">
           <a-button class="h-[37px]">
             <i class="far fa-tools mr-2"></i>
             <span>Công cụ</span>
@@ -106,6 +106,14 @@ const handleChangePublish = async (value) => {
   const type = response.success ? 'success' : 'error';
   emits('onChangeToolbox');
   store.dispatch('antStore/showMessage', { type, message: response.messages });
+};
+
+const removeRouteHide = () => {
+  const routeHide = ['permission.index', 'supplier.index'];
+  if (routeHide.includes(route.name)) {
+    return false;
+  }
+  return true;
 };
 
 const handleDeleteMultiple = async () => {
