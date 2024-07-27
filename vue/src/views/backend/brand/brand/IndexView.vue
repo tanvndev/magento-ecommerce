@@ -30,11 +30,6 @@
             @change="handleTableChange"
           >
             <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'image'">
-                <div>
-                  <img class="w-20 object-contain" :src="record.image" :alt="record.name" />
-                </div>
-              </template>
               <template v-if="column.dataIndex === 'publish'">
                 <PublishSwitchComponent
                   :record="record"
@@ -73,32 +68,23 @@ import {
 import { useCRUD, usePagination } from '@/composables';
 
 // Data static
-const pageTitle = 'Danh sách nhóm sản phẩm';
-const modelName = 'ProductCatalogue';
-const routeCreate = 'product.catalogue.store';
-const routeUpdate = 'product.catalogue.update';
-const endpoint = 'products/catalogues';
+const pageTitle = 'Danh sách thương hiệu';
+const modelName = 'Brand';
+const routeCreate = 'brand.store';
+const routeUpdate = 'brand.update';
+const endpoint = 'brands';
 const columns = [
   {
-    title: 'Tên nhóm sản phẩm',
+    title: 'Tên thương hiệu',
     dataIndex: 'name',
-    key: 'name'
-  },
-  {
-    title: 'Ảnh',
-    dataIndex: 'image',
-    key: 'image',
-    width: '10%'
+    key: 'name',
+    sorter: (a, b) => a.name.localeCompare(b.name)
   },
   {
     title: 'Đường dẫn',
     dataIndex: 'canonical',
-    key: 'canonical'
-  },
-  {
-    title: 'Vị trí',
-    dataIndex: 'order',
-    key: 'order'
+    key: 'canonical',
+    sorter: (a, b) => a.canonical.localeCompare(b.canonical)
   },
   {
     title: 'Tình trạng',
@@ -132,7 +118,7 @@ const {
   selectedRows
 } = usePagination();
 
-// Methods
+// Fetchdata
 const fetchData = async () => {
   const payload = {
     page: pagination.current,
@@ -140,7 +126,6 @@ const fetchData = async () => {
     ...filterOptions.value
   };
   const response = await getAll(endpoint, payload);
-  console.log(response);
   dataSource.value = response.data;
   pagination.current = response.current_page;
   pagination.total = response.total;

@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\{
     AuthController,
     VerificationController
 };
+use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Upload\{UploadController};
 use App\Http\Controllers\Api\V1\Location\{LocationController};
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
@@ -70,6 +71,9 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('products/catalogues', ProductCatalogueController::class);
         });
         Route::apiResource('products', ProductController::class);
+
+        // BRAND ROUTE
+        Route::apiResource('brands', BrandController::class);
 
         // Upload ROUTE
         Route::apiResource('uploads', UploadController::class);

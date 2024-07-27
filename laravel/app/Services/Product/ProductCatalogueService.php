@@ -34,8 +34,6 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
 
             );
 
-            // dd($productCatalogues);
-
             $formattedData = $this->formatDataToTable($productCatalogues);
 
             return [
@@ -62,6 +60,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         ];
     }
 
+    // XU LY LAY RA DATA CHO BANG PRODUCT CATALOGUE
     private function formatDataToTable($data, $parentId = 0)
     {
         $formattedData = [];
@@ -93,10 +92,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             // Lấy ra tất cả các trường và loại bỏ trường bên dưới
             $payload = request()->except('_token');
 
-            if (!isset($payload['canonical']) || empty($payload['canonical'])) {
-                $payload['canonical'] = Str::slug($payload['name']);
-            }
-            if ($payload['parent_id'] == 0) {
+            if (!isset($payload['parent_id']) || $payload['parent_id'] == 0) {
                 $payload['parent_id'] = null;
             }
 
@@ -111,7 +107,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             DB::rollBack();
             return [
                 'status' => 'error',
-                'messages' => $e->getMessage(),
+                'messages' => $e->getMessage() . ' - ' . $e->getLine() . ' - ' . $e->getFile(),
                 'data' => null
             ];
         }
@@ -126,9 +122,8 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
             $payload = request()->except('_token', '_method');
 
-            // Convert to slug
-            if (!isset($payload['canonical']) || empty($payload['canonical'])) {
-                $payload['canonical'] = Str::slug($payload['name']);
+            if (!isset($payload['parent_id']) || $payload['parent_id'] == 0) {
+                $payload['parent_id'] = null;
             }
 
             $this->productCatalogueRepository->update($id, $payload);

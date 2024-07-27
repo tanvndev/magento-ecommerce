@@ -27,19 +27,23 @@ const sidebar = [
     ]
   },
   {
+    id: 'brand_sidebar',
+    icon: 'fas fa-windsock',
+    name: 'QL Thương hiệu',
+    route: '',
+    subMenu: [
+      {
+        name: 'Quản lý thương hiệu',
+        route: 'brand.index'
+      }
+    ]
+  },
+  {
     id: 'product_sidebar',
     icon: 'fas fa-boxes',
     name: 'QL Sản phẩm',
     route: '',
     subMenu: [
-      // {
-      //   name: 'Quản lý thuộc tính',
-      //   route: 'user.index'
-      // },
-      // {
-      //   name: 'Quản lý nhóm thuộc tính',
-      //   route: 'user.catalogue.index'
-      // },
       {
         name: 'Quản lý sản phẩm',
         route: 'product.index'

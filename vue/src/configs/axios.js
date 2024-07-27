@@ -9,7 +9,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     // Start loading
-    store.dispatch('loadingStore/startLoading');
+    // store.dispatch('loadingStore/startLoading');
 
     // Get token
     const token = store.getters['authStore/getToken'];
@@ -28,7 +28,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   function (response) {
     // Stop loading
-    store.dispatch('loadingStore/stopLoading');
+    // store.dispatch('loadingStore/stopLoading');
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response.data;
@@ -48,7 +48,7 @@ instance.interceptors.response.use(
       }
     }
     // Stop loading
-    store.dispatch('loadingStore/stopLoading');
+    // store.dispatch('loadingStore/stopLoading');
     return Promise.reject(error);
   }
 );

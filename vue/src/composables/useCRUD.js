@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { BaseService } from '@/services';
+import store from '@/store';
 
 export default function useCRUD() {
   const loading = ref(false);
@@ -9,6 +10,7 @@ export default function useCRUD() {
 
   const getAll = async (endpoint, payload = {}) => {
     loading.value = true;
+
     error.value = null;
     try {
       const response = await BaseService.getAll(endpoint, payload);
@@ -40,6 +42,7 @@ export default function useCRUD() {
     }
   };
   const create = async (endpoint, payload) => {
+    store.dispatch('loadingStore/startLoading');
     loading.value = true;
     error.value = null;
     try {
@@ -50,10 +53,12 @@ export default function useCRUD() {
     } catch (err) {
       error.value = err;
     } finally {
+      store.dispatch('loadingStore/stopLoading');
       loading.value = false;
     }
   };
   const update = async (endpoint, id, payload) => {
+    store.dispatch('loadingStore/startLoading');
     loading.value = true;
     error.value = null;
     try {
@@ -63,10 +68,12 @@ export default function useCRUD() {
     } catch (err) {
       error.value = err;
     } finally {
+      store.dispatch('loadingStore/stopLoading');
       loading.value = false;
     }
   };
   const deleteOne = async (endpoint, id, payload = null) => {
+    store.dispatch('loadingStore/startLoading');
     loading.value = true;
     error.value = null;
     try {
@@ -77,6 +84,7 @@ export default function useCRUD() {
     } catch (err) {
       error.value = err;
     } finally {
+      store.dispatch('loadingStore/stopLoading');
       loading.value = false;
     }
   };
