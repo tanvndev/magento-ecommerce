@@ -2,10 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router';
 import store from '@/store';
 
 import DashboardView from '@/views/backend/DashboardView.vue';
-import { FileManager } from '@/components/backend';
-import { isLoggedIn } from '@/middlewares/authenticate';
 
-import { userRoutes, authRoutes, productRoutes, brandRoutes, supplierRoutes } from './backend';
+import {
+  userRoutes,
+  authRoutes,
+  productRoutes,
+  brandRoutes,
+  supplierRoutes,
+  warehouseRoutes
+} from './backend';
+
+import { isLoggedIn } from '@/middlewares/authenticate';
 // import { isAdmin } from '@/middlewares/authorization';
 
 const routes = [
@@ -24,17 +31,13 @@ const routes = [
     component: DashboardView,
     beforeEnter: [isLoggedIn]
   },
-  {
-    path: '/fileManager',
-    name: 'fileManager',
-    component: FileManager,
-    beforeEnter: [isLoggedIn]
-  },
   ...userRoutes,
   ...authRoutes,
   ...productRoutes,
   ...brandRoutes,
-  ...supplierRoutes
+  ...supplierRoutes,
+  ...warehouseRoutes,
+  ...productRoutes
 ];
 
 const router = createRouter({

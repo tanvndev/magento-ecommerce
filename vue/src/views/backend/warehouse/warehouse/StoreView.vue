@@ -5,40 +5,85 @@
         <BreadcrumbComponent :titlePage="pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
-            <a-col :span="24">
-              <a-card class="mt-3">
+            <a-col :span="16">
+              <a-card class="mt-3" title="Thông tin chung">
                 <AleartError :errors="error" />
                 <a-row :gutter="[16, 16]">
                   <a-col :span="12">
-                    <InputComponent label="Tên kho hàng" :required="true" name="name" />
+                    <InputComponent
+                      label="Tên kho hàng"
+                      :required="true"
+                      name="name"
+                      placeholder="Tên kho hàng"
+                    />
                   </a-col>
 
                   <a-col :span="12">
-                    <InputComponent label="Mã kho hàng" :required="true" name="code" />
+                    <InputComponent
+                      label="Mã kho hàng"
+                      :required="true"
+                      name="code"
+                      placeholder="Mã kho hàng"
+                    />
                   </a-col>
 
                   <a-col :span="12">
-                    <InputComponent label="Số điện thoại" :required="true" name="phone" />
+                    <InputComponent
+                      label="Số điện thoại"
+                      :required="true"
+                      name="phone"
+                      placeholder="Số điện thoại"
+                    />
                   </a-col>
 
                   <a-col :span="12">
-                    <InputComponent label="Địa chỉ" :required="true" name="address" />
-                  </a-col>
-
-                  <a-col :span="12">
-                    <InputNumberComponent label="Số kệ" :required="true" name="shelve" />
-                  </a-col>
-
-                  <a-col :span="12">
-                    <InputNumberComponent label="Số hàng" :required="true" name="row" />
+                    <InputComponent
+                      label="Người quản lý"
+                      :required="true"
+                      name="supervisor_name"
+                      placeholder="Tên người quản lý"
+                    />
                   </a-col>
 
                   <a-col :span="24">
-                    <InputComponent label="Người quản lý" :required="true" name="supervisor_name" />
+                    <InputComponent
+                      label="Địa chỉ"
+                      :required="true"
+                      name="address"
+                      placeholder="Địa chỉ kho hàng"
+                    />
                   </a-col>
 
                   <a-col :span="24">
-                    <InputComponent typeInput="textarea" label="Ghi chú" name="description" />
+                    <InputComponent
+                      typeInput="textarea"
+                      label="Ghi chú"
+                      name="description"
+                      placeholder="Ghi chú"
+                    />
+                  </a-col>
+                </a-row>
+              </a-card>
+            </a-col>
+            <a-col :span="8">
+              <a-card class="mt-3" title="Kho hàng">
+                <a-row :gutter="[16, 16]">
+                  <a-col :span="12">
+                    <InputNumberComponent
+                      label="Số kệ"
+                      :required="true"
+                      name="shelve"
+                      placeholder="Số kệ"
+                    />
+                  </a-col>
+
+                  <a-col :span="12">
+                    <InputNumberComponent
+                      label="Số hàng"
+                      :required="true"
+                      name="row"
+                      placeholder="Số hàng"
+                    />
                   </a-col>
                 </a-row>
               </a-card>

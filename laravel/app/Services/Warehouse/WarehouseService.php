@@ -22,10 +22,11 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
         // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
         $condition['search'] = addslashes(request('search'));
         $condition['publish'] = request('publish');
+        $condition['searchFields'] = ['name', 'code', 'phone', 'supervisor_name'];
 
         $select = ['id', 'name', 'code', 'phone', 'shelve', 'row', 'supervisor_name', 'publish'];
-        if (request('pageSize') && request('page')) {
 
+        if (request('pageSize') && request('page')) {
             $warehouses = $this->warehouseRepository->pagination(
                 $select,
                 $condition,
@@ -55,6 +56,7 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
             $payload = request()->except('_token');
 
             $this->warehouseRepository->create($payload);
+
             DB::commit();
             return [
                 'status' => 'success',
@@ -77,6 +79,7 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
         try {
             // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
             $payload = request()->except('_token', '_method');
+
             $this->warehouseRepository->update($id, $payload);
 
             DB::commit();

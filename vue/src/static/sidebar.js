@@ -51,8 +51,20 @@ const sidebar = [
     ]
   },
   {
+    id: 'warehouse_sidebar',
+    icon: 'fas fa-warehouse-alt',
+    name: 'QL kho hàng',
+    route: '',
+    subMenu: [
+      {
+        name: 'Quản lý kho hàng',
+        route: 'warehouse.index'
+      }
+    ]
+  },
+  {
     id: 'product_sidebar',
-    icon: 'fas fa-boxes',
+    icon: 'fas fa-box-check',
     name: 'QL Sản phẩm',
     route: '',
     subMenu: [

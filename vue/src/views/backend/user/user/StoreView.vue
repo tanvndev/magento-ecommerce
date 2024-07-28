@@ -6,9 +6,9 @@
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
             <a-col :span="12">
-              <a-card class="mt-3">
+              <a-card class="mt-3" title="Thông tin chung">
                 <AleartError :errors="error" />
-                <a-row :gutter="[16, 10]">
+                <a-row :gutter="[16, 16]">
                   <a-col :span="12">
                     <InputComponent label="Họ tên thành viên" :required="true" name="fullname" />
                   </a-col>
@@ -49,7 +49,7 @@
               </a-card>
             </a-col>
             <a-col :span="12">
-              <a-card class="mt-3">
+              <a-card class="mt-3" title="Địa chỉ">
                 <AleartError :errors="error" />
                 <a-row :gutter="[16, 15]">
                   <a-col :span="8">

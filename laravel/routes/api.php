@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Product\{ProductCatalogueController, ProductController};
 use App\Http\Controllers\Api\V1\Supplier\SupplierController;
 use App\Http\Controllers\Api\V1\User\{UserCatalogueController, UserController};
+use App\Http\Controllers\Api\V1\Warehouse\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -80,6 +81,9 @@ Route::prefix('v1')->group(function () {
 
         // SUPPLIER ROUTE
         Route::apiResource('suppliers', SupplierController::class);
+
+        // WAREHOUSE ROUTE
+        Route::apiResource('warehouses', WarehouseController::class);
 
         // UPLOAD ROUTE
         Route::apiResource('uploads', UploadController::class);

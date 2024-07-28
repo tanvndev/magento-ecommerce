@@ -20,6 +20,8 @@ class SupplierService extends BaseService implements SupplierServiceInterface
         // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
         $condition['search'] = addslashes(request('search'));
         $condition['publish'] = request('publish');
+        $condition['searchFields'] = ['company_name', 'contact_name', 'contact_phone', 'contact_email', 'address'];
+
         $select = [
             'id', 'description', 'company_name', 'address',
             'contact_name', 'contact_phone', 'contact_email',
@@ -39,7 +41,6 @@ class SupplierService extends BaseService implements SupplierServiceInterface
         } else {
             $suppliers = $this->supplierRepository->all($select);
         }
-
 
         return [
             'status' => 'success',

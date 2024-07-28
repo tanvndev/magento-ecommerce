@@ -68,17 +68,17 @@ import {
 import { useCRUD, usePagination } from '@/composables';
 
 // Data static
-const pageTitle = 'Danh sách thành viên';
+const pageTitle = 'Danh sách sản phẩm';
 const modelName = 'Product';
 const routeCreate = 'product.store';
 const routeUpdate = 'product.update';
 const endpoint = 'products';
 const columns = [
   {
-    title: 'Tên thành viên',
-    dataIndex: 'fullname',
-    key: 'fullname',
-    sorter: (a, b) => a.fullname.localeCompare(b.fullname)
+    title: 'Tên sản phẩm',
+    dataIndex: 'name',
+    key: 'name',
+    sorter: (a, b) => a.name.localeCompare(b.name)
   },
   {
     title: 'Địa chỉ email',
