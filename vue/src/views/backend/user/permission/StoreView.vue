@@ -2,10 +2,10 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-card class="mt-3">
-            <AleartError :errors="errors" />
+            <AleartError :errors="state.errors" />
             <a-row :gutter="16">
               <a-col :span="12">
                 <InputComponent
@@ -45,7 +45,7 @@ import {
   AleartError,
   InputComponent
 } from '@/components/backend';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
@@ -53,10 +53,12 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
-const endpoint = 'permissions';
-
-const pageTitle = ref('Thêm mới quyền người dùng');
-const errors = ref({});
+// STATE
+const state = reactive({
+  pageTitle: 'Thêm mới quyền người dùng',
+  endpoint: 'permissions',
+  errors: {}
+});
 
 const store = useStore();
 const { getOne, create, update, messages, data, loading } = useCRUD();
@@ -73,25 +75,25 @@ const onSubmit = handleSubmit(async (values) => {
   console.log(values);
   const response =
     id.value && id.value > 0
-      ? await update(endpoint, id.value, values)
-      : await create(endpoint, values);
+      ? await update(state.endpoint, id.value, values)
+      : await create(state.endpoint, values);
   if (!response) {
-    return (errors.value = formatMessages(messages.value));
+    return (state.errors = formatMessages(messages.value));
   }
 
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  errors.value = {};
+  state.errors = {};
   router.push({ name: 'permission.index' });
 });
 
 const fetchOne = async () => {
-  await getOne(endpoint, id.value);
+  await getOne(state.endpoint, id.value);
   setValues({ name: data.value.name, canonical: data.value.canonical });
 };
 
 onMounted(() => {
   if (id.value && id.value > 0) {
-    pageTitle.value = 'Cập nhập quyền người dùng.';
+    state.pageTitle = 'Cập nhập quyền người dùng.';
     fetchOne();
   }
 });

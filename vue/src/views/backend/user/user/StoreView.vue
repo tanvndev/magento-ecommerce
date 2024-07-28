@@ -2,12 +2,12 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
             <a-col :span="12">
               <a-card class="mt-3" title="Thông tin chung">
-                <AleartError :errors="error" />
+                <AleartError :errors="state.error" />
                 <a-row :gutter="[16, 16]">
                   <a-col :span="12">
                     <InputComponent label="Họ tên thành viên" :required="true" name="fullname" />
@@ -35,7 +35,7 @@
                       label="Nhóm thành viên"
                       name="user_catalogue_id"
                       placeholder="Chọn nhóm thành viên"
-                      :options="userCatalogues"
+                      :options="state.userCatalogues"
                       :required="true"
                     />
                   </a-col>
@@ -50,7 +50,7 @@
             </a-col>
             <a-col :span="12">
               <a-card class="mt-3" title="Địa chỉ">
-                <AleartError :errors="error" />
+                <AleartError :errors="state.error" />
                 <a-row :gutter="[16, 15]">
                   <a-col :span="8">
                     <SelectComponent
@@ -110,7 +110,7 @@ import {
   SelectComponent,
   InputFinderComponent
 } from '@/components/backend';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
 import { formatDataToSelect, formatMessages } from '@/utils/format';
@@ -118,15 +118,17 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useLocation, useCRUD } from '@/composables';
 
-const endpoint = 'users';
-
 const store = useStore();
 const { getOne, getAll, create, update, messages, data, loading } = useCRUD();
 const { getProvinces, getLocations, provinces, districts, wards } = useLocation();
 
-const pageTitle = ref('Thêm mới thành viên');
-const error = ref({});
-const userCatalogues = ref([]);
+// STATE
+const state = reactive({
+  userCatalogues: [],
+  error: {},
+  endpoint: 'users',
+  pageTitle: 'Thêm mới thành viên'
+});
 
 const id = computed(() => router.currentRoute.value.params.id || null);
 
@@ -151,19 +153,19 @@ const { handleSubmit, setValues, setFieldValue } = useForm({
 const onSubmit = handleSubmit(async (values) => {
   const response =
     id.value && id.value > 0
-      ? await update(endpoint, id.value, values)
-      : await create(endpoint, values);
+      ? await update(state.endpoint, id.value, values)
+      : await create(state.endpoint, values);
   if (!response) {
-    return (error.value = formatMessages(messages.value));
+    return (state.error = formatMessages(messages.value));
   }
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  error.value = {};
+  state.error = {};
   router.push({ name: 'user.index' });
 });
 
 const getCatalogues = async () => {
   await getAll('users/catalogues');
-  userCatalogues.value = formatDataToSelect(data.value);
+  state.userCatalogues = formatDataToSelect(data.value);
 };
 
 const getLocation = async (target, location_id) => {
@@ -179,7 +181,7 @@ const getLocation = async (target, location_id) => {
 };
 
 const fetchOne = async () => {
-  await getOne(endpoint, id.value);
+  await getOne(state.endpoint, id.value);
   setValues({
     fullname: data.value?.fullname,
     email: data.value?.email,
@@ -196,7 +198,7 @@ const fetchOne = async () => {
 onMounted(async () => {
   if (id.value) {
     fetchOne();
-    pageTitle.value = 'Cập nhập thành viên.';
+    state.pageTitle = 'Cập nhập thành viên.';
   }
   getCatalogues();
   getProvinces();
