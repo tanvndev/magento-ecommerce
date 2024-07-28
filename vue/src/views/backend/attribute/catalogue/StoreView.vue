@@ -4,20 +4,31 @@
       <div class="container mx-auto h-screen">
         <BreadcrumbComponent :titlePage="pageTitle" />
         <form @submit.prevent="onSubmit">
-          <a-card class="mt-3">
+          <a-card class="mt-3" title="Dữ liệu nhóm thuộc tính">
             <AleartError :errors="errors" />
-            <a-row :gutter="[16, 10]">
+            <a-row :gutter="[16, 16]">
               <a-col :span="12">
-                <InputComponent name="name" label="Tên nhóm thuộc tính" :required="true" />
+                <InputComponent
+                  name="name"
+                  label="Tên nhóm thuộc tính"
+                  :required="true"
+                  placeholder="Tên nhóm thuộc tính"
+                />
               </a-col>
               <a-col :span="12">
-                <InputComponent name="code" label="Mã nhóm thuộc tính" :required="true" />
+                <InputComponent
+                  name="code"
+                  label="Mã nhóm thuộc tính"
+                  :required="true"
+                  placeholder="Mã nhóm thuộc tính"
+                />
               </a-col>
               <a-col :span="24">
                 <InputComponent
                   typeInput="textarea"
                   name="description"
                   label="Mô tả nhóm thuộc tính"
+                  placeholder="Mô tả nhóm thuộc tính"
                 />
               </a-col>
             </a-row>

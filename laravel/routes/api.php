@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\{
     DashboardController,
 };
+use App\Http\Controllers\Api\V1\Attribute\{AttributeCatalogueController, AttributeController};
 use App\Http\Controllers\Api\V1\Auth\{
     AuthController,
     VerificationController
@@ -75,6 +76,12 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('products/catalogues', ProductCatalogueController::class);
         });
         Route::apiResource('products', ProductController::class);
+
+        // ATTRIBUTE ROUTE
+        Route::prefix('/')->name('attributes.')->group(function () {
+            Route::apiResource('attributes/catalogues', AttributeCatalogueController::class);
+        });
+        Route::apiResource('attributes', AttributeController::class);
 
         // BRAND ROUTE
         Route::apiResource('brands', BrandController::class);

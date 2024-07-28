@@ -4,7 +4,7 @@
       <div class="container mx-auto h-screen">
         <BreadcrumbComponent :titlePage="pageTitle" />
         <form @submit.prevent="onSubmit">
-          <a-card class="mt-3">
+          <a-card class="mt-3" title="Dữ liệu thuộc tính">
             <AleartError :errors="errors" />
             <a-row :gutter="[16, 10]">
               <a-col :span="16">

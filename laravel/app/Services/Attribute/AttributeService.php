@@ -52,6 +52,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
 
             $payload = $this->formatPayload($payload);
             $this->attributeRepository->createBatch($payload);
+
             DB::commit();
             return [
                 'status' => 'success',

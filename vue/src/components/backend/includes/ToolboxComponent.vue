@@ -109,7 +109,7 @@ const handleChangePublish = async (value) => {
 };
 
 const removeRouteHide = () => {
-  const routeHide = ['permission.index', 'supplier.index'];
+  const routeHide = ['permission.index', 'supplier.index', 'attribute.index'];
   if (routeHide.includes(route.name)) {
     return false;
   }

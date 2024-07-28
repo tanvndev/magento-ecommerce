@@ -30,8 +30,6 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
                 $condition,
                 request('pageSize'),
                 ['id' => 'desc'],
-                [],
-                []
             );
             foreach ($attributeCatalogues as $key => $attributeCatalogue) {
                 $attributeCatalogue->key = $attributeCatalogue->id;
@@ -53,10 +51,9 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         try {
             // Lấy ra tất cả các trường và loại bỏ trường bên dưới
             $payload = request()->except('_token');
-            if (!isset($payload['code']) || empty($payload['code'])) {
-                $payload['code'] = $this->convertToCode($payload['name']);
-            }
+
             $this->attributeCatalogueRepository->create($payload);
+
             DB::commit();
             return [
                 'status' => 'success',
@@ -81,11 +78,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         try {
             // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
             $payload = request()->except('_token', '_method');
-            if (!isset($payload['code']) || empty($payload['code'])) {
-                $payload['code'] = $this->convertToCode($payload['name']);
-            } else {
-                $payload['code'] = strtoupper($payload['code']);
-            }
+
             $this->attributeCatalogueRepository->update($id, $payload);
 
             DB::commit();
