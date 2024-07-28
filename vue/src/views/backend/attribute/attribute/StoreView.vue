@@ -2,10 +2,10 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-card class="mt-3" title="Dữ liệu thuộc tính">
-            <AleartError :errors="errors" />
+            <AleartError :errors="state.errors" />
             <a-row :gutter="[16, 10]">
               <a-col :span="16">
                 <InputComponent
@@ -19,7 +19,7 @@
                 <SelectComponent
                   name="attribute_catalogue_id"
                   label="Nhóm thuộc tính"
-                  :options="attributeCatalogues"
+                  :options="state.attributeCatalogues"
                   placeholder="Chọn nhóm thuộc tính"
                   :required="true"
                 />
@@ -47,7 +47,7 @@ import {
   InputComponent,
   SelectComponent
 } from '@/components/backend';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatDataToSelect, formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
@@ -55,11 +55,14 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
-const endpoint = 'attributes';
+// STATE
 
-const attributeCatalogues = ref(null);
-const pageTitle = ref('Thêm mới thuộc tính');
-const errors = ref({});
+const state = reactive({
+  endpoint: 'attributes',
+  pageTitle: 'Thêm mới thuộc tính',
+  attributeCatalogues: [],
+  errors: {}
+});
 
 const store = useStore();
 const { getOne, getAll, create, update, messages, data } = useCRUD();
@@ -75,31 +78,31 @@ const { handleSubmit, setValues } = useForm({
 const onSubmit = handleSubmit(async (values) => {
   const response =
     id.value && id.value > 0
-      ? await update(endpoint, id.value, values)
-      : await create(endpoint, values);
+      ? await update(state.endpoint, id.value, values)
+      : await create(state.endpoint, values);
   if (!response) {
-    return (errors.value = formatMessages(messages.value));
+    return (state.errors = formatMessages(messages.value));
   }
 
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  errors.value = {};
+  state.errors = {};
   router.push({ name: 'attribute.index' });
 });
 
 const fetchOne = async () => {
-  await getOne(endpoint, id.value);
+  await getOne(state.endpoint, id.value);
   setValues({ name: data.value.name, attribute_catalogue_id: data.value.attribute_catalogue_id });
 };
 
 const getAttributeCatalogues = async () => {
   await getAll('attributes/catalogues');
-  attributeCatalogues.value = formatDataToSelect(data.value, 'id', 'name');
+  state.attributeCatalogues = formatDataToSelect(data.value, 'id', 'name');
 };
 
 onMounted(() => {
   getAttributeCatalogues();
   if (id.value && id.value > 0) {
-    pageTitle.value = 'Cập nhập thuộc tính.';
+    state.pageTitle = 'Cập nhập thuộc tính.';
     fetchOne();
   }
 });

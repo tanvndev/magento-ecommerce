@@ -37,6 +37,10 @@
 :where(.css-dev-only-do-not-override-19iuou).ant-picker-large .ant-picker-input > input {
   font-size: 15px;
 }
+
+:where(.css-dev-only-do-not-override-19iuou).ant-input-lg {
+  font-size: 15px;
+}
 /* Switch */
 /* The switch - the box around the slider */
 .switch {

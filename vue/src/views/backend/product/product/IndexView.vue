@@ -74,7 +74,7 @@ const state = reactive({
   routeCreate: 'product.store',
   routeUpdate: 'product.update',
   endpoint: 'products',
-  isShowToolbox: true,
+  isShowToolbox: false,
   modelIds: [],
   filterOptions: {},
   dataSource: []

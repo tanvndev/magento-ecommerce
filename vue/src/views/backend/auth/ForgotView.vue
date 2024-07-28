@@ -8,12 +8,12 @@
         </div>
       </div>
       <form @submit.prevent="onSubmit">
-        <AleartError :errors="errors" />
+        <AleartError :errors="state.errors" />
         <div class="mb-5">
           <InputComponent label="Địa chỉ email" name="email" type="text" />
         </div>
         <a-button
-          :loading="loading"
+          :loading="state.loading"
           type="primary"
           size="large"
           html-type="submit"
@@ -35,7 +35,7 @@
 import { InputComponent, AleartError } from '@/components/backend';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
-import { ref } from 'vue';
+import { reactive } from 'vue';
 import { RouterLink } from 'vue-router';
 import router from '@/router';
 import { formatMessages } from '@/utils/format';
@@ -44,8 +44,11 @@ import { useAntToast } from '@/utils/antToast';
 
 const { showMessage } = useAntToast();
 
-const loading = ref(false);
-const errors = ref({});
+// STATE
+const state = reactive({
+  loading: false,
+  errors: {}
+});
 
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
@@ -57,14 +60,17 @@ const { handleSubmit } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  errors.value = {};
-  loading.value = true;
+  state.errors = {};
+  state.loading = true;
+
   const response = await AuthService.forgot(values);
+
   if (!response.success) {
-    loading.value = false;
-    return (errors.value = formatMessages(response.messages));
+    state.loading = false;
+    return (state.errors = formatMessages(response.messages));
   }
-  loading.value = false;
+
+  state.loading = false;
   showMessage('success', response.messages);
   router.push({ name: 'login' });
 });

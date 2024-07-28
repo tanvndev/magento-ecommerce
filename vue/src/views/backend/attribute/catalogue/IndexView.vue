@@ -2,14 +2,14 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" />
 
         <!-- Toolbox -->
         <ToolboxComponent
-          :routeCreate="routeCreate"
-          :modelName="modelName"
-          :isShowToolbox="isShowToolbox"
-          :modelIds="modelIds"
+          :routeCreate="state.routeCreate"
+          :modelName="state.modelName"
+          :isShowToolbox="state.isShowToolbox"
+          :modelIds="state.modelIds"
           @onChangeToolbox="onChangeToolbox"
         />
         <!-- End toolbox -->
@@ -23,17 +23,21 @@
           <a-table
             bordered
             :columns="columns"
-            :data-source="dataSource"
+            :data-source="state.dataSource"
             :row-selection="rowSelection"
             :pagination="pagination"
             :loading="loading"
             @change="handleTableChange"
           >
             <template #bodyCell="{ column, record }">
+              <template v-if="column.dataIndex === 'image'">
+                <img class="w-20 object-contain" :src="record.image" :alt="record.name" />
+              </template>
+
               <template v-if="column.dataIndex === 'publish'">
                 <PublishSwitchComponent
                   :record="record"
-                  :modelName="modelName"
+                  :modelName="state.modelName"
                   :field="column.dataIndex"
                 />
               </template>
@@ -42,8 +46,8 @@
                 <ActionComponent
                   @onDelete="onDelete"
                   :id="record.id"
-                  :routeUpdate="routeUpdate"
-                  :endpoint="endpoint"
+                  :routeUpdate="state.routeUpdate"
+                  :endpoint="state.endpoint"
                 />
               </template>
             </template>
@@ -56,7 +60,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, reactive, watch } from 'vue';
 import {
   BreadcrumbComponent,
   MasterLayout,
@@ -67,12 +71,19 @@ import {
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
 
-// Data static
-const pageTitle = 'Danh sách nhóm thuộc tính';
-const modelName = 'AttributeCatalogue';
-const routeCreate = 'attribute.catalogue.store';
-const routeUpdate = 'attribute.catalogue.update';
-const endpoint = 'attributes/catalogues';
+// STATE
+const state = reactive({
+  pageTitle: 'Danh sách nhóm thuộc tính',
+  modelName: 'AttributeCatalogue',
+  routeCreate: 'attribute.catalogue.store',
+  routeUpdate: 'attribute.catalogue.update',
+  endpoint: 'attributes/catalogues',
+  isShowToolbox: false,
+  modelIds: [],
+  filterOptions: {},
+  dataSource: []
+});
+
 const columns = [
   {
     title: 'Tên nhóm thuộc tính',
@@ -106,14 +117,8 @@ const columns = [
   }
 ];
 
-// Data
-const filterOptions = ref({});
-const dataSource = ref([]);
-const isShowToolbox = ref(false);
-const modelIds = ref([]);
-
-// Fetch
 const { getAll, loading } = useCRUD();
+
 // Pagination
 const {
   pagination,
@@ -124,15 +129,15 @@ const {
   selectedRows
 } = usePagination();
 
-// Methods
+// Fetchdata
 const fetchData = async () => {
   const payload = {
     page: pagination.current,
     pageSize: pagination.pageSize,
-    ...filterOptions.value
+    ...state.filterOptions
   };
-  const response = await getAll(endpoint, payload);
-  dataSource.value = response.data;
+  const response = await getAll(state.endpoint, payload);
+  state.dataSource = response.data;
   pagination.current = response.current_page;
   pagination.total = response.total;
   pagination.pageSize = response.per_page;
@@ -141,12 +146,12 @@ const fetchData = async () => {
 // Watchers
 watch(onChangePagination, () => fetchData());
 watch(selectedRows, () => {
-  isShowToolbox.value = selectedRows.value.length > 0;
-  modelIds.value = selectedRowKeys.value;
+  state.isShowToolbox = selectedRows.value.length > 0;
+  state.modelIds = selectedRowKeys.value;
 });
 
 const onFilterOptions = (filterValue) => {
-  filterOptions.value = filterValue;
+  state.filterOptions = filterValue;
   fetchData();
 };
 
@@ -155,7 +160,7 @@ const onChangeToolbox = () => {
 };
 
 const onDelete = (key) => {
-  dataSource.value = dataSource.value.filter((item) => item.key !== key);
+  state.dataSource = state.dataSource.filter((item) => item.key !== key);
 };
 
 // Lifecycle hook

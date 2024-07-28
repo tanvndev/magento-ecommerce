@@ -2,10 +2,10 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-card class="mt-3" title="Dữ liệu nhóm thuộc tính">
-            <AleartError :errors="errors" />
+            <AleartError :errors="state.errors" />
             <a-row :gutter="[16, 16]">
               <a-col :span="12">
                 <InputComponent
@@ -53,7 +53,7 @@ import {
   AleartError,
   InputComponent
 } from '@/components/backend';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
@@ -61,10 +61,13 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
-const endpoint = 'attributes/catalogues';
+// STATE
 
-const pageTitle = ref('Thêm mới nhóm thuộc tính');
-const errors = ref({});
+const state = reactive({
+  endpoint: 'attributes/catalogues',
+  pageTitle: 'Thêm mới nhóm thuộc tính',
+  errors: {}
+});
 
 const store = useStore();
 const { getOne, create, update, messages, data } = useCRUD();
@@ -80,25 +83,25 @@ const { handleSubmit, setValues } = useForm({
 const onSubmit = handleSubmit(async (values) => {
   const response =
     id.value && id.value > 0
-      ? await update(endpoint, id.value, values)
-      : await create(endpoint, values);
+      ? await update(state.endpoint, id.value, values)
+      : await create(state.endpoint, values);
   if (!response) {
-    return (errors.value = formatMessages(messages.value));
+    return (state.errors = formatMessages(messages.value));
   }
 
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  errors.value = {};
+  state.errors = {};
   router.push({ name: 'attribute.catalogue.index' });
 });
 
 const fetchOne = async () => {
-  await getOne(endpoint, id.value);
+  await getOne(state.endpoint, id.value);
   setValues({ name: data.value.name, description: data.value.description, code: data.value.code });
 };
 
 onMounted(() => {
   if (id.value && id.value > 0) {
-    pageTitle.value = 'Cập nhập nhóm thuộc tính.';
+    state.pageTitle.value = 'Cập nhập nhóm thuộc tính.';
     fetchOne();
   }
 });

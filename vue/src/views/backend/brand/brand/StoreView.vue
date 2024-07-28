@@ -2,12 +2,12 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
             <a-col :span="16">
               <a-card class="mt-3" title="Thông tin chung">
-                <AleartError :errors="errors" />
+                <AleartError :errors="state.errors" />
                 <a-row :gutter="[16, 16]">
                   <a-col :span="12">
                     <InputComponent
@@ -64,7 +64,7 @@ import {
   InputComponent,
   InputFinderComponent
 } from '@/components/backend';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';
@@ -73,14 +73,17 @@ import router from '@/router';
 import { useCRUD } from '@/composables';
 
 // VARIABLES
-const endpoint = 'brands';
 
 const store = useStore();
 const { getOne, create, update, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 
-const pageTitle = ref('Thêm mới thương hiệu');
-const errors = ref({});
+// STATE
+const state = reactive({
+  endpoint: 'brands',
+  pageTitle: 'Thêm mới thương hiệu',
+  errors: {}
+});
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({
@@ -91,19 +94,19 @@ const { handleSubmit, setValues } = useForm({
 const onSubmit = handleSubmit(async (values) => {
   const response =
     id.value && id.value > 0
-      ? await update(endpoint, id.value, values)
-      : await create(endpoint, values);
+      ? await update(state.endpoint, id.value, values)
+      : await create(state.endpoint, values);
   if (!response) {
-    return (errors.value = formatMessages(messages.value));
+    return (state.errors = formatMessages(messages.value));
   }
 
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  errors.value = {};
+  state.errors = {};
   router.push({ name: 'brand.index' });
 });
 
 const fetchOne = async () => {
-  await getOne(endpoint, id.value);
+  await getOne(state.endpoint, id.value);
   setValues({
     name: data.value.name,
     description: data.value.description,
@@ -114,7 +117,7 @@ const fetchOne = async () => {
 
 onMounted(() => {
   if (id.value && id.value > 0) {
-    pageTitle.value = 'Cập nhập thương hiệu.';
+    state.pageTitle = 'Cập nhập thương hiệu.';
     fetchOne();
   }
 });
