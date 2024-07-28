@@ -25,4 +25,15 @@ const PRODUCT_TYPE = [
     label: 'Sản phẩm có biến thể'
   }
 ];
-export { PUBLISH, PAGESIZE, PRODUCT_TYPE };
+
+const TAXT_STATUS = [
+  {
+    value: 1,
+    label: 'Giá sản phẩm đã bao gồm thuế'
+  },
+  {
+    value: 2,
+    label: 'Giá sản phẩm chưa bao gồm thuế'
+  }
+];
+export { PUBLISH, PAGESIZE, PRODUCT_TYPE, TAXT_STATUS };

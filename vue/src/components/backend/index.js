@@ -11,6 +11,7 @@ export { default as EditorComponent } from './includes/EditorComponent.vue';
 export { default as InputNumberComponent } from './includes/input/InputNumberComponent.vue';
 export { default as SwitchComponent } from './includes/input/SwitchComponent.vue';
 export { default as InputDateComponent } from './includes/input/InputDateComponent.vue';
+export { default as TooltipComponent } from './includes/TooltipComponent.vue';
 
 export { default as HeaderComponent } from './layouts/HeaderComponent.vue';
 export { default as MasterLayout } from './layouts/MasterLayout.vue';

@@ -27,18 +27,6 @@ const sidebar = [
     ]
   },
   {
-    id: 'brand_sidebar',
-    icon: 'fas fa-windsock',
-    name: 'QL Thương hiệu',
-    route: '',
-    subMenu: [
-      {
-        name: 'Quản lý thương hiệu',
-        route: 'brand.index'
-      }
-    ]
-  },
-  {
     id: 'attribute_sidebar',
     icon: 'fab fa-buffer',
     name: 'QL Thuộc tính',
@@ -55,14 +43,31 @@ const sidebar = [
     ]
   },
   {
-    id: 'supplier_sidebar',
-    icon: 'fas fa-parachute-box',
-    name: 'QL Nhà cung cấp',
+    id: 'product_sidebar',
+    icon: 'fas fa-box-check',
+    name: 'QL Sản phẩm',
     route: '',
     subMenu: [
       {
+        name: 'Quản lý thương hiệu',
+        route: 'brand.index'
+      },
+      {
         name: 'Quản lý nhà cung cấp',
         route: 'supplier.index'
+      },
+      {
+        name: 'Quản lý thuế xuất',
+        route: 'supplier.index'
+      },
+
+      {
+        name: 'Quản lý sản phẩm',
+        route: 'product.index'
+      },
+      {
+        name: 'Quản lý nhóm sản phẩm',
+        route: 'product.catalogue.index'
       }
     ]
   },
@@ -75,22 +80,6 @@ const sidebar = [
       {
         name: 'Quản lý kho hàng',
         route: 'warehouse.index'
-      }
-    ]
-  },
-  {
-    id: 'product_sidebar',
-    icon: 'fas fa-box-check',
-    name: 'QL Sản phẩm',
-    route: '',
-    subMenu: [
-      {
-        name: 'Quản lý sản phẩm',
-        route: 'product.index'
-      },
-      {
-        name: 'Quản lý nhóm sản phẩm',
-        route: 'product.catalogue.index'
       }
     ]
   }

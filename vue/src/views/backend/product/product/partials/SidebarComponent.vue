@@ -4,10 +4,6 @@
       <InputFinderComponent name="image" />
     </a-card>
 
-    <a-card class="mt-3" title="Thư viện sản phẩm">
-      <InputFinderComponent :multipleFile="true" name="album" />
-    </a-card>
-
     <a-card class="mt-3" title="Thương hiệu">
       <SelectComponent name="brand_id" :options="brands" placeholder="Chọn thương hiệu sản phẩm" />
     </a-card>
@@ -27,13 +23,38 @@
         placeholder="Chọn nhà cung cấp sản phẩm"
       />
     </a-card>
+
+    <a-card class="mt-3" title="Thông tin bổ sung">
+      <div class="mb-4 flex items-center justify-between border-b pb-4">
+        <div>
+          <label class="text-[15px] font-bold text-gray-700">
+            Trạng thái
+            <TooltipComponent color="#108ee9" title="Thay đổi trạng thái bán cho sản phẩm" />
+          </label>
+          <span class="block text-[13px] text-gray-500">Cho phép bán</span>
+        </div>
+        <div>
+          <SwitchComponent name="publish" />
+        </div>
+      </div>
+
+      <!-- TAX COMPONENT -->
+      <TaxComponent />
+    </a-card>
   </a-col>
 </template>
 <script setup>
-import { SelectComponent, InputFinderComponent, TreeSelectComponent } from '@/components/backend';
+import {
+  SelectComponent,
+  InputFinderComponent,
+  TreeSelectComponent,
+  TooltipComponent,
+  SwitchComponent
+} from '@/components/backend';
 import { useCRUD } from '@/composables';
 import { formatDataToTreeSelect, formatDataToSelect } from '@/utils/format';
 import { onMounted, ref } from 'vue';
+import TaxComponent from './TaxComponent.vue';
 
 const { getAll, data } = useCRUD();
 

@@ -1,16 +1,22 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
+      <div class="container mx-auto mb-24">
         <BreadcrumbComponent :titlePage="pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
             <a-col :span="17">
+              <!-- Thông tin chung -->
               <a-card class="mt-3" title="Thông tin sản phẩm">
                 <AleartError :errors="error" />
                 <a-row :gutter="[16, 10]">
                   <a-col :span="24">
-                    <InputComponent label="Tiêu đề sản phẩm" :required="true" name="name" />
+                    <InputComponent
+                      label="Tiêu đề sản phẩm"
+                      :required="true"
+                      name="name"
+                      placeholder="Tiêu đề sản phẩm"
+                    />
                   </a-col>
                   <a-col :span="24">
                     <EditorComponent name="description" label="Mô tả sản phẩm" />
@@ -18,11 +24,21 @@
                 </a-row>
               </a-card>
 
+              <!-- Album -->
+              <a-card class="mt-3" title="Thư viện sản phẩm">
+                <InputFinderComponent :multipleFile="true" name="album" />
+              </a-card>
+
               <!-- Du lieu san pham -->
-              <MainComponent />
+              <!-- <MainComponent /> -->
+
               <!-- Mo ta ngan san pham -->
               <a-card class="mt-3" title="Mô tả ngắn của sản phẩm">
-                <InputComponent name="short_description" typeInput="textarea" />
+                <InputComponent
+                  name="short_description"
+                  typeInput="textarea"
+                  label="Mô tả ngắn của sản phẩm"
+                />
               </a-card>
             </a-col>
 
@@ -30,6 +46,7 @@
               <!-- Attribute -->
               <InputComponent name="attributes" />
             </div>
+
             <!-- Sidebar right -->
             <SidebarComponent />
           </a-row>
@@ -57,8 +74,8 @@ import {
   InputFinderComponent
 } from '@/components/backend';
 import _ from 'lodash';
-import MainComponent from './components/MainComponent.vue';
-import SidebarComponent from './components/SidebarComponent.vue';
+import MainComponent from './partials/MainComponent.vue';
+import SidebarComponent from './partials/SidebarComponent.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';

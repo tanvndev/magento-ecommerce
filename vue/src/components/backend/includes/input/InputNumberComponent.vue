@@ -5,6 +5,7 @@
   >
   <div>
     <a-input-number
+      v-if="props.typeInput == 'default'"
       v-model:value="value"
       :class="className"
       :id="props.name"
@@ -15,6 +16,22 @@
       :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
       :parser="(value) => value.replace(/\\s?|(,*)/g, '')"
     />
+
+    <a-input-number
+      v-if="props.typeInput == 'percent'"
+      v-model:value="value"
+      :class="className"
+      :id="props.name"
+      :placeholder="props.placeholder"
+      :status="errorMessage ? 'error' : ''"
+      :size="props.size"
+      :allowClear="true"
+      :min="props.min"
+      :max="props.max"
+      :formatter="(value) => `${value}%`"
+      :parser="(value) => value.replace('%', '')"
+    />
+
     <span v-if="errorMessage" class="mt-[6px] block text-[12px] text-red-500">{{
       errorMessage
     }}</span>
@@ -27,7 +44,7 @@ import { useField } from 'vee-validate';
 const props = defineProps({
   typeInput: {
     type: String,
-    default: 'text'
+    default: 'default'
   },
   required: {
     type: [Boolean, String],
@@ -57,6 +74,14 @@ const props = defineProps({
   size: {
     type: String,
     default: 'large'
+  },
+  min: {
+    type: Number,
+    default: 0
+  },
+  max: {
+    type: Number,
+    default: 100
   }
 });
 
