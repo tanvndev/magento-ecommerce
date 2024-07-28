@@ -39,6 +39,22 @@ const sidebar = [
     ]
   },
   {
+    id: 'attribute_sidebar',
+    icon: 'fab fa-buffer',
+    name: 'QL Thuộc tính',
+    route: '',
+    subMenu: [
+      {
+        name: 'Quản nhóm thuộc tính',
+        route: 'attribute.catalogue.index'
+      },
+      {
+        name: 'Quản thuộc tính',
+        route: 'attribute.index'
+      }
+    ]
+  },
+  {
     id: 'supplier_sidebar',
     icon: 'fas fa-parachute-box',
     name: 'QL Nhà cung cấp',

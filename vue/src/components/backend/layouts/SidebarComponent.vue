@@ -22,25 +22,31 @@
         >
           <button
             type="button"
-            class="block text-sm"
+            class="block w-full text-left text-sm"
             @click="toggerDropdown(item.id)"
             v-if="item.subMenu.length > 0"
           >
             <div
-              class="link-item inline-flex items-center text-[15px] transition-colors duration-150 hover:text-emerald-600"
+              class="link-item inline-flex w-full items-center text-[15px] transition-colors duration-150 hover:text-emerald-600"
             >
               <span
                 class="line-left absolute inset-y-0 left-0 w-1 rounded-br-lg rounded-tr-lg bg-emerald-500"
                 aria-hidden="true"
               ></span>
-              <i :class="`${item.icon} mr-3`"></i>
-              <span class="font-bold capitalize"> {{ item.name }} </span>
-              <i
-                :class="[
-                  'ml-6 text-[10px]',
-                  openDropdowns[item.id] ? 'far fa-chevron-down' : 'far fa-chevron-right'
-                ]"
-              ></i>
+              <div class="flex w-full items-center justify-between">
+                <div>
+                  <i :class="`${item.icon} mr-3`"></i>
+                  <span class="font-bold capitalize"> {{ item.name }} </span>
+                </div>
+                <div>
+                  <i
+                    :class="[
+                      'mr-1 text-[10px]',
+                      openDropdowns[item.id] ? 'far fa-chevron-down' : 'far fa-chevron-right'
+                    ]"
+                  ></i>
+                </div>
+              </div>
             </div>
           </button>
 
