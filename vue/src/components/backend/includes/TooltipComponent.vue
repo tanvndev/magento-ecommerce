@@ -1,7 +1,7 @@
 <template>
   <a-tooltip :color="props.color">
     <template #title>{{ props.title }}</template>
-    <div class="cursor-help" :class="props.className">
+    <div class="ml-1 inline-block cursor-help" :class="props.className">
       <i class="far fa-info-circle text-primary-500"></i>
     </div>
   </a-tooltip>
@@ -15,7 +15,7 @@ const props = defineProps({
   },
   className: {
     type: String,
-    default: 'inline-block ml-1'
+    default: ' '
   },
   color: {
     type: String,

@@ -5,21 +5,25 @@
     </a-card>
 
     <a-card class="mt-3" title="Thương hiệu">
-      <SelectComponent name="brand_id" :options="brands" placeholder="Chọn thương hiệu sản phẩm" />
+      <SelectComponent
+        name="brand_id"
+        :options="state.brands"
+        placeholder="Chọn thương hiệu sản phẩm"
+      />
     </a-card>
 
     <a-card class="mt-3" title="Danh mục sản phẩm">
       <TreeSelectComponent
         name="parent_id"
         :treeDefaultExpandAll="false"
-        :options="productCatalogues"
+        :options="state.productCatalogues"
         placeholder="Chọn danh mục sản phẩm"
       />
     </a-card>
     <a-card class="mt-3" title="Nhà cung cấp">
       <SelectComponent
         name="supplier_id"
-        :options="suppliers"
+        :options="state.suppliers"
         placeholder="Chọn nhà cung cấp sản phẩm"
       />
     </a-card>
@@ -53,28 +57,34 @@ import {
 } from '@/components/backend';
 import { useCRUD } from '@/composables';
 import { formatDataToTreeSelect, formatDataToSelect } from '@/utils/format';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive } from 'vue';
 import TaxComponent from './TaxComponent.vue';
 
 const { getAll, data } = useCRUD();
 
-const productCatalogues = ref(null);
-const brands = ref(null);
-const suppliers = ref(null);
+// STATE
+const state = reactive({
+  productCatalogues: [],
+  brands: [],
+  suppliers: []
+});
 
+// LAY RA TOAN BO PRODUCT CATALOGUE
 const getProductCatalogues = async () => {
   await getAll('products/catalogues');
-  productCatalogues.value = formatDataToTreeSelect(data.value);
+  state.productCatalogues = formatDataToTreeSelect(data.value);
 };
 
+// LAY RA TOAN BO BRAND
 const getBrands = async () => {
   await getAll('brands');
-  brands.value = formatDataToSelect(data.value);
+  state.brands = formatDataToSelect(data.value);
 };
 
+// LAY RA TOAN BO SUPPLIER
 const getSuppliers = async () => {
   await getAll('suppliers');
-  suppliers.value = formatDataToSelect(data.value, 'id', 'contact_name');
+  state.suppliers = formatDataToSelect(data.value, 'id', 'contact_name');
 };
 
 onMounted(() => {

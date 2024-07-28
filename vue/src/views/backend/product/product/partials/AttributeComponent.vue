@@ -9,13 +9,17 @@
         name="attribute_catalogue_id"
         label="Nhóm thuộc tính"
         placeholder="Chọn nhóm thuộc tính"
-        :options="attributeCatalogueOptions"
+        :options="state.attributeCatalogueOptions"
         mode="multiple"
         @onChange="handleSelectedAttributeCatalogue"
       />
     </a-col>
-    <a-col span="24" class="mt-3 border-t pt-4" v-if="attributes.length">
-      <div class="mb-4 flex items-center" v-for="(attribute, index) in attributes" :key="index">
+    <a-col span="24" class="mt-3 border-t pt-4" v-if="state.attributes.length">
+      <div
+        class="mb-4 flex items-center"
+        v-for="(attribute, index) in state.attributes"
+        :key="index"
+      >
         <div class="w-32">
           <span class="block text-gray-500">Tên:</span>
           <span class="font-bold">{{ attribute.name }}</span>
@@ -39,7 +43,7 @@
 
 <script setup>
 import { useForm } from 'vee-validate';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive } from 'vue';
 import { SelectComponent } from '@/components/backend';
 import { useStore } from 'vuex';
 import { useCRUD } from '@/composables';
@@ -50,9 +54,12 @@ const store = useStore();
 const { getAll, data } = useCRUD();
 const { handleSubmit } = useForm();
 
-const attributeCatalogueOptions = ref([]);
-const attributeCatalogues = ref([]);
-const attributes = ref([]);
+// STATE
+const state = reactive({
+  attributeCatalogueOptions: [],
+  attributeCatalogues: [],
+  attributes: []
+});
 
 // XU LY VA LUU THUOC TINH VAO STORE
 const saveAttributes = handleSubmit(async (values) => {
@@ -67,7 +74,7 @@ const saveAttributes = handleSubmit(async (values) => {
 
   // Tao ra Map de duyet qua tim ten nhanh hon
   const catalogueMap = new Map(
-    attributeCatalogues.value.map((catalogue) => [catalogue.id, catalogue])
+    state.attributeCatalogues.map((catalogue) => [catalogue.id, catalogue])
   );
 
   for (const [catalogueId, ids] of Object.entries(attributeIds)) {
@@ -106,19 +113,19 @@ const saveAttributes = handleSubmit(async (values) => {
 
 // XU LY NHOM THUOC TINH
 const handleSelectedAttributeCatalogue = (attributeCatalogueIds) => {
-  attributes.value = attributeCatalogueIds.map((id) => getAttributesByCatalogue(id));
+  state.attributes = attributeCatalogueIds.map((id) => getAttributesByCatalogue(id));
 };
 
 // LAY RA THUOC TINH THEO NHOM THUOC TINH
 const getAttributesByCatalogue = (catalogueId) => {
-  return attributeCatalogues.value.find((item) => item.id === catalogueId);
+  return state.attributeCatalogues.find((item) => item.id === catalogueId);
 };
 
 // LAY RA TAT CA CAC NHOM THUOC TINH
 const getAttributeCatalogues = async () => {
   await getAll('attributes/catalogues');
-  attributeCatalogueOptions.value = formatDataToSelect(data.value);
-  attributeCatalogues.value = data.value;
+  state.attributeCatalogueOptions = formatDataToSelect(data.value);
+  state.attributeCatalogues = data.value;
 };
 
 onMounted(() => {

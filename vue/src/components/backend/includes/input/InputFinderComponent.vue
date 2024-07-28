@@ -1,26 +1,28 @@
 <template>
-  <div class="clearfix">
-    <a-space>
+  <div class="clearfix image-upload-list" :class="{ 'is-invalid': errorMessage }">
+    <a-space :size="1" class="items-start">
       <a-upload
         v-if="fileList.length"
         v-model:file-list="fileList"
         :before-upload="() => false"
         list-type="picture-card"
+        status="error"
         @preview="handlePreview"
         @change="handleSelectFile"
       >
       </a-upload>
+      <div @click="isVisibleFileManager = true" class="upload-box" v-if="hanleMultipleFile">
+        <i class="fal fa-plus"></i>
+        <div class="mt-2 text-sm">Tải tệp</div>
+      </div>
     </a-space>
-    <div @click="isVisibleFileManager = true" class="upload-box" v-if="hanleMultipleFile">
-      <i class="fal fa-plus"></i>
-      <div class="mt-2 text-sm">Tải tệp</div>
-    </div>
+
     <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel">
       <img alt="example" style="width: 100%" :src="previewImage" />
     </a-modal>
     <a-input type="hidden" :name="props.name" v-model:value="value" />
 
-    <span v-if="errorMessage" class="mt-[6px] block text-[12px] text-red-500">{{
+    <span v-if="errorMessage" class="mt-[10px] block text-[12px] text-red-500">{{
       errorMessage
     }}</span>
   </div>
@@ -139,7 +141,16 @@ const { value, errorMessage } = useField(props.name);
 .upload-box i {
   font-size: 16px;
 }
+.image-upload-list.is-invalid .upload-box {
+  border-color: #ef4444;
+  color: #ef4444;
+}
 .upload-box:hover {
+  border-color: blue;
+  color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.image-upload-list.is-invalid .upload-box:hover {
   border-color: blue;
 }
 

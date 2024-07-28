@@ -13,9 +13,15 @@ const formatMessages = (messages) => {
 
 const formatDataToSelect = (data, value = 'id', label = 'name') => {
   const formattedData = [];
+
+  if (_.isEmpty(data)) {
+    return formattedData;
+  }
+
   data.forEach((item) => {
     formattedData.push({ label: item[label], value: item[value] });
   });
+
   return formattedData;
 };
 

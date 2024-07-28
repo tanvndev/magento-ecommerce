@@ -2,14 +2,14 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto mb-24">
-        <BreadcrumbComponent :titlePage="pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
             <a-col :span="17">
               <!-- Thông tin chung -->
               <a-card class="mt-3" title="Thông tin sản phẩm">
-                <AleartError :errors="error" />
-                <a-row :gutter="[16, 10]">
+                <AleartError :errors="state.error" />
+                <a-row :gutter="[16, 16]">
                   <a-col :span="24">
                     <InputComponent
                       label="Tiêu đề sản phẩm"
@@ -76,19 +76,21 @@ import {
 import _ from 'lodash';
 import MainComponent from './partials/MainComponent.vue';
 import SidebarComponent from './partials/SidebarComponent.vue';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
 import { formatDataToSelect, formatMessages } from '@/utils/format';
 import * as yup from 'yup';
 import router from '@/router';
-import { useLocation, useCRUD } from '@/composables';
+import { useCRUD } from '@/composables';
 
-const endpoint = 'products';
-
-const pageTitle = ref('Thêm mới thành viên');
-const error = ref({});
-const userCatalogues = ref([]);
+// STATE
+const state = reactive({
+  endpoint: 'products',
+  pageTitle: 'Thêm mới thành viên',
+  error: {},
+  userCatalogues: []
+});
 
 const store = useStore();
 const { getOne, getAll, create, update, messages, data } = useCRUD();
@@ -98,7 +100,10 @@ const attributes = computed(() => store.getters['productStore/getAttributes']);
 
 const { handleSubmit, setValues, setFieldValue } = useForm({
   validationSchema: yup.object({
-    // fullname: yup.string().required('Họ tên thành viên không được để trống.'),
+    // name: yup.string().required('Tiêu đề sản phẩm không được để trống.'),
+    // product_type: yup.string().required('Loại sản phẩm không được để trống.'),
+    // image: yup.string().required('Ảnh sản phẩm không được để trống.'),
+    // album: yup.string().required('Thư viện sản phẩm không được để trống.')
   })
 });
 
@@ -106,18 +111,18 @@ const onSubmit = handleSubmit(async (values) => {
   console.log(values);
   const response =
     id.value && id.value > 0
-      ? await update(endpoint, id.value, values)
-      : await create(endpoint, values);
+      ? await update(state.endpoint, id.value, values)
+      : await create(state.endpoint, values);
   if (!response) {
-    return (error.value = formatMessages(messages.value));
+    return (state.error = formatMessages(messages.value));
   }
   // store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
   // error.value = {};
-  // router.push({ name: 'user.index' });
+  // router.push({ name: 'product.index' });
 });
 
 const fetchOne = async () => {
-  await getOne(endpoint, id.value);
+  await getOne(state.endpoint, id.value);
   setValues({
     fullname: data.value?.fullname,
     email: data.value?.email,
@@ -140,7 +145,7 @@ watch(attributes, () => {
 onMounted(async () => {
   if (id.value) {
     fetchOne();
-    pageTitle.value = 'Cập nhập thành viên.';
+    state.pageTitle = 'Cập nhập thành viên.';
   }
 });
 </script>

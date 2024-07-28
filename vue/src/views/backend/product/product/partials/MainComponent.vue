@@ -11,6 +11,7 @@
           :required="true"
           :options="PRODUCT_TYPE"
           :showSearch="false"
+          tooltip-text="Sản phẩm đơn giản là sản phẩm có không có phiên bản. Sản phẩm biến thể có nhiều phiên bản khác nhau."
           placeholder="Chọn loại sản phẩm"
           @onChange="handleType"
         />
@@ -19,8 +20,8 @@
         <InputComponent name="sku" label="Mã sản phẩm" placeholder="Tự sinh nếu không nhập" />
       </a-col>
 
-      <a-col :span="24" v-if="productType">
-        <a-tabs v-model:activeKey="activeKey" tab-position="top">
+      <a-col :span="24" v-if="state.productType">
+        <a-tabs v-model:activeKey="state.activeKey" tab-position="top">
           <!-- Chung -->
           <a-tab-pane key="1">
             <template #tab>
@@ -33,7 +34,7 @@
             <CommonPriceComponent />
           </a-tab-pane>
           <!-- Kho hang -->
-          <a-tab-pane key="2">
+          <a-tab-pane key="2" v-if="state.productType === 'simple'">
             <template #tab>
               <span>
                 <i class="far fa-dolly-flatbed-alt mr-1"></i>
@@ -41,7 +42,7 @@
               </span>
             </template>
             <!-- Kho hang partials -->
-            <InstockComponent />
+            <InstockComponent :warehouses="state.warehouses" />
           </a-tab-pane>
           <!-- Giao hang -->
           <a-tab-pane key="3">
@@ -65,7 +66,7 @@
             <div>Các sản phẩm được kết nối</div>
           </a-tab-pane>
           <!-- Thuoc tinh -->
-          <a-tab-pane key="5" v-if="productType === 'variable'">
+          <a-tab-pane key="5" v-if="state.productType === 'variable'">
             <template #tab>
               <span>
                 <i class="fas fa-tasks-alt mr-1"></i>
@@ -75,14 +76,14 @@
             <AttributeComponent />
           </a-tab-pane>
           <!-- Bien the -->
-          <a-tab-pane key="6" v-if="productType === 'variable'">
+          <a-tab-pane key="6" v-if="state.productType === 'variable'">
             <template #tab>
               <span>
                 <i class="far fa-table mr-1"></i>
                 Các biến thể
               </span>
             </template>
-            <VariantComponent />
+            <VariantComponent :warehouses="state.warehouses" />
           </a-tab-pane>
         </a-tabs>
       </a-col>
@@ -95,7 +96,7 @@ import { SelectComponent, InputNumberComponent, InputComponent } from '@/compone
 import AttributeComponent from './AttributeComponent.vue';
 import VariantComponent from './VariantComponent.vue';
 import CommonPriceComponent from './CommonPriceComponent.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useCRUD } from '@/composables';
 import InstockComponent from './InstockComponent.vue';
@@ -105,11 +106,22 @@ import { PRODUCT_TYPE } from '@/static/constants';
 const { getAll, data } = useCRUD();
 const store = useStore();
 
-const activeKey = ref('6');
-const productType = ref('variable');
+// STATE
+const state = reactive({
+  warehouses: [],
+  productType: '',
+  activeKey: '1'
+});
 
+// XU LY KIEU SAN PHAM
 const handleType = (value) => {
-  console.log(value);
-  productType.value = value;
+  state.productType = value;
 };
+
+// LAY RA TOAN BO KHO HANG
+const getWarehouses = async () => {
+  state.warehouses = await getAll('warehouses');
+};
+
+onMounted(getWarehouses);
 </script>

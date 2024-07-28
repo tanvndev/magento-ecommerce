@@ -12,10 +12,10 @@
         <SwitchComponent name="is_taxable" @onChange="toggleTax" />
       </div>
     </div>
-    <div class="mr-3 mt-5 w-full" v-if="isTax">
+    <div class="mr-3 mt-5 w-full" v-if="state.isTax">
       <SelectComponent
         className="w-full"
-        name="tax_status"
+        name="tax[tax_status]"
         :options="TAXT_STATUS"
         placeholder="Chọn tình trạng thuế"
         @on-change="getTaxStatus"
@@ -23,21 +23,21 @@
 
       <div
         class="mr-3 mt-5 w-full border-t border-dashed border-primary-200 px-3 pb-3 pt-5"
-        v-if="isTaxInOut"
+        v-if="state.isTaxInOut"
       >
         <SelectComponent
           label="Thuế đầu vào"
           className="w-full mb-3"
-          name="input_tax"
-          :options="taxes"
+          name="tax[input_tax]"
+          :options="state.taxes"
           placeholder="Chọn thuế đầu vào"
         />
 
         <SelectComponent
           label="Thuế đầu ra"
           className="w-full "
-          name="output_tax"
-          :options="taxes"
+          name="tax[output_tax]"
+          :options="state.taxes"
           placeholder="Chọn thuế đầu ra"
         />
       </div>
@@ -48,28 +48,32 @@
 <script setup>
 import { SelectComponent, TooltipComponent, SwitchComponent } from '@/components/backend';
 import { TAXT_STATUS } from '@/static/constants';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive } from 'vue';
 import { useCRUD } from '@/composables';
 import { formatDataToSelect } from '@/utils/format';
 
-const isTax = ref(false);
-const isTaxInOut = ref(false);
-const taxes = ref([]);
+// STATE
+const state = reactive({
+  isTax: false,
+  isTaxInOut: false,
+  taxes: []
+});
 
 const { getAll, data } = useCRUD();
 
 const toggleTax = (value) => {
-  isTax.value = value;
+  state.isTax = value;
 };
 
 // XU LY NEU CHUA CO THUE MOI THEM THUE
 const getTaxStatus = (value) => {
-  isTaxInOut.value = value == 2 ? true : false;
+  state.isTaxInOut = value == 2 ? true : false;
 };
 
+// LAY TOAN BO TAX
 const getTax = async () => {
   await getAll('taxes');
-  taxes.value = formatDataToSelect(data.value);
+  state.taxes = formatDataToSelect(data.value);
 };
 
 onMounted(getTax);

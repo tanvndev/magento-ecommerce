@@ -1,31 +1,42 @@
 <template>
-  <h3 class="mb-5 text-center text-lg uppercase">Kiểm kê kho hàng</h3>
-  <a-row :gutter="[30, 20]">
-    <a-col span="12" v-for="warehouse in warehouses" :key="`${warehouse.id}_warehouse`">
-      <h4 class="mb-2 text-center">{{ warehouse.name }}</h4>
-      <a-row class="items-center" :gutter="[16, 20]">
-        <a-col span="12">
-          <InputNumberComponent :name="`in_stock[${warehouse.id}]`" placeholder="Tồn kho" />
-        </a-col>
-        <a-col span="12">
-          <InputNumberComponent :name="`cog_price[${warehouse.id}]`" placeholder="Giá vốn" />
-        </a-col>
-      </a-row>
+  <a-row :gutter="[16, 16]" class="mb-5 mt-2">
+    <a-col span="6">
+      <label class="font-bold">CHI NHÁNH </label>
+    </a-col>
+    <a-col span="9">
+      <label class="font-bold">TỒN KHO BAN ĐẦU</label>
+    </a-col>
+    <a-col span="9">
+      <label class="font-bold">GIÁ VỐN</label>
+    </a-col>
+  </a-row>
+  <a-row
+    class="mb-4 items-center"
+    :gutter="[20, 20]"
+    v-for="warehouse in props.warehouses"
+    :key="`${warehouse.id}_warehouse`"
+  >
+    <a-col span="6">
+      <label class="uppercase">
+        <i class="far fa-dolly-flatbed-alt mr-2"></i>
+        {{ warehouse.name }}
+      </label>
+    </a-col>
+    <a-col span="9">
+      <InputNumberComponent :name="`stock[in_stock][${warehouse.id}][]`" placeholder="Tồn kho" />
+    </a-col>
+    <a-col span="9">
+      <InputNumberComponent :name="`stock[cog_price][${warehouse.id}][]`" placeholder="Giá vốn" />
     </a-col>
   </a-row>
 </template>
 <script setup>
 import { InputNumberComponent } from '@/components/backend';
-import { onMounted, ref } from 'vue';
-import { useCRUD } from '@/composables';
 
-const warehouses = ref([]);
-
-const { getAll } = useCRUD();
-
-const getWarehouses = async () => {
-  warehouses.value = await getAll('warehouses');
-};
-
-onMounted(getWarehouses);
+const props = defineProps({
+  warehouses: {
+    type: [Array, Object],
+    default: () => []
+  }
+});
 </script>

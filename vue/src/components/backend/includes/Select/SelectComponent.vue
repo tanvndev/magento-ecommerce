@@ -1,8 +1,9 @@
 <template>
   <label v-if="props.label" :for="props.name" :class="props.labelClass"
     >{{ props.label }}
-    <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
-  >
+    <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
+    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" color="#108ee9" />
+  </label>
   <div>
     <a-select
       :id="props.name"
@@ -16,6 +17,7 @@
       :placeholder="props.placeholder"
       :class="props.className"
       :mode="props.mode"
+      :status="errorMessage ? 'error' : ''"
       @change="handleChange"
     >
     </a-select>
@@ -27,6 +29,7 @@
 
 <script setup>
 import { useField } from 'vee-validate';
+import { TooltipComponent } from '@/components/backend';
 
 const emits = defineEmits(['onChange']);
 const props = defineProps({
@@ -69,6 +72,10 @@ const props = defineProps({
   mode: {
     type: String,
     default: 'default'
+  },
+  tooltipText: {
+    type: String,
+    default: ''
   }
 });
 

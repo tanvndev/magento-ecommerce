@@ -14,6 +14,7 @@
       :placeholder="props.placeholder"
       :tree-data="props.options"
       :class="props.className"
+      :status="errorMessage ? 'error' : ''"
       :mode="props.mode"
       :tree-default-expand-all="props.treeDefaultExpandAll"
       tree-node-filter-prop="label"

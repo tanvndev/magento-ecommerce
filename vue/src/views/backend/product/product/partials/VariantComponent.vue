@@ -1,7 +1,7 @@
 <template>
   <a-space class="w-full justify-between" :size="12">
     <a-button
-      :loading="isLoading"
+      :loading="state.isLoading"
       :disabled="_.isEmpty(attributes)"
       type="dashed"
       @click="handleCreateVariant"
@@ -9,18 +9,18 @@
       <i class="fas fa-layer-plus mr-2"></i>
       Tự động tạo biến thể
     </a-button>
-    <span class="text-gray-500" v-if="!_.isEmpty(variantTexts)"
-      >(Tổng cộng: {{ variantTexts.length }} biến thể)</span
-    >
+    <span class="text-gray-500" v-if="!_.isEmpty(state.variantTexts)"
+      >(Tổng cộng: {{ state.variantTexts.length }} biến thể)
+    </span>
   </a-space>
 
   <!-- Danh sách bien the -->
-  <a-row class="mt-5 border-t pt-3" :gutter="[16, 10]" v-if="variantTexts.length">
+  <a-row class="mt-5 border-t pt-3" :gutter="[16, 10]" v-if="state.variantTexts.length">
     <!-- Attribute -->
     <a-col
       class="mb-4 border-b pb-5 first:mt-3 last:mb-0 last:border-b-0 last:pb-2"
       span="24"
-      v-for="(variantText, i) in variantTexts"
+      v-for="(variantText, i) in state.variantTexts"
       :key="variantText"
     >
       <div class="flex items-center justify-between">
@@ -50,7 +50,7 @@
       </div>
 
       <!-- EditForm -->
-      <a-row class="mt-3 border-t px-3 pt-3" :class="openEdit[i] ? 'block' : 'hidden'">
+      <a-row class="mt-3 border-t px-3 pt-3" :class="state.openEdit[i] ? 'block' : 'hidden'">
         <a-col span="24" class="mb-4 border-b pb-4">
           <a-row :gutter="[16, 10]" class="items-center">
             <a-col span="3" class="text-center">
@@ -114,7 +114,7 @@
                 @onChange="handleDiscountTime($event, i)"
               />
             </a-col>
-            <a-col span="24" v-if="isDiscountTime[i]">
+            <a-col span="24" v-if="state.isDiscountTime[i]">
               <InputDateComponent
                 type="date-range"
                 :name="`variable[sale_price_time][${i}]`"
@@ -157,21 +157,25 @@
           </a-row>
         </a-col>
         <!-- Kho hang -->
-        <a-col span="24" class="mb-4 border-b pb-4" v-if="warehouses && warehouses.length">
+        <a-col span="24" class="mb-4 border-b pb-4" v-if="props.warehouses.length">
           <h3 class="mb-5 text-center text-lg uppercase">Kiểm kê kho hàng</h3>
           <a-row class="items-center" :gutter="[30, 20]">
-            <a-col span="12" v-for="warehouse in warehouses" :key="`${warehouse.id}_warehouse`">
+            <a-col
+              span="12"
+              v-for="warehouse in props.warehouses"
+              :key="`${warehouse.id}_warehouse`"
+            >
               <h4 class="mb-2 text-center">{{ warehouse.name }}</h4>
               <a-row :gutter="[10, 10]">
                 <a-col span="12">
                   <InputNumberComponent
-                    :name="`variable[in_stock][${warehouse.id}][${i}]`"
+                    :name="`stock[in_stock][${warehouse.id}][${i}]`"
                     placeholder="Tồn kho"
                   />
                 </a-col>
                 <a-col span="12">
                   <InputNumberComponent
-                    :name="`variable[cog_price][${warehouse.id}][${i}]`"
+                    :name="`stock[cog_price][${warehouse.id}][${i}]`"
                     placeholder="Giá vốn"
                   />
                 </a-col>
@@ -185,7 +189,7 @@
 </template>
 <script setup>
 import _ from 'lodash';
-import { computed, onMounted, ref } from 'vue';
+import { computed, reactive } from 'vue';
 import {
   InputNumberComponent,
   SwitchComponent,
@@ -194,21 +198,28 @@ import {
   InputFinderComponent
 } from '@/components/backend';
 import { useStore } from 'vuex';
-import { useCRUD } from '@/composables';
 
-const { getAll } = useCRUD();
+const props = defineProps({
+  warehouses: {
+    type: [Array, Object],
+    default: () => []
+  }
+});
+
 const store = useStore();
 const attributes = computed(() => store.getters['productStore/getAttributes']);
 
-const openEdit = ref({});
-const isDiscountTime = ref({});
-const warehouses = ref(null);
-const variantTexts = ref([]);
-const isLoading = ref(false);
+// STATE
+const state = reactive({
+  openEdit: {},
+  variantTexts: [],
+  isLoading: false,
+  isDiscountTime: false
+});
 
 // XU LY TAO RA CAC BIEN THE
 const handleCreateVariant = () => {
-  isLoading.value = true;
+  state.isLoading = true;
 
   if (_.isEmpty(attributes.value)) {
     return store.dispatch('antStore/showMessage', {
@@ -220,11 +231,11 @@ const handleCreateVariant = () => {
   const variantTextData = combineVariantText(attributes.value.texts);
 
   setTimeout(() => {
-    variantTexts.value = variantTextData;
+    state.variantTexts = variantTextData;
   }, 1000);
 
   setTimeout(() => {
-    isLoading.value = false;
+    state.isLoading = false;
   }, 1000);
 };
 
@@ -274,23 +285,16 @@ const combineVariantText = (texts) => {
 
 // XU LY XOA CAC HANG BIEN THE
 const handleDeleteRowVariant = (index) => {
-  variantTexts.value.splice(index, 1);
+  state.variantTexts.splice(index, 1);
 };
 
 // XU LY CO THOI GIAN CHO GIAM GIA CHO BIEN THE KHONG
 const handleDiscountTime = (value, index) => {
-  isDiscountTime.value[index] = value;
+  state.isDiscountTime[index] = value;
 };
 
 // DONG MO CHUC NANG CHINH SUA THEO HANG
 const toggerOpenEdit = (itemId) => {
-  openEdit.value[itemId] = !openEdit.value[itemId];
+  state.openEdit[itemId] = !state.openEdit[itemId];
 };
-
-// LAY RA TAT CA CAC KHO
-const getWarehouses = async () => {
-  warehouses.value = await getAll('warehouses');
-};
-
-onMounted(getWarehouses);
 </script>
