@@ -29,6 +29,7 @@
                 Chung
               </span>
             </template>
+            <!-- Chung partials -->
             <CommonPriceComponent />
           </a-tab-pane>
           <!-- Kho hang -->
@@ -39,11 +40,8 @@
                 Kiểm kê kho hàng
               </span>
             </template>
-            <a-row :gutter="[16, 10]">
-              <a-col span="12">
-                <InputNumberComponent name="stock" label="Số lượng" />
-              </a-col>
-            </a-row>
+            <!-- Kho hang partials -->
+            <InstockComponent />
           </a-tab-pane>
           <!-- Giao hang -->
           <a-tab-pane key="3">
@@ -53,20 +51,8 @@
                 Giao hàng
               </span>
             </template>
-            <a-row :gutter="[16, 10]">
-              <a-col span="6">
-                <InputNumberComponent name="weight" label="Cân nặng (kg)" />
-              </a-col>
-              <a-col span="6">
-                <InputNumberComponent name="length" label="Dài (cm)" />
-              </a-col>
-              <a-col span="6">
-                <InputNumberComponent name="width" label="Rộng (cm)" />
-              </a-col>
-              <a-col span="6">
-                <InputNumberComponent name="hight" label="Cao (cm)" />
-              </a-col>
-            </a-row>
+            <!-- Giao hang partials -->
+            <ShippingComponent />
           </a-tab-pane>
           <!--  -->
           <a-tab-pane key="4">
@@ -112,6 +98,8 @@ import CommonPriceComponent from './CommonPriceComponent.vue';
 import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useCRUD } from '@/composables';
+import InstockComponent from './InstockComponent.vue';
+import ShippingComponent from './ShippingComponent.vue';
 
 const { getAll, data } = useCRUD();
 const store = useStore();

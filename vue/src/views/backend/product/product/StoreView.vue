@@ -30,7 +30,7 @@
               </a-card>
 
               <!-- Du lieu san pham -->
-              <!-- <MainComponent /> -->
+              <MainComponent />
 
               <!-- Mo ta ngan san pham -->
               <a-card class="mt-3" title="Mô tả ngắn của sản phẩm">

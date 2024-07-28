@@ -1,16 +1,13 @@
 <template>
-  <a-row :gutter="[20, 10]">
-    <a-col span="12">
-      <InputNumberComponent name="import_price" label="Giá bán nhập" />
+  <a-row :gutter="[16, 16]">
+    <a-col span="8">
+      <InputNumberComponent name="import_price" label="Giá bán nhập" placeholder="Giá bán nhập" />
     </a-col>
-    <a-col span="12">
-      <InputNumberComponent name="cog_price" label="Giá bán vốn" />
+    <a-col span="8">
+      <InputNumberComponent name="price" label="Giá bán" placeholder="Giá bán" />
     </a-col>
-    <a-col span="12">
-      <InputNumberComponent name="price" label="Giá bán thường" />
-    </a-col>
-    <a-col span="12">
-      <InputNumberComponent name="sale_price" label="Giá bán khuyến mãi" />
+    <a-col span="8">
+      <InputNumberComponent name="sale_price" label="Giá bán ưu đãi" placeholder="Giá bán ưu đãi" />
     </a-col>
     <a-col>
       <SwitchComponent
@@ -21,8 +18,8 @@
       />
     </a-col>
   </a-row>
-  <a-row :gutter="[16, 10]" class="mt-3" v-if="isDiscountTime">
-    <a-col span="12">
+  <a-row :gutter="[16, 16]" class="mt-4" v-if="isDiscountTime">
+    <a-col span="24">
       <InputDateComponent type="date-range" name="sale_price_time" :showTime="true" />
     </a-col>
   </a-row>
