@@ -1,6 +1,11 @@
 <template>
   <a-space class="w-full justify-between" :size="12">
-    <a-button :disabled="_.isEmpty(attributes)" type="dashed" @click="handleCreateVariant">
+    <a-button
+      :loading="isLoading"
+      :disabled="_.isEmpty(attributes)"
+      type="dashed"
+      @click="handleCreateVariant"
+    >
       <i class="fas fa-layer-plus mr-2"></i>
       Tự động tạo biến thể
     </a-button>
@@ -180,7 +185,7 @@
 </template>
 <script setup>
 import _ from 'lodash';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import {
   InputNumberComponent,
   SwitchComponent,
@@ -194,23 +199,17 @@ import { useCRUD } from '@/composables';
 const { getAll } = useCRUD();
 const store = useStore();
 const openEdit = ref({});
-const isLoading = ref(false);
 const isDiscountTime = ref({});
 const warehouses = ref(null);
 const attributes = computed(() => store.getters['productStore/getAttributes']);
-
-// const attributes = ref({
-//   attrIds: [[1], [12]],
-//   texts: {
-//     'Kích thước': ['XL'],
-//     'Màu sắc': ['Màu nâu']
-//   }
-// });
 const variants = ref([]);
 const variantTexts = ref([]);
+const isLoading = ref(false);
 
 // XU LY TAO RA CAC BIEN THE
-const handleCreateVariant = async () => {
+const handleCreateVariant = () => {
+  isLoading.value = true;
+
   // if (_.isEmpty(attributes.value)) {
   //   return store.dispatch('antStore/showMessage', {
   //     type: 'error',
@@ -218,8 +217,17 @@ const handleCreateVariant = async () => {
   //   });
   // }
 
-  variants.value = calculateTotalVariant(attributes.value.attrIds);
-  variantTexts.value = combineVariantText(attributes.value.texts);
+  const variantData = calculateTotalVariant(attributes.value.attrIds);
+  const variantTextData = combineVariantText(attributes.value.texts);
+
+  setTimeout(() => {
+    variants.value = variantData;
+    variantTexts.value = variantTextData;
+  }, 1000);
+
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 1000);
 };
 
 const calculateTotalVariant = (attributes) => {

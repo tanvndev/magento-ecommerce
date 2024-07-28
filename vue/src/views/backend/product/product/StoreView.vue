@@ -28,11 +28,7 @@
 
             <div class="hidden">
               <!-- Attribute -->
-              <InputComponent
-                name="attributes"
-                label="Mã nhóm sản phẩm"
-                placeholder="Tự động tạo nếu không nhập."
-              />
+              <InputComponent name="attributes" />
             </div>
             <!-- Sidebar right -->
             <SidebarComponent />
@@ -63,7 +59,7 @@ import {
 import _ from 'lodash';
 import MainComponent from './components/MainComponent.vue';
 import SidebarComponent from './components/SidebarComponent.vue';
-import { computed, onMounted, ref, watchEffect } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
 import { formatDataToSelect, formatMessages } from '@/utils/format';
@@ -79,22 +75,12 @@ const store = useStore();
 const { getOne, getAll, create, update, messages, data } = useCRUD();
 
 const id = computed(() => router.currentRoute.value.params.id || null);
+const attributes = computed(() => store.getters['productStore/getAttributes']);
 
 const { handleSubmit, setValues, setFieldValue } = useForm({
   validationSchema: yup.object({
     // fullname: yup.string().required('Họ tên thành viên không được để trống.'),
   })
-});
-
-const attributeIds = computed(() => store.getters['productStore/getAttributes']);
-console.log(attributeIds.value);
-
-watchEffect(() => {
-  // if (!_.isEmpty(attributeIds.value)) {
-  setValues({
-    attributes: attributeIds.value?.attrIds
-  });
-  // }
 });
 
 const onSubmit = handleSubmit(async (values) => {
@@ -125,6 +111,12 @@ const fetchOne = async () => {
     image: data.value?.image
   });
 };
+
+watch(attributes, () => {
+  if (!_.isEmpty(attributes.value)) {
+    setFieldValue('attributes', JSON.stringify(attributes.value));
+  }
+});
 
 onMounted(async () => {
   if (id.value) {

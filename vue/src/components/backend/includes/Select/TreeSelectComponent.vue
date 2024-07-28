@@ -15,7 +15,7 @@
       :tree-data="props.options"
       :class="props.className"
       :mode="props.mode"
-      tree-default-expand-all
+      :tree-default-expand-all="props.treeDefaultExpandAll"
       tree-node-filter-prop="label"
       @change="handleChange"
     >
@@ -70,6 +70,10 @@ const props = defineProps({
   mode: {
     type: String,
     default: 'default'
+  },
+  treeDefaultExpandAll: {
+    type: Boolean,
+    default: true
   }
 });
 
