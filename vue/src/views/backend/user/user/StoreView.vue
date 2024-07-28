@@ -118,10 +118,12 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useLocation, useCRUD } from '@/composables';
 
+const endpoint = 'users';
+
 const store = useStore();
 const { getOne, getAll, create, update, messages, data, loading } = useCRUD();
 const { getProvinces, getLocations, provinces, districts, wards } = useLocation();
-const endpoint = 'users';
+
 const pageTitle = ref('Thêm mới thành viên');
 const error = ref({});
 const userCatalogues = ref([]);

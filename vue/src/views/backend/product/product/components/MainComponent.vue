@@ -115,9 +115,10 @@ import { useCRUD } from '@/composables';
 
 const { getAll, data } = useCRUD();
 const store = useStore();
+const productTypeData = computed(() => store.getters['languageStore/getProductType']);
+
 const activeKey = ref('6');
 const productType = ref('variable');
-const productTypeData = computed(() => store.getters['languageStore/getProductType']);
 
 const handleType = (value) => {
   console.log(value);

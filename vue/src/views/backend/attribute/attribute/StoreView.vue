@@ -55,11 +55,13 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
+const endpoint = 'attributes';
+
 const attributeCatalogues = ref(null);
 const pageTitle = ref('Thêm mới thuộc tính');
 const errors = ref({});
+
 const store = useStore();
-const endpoint = 'attributes';
 const { getOne, getAll, create, update, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 

@@ -185,7 +185,7 @@
 </template>
 <script setup>
 import _ from 'lodash';
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import {
   InputNumberComponent,
   SwitchComponent,
@@ -198,11 +198,11 @@ import { useCRUD } from '@/composables';
 
 const { getAll } = useCRUD();
 const store = useStore();
+const attributes = computed(() => store.getters['productStore/getAttributes']);
+
 const openEdit = ref({});
 const isDiscountTime = ref({});
 const warehouses = ref(null);
-const attributes = computed(() => store.getters['productStore/getAttributes']);
-const variants = ref([]);
 const variantTexts = ref([]);
 const isLoading = ref(false);
 
@@ -210,18 +210,16 @@ const isLoading = ref(false);
 const handleCreateVariant = () => {
   isLoading.value = true;
 
-  // if (_.isEmpty(attributes.value)) {
-  //   return store.dispatch('antStore/showMessage', {
-  //     type: 'error',
-  //     message: 'Vui lòng chọn thuộc tính sản phẩm trước khi tạo biến thể.'
-  //   });
-  // }
+  if (_.isEmpty(attributes.value)) {
+    return store.dispatch('antStore/showMessage', {
+      type: 'error',
+      message: 'Vui lòng chọn thuộc tính sản phẩm trước khi tạo biến thể.'
+    });
+  }
 
-  const variantData = calculateTotalVariant(attributes.value.attrIds);
   const variantTextData = combineVariantText(attributes.value.texts);
 
   setTimeout(() => {
-    variants.value = variantData;
     variantTexts.value = variantTextData;
   }, 1000);
 
@@ -230,16 +228,16 @@ const handleCreateVariant = () => {
   }, 1000);
 };
 
-const calculateTotalVariant = (attributes) => {
-  if (_.isEmpty(attributes)) return [];
+// const calculateTotalVariant = (attributes) => {
+//   if (_.isEmpty(attributes)) return [];
 
-  return attributes.reduce(
-    (acc, curr) => {
-      return acc.flatMap((a) => curr.map((c) => [...a, c]));
-    },
-    [[]]
-  );
-};
+//   return attributes.reduce(
+//     (acc, curr) => {
+//       return acc.flatMap((a) => curr.map((c) => [...a, c]));
+//     },
+//     [[]]
+//   );
+// };
 
 // LAM PHANG MANG VE GHEP CAC BIEN THE
 const calculateVariant = (arrays) => {

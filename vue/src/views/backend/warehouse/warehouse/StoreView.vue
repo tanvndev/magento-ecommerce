@@ -118,13 +118,14 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
-const store = useStore();
-const { getOne, create, update, messages, data } = useCRUD();
 const endpoint = 'warehouses';
+
+const store = useStore();
+const id = computed(() => router.currentRoute.value.params.id || null);
+const { getOne, create, update, messages, data } = useCRUD();
+
 const pageTitle = ref('Thêm mới kho hàng');
 const error = ref({});
-
-const id = computed(() => router.currentRoute.value.params.id || null);
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({

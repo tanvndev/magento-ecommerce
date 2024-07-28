@@ -73,12 +73,14 @@ import router from '@/router';
 import { useCRUD } from '@/composables';
 
 // VARIABLES
-const pageTitle = ref('Thêm mới thương hiệu');
-const errors = ref({});
-const store = useStore();
 const endpoint = 'brands';
+
+const store = useStore();
 const { getOne, create, update, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
+
+const pageTitle = ref('Thêm mới thương hiệu');
+const errors = ref({});
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({

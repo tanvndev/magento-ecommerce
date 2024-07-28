@@ -50,10 +50,12 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
+const endpoint = 'users/catalogues';
+
 const pageTitle = ref('Thêm mới nhóm thành viên');
 const errors = ref({});
+
 const store = useStore();
-const endpoint = 'users/catalogues';
 const { getOne, create, update, messages, data, loading } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 

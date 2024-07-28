@@ -53,10 +53,12 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
+const endpoint = 'permissions';
+
 const pageTitle = ref('Thêm mới quyền người dùng');
 const errors = ref({});
+
 const store = useStore();
-const endpoint = 'permissions';
 const { getOne, create, update, messages, data, loading } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 

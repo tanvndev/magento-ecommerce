@@ -61,10 +61,12 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 
+const endpoint = 'attributes/catalogues';
+
 const pageTitle = ref('Thêm mới nhóm thuộc tính');
 const errors = ref({});
+
 const store = useStore();
-const endpoint = 'attributes/catalogues';
 const { getOne, create, update, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 

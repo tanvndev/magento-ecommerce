@@ -48,11 +48,11 @@ import _ from 'lodash';
 
 const store = useStore();
 const { getAll, data } = useCRUD();
+const { handleSubmit } = useForm();
+
 const attributeCatalogueOptions = ref([]);
 const attributeCatalogues = ref([]);
 const attributes = ref([]);
-
-const { handleSubmit } = useForm();
 
 // XU LY VA LUU THUOC TINH VAO STORE
 const saveAttributes = handleSubmit(async (values) => {

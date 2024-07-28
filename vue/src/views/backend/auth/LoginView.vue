@@ -66,7 +66,9 @@ import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
 
 const store = useStore();
+
 const errors = ref({});
+
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
     email: yup

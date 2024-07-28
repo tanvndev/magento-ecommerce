@@ -95,12 +95,14 @@ import router from '@/router';
 import { useCRUD } from '@/composables';
 
 // VARIABLES
-const pageTitle = ref('Thêm mới nhà cung cấp');
-const errors = ref({});
-const store = useStore();
 const endpoint = 'suppliers';
+
+const store = useStore();
 const { getOne, create, update, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
+
+const pageTitle = ref('Thêm mới nhà cung cấp');
+const errors = ref({});
 
 const { handleSubmit, setValues } = useForm({
   validationSchema: yup.object({

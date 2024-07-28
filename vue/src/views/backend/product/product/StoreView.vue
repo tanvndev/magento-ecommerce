@@ -67,10 +67,12 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useLocation, useCRUD } from '@/composables';
 
+const endpoint = 'products';
+
 const pageTitle = ref('Thêm mới thành viên');
 const error = ref({});
 const userCatalogues = ref([]);
-const endpoint = 'products';
+
 const store = useStore();
 const { getOne, getAll, create, update, messages, data } = useCRUD();
 

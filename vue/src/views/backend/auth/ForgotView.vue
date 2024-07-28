@@ -43,8 +43,10 @@ import { AuthService } from '@/services';
 import { useAntToast } from '@/utils/antToast';
 
 const { showMessage } = useAntToast();
+
 const loading = ref(false);
 const errors = ref({});
+
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
     email: yup

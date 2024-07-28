@@ -34,6 +34,7 @@ import { SelectComponent, InputFinderComponent, TreeSelectComponent } from '@/co
 import { useCRUD } from '@/composables';
 import { formatDataToTreeSelect, formatDataToSelect } from '@/utils/format';
 import { onMounted, ref } from 'vue';
+
 const { getAll, data } = useCRUD();
 
 const productCatalogues = ref(null);

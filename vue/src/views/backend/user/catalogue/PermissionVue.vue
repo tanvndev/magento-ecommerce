@@ -71,9 +71,9 @@ import { useStore } from 'vuex';
 const pageTitle = 'Cập nhập phân quyền người dùng';
 const endpoint = 'users/catalogues/permissions';
 
-// Data
 const store = useStore();
 const { getAll, update, loading, data, messages } = useCRUD();
+
 const permissions = ref(null);
 const userCatalogues = ref(null);
 const permissionChecked = ref({});
