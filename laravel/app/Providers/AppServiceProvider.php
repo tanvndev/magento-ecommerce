@@ -41,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Brand\BrandServiceInterface' => 'App\Services\Brand\BrandService',
         // Supplier
         'App\Services\Interfaces\Supplier\SupplierServiceInterface' => 'App\Services\Supplier\SupplierService',
+        // Tax
+        'App\Services\Interfaces\Tax\TaxServiceInterface' => 'App\Services\Tax\TaxService',
 
     ];
     public function register(): void

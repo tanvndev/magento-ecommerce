@@ -37,6 +37,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Brand\BrandRepositoryInterface' => 'App\Repositories\Brand\BrandRepository',
         // Supplier
         'App\Repositories\Interfaces\Supplier\SupplierRepositoryInterface' => 'App\Repositories\Supplier\SupplierRepository',
+        // Tax
+        'App\Repositories\Interfaces\Tax\TaxRepositoryInterface' => 'App\Repositories\Tax\TaxRepository',
 
     ];
 

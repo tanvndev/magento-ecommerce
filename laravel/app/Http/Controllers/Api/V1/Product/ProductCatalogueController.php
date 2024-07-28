@@ -67,12 +67,7 @@ class ProductCatalogueController extends Controller
         return response()->json($response, $statusCode);
     }
 
-    public function hanleUpdate(UpdateProductCatalogueRequest $request, string $id)
-    {
-        $response = $this->productCatalogueService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
-    }
+
 
     /**
      * Remove the specified resource from storage.

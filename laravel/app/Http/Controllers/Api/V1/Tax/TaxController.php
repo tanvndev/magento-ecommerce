@@ -1,34 +1,34 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Supplier;
+namespace App\Http\Controllers\Api\V1\Tax;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Supplier\{
-    StoreSupplierRequest,
-    UpdateSupplierRequest
+use App\Http\Requests\Tax\{
+    StoreTaxRequest,
+    UpdateTaxRequest
 };
-use App\Http\Resources\Supplier\SupplierResource;
-use App\Repositories\Interfaces\Supplier\SupplierRepositoryInterface;
-use App\Services\Interfaces\Supplier\SupplierServiceInterface;
+use App\Http\Resources\Tax\TaxResource;
+use App\Repositories\Interfaces\Tax\TaxRepositoryInterface;
+use App\Services\Interfaces\Tax\TaxServiceInterface;
 
-class SupplierController extends Controller
+class TaxController extends Controller
 {
-    protected $supplierService;
-    protected $supplierRepository;
+    protected $taxService;
+    protected $taxRepository;
     public function __construct(
-        SupplierServiceInterface $supplierService,
-        SupplierRepositoryInterface $supplierRepository
+        TaxServiceInterface $taxService,
+        TaxRepositoryInterface $taxRepository
     ) {
-        $this->supplierService = $supplierService;
-        $this->supplierRepository = $supplierRepository;
+        $this->taxService = $taxService;
+        $this->taxRepository = $taxRepository;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $response = $this->supplierService->paginate();
+        $response = $this->taxService->paginate();
         $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
         return response()->json($response, $statusCode);
     }
@@ -36,9 +36,9 @@ class SupplierController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSupplierRequest $request)
+    public function store(StoreTaxRequest $request)
     {
-        $response = $this->supplierService->create();
+        $response = $this->taxService->create();
         $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
         return response()->json($response, $statusCode);
     }
@@ -48,31 +48,30 @@ class SupplierController extends Controller
      */
     public function show(string $id)
     {
-        $supplier = new SupplierResource($this->supplierRepository->findById($id));
+        $tax = new TaxResource($this->taxRepository->findById($id));
         return response()->json([
             'status' => 'success',
             'messages' => '',
-            'data' => $supplier ?? []
+            'data' => $tax ?? []
         ], ResponseEnum::OK);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSupplierRequest $request, string $id)
+    public function update(UpdateTaxRequest $request, string $id)
     {
-        $response = $this->supplierService->update($id);
+        $response = $this->taxService->update($id);
         $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
         return response()->json($response, $statusCode);
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        $response = $this->supplierService->destroy($id);
+        $response = $this->taxService->destroy($id);
         $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
         return response()->json($response, $statusCode);
     }

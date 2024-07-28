@@ -57,8 +57,8 @@ const sidebar = [
         route: 'supplier.index'
       },
       {
-        name: 'Quản lý thuế xuất',
-        route: 'supplier.index'
+        name: 'Quản lý thuế suất',
+        route: 'tax.index'
       },
 
       {

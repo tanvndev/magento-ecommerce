@@ -66,12 +66,6 @@ class BrandController extends Controller
         return response()->json($response, $statusCode);
     }
 
-    public function hanleUpdate(UpdateBrandRequest $request, string $id)
-    {
-        $response = $this->brandService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
-    }
 
     /**
      * Remove the specified resource from storage.
