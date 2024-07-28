@@ -28,7 +28,7 @@
         <SelectComponent
           label="Thuế đầu vào"
           className="w-full mb-3"
-          name="tax_in"
+          name="input_tax"
           :options="taxes"
           placeholder="Chọn thuế đầu vào"
         />
@@ -36,7 +36,7 @@
         <SelectComponent
           label="Thuế đầu ra"
           className="w-full "
-          name="tax_out"
+          name="output_tax"
           :options="taxes"
           placeholder="Chọn thuế đầu ra"
         />

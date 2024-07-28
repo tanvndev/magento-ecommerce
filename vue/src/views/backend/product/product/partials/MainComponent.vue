@@ -9,7 +9,7 @@
           name="product_type"
           label="Loại sản phẩm"
           :required="true"
-          :options="productTypeData"
+          :options="PRODUCT_TYPE"
           :showSearch="false"
           placeholder="Chọn loại sản phẩm"
           @onChange="handleType"
@@ -100,10 +100,10 @@ import { useStore } from 'vuex';
 import { useCRUD } from '@/composables';
 import InstockComponent from './InstockComponent.vue';
 import ShippingComponent from './ShippingComponent.vue';
+import { PRODUCT_TYPE } from '@/static/constants';
 
 const { getAll, data } = useCRUD();
 const store = useStore();
-const productTypeData = computed(() => store.getters['languageStore/getProductType']);
 
 const activeKey = ref('6');
 const productType = ref('variable');

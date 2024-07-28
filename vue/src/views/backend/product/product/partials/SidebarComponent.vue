@@ -34,7 +34,7 @@
           <span class="block text-[13px] text-gray-500">Cho phép bán</span>
         </div>
         <div>
-          <SwitchComponent name="publish" />
+          <SwitchComponent name="allow_sell" />
         </div>
       </div>
 
