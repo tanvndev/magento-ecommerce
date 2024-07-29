@@ -154,6 +154,7 @@ const selectedFile = ref([]);
 const selectedFileInput = ref(null);
 const fileInputRef = ref(null);
 const dataImage = ref(null);
+const imageInfo = ref(null);
 const pagination = reactive({
   current: 1,
   pageSize: 30,
@@ -161,7 +162,6 @@ const pagination = reactive({
   showQuickJumper: true,
   hideOnSinglePage: true
 });
-const imageInfo = ref(null);
 
 const { getAll, create, deleteOne, data, messages, loading } = useCRUD();
 

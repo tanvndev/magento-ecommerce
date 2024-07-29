@@ -56,7 +56,6 @@ import router from '@/router';
 import { useCRUD } from '@/composables';
 
 // STATE
-
 const state = reactive({
   endpoint: 'attributes',
   pageTitle: 'Thêm mới thuộc tính',
