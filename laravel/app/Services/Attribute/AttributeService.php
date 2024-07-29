@@ -50,7 +50,9 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             // Lấy ra tất cả các trường và loại bỏ trường bên dưới
             $payload = request()->except('_token');
 
+            // Format payload
             $payload = $this->formatPayload($payload);
+
             $this->attributeRepository->createBatch($payload);
 
             DB::commit();
@@ -71,6 +73,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
 
     private function formatPayload($payload)
     {
+        // Xu ly thuoc tinh san pham
         $names = array_filter(array_map('trim', explode('|', $payload['name'])));
 
         return array_map(function ($name) use ($payload) {
