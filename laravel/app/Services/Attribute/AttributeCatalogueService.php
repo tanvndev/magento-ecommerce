@@ -103,6 +103,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         try {
             // Xoá mềm
             $this->attributeCatalogueRepository->delete($id);
+
             DB::commit();
             return [
                 'status' => 'success',
