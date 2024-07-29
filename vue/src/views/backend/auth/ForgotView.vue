@@ -50,6 +50,7 @@ const state = reactive({
   errors: {}
 });
 
+// VALIDATION
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
     email: yup
@@ -59,6 +60,7 @@ const { handleSubmit } = useForm({
   })
 });
 
+// SUBMIT FORM HANDLE
 const onSubmit = handleSubmit(async (values) => {
   state.errors = {};
   state.loading = true;
