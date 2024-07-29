@@ -67,6 +67,7 @@ import { formatMessages } from '@/utils/format';
 import { AuthService } from '@/services';
 import { useAntToast } from '@/utils/antToast';
 
+// STATE
 const state = reactive({
   errors: {},
   loading: false
@@ -74,6 +75,7 @@ const state = reactive({
 
 const { showMessage } = useAntToast();
 
+// VALIDATION
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
     fullname: yup.string().required('Họ và tên không được để trống.'),
@@ -88,6 +90,7 @@ const { handleSubmit } = useForm({
   })
 });
 
+// SUBMIT FORM HANDLE
 const onSubmit = handleSubmit(async (values) => {
   state.errors = {};
   state.loading = true;
