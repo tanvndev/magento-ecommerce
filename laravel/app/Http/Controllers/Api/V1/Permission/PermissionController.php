@@ -28,7 +28,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $this->authorize('modules', 'permissions.index');
+        // $this->authorize('modules', 'permissions.index');
 
         $response = $this->userCatalogueService->paginate();
         return handleResponse($response);
@@ -39,7 +39,7 @@ class PermissionController extends Controller
      */
     public function store(StorePermissionRequest $request)
     {
-        $this->authorize('modules', 'permissions.store');
+        // $this->authorize('modules', 'permissions.store');
 
         $response = $this->userCatalogueService->create();
         return handleResponse($response, ResponseEnum::CREATED);
@@ -50,7 +50,7 @@ class PermissionController extends Controller
      */
     public function show(string $id)
     {
-        $this->authorize('modules', 'permissions.show');
+        // $this->authorize('modules', 'permissions.show');
 
         $response = new PermissionResource($this->userCatalogueRepository->findById($id));
         return successResponse('', $response);
@@ -62,7 +62,7 @@ class PermissionController extends Controller
      */
     public function update(UpdatePermissionRequest $request, string $id)
     {
-        $this->authorize('modules', 'permissions.update');
+        // $this->authorize('modules', 'permissions.update');
 
         $response = $this->userCatalogueService->update($id);
         return handleResponse($response);
@@ -74,7 +74,7 @@ class PermissionController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->authorize('modules', 'permissions.destroy');
+        // $this->authorize('modules', 'permissions.destroy');
 
         $response = $this->userCatalogueService->destroy($id);
         return handleResponse($response);
