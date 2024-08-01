@@ -18,8 +18,7 @@ class UploadController extends Controller
     public function index()
     {
         $response = $this->uploadService->paginate();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -28,8 +27,7 @@ class UploadController extends Controller
     public function store(Request $request)
     {
         $response = $this->uploadService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
@@ -38,7 +36,6 @@ class UploadController extends Controller
     public function destroy(string $id)
     {
         $response = $this->uploadService->destroy($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 }
