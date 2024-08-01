@@ -99,8 +99,8 @@ const columns = [
   },
   {
     title: 'Số thành viên',
-    dataIndex: 'user_count',
-    key: 'user_count',
+    dataIndex: 'users_count',
+    key: 'users_count',
     sorter: (a, b) => a.user_count - b.user_count
   },
   {

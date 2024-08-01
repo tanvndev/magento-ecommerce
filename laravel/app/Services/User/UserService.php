@@ -29,7 +29,7 @@ class UserService extends BaseService implements UserServiceInterface
         $pageSize = request('pageSize');
 
         $data = $pageSize && request('page')
-            ? $this->userRepository->pagination($select, $condition, $pageSize)
+            ? $this->userRepository->pagination($select, $condition, $pageSize, [], [], ['user_catalogue'])
             : $this->userRepository->all($select);
 
         // Add key for table for frontend
