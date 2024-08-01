@@ -266,6 +266,36 @@ if (!function_exists('abbreviateName')) {
     }
 }
 
+if (!function_exists('errorResponse')) {
+    function errorResponse(string $message): array
+    {
+        return [
+            'status' => 'error',
+            'messages' => $message,
+            'data' => null
+        ];
+    }
+}
+
+if (!function_exists('successResponse')) {
+    function successResponse(string $message, $data = null): array
+    {
+        return [
+            'status' => 'success',
+            'messages' => $message,
+            'data' => $data
+        ];
+    }
+}
+
+if (!function_exists('handleResponse')) {
+    function handleResponse($response, $successCode = 200)
+    {
+        $statusCode = $response['status'] === 'success' ? $successCode : 500;
+        return response()->json($response, $statusCode);
+    }
+}
+
 
 if (!function_exists('renderRatingFilter')) {
     function renderRatingFilter()
