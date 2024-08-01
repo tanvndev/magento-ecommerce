@@ -29,8 +29,7 @@ class BrandController extends Controller
     public function index()
     {
         $response = $this->brandService->paginate();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -39,8 +38,7 @@ class BrandController extends Controller
     public function store(StoreBrandRequest $request)
     {
         $response = $this->brandService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -49,11 +47,7 @@ class BrandController extends Controller
     public function show(string $id)
     {
         $brand = new BrandResource($this->brandRepository->findById($id));
-        return response()->json([
-            'status' => 'success',
-            'messages' => '',
-            'data' => $brand ?? []
-        ], ResponseEnum::OK);
+        return successResponse('', $brand);
     }
 
     /**
@@ -62,8 +56,7 @@ class BrandController extends Controller
     public function update(UpdateBrandRequest $request, string $id)
     {
         $response = $this->brandService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
 
@@ -73,7 +66,6 @@ class BrandController extends Controller
     public function destroy(string $id)
     {
         $response = $this->brandService->destroy($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 }
