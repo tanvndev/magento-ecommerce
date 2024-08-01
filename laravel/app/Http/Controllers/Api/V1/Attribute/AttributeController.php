@@ -38,7 +38,7 @@ class AttributeController extends Controller
     public function store(StoreAttributeRequest $request)
     {
         $response = $this->attributeService->create();
-        return handleResponse($response);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**

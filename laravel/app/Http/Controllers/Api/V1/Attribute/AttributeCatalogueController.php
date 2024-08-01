@@ -38,7 +38,7 @@ class AttributeCatalogueController extends Controller
     public function store(StoreAttributeCatalogueRequest $request)
     {
         $response = $this->productCatalogueService->create();
-        return handleResponse($response);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
