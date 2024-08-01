@@ -46,7 +46,7 @@ class VerificationController extends Controller
     }
 
 
-    public function fail($user)
+    private function fail($user)
     {
         $user->delete();
         return redirect()->route('notifications', ['boolean' => 0, 'messages' => 'Đường dẫn xác nhận không hợp lệ hoặc đã hết hạn.']);

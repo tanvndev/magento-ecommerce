@@ -26,8 +26,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $response = $this->authService->register();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
     public function login(LoginRequest $request)
     {
@@ -37,19 +36,11 @@ class AuthController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user) {
-            return response()->json([
-                'status' => ResponseEnum::UNAUTHORIZED,
-                'messages' => ['Email hoặc mật khẩu không chính xác.'],
-                'data' => []
-            ], ResponseEnum::UNAUTHORIZED);
+            return errorResponse('Email hoặc mật khẩu không chính xác.');
         }
 
         if (!$user->hasVerifiedEmail()) {
-            return response()->json([
-                'status' => ResponseEnum::UNAUTHORIZED,
-                'messages' => ['Vui lòng xác nhận email của bạn trước khi đăng nhập.'],
-                'data' => []
-            ], ResponseEnum::UNAUTHORIZED);
+            return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.');
         }
 
         // Đăng nhập bằng JWTAuth
@@ -57,18 +48,13 @@ class AuthController extends Controller
             return $this->respondWithToken($token, 'Đăng nhập thành công.');
         }
 
-        return response()->json([
-            'status' => ResponseEnum::UNAUTHORIZED,
-            'messages' => ['Email hoặc mật khẩu không chính xác.'],
-            'data' => []
-        ], ResponseEnum::UNAUTHORIZED);
+        return errorResponse('Email hoặc mật khẩu không chính xác.');
     }
 
     public function forgotPassword(ForgotRequest $request)
     {
         $response = $this->authService->resetPassword();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     public function me()
@@ -76,7 +62,13 @@ class AuthController extends Controller
         $user = new UserResource(auth()->user());
         return response()->json($user);
     }
-    protected function respondWithToken($token, $message)
+
+    public function refreshToken()
+    {
+        return $this->respondWithToken(auth()->refresh(), 'Token đã được thay đổi');
+    }
+
+    private function respondWithToken($token, $message)
     {
         return response()->json([
             'status' => ResponseEnum::OK,
@@ -91,24 +83,14 @@ class AuthController extends Controller
             $token,
             config('jwt.ttl'),
             '/',
-            'localhost',
+            '127.0.0.1',
             false,
             true
         );
     }
 
-    public function refreshToken()
-    {
-        return $this->respondWithToken(auth()->refresh(), 'Token đã được thay đổi');
-    }
-
     public function logout()
     {
-        Auth::logout();
-        return response()->json([
-            'status' => ResponseEnum::OK,
-            'messages' => 'Đăng xuất thành công.',
-            'data' => []
-        ], ResponseEnum::OK);
+        return successResponse('Đăng xuất thành công.');
     }
 }
