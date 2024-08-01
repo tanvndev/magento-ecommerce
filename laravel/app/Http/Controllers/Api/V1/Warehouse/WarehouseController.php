@@ -29,8 +29,7 @@ class WarehouseController extends Controller
     public function index()
     {
         $response = $this->warehouseService->paginate();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -39,8 +38,7 @@ class WarehouseController extends Controller
     public function store(StoreWarehouseRequest $request)
     {
         $response = $this->warehouseService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
@@ -48,12 +46,8 @@ class WarehouseController extends Controller
      */
     public function show(string $id)
     {
-        $warehouse = new WarehouseResource($this->warehouseRepository->findById($id));
-        return response()->json([
-            'status' => 'success',
-            'messages' => '',
-            'data' => $warehouse ?? []
-        ], ResponseEnum::OK);
+        $response = new WarehouseResource($this->warehouseRepository->findById($id));
+        return successResponse('', $response);
     }
 
 
@@ -63,8 +57,7 @@ class WarehouseController extends Controller
     public function update(UpdateWarehouseRequest $request, string $id)
     {
         $response = $this->warehouseService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -73,7 +66,6 @@ class WarehouseController extends Controller
     public function destroy(string $id)
     {
         $response = $this->warehouseService->destroy($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 }
