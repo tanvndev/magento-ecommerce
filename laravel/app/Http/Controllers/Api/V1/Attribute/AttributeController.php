@@ -29,8 +29,7 @@ class AttributeController extends Controller
     public function index()
     {
         $response = $this->attributeService->paginate();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -39,8 +38,7 @@ class AttributeController extends Controller
     public function store(StoreAttributeRequest $request)
     {
         $response = $this->attributeService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -48,12 +46,8 @@ class AttributeController extends Controller
      */
     public function show(string $id)
     {
-        $attribute = new AttributeResource($this->attributeRepository->findById($id));
-        return response()->json([
-            'status' => 'success',
-            'messages' => '',
-            'data' => $attribute ?? []
-        ], ResponseEnum::OK);
+        $response = new AttributeResource($this->attributeRepository->findById($id));
+        return successResponse('', $response);
     }
 
 
@@ -63,8 +57,7 @@ class AttributeController extends Controller
     public function update(UpdateAttributeRequest $request, string $id)
     {
         $response = $this->attributeService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -73,7 +66,6 @@ class AttributeController extends Controller
     public function destroy(string $id)
     {
         $response = $this->attributeService->destroy($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 }

@@ -29,8 +29,7 @@ class AttributeCatalogueController extends Controller
     public function index()
     {
         $response = $this->productCatalogueService->paginate();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -39,8 +38,7 @@ class AttributeCatalogueController extends Controller
     public function store(StoreAttributeCatalogueRequest $request)
     {
         $response = $this->productCatalogueService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -48,12 +46,8 @@ class AttributeCatalogueController extends Controller
      */
     public function show(string $id)
     {
-        $productCatalogue = new AttributeCatalogueResource($this->productCatalogueRepository->findById($id));
-        return response()->json([
-            'status' => 'success',
-            'messages' => '',
-            'data' => $productCatalogue ?? []
-        ], ResponseEnum::OK);
+        $response = new AttributeCatalogueResource($this->productCatalogueRepository->findById($id));
+        return successResponse('', $response);
     }
 
 
@@ -63,8 +57,7 @@ class AttributeCatalogueController extends Controller
     public function update(UpdateAttributeCatalogueRequest $request, string $id)
     {
         $response = $this->productCatalogueService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
 
@@ -74,7 +67,6 @@ class AttributeCatalogueController extends Controller
     public function destroy(string $id)
     {
         $response = $this->productCatalogueService->destroy($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 }
