@@ -26,7 +26,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $response = $this->authService->register();
-        return handleResponse($response);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
     public function login(LoginRequest $request)
     {
