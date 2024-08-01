@@ -16,8 +16,7 @@ class BaseService implements BaseServiceInterface
     {
     }
 
-
-    protected  function convertToCode($str)
+    protected function convertToCode($str)
     {
         $newStr = Str::slug($str);
         $newStr = strtoupper(str_replace('-', '', $newStr));
@@ -37,73 +36,49 @@ class BaseService implements BaseServiceInterface
 
     public function updateStatus()
     {
-        DB::beginTransaction();
-        try {
+        $this->executeInTransaction(function () {
             $repositoryName = lcfirst(request('modelName')) . 'Repository';
+
             $payload[request('field')] = request('value');
             $this->{$repositoryName}->update(request('modelId'), $payload);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Cập nhập trạng thái thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Cập nhập trạng thái thất bại.',
-                'data' => null
-            ];
-        }
+
+            return successResponse('Cập nhập trạng thái thành công.');
+        }, 'Cập nhập trạng thái thất bại.');
     }
 
     public function updateStatusMultiple()
     {
-        DB::beginTransaction();
-        try {
+        $this->executeInTransaction(function () {
             $repositoryName = lcfirst(request('modelName')) . 'Repository';
 
             $payload[request('field')] = request('value');
             $this->{$repositoryName}->updateByWhereIn('id', request('modelIds'), $payload);
 
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Cập nhập trạng thái thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Cập nhập trạng thái thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Cập nhập trạng thái thành công.');
+        }, 'Cập nhập trạng thái thất bại.');
     }
 
     public function deleteMultiple()
     {
-
-        DB::beginTransaction();
-        try {
+        $this->executeInTransaction(function () {
             $repositoryName = lcfirst(request('modelName')) . 'Repository';
             $this->{$repositoryName}->deleteByWhereIn('id', request('modelIds'));
 
+            return successResponse('Xoá thành công.');
+        }, 'Xóa thất bại.');
+    }
+
+    protected function executeInTransaction($callback, string $messageError = '')
+    {
+        try {
+            DB::beginTransaction();
+            $result = $callback();
             DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Xoá thành công.',
-                'data' => null
-            ];
+            return $result;
         } catch (\Exception $e) {
+            dd($e->getMessage() . $e->getLine() . $e->getFile());
             DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Xoá thất bại.',
-                'data' => null
-            ];
+            return errorResponse($messageError);
         }
     }
 }
