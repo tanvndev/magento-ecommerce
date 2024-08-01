@@ -22,11 +22,8 @@ class LocationController extends Controller
 
     public function getProvinces()
     {
-        return [
-            'status' => 'success',
-            'messages' => 'Get provinces successfully',
-            'data' => $this->provinceRepository->all() ?? []
-        ];
+        $data = $this->provinceRepository->all();
+        return successResponse('Get provinces successfully', $data);
     }
     public function getLocation(Request $request)
     {
@@ -42,10 +39,6 @@ class LocationController extends Controller
             $response->wards;
         }
 
-        return [
-            'status' => 'success',
-            'messages' => 'Get province successfully',
-            'data' => $response
-        ];
+        return successResponse('Get province successfully.', $response);
     }
 }
