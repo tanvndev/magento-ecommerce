@@ -16,6 +16,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'key' => $this->id,
             'fullname' => $this->fullname,
             'email' => $this->email,
             'phone' => $this->phone,
@@ -23,12 +24,10 @@ class UserResource extends JsonResource
             'district_id' => $this->district_id,
             'ward_id' => $this->ward_id,
             'address' => $this->address,
-            'birthday' => $this->birthday,
-            'description' => $this->description,
             'image' => $this->image,
             'publish' => $this->publish,
             'user_catalogue_id' => $this->user_catalogue_id,
-            'user_catalogue' => $this->user_catalogue->code,
+            'catalogue_name' => $this->user_catalogue->name,
         ];
     }
 }

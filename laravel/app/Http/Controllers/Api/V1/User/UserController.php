@@ -8,6 +8,7 @@ use App\Http\Requests\User\{
     StoreUserRequest,
     UpdateUserRequest
 };
+use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Services\Interfaces\User\UserServiceInterface;
@@ -29,9 +30,9 @@ class UserController extends Controller
     public function index()
     {
         // $this->authorize('modules', 'users.index');
-
-        $response = $this->userService->paginate();
-        return handleResponse($response);
+        $paginator = $this->userService->paginate();
+        $data = new UserCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**

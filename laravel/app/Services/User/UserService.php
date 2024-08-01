@@ -32,13 +32,7 @@ class UserService extends BaseService implements UserServiceInterface
             ? $this->userRepository->pagination($select, $condition, $pageSize, [], [], ['user_catalogue'])
             : $this->userRepository->all($select);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()

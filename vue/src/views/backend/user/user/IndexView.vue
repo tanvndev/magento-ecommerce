@@ -30,8 +30,8 @@
             @change="handleTableChange"
           >
             <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'user_catalogue'">
-                <a-tag color="blue">{{ record.user_catalogue.name }}</a-tag>
+              <template v-if="column.dataIndex === 'catalogue_name'">
+                <a-tag color="blue">{{ record.catalogue_name }}</a-tag>
               </template>
 
               <template v-if="column.dataIndex === 'publish'">
@@ -93,8 +93,8 @@ const columns = [
   },
   {
     title: 'Nhóm thành viên',
-    dataIndex: 'user_catalogue',
-    key: 'user_catalogue'
+    dataIndex: 'catalogue_name',
+    key: 'catalogue_name'
   },
   {
     title: 'Địa chỉ email',
