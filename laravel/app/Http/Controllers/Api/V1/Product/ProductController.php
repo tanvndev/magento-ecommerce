@@ -29,8 +29,7 @@ class ProductController extends Controller
     public function index()
     {
         $response = $this->productService->paginate();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -40,8 +39,7 @@ class ProductController extends Controller
     {
         return response()->json($request->all());
         $response = $this->productService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
@@ -49,12 +47,8 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = new ProductResource($this->productRepository->findById($id));
-        return response()->json([
-            'status' => 'success',
-            'messages' => '',
-            'data' => $product ?? []
-        ], ResponseEnum::OK);
+        $response = new ProductResource($this->productRepository->findById($id));
+        return successResponse('', $response);
     }
 
 
@@ -64,8 +58,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, string $id)
     {
         $response = $this->productService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -74,7 +67,6 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $response = $this->productService->destroy($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 }
