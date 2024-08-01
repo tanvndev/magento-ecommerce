@@ -29,8 +29,7 @@ class TaxController extends Controller
     public function index()
     {
         $response = $this->taxService->paginate();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -39,8 +38,7 @@ class TaxController extends Controller
     public function store(StoreTaxRequest $request)
     {
         $response = $this->taxService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
@@ -48,12 +46,8 @@ class TaxController extends Controller
      */
     public function show(string $id)
     {
-        $tax = new TaxResource($this->taxRepository->findById($id));
-        return response()->json([
-            'status' => 'success',
-            'messages' => '',
-            'data' => $tax ?? []
-        ], ResponseEnum::OK);
+        $response = new TaxResource($this->taxRepository->findById($id));
+        return successResponse('', $response);
     }
 
     /**
@@ -62,8 +56,7 @@ class TaxController extends Controller
     public function update(UpdateTaxRequest $request, string $id)
     {
         $response = $this->taxService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -72,7 +65,6 @@ class TaxController extends Controller
     public function destroy(string $id)
     {
         $response = $this->taxService->destroy($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 }
