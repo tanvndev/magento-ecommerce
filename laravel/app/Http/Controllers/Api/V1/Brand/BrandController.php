@@ -38,7 +38,7 @@ class BrandController extends Controller
     public function store(StoreBrandRequest $request)
     {
         $response = $this->brandService->create();
-        return handleResponse($response);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
