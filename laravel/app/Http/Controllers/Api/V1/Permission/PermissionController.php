@@ -42,8 +42,7 @@ class PermissionController extends Controller
         $this->authorize('modules', 'permissions.store');
 
         $response = $this->userCatalogueService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
