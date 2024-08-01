@@ -29,8 +29,7 @@ class SupplierController extends Controller
     public function index()
     {
         $response = $this->supplierService->paginate();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
     /**
@@ -39,8 +38,7 @@ class SupplierController extends Controller
     public function store(StoreSupplierRequest $request)
     {
         $response = $this->supplierService->create();
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::CREATED : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
@@ -48,12 +46,8 @@ class SupplierController extends Controller
      */
     public function show(string $id)
     {
-        $supplier = new SupplierResource($this->supplierRepository->findById($id));
-        return response()->json([
-            'status' => 'success',
-            'messages' => '',
-            'data' => $supplier ?? []
-        ], ResponseEnum::OK);
+        $response = new SupplierResource($this->supplierRepository->findById($id));
+        return successResponse('', $response);
     }
 
     /**
@@ -62,8 +56,7 @@ class SupplierController extends Controller
     public function update(UpdateSupplierRequest $request, string $id)
     {
         $response = $this->supplierService->update($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 
 
@@ -73,7 +66,6 @@ class SupplierController extends Controller
     public function destroy(string $id)
     {
         $response = $this->supplierService->destroy($id);
-        $statusCode = $response['status'] == 'success' ? ResponseEnum::OK : ResponseEnum::INTERNAL_SERVER_ERROR;
-        return response()->json($response, $statusCode);
+        return handleResponse($response);
     }
 }
