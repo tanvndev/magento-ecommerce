@@ -19,39 +19,32 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
     }
     public function paginate()
     {
-        // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
-        $condition['search'] = addslashes(request('search'));
-        $condition['searchFields'] = ['canonical'];
-        $condition['publish'] = request('publish');
-        $select = ['id', 'name', 'canonical'];
-
-        if (request('pageSize') && request('page')) {
-            $permissions = $this->permissionRepository->pagination(
-                $select,
-                $condition,
-                request('pageSize'),
-                ['id' => 'desc'],
-
-            );
-            foreach ($permissions as $key => $permission) {
-                $permission->key = $permission->id;
-            }
-        } else {
-            $permissions = $this->permissionRepository->all($select);
-        }
-
-        return [
-            'status' => 'success',
-            'messages' => '',
-            'data' => $permissions ?? []
+        $condition = [
+            'search' => addslashes(request('search')),
+            'publish' => request('publish'),
+            'searchFields' => ['canonical'],
         ];
+
+        $select = ['id', 'name', 'canonical'];
+        $pageSize = request('pageSize');
+
+        $data = $pageSize && request('page')
+            ? $this->permissionRepository->pagination($select, $condition, $pageSize)
+            : $this->permissionRepository->all($select);
+
+        // Add key for table for frontend
+        $data->transform(function ($item) {
+            $item->key = $item->id;
+            return $item;
+        });
+        return successResponse('', $data);
     }
 
     public function create()
     {
-        DB::beginTransaction();
-        try {
-            $payload = request()->except('_token');
+        return $this->executeInTransaction(function () {
+
+            $payload = request()->except('_token', '_method');
 
             // Thực hiện tạo nhanh thông tin quyền
             if (isset($payload['canonical']) && strpos($payload['canonical'], ':') !== false) {
@@ -110,104 +103,29 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
                 // Thực hiện insert với payload gốc
                 $this->permissionRepository->create($payload);
             }
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Thêm mới thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Thêm mới thất bại',
-                'data' => null
-            ];
-        }
+
+            return successResponse('Tạo mới thành công.');
+        }, 'Tạo mới thất bại.');
     }
 
 
 
     public function update($id)
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
+        return $this->executeInTransaction(function () use ($id) {
+
             $payload = request()->except('_token', '_method');
             $this->permissionRepository->update($id, $payload);
 
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Cập nhập thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Cập nhập thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Cập nhập thành công.');
+        }, 'Cập nhập thất bại.');
     }
 
     public function destroy($id)
     {
-        DB::beginTransaction();
-        try {
-            // Xoá mềm
+        return $this->executeInTransaction(function () use ($id) {
             $this->permissionRepository->delete($id);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Xóa thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Xóa thất bại.',
-                'data' => null
-            ];
-        }
-    }
-
-    // Hàm này thay đổi trạng thái của user khi thay đổi trạng thái user catalogue
-    private function changeUserStatus($dataPost)
-    {
-        DB::beginTransaction();
-        try {
-            $arrayId = [];
-            $value = '';
-
-            // Là một mảng thì là Chọn tất cả còn k là ngược lại chọn 1 để update publish
-            if (isset($dataPost['id'])) {
-                $arrayId = $dataPost['id'];
-                $value = $dataPost['value'];
-            } else {
-                $arrayId[] = $dataPost['modelId'];
-                $value = $dataPost['value'] == 1 ? 0 : 1;
-            }
-            $payload[$dataPost['field']] = $value;
-
-            $update = $this->userRepository->updateByWhereIn('user_catalogue_id', $arrayId, $payload);
-
-            if (!$update) {
-                DB::rollBack();
-                return false;
-            }
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            echo $e->getMessage();
-            return false;
-        }
-    }
-
-    public function switch($id)
-    {
+            return successResponse('Xóa thành công.');
+        }, 'Xóa thất bại.');
     }
 }

@@ -15,7 +15,7 @@ class Attribute extends Model
         'attribute_catalogue_id',
     ];
 
-    public function attribute_catalogues()
+    public function attribute_catalogue()
     {
         return $this->belongsTo(AttributeCatalogue::class, 'attribute_catalogue_id', 'id');
     }

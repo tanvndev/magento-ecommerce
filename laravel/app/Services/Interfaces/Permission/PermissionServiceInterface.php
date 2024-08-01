@@ -9,5 +9,4 @@ interface PermissionServiceInterface
     public function update($id);
     public function destroy($id);
     public function deleteMultiple();
-    public function switch($id);
 }

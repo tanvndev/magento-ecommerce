@@ -24,8 +24,7 @@ class AuthService extends BaseService implements AuthServiceInterface
 
     public function register()
     {
-        DB::beginTransaction();
-        try {
+        return $this->executeInTransaction(function () {
             $user = null;
             // Kiem tra xem nguoi dung da dang ky truoc do chua
             $user = $this->userRepository->findByWhere(
@@ -34,14 +33,10 @@ class AuthService extends BaseService implements AuthServiceInterface
                 ]
             );
 
-            if (!empty($user) && $user->hasVerifiedEmail()) {
-                return [
-                    'status' => 'error',
-                    'messages' => 'Email đã được đăng ký vui lòng đăng nhập.',
-                    'data' => null
-                ];
-            }
-            if (!empty($user) && !$user->hasVerifiedEmail()) {
+            if (!empty($user)) {
+                if ($user->hasVerifiedEmail()) {
+                    return errorResponse('Email đã xác nhận đăng ký vui lòng đăng nhập.');
+                }
                 $user->delete();
             }
 
@@ -57,53 +52,27 @@ class AuthService extends BaseService implements AuthServiceInterface
 
             // Send email verification notification
             event(new AuthRegisteredEvent($user));
-            DB::commit();
 
-            return [
-                'status' => 'success',
-                'messages' => 'Người dùng đã đăng ký thành công. Vui lòng kiểm tra email của bạn để xác nhận đăng ký.',
-                'data' => null
-            ];
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Người dùng đã đăng ký thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Tạo mới thành công.');
+        }, 'Tạo mới thất bại.');
     }
+
     public function resetPassword()
     {
-        DB::beginTransaction();
-        try {
+        return $this->executeInTransaction(function () {
             $user = $this->userRepository->findByWhere(
                 [
                     'email' => ['=', request()->email],
                 ]
             );
-
             $randomPassword = generateStrongPassword();
             $user->password = Hash::make($randomPassword);
             $user->save();
-
             $user->newPassword = $randomPassword;
+
             // Send email verification notification
             event(new AuthForgotEvent($user));
-            DB::commit();
-
-            return [
-                'status' => 'success',
-                'messages' => 'Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.',
-                'data' => null
-            ];
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Đặt lại mật khẩu thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.');
+        }, 'Đặt lại mật khẩu thất bại.');
     }
 }

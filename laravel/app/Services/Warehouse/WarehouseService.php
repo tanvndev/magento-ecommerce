@@ -19,104 +19,54 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
     }
     public function paginate()
     {
-        // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
-        $condition['search'] = addslashes(request('search'));
-        $condition['publish'] = request('publish');
-        $condition['searchFields'] = ['name', 'code', 'phone', 'supervisor_name'];
-
-        $select = ['id', 'name', 'code', 'phone', 'shelve', 'row', 'supervisor_name', 'publish'];
-
-        if (request('pageSize') && request('page')) {
-            $warehouses = $this->warehouseRepository->pagination(
-                $select,
-                $condition,
-                request('pageSize'),
-                ['id' => 'desc'],
-            );
-        } else {
-            $warehouses = $this->warehouseRepository->all($select);
-        }
-
-        foreach ($warehouses as $key => $warehouseCatalogue) {
-            $warehouseCatalogue->key = $warehouseCatalogue->id;
-        }
-
-        return [
-            'status' => 'success',
-            'messages' => '',
-            'data' => $warehouses
+        $condition = [
+            'search' => addslashes(request('search')),
+            'publish' => request('publish'),
+            'searchFields' => ['name', 'code', 'phone', 'supervisor_name'],
         ];
+        $select = ['id', 'name', 'code', 'phone', 'shelve', 'row', 'supervisor_name', 'publish'];
+        $pageSize = request('pageSize');
+
+        $data = $pageSize && request('page')
+            ? $this->warehouseRepository->pagination($select, $condition, $pageSize)
+            : $this->warehouseRepository->all($select);
+
+        // Add key for table for frontend
+        $data->transform(function ($item) {
+            $item->key = $item->id;
+            return $item;
+        });
+
+        return successResponse('', $data);
     }
 
     public function create()
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ trường bên dưới
-            $payload = request()->except('_token');
+        return $this->executeInTransaction(function () {
 
+            $payload = request()->except('_token', '_method');
             $this->warehouseRepository->create($payload);
 
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Thêm mới thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Thêm mới thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Tạo mới thành công.');
+        }, 'Tạo mới thất bại.');
     }
 
     public function update($id)
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
-            $payload = request()->except('_token', '_method');
+        return $this->executeInTransaction(function () use ($id) {
 
+            $payload = request()->except('_token', '_method');
             $this->warehouseRepository->update($id, $payload);
 
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Cập nhập thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Cập nhập thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Cập nhập thành công.');
+        }, 'Cập nhập thất bại.');
     }
 
     public function destroy($id)
     {
-        DB::beginTransaction();
-        try {
-            // Xoá mềm
+        return $this->executeInTransaction(function () use ($id) {
             $this->warehouseRepository->delete($id);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Xóa thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Xóa thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Xóa thành công.');
+        }, 'Xóa thất bại.');
     }
 }

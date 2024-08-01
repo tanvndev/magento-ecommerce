@@ -63,6 +63,11 @@ class BaseRepository implements BaseRepositoryInterface
         return $all ? $query->get() : $query->first();
     }
 
+    public function findByWhereIn(array $value, string $field = 'id')
+    {
+        return $this->model->whereIn($field, $value)->get();
+    }
+
 
 
     public function findByWhereHas($condition = [], $column = ['*'], $relation = [], $alias = '', $all = false)

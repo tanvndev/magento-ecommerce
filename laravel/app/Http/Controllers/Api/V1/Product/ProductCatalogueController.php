@@ -60,8 +60,6 @@ class ProductCatalogueController extends Controller
         return handleResponse($response);
     }
 
-
-
     /**
      * Remove the specified resource from storage.
      */

@@ -20,52 +20,49 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     }
     public function paginate()
     {
-        // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
-        $condition['search'] = addslashes(request('search'));
-        $condition['publish'] = request('publish');
+        $condition = [
+            'search' => addslashes(request('search')),
+            'publish' => request('publish'),
+        ];
         $select = ['id', 'name', 'canonical', 'publish', 'parent_id', 'order', 'image'];
+        $pageSize = request('pageSize');
+        $orderBy = ['order' => 'desc'];
 
-        if (request('pageSize') && request('page')) {
-            $productCatalogues = $this->productCatalogueRepository->pagination(
+        if ($pageSize && request('page')) {
+            $data = $this->productCatalogueRepository->pagination(
                 $select,
                 $condition,
-                request('pageSize'),
-                ['order' => 'desc'],
-
+                $pageSize,
+                $orderBy
             );
-
-            $formattedData = $this->formatDataToTable($productCatalogues);
 
             return [
                 'status' => 'success',
                 'messages' => '',
                 'data' => [
-                    'data' => $formattedData,
-                    'total' => $productCatalogues->total(),
-                    'current_page' => $productCatalogues->currentPage(),
-                    'per_page' => $productCatalogues->perPage(),
+                    'data' => $this->formatDataToTable($data),
+                    'total' => $data->total(),
+                    'current_page' => $data->currentPage(),
+                    'per_page' => $data->perPage(),
                 ]
             ];
         }
-        $productCatalogues = $this->productCatalogueRepository->all(
-            $select,
-            ['children'],
-            ['order' => 'desc']
-        );
 
-        return [
-            'status' => 'success',
-            'messages' => '',
-            'data' => $productCatalogues ?? []
-        ];
+        $data = $this->productCatalogueRepository->all($select, ['childrens'], $orderBy);
+        return successResponse('', $data);
     }
 
-    // XU LY LAY RA DATA CHO BANG PRODUCT CATALOGUE
     private function formatDataToTable($data, $parentId = 0)
     {
         $formattedData = [];
+        $dataById = [];
 
+        // Index data by ID for faster lookup
         foreach ($data as $item) {
+            $dataById[$item->id] = $item;
+        }
+
+        foreach ($dataById as $item) {
             if ($item->parent_id == $parentId) {
                 $formattedItem = [
                     'key' => $item->id,
@@ -76,7 +73,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
                     'parent_id' => $item->parent_id,
                     'order' => $item->order,
                     'image' => $item->image,
-                    'children' => $this->formatDataToTable($data, $item->id)
+                    'children' => $this->formatDataToTable($dataById, $item->id)
                 ];
                 $formattedData[] = $formattedItem;
             }
@@ -87,134 +84,40 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
 
     public function create()
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ trường bên dưới
-            $payload = request()->except('_token');
+        return $this->executeInTransaction(function () {
 
-            if (!isset($payload['parent_id']) || $payload['parent_id'] == 0) {
-                $payload['parent_id'] = null;
-            }
-
+            $payload = $this->preparePayload();
             $this->productCatalogueRepository->create($payload);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Thêm mới thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => $e->getMessage() . ' - ' . $e->getLine() . ' - ' . $e->getFile(),
-                'data' => null
-            ];
-        }
+
+            return successResponse('Tạo mới thành công.');
+        }, 'Tạo mới thất bại.');
     }
 
 
 
     public function update($id)
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
-            $payload = request()->except('_token', '_method');
+        return $this->executeInTransaction(function () use ($id) {
 
-            if (!isset($payload['parent_id']) || $payload['parent_id'] == 0) {
-                $payload['parent_id'] = null;
-            }
-
+            $payload = $this->preparePayload();
             $this->productCatalogueRepository->update($id, $payload);
 
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Cập nhập thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Cập nhập thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Cập nhập thành công.');
+        }, 'Cập nhập thất bại.');
+    }
+
+    private function preparePayload(): array
+    {
+        $payload = request()->except('_token', '_method');
+        $payload['parent_id'] = $payload['parent_id'] ?? 0 ?: null;
+        return $payload;
     }
 
     public function destroy($id)
     {
-        DB::beginTransaction();
-        try {
-            // Xoá mềm
+        return $this->executeInTransaction(function () use ($id) {
             $this->productCatalogueRepository->delete($id);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Xóa thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Xóa thất bại.',
-                'data' => null
-            ];
-        }
-    }
-
-
-    public function setPermission()
-    {
-        DB::beginTransaction();
-        try {
-            $permissions = request('permission');
-            foreach ($permissions as $key => $value) {
-                $productCatalogue = $this->productCatalogueRepository->findById($key);
-                $productCatalogue->permissions()->sync($value);
-            }
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            echo $e->getMessage();
-            return false;
-        }
-    }
-
-    // Hàm này thay đổi trạng thái của product khi thay đổi trạng thái product catalogue
-    private function changeProductStatus($dataPost)
-    {
-        DB::beginTransaction();
-        try {
-            $arrayId = [];
-            $value = '';
-
-            // Là một mảng thì là Chọn tất cả còn k là ngược lại chọn 1 để update publish
-            if (isset($dataPost['id'])) {
-                $arrayId = $dataPost['id'];
-                $value = $dataPost['value'];
-            } else {
-                $arrayId[] = $dataPost['modelId'];
-                $value = $dataPost['value'] == 1 ? 0 : 1;
-            }
-            $payload[$dataPost['field']] = $value;
-
-            $update = $this->productRepository->updateByWhereIn('product_catalogue_id', $arrayId, $payload);
-
-            if (!$update) {
-                DB::rollBack();
-                return false;
-            }
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            echo $e->getMessage();
-            return false;
-        }
+            return successResponse('Xóa thành công.');
+        }, 'Xóa thất bại.');
     }
 }

@@ -51,7 +51,7 @@ class ProductCatalogue extends Model
         return $canonical;
     }
 
-    public function children()
+    public function childrens()
     {
         return $this->hasMany(ProductCatalogue::class, 'parent_id')->orderBy('order');
     }

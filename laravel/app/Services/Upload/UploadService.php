@@ -33,11 +33,7 @@ class UploadService extends BaseService implements UploadServiceInterface
             ['path' => request()->url()]   // Các tham số yêu cầu bổ sung cho URL phân trang
         );
 
-        return [
-            'status' => 'success',
-            'messages' => '',
-            'data' => $paginator ?? []
-        ];
+        return successResponse('', $paginator);
     }
 
     private function getAllImages()
@@ -45,10 +41,12 @@ class UploadService extends BaseService implements UploadServiceInterface
         $imagePaths = Storage::allFiles('public'); // Lấy danh sách tất cả các tệp trong thư mục 'public' của storage
         $images = [];
         foreach ($imagePaths as $path) {
+
             // Lấy thông tin chi tiết về từng tệp ảnh
             $filename = basename($path);
             $size = Storage::size($path);
             $lastModified = Storage::lastModified($path);
+
             // Tạo các đường dẫn cho các kích thước ảnh
             $thumbnail = '?w=150&h=150';
             $medium = '?w=300&h=300';
@@ -90,7 +88,8 @@ class UploadService extends BaseService implements UploadServiceInterface
         try {
             $payload = request()->except('_token');
             $files = $payload['files'] ?? null;
-            // // Xu ly anh resize
+
+            // Xu ly anh resize
             if (isset($files) && !empty($files)) {
                 foreach ($files as $key => $file) {
                     $message = Upload::uploadImage($file);
@@ -107,13 +106,7 @@ class UploadService extends BaseService implements UploadServiceInterface
                 'data' => $data['data']
             ];
         } catch (\Exception $e) {
-            echo $e->getMessage();
-            die;
-            return [
-                'status' => 'error',
-                'messages' => 'Tải lên tệp thất bại.',
-                'data' => null
-            ];
+            return errorResponse('Tải lên tệp thất bại.');
         }
     }
     public function destroy($id)
@@ -128,16 +121,10 @@ class UploadService extends BaseService implements UploadServiceInterface
                 Storage::delete($filePath);
             }
             $data = $this->paginate();
-            return [
-                'status' => 'success',
-                'messages' => 'Tệp đã được xóa thành công.',
-                'data' => $data['data']
-            ];
+
+            return successResponse('Tệp đã được xóa thành công.', $data['data']);
         } catch (\Exception $e) {
-            return [
-                'status' => 'error',
-                'messages' => 'Không tìm thấy ảnh cần xóa.'
-            ];
+            return errorResponse('Không tìm thấy ảnh cần xóa.');
         }
     }
 }

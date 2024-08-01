@@ -19,102 +19,69 @@ class UserService extends BaseService implements UserServiceInterface
     }
     public function paginate()
     {
-        // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
-        $condition['search'] = addslashes(request('search'));
-        $condition['searchFields'] = ['fullname', 'email', 'phone', 'address'];
-        $condition['publish'] = request('publish');
-
-        $users = $this->userRepository->pagination(
-            ['id', 'fullname', 'email', 'phone', 'address', 'publish', 'user_catalogue_id'],
-            $condition,
-            request('pageSize'),
-            ['id' => 'desc'],
-            [],
-            ['user_catalogue']
-        );
-
-        foreach ($users as $key => $userCatalogue) {
-            $userCatalogue->key = $userCatalogue->id;
-        }
-
-        return [
-            'status' => 'success',
-            'messages' => '',
-            'data' => $users
+        $condition = [
+            'search' => addslashes(request('search')),
+            'publish' => request('publish'),
+            'searchFields' => ['fullname', 'email', 'phone', 'address'],
         ];
+
+        $select = ['id', 'fullname', 'email', 'phone', 'address', 'publish', 'user_catalogue_id'];
+        $pageSize = request('pageSize');
+
+        $data = $pageSize && request('page')
+            ? $this->userRepository->pagination($select, $condition, $pageSize)
+            : $this->userRepository->all($select);
+
+        // Add key for table for frontend
+        $data->transform(function ($item) {
+            $item->key = $item->id;
+            return $item;
+        });
+
+        return successResponse('', $data);
     }
 
     public function create()
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ trường bên dưới
-            $payload = request()->except('_token');
-            $payload['password'] = Hash::make($payload['password']);
-            $payload['user_agent'] = request()->header('User-Agent');
-            $payload['ip'] = request()->ip();
-            $payload['email_verified_at'] = now()->toDateTimeString();
+        return $this->executeInTransaction(function () {
+
+            $payload = request()->except('_token', '_method');
+            $payload = $this->formatPayload($payload);
 
             $this->userRepository->create($payload);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Thêm mới thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Thêm mới thất bại.',
-                'data' => null
-            ];
-        }
+
+            return successResponse('Tạo mới thành công.');
+        }, 'Tạo mới thất bại.');
+    }
+
+    private function formatPayload(array $payload): array
+    {
+        $payload = [
+            'password' => Hash::make($payload['password']),
+            'user_agent' => request()->header('User-Agent'),
+            'ip' => request()->ip(),
+            'email_verified_at' => now()->toDateTimeString(),
+        ];
+
+        return $payload;
     }
 
     public function update($id)
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
+        return $this->executeInTransaction(function () use ($id) {
+
             $payload = request()->except('_token', '_method');
             $this->userRepository->update($id, $payload);
 
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Cập nhập thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Cập nhập thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Cập nhập thành công.');
+        }, 'Cập nhập thất bại.');
     }
 
     public function destroy($id)
     {
-        DB::beginTransaction();
-        try {
-            // Xoá mềm
+        return $this->executeInTransaction(function () use ($id) {
             $this->userRepository->delete($id);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Xóa thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Xóa thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Xóa thành công.');
+        }, 'Xóa thất bại.');
     }
 }

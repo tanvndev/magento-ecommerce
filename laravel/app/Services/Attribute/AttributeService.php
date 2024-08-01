@@ -2,7 +2,6 @@
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 namespace App\Services\Attribute;
 
-use App\Classes\Upload;
 use App\Repositories\Interfaces\Attribute\AttributeRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Attribute\AttributeServiceInterface;
@@ -18,57 +17,43 @@ class AttributeService extends BaseService implements AttributeServiceInterface
     }
     public function paginate()
     {
-        // addslashes là một hàm được sử dụng để thêm các ký tự backslashes (\) vào trước các ký tự đặc biệt trong chuỗi.
-        $condition['search'] = addslashes(request('search'));
-        $condition['publish'] = request('publish');
-
-        $attributes = $this->attributeRepository->pagination(
-            ['id', 'name', 'attribute_catalogue_id'],
-            $condition,
-            request('pageSize'),
-            ['id' => 'desc'],
-            [],
-            ['attribute_catalogues']
-        );
-
-        foreach ($attributes as $key => $attributeCatalogue) {
-            $attributeCatalogue->key = $attributeCatalogue->id;
-        }
-
-
-        return [
-            'status' => 'success',
-            'messages' => '',
-            'data' => $attributes
+        $condition = [
+            'search' => addslashes(request('search')),
+            'publish' => request('publish'),
         ];
+        $select = ['id', 'name', 'attribute_catalogue_id'];
+
+        $data = request('pageSize') && request('page')
+            ?
+            $this->attributeRepository->pagination(
+                $select,
+                $condition,
+                request('pageSize'),
+                ['id' => 'desc'],
+                [],
+                ['attribute_catalogue'],
+            )
+            :
+            $this->attributeRepository->all($select);
+
+        // Add key for table for frontend
+        $data->transform(function ($item) {
+            $item->key = $item->id;
+            return $item;
+        });
+
+        return successResponse('', $data);
     }
 
     public function create()
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ trường bên dưới
-            $payload = request()->except('_token');
-
-            // Format payload
+        return $this->executeInTransaction(function () {
+            $payload = request()->except('_token', '_method');
             $payload = $this->formatPayload($payload);
 
             $this->attributeRepository->createBatch($payload);
-
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Thêm mới thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Thêm mới thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Tạo mới thành công.');
+        }, 'Tạo mới thất bại.');
     }
 
     private function formatPayload($payload)
@@ -88,51 +73,21 @@ class AttributeService extends BaseService implements AttributeServiceInterface
 
     public function update($id)
     {
-        DB::beginTransaction();
-        try {
-            // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
-            $payload = request()->except('_token', '_method');
+        return $this->executeInTransaction(function () use ($id) {
 
+            $payload = request()->except('_token', '_method');
             $this->attributeRepository->update($id, $payload);
 
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Cập nhập thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Cập nhập thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Cập nhập thành công.');
+        }, 'Cập nhập thất bại.');
     }
-
-
 
 
     public function destroy($id)
     {
-        DB::beginTransaction();
-        try {
-            // Xoá mềm
+        return $this->executeInTransaction(function () use ($id) {
             $this->attributeRepository->delete($id);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Xóa thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Xóa thất bại.',
-                'data' => null
-            ];
-        }
+            return successResponse('Xóa thành công.');
+        }, 'Xóa thất bại.');
     }
 }
