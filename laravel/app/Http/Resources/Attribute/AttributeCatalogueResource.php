@@ -21,6 +21,7 @@ class AttributeCatalogueResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'publish' => $this->publish,
+            'attributes' => AttributeResource::collection($this->attributes)
         ];
     }
 }

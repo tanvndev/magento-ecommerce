@@ -28,7 +28,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
 
         $data = $pageSize && request('page')
             ? $this->attributeCatalogueRepository->pagination($select, $condition, $pageSize)
-            : $this->attributeCatalogueRepository->all($select);
+            : $this->attributeCatalogueRepository->all($select, ['attributes']);
 
         return $data;
     }
