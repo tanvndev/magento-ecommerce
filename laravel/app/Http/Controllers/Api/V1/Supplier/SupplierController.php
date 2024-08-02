@@ -8,6 +8,7 @@ use App\Http\Requests\Supplier\{
     StoreSupplierRequest,
     UpdateSupplierRequest
 };
+use App\Http\Resources\Supplier\SupplierCollection;
 use App\Http\Resources\Supplier\SupplierResource;
 use App\Repositories\Interfaces\Supplier\SupplierRepositoryInterface;
 use App\Services\Interfaces\Supplier\SupplierServiceInterface;
@@ -28,8 +29,10 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $response = $this->supplierService->paginate();
-        return handleResponse($response);
+
+        $paginator = $this->supplierService->paginate();
+        $data = new SupplierCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**

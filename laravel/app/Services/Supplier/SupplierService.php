@@ -32,12 +32,7 @@ class SupplierService extends BaseService implements SupplierServiceInterface
             ? $this->supplierRepository->pagination($select, $condition, $pageSize)
             : $this->supplierRepository->all($select);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()
