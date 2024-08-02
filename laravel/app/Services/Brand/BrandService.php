@@ -28,12 +28,7 @@ class BrandService extends BaseService implements BrandServiceInterface
             ? $this->brandRepository->pagination($select, $condition, $pageSize)
             : $this->brandRepository->all($select);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()

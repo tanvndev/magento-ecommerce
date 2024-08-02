@@ -30,12 +30,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
             ? $this->attributeCatalogueRepository->pagination($select, $condition, $pageSize)
             : $this->attributeCatalogueRepository->all($select);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()

@@ -29,9 +29,6 @@ class AttributeCatalogueController extends Controller
      */
     public function index()
     {
-        $response = $this->productCatalogueService->paginate();
-        return handleResponse($response);
-
         $paginator = $this->productCatalogueService->paginate();
         $data = new AttributeCatalogueCollection($paginator);
         return successResponse('', $data);

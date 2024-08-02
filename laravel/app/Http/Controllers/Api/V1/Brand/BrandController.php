@@ -8,6 +8,7 @@ use App\Http\Requests\Brand\{
     StoreBrandRequest,
     UpdateBrandRequest
 };
+use App\Http\Resources\Brand\BrandCollection;
 use App\Http\Resources\Brand\BrandResource;
 use App\Repositories\Interfaces\Brand\BrandRepositoryInterface;
 use App\Services\Interfaces\Brand\BrandServiceInterface;
@@ -28,8 +29,9 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $response = $this->brandService->paginate();
-        return handleResponse($response);
+        $paginator = $this->brandService->paginate();
+        $data = new BrandCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**
