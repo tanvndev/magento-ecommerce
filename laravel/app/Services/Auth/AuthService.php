@@ -53,8 +53,8 @@ class AuthService extends BaseService implements AuthServiceInterface
             // Send email verification notification
             event(new AuthRegisteredEvent($user));
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse('Người dùng đã đăng ký thành công. Vui lòng kiểm tra email của bạn để xác nhận đăng ký.');
+        }, 'Người dùng đã đăng ký thành công vui lòng kiểm tra lại.');
     }
 
     public function resetPassword()

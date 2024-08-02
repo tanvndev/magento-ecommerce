@@ -26,7 +26,7 @@ class UserResource extends JsonResource
             'address' => $this->address,
             'image' => $this->image,
             'publish' => $this->publish,
-            'user_catalogue_id' => $this->user_catalogue_id,
+            'catalogue_id' => $this->user_catalogue_id,
             'catalogue_name' => $this->user_catalogue->name,
         ];
     }

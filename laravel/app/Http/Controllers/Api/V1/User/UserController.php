@@ -30,6 +30,7 @@ class UserController extends Controller
     public function index()
     {
         // $this->authorize('modules', 'users.index');
+
         $paginator = $this->userService->paginate();
         $data = new UserCollection($paginator);
         return successResponse('', $data);

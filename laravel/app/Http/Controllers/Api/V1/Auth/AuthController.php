@@ -12,7 +12,6 @@ use App\Http\Requests\Auth\{
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Services\Interfaces\Auth\AuthServiceInterface;
-use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
