@@ -21,6 +21,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+
+        \App\Http\Middleware\LogRequestResponse::class, // <--- Log requests and responses
     ];
 
     /**
@@ -69,5 +71,6 @@ class Kernel extends HttpKernel
         // 'jwt.auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
         // 'jwt.refresh' => \Tymon\JWTAuth\Http\Middleware\RefreshToken::class,
         'jwt.verify' => \App\Http\Middleware\JWTMiddleware::class,
+        'log.request.response' => \App\Http\Middleware\LogRequestResponse::class,
     ];
 }
