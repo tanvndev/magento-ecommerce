@@ -16,6 +16,7 @@ class WarehouseResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'key' => $this->id,
             'name' => $this->name,
             'code' => $this->code,
             'phone' => $this->phone,
@@ -24,6 +25,7 @@ class WarehouseResource extends JsonResource
             'supervisor_name' => $this->supervisor_name,
             'address' => $this->address,
             'description' => $this->description,
+            'publish' => $this->publish,
         ];
     }
 }

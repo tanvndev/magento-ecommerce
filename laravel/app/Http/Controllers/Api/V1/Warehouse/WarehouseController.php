@@ -8,6 +8,7 @@ use App\Http\Requests\Warehouse\{
     StoreWarehouseRequest,
     UpdateWarehouseRequest
 };
+use App\Http\Resources\Warehouse\WarehouseCollection;
 use App\Http\Resources\Warehouse\WarehouseResource;
 use App\Repositories\Interfaces\Warehouse\WarehouseRepositoryInterface;
 use App\Services\Interfaces\Warehouse\WarehouseServiceInterface;
@@ -28,8 +29,9 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        $response = $this->warehouseService->paginate();
-        return handleResponse($response);
+        $paginator = $this->warehouseService->paginate();
+        $data = new WarehouseCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**

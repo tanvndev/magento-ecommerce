@@ -31,13 +31,7 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
             ? $this->warehouseRepository->pagination($select, $condition, $pageSize)
             : $this->warehouseRepository->all($select);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()
