@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\User;
+namespace App\Http\Resources\Product;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class UserCatalogueCollection extends ResourceCollection
+class ProductCatalogueCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -19,8 +19,8 @@ class UserCatalogueCollection extends ResourceCollection
             $this->resource instanceof \Illuminate\Pagination\Paginator
         ) {
             return [
-                'data' => $this->collection->map(function ($user) {
-                    return new UserCatalogueResource($user);
+                'data' => $this->collection->map(function ($permission) {
+                    return new ProductCatalogueResource($permission);
                 }),
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),
