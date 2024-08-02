@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Services\Interfaces\BaseServiceInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -76,7 +77,12 @@ class BaseService implements BaseServiceInterface
             DB::commit();
             return $result;
         } catch (\Exception $e) {
-            dd($e->getMessage() . $e->getLine() . $e->getFile());
+            Log::error('>>Transaction failed<<', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             DB::rollBack();
             return errorResponse($messageError);
         }
