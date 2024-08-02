@@ -8,7 +8,10 @@ use App\Http\Requests\Product\{
     StoreProductCatalogueRequest,
     UpdateProductCatalogueRequest
 };
-use App\Http\Resources\Product\ProductCatalogueResource;
+use App\Http\Resources\Product\{
+    ProductCatalogueCollection,
+    ProductCatalogueResource
+};
 use App\Repositories\Interfaces\Product\ProductCatalogueRepositoryInterface;
 use App\Services\Interfaces\Product\ProductCatalogueServiceInterface;
 
