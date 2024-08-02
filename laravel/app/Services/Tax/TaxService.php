@@ -29,12 +29,7 @@ class TaxService extends BaseService implements TaxServiceInterface
             ? $this->taxRepository->pagination($select, $condition, $pageSize)
             : $this->taxRepository->all($select);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()

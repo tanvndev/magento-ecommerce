@@ -19,8 +19,8 @@ class BrandCollection extends ResourceCollection
             $this->resource instanceof \Illuminate\Pagination\Paginator
         ) {
             return [
-                'data' => $this->collection->map(function ($attribute) {
-                    return new BrandResource($attribute);
+                'data' => $this->collection->map(function ($brand) {
+                    return new BrandResource($brand);
                 }),
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),

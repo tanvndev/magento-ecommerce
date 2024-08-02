@@ -8,6 +8,7 @@ use App\Http\Requests\Tax\{
     StoreTaxRequest,
     UpdateTaxRequest
 };
+use App\Http\Resources\Tax\TaxCollection;
 use App\Http\Resources\Tax\TaxResource;
 use App\Repositories\Interfaces\Tax\TaxRepositoryInterface;
 use App\Services\Interfaces\Tax\TaxServiceInterface;
@@ -28,8 +29,9 @@ class TaxController extends Controller
      */
     public function index()
     {
-        $response = $this->taxService->paginate();
-        return handleResponse($response);
+        $paginator = $this->taxService->paginate();
+        $data = new TaxCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**

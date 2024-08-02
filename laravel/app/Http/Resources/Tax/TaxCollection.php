@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Permission;
+namespace App\Http\Resources\Tax;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PermissionCollection extends ResourceCollection
+class TaxCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -19,8 +19,8 @@ class PermissionCollection extends ResourceCollection
             $this->resource instanceof \Illuminate\Pagination\Paginator
         ) {
             return [
-                'data' => $this->collection->map(function ($permission) {
-                    return new PermissionResource($permission);
+                'data' => $this->collection->map(function ($tax) {
+                    return new TaxResource($tax);
                 }),
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),

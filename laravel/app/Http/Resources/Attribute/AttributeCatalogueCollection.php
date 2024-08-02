@@ -19,8 +19,8 @@ class AttributeCatalogueCollection extends ResourceCollection
             $this->resource instanceof \Illuminate\Pagination\Paginator
         ) {
             return [
-                'data' => $this->collection->map(function ($attribute) {
-                    return new AttributeCatalogueResource($attribute);
+                'data' => $this->collection->map(function ($attributeCatalogue) {
+                    return new AttributeCatalogueResource($attributeCatalogue);
                 }),
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),

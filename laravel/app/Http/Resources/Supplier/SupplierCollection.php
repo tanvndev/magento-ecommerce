@@ -19,8 +19,8 @@ class SupplierCollection extends ResourceCollection
             $this->resource instanceof \Illuminate\Pagination\Paginator
         ) {
             return [
-                'data' => $this->collection->map(function ($attribute) {
-                    return new SupplierResource($attribute);
+                'data' => $this->collection->map(function ($supplier) {
+                    return new SupplierResource($supplier);
                 }),
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),

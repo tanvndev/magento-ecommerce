@@ -29,7 +29,6 @@ class SupplierController extends Controller
      */
     public function index()
     {
-
         $paginator = $this->supplierService->paginate();
         $data = new SupplierCollection($paginator);
         return successResponse('', $data);
