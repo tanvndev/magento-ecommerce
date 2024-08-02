@@ -38,13 +38,7 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             )
             : $this->userCatalogueRepository->all($select, ['permissions']);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()

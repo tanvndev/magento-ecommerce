@@ -8,6 +8,7 @@ use App\Http\Requests\User\{
     StoreUserCatalogueRequest,
     UpdateUserCatalogueRequest
 };
+use App\Http\Resources\User\UserCatalogueCollection;
 use App\Http\Resources\User\UserCatalogueResource;
 use App\Repositories\Interfaces\User\UserCatalogueRepositoryInterface;
 use App\Services\Interfaces\User\UserCatalogueServiceInterface;
@@ -30,8 +31,9 @@ class UserCatalogueController extends Controller
     {
         // $this->authorize('modules', 'users.catalogues.index');
 
-        $response = $this->userCatalogueService->paginate();
-        return handleResponse($response);
+        $paginator = $this->userCatalogueService->paginate();
+        $data = new UserCatalogueCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**
