@@ -30,10 +30,6 @@
             @change="handleTableChange"
           >
             <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'attribute_catalogue_name'">
-                {{ record.attribute_catalogues.name }}
-              </template>
-
               <template v-if="column.dataIndex === 'publish'">
                 <PublishSwitchComponent
                   :record="record"
@@ -93,8 +89,9 @@ const columns = [
   },
   {
     title: 'Nhóm thuộc tính',
-    dataIndex: 'attribute_catalogue_name',
-    key: 'attribute_catalogue_name'
+    dataIndex: 'catalogue_name',
+    key: 'catalogue_name',
+    sorter: (a, b) => a.catalogue_name.localeCompare(b.catalogue_name)
   },
   {
     title: 'Thực thi',

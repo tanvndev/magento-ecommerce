@@ -17,7 +17,7 @@ class BaseService implements BaseServiceInterface
     {
     }
 
-    protected function convertToCode($str)
+    protected function convertToCode(string $str): string
     {
         $newStr = Str::slug($str);
         $newStr = strtoupper(str_replace('-', '', $newStr));
@@ -25,15 +25,6 @@ class BaseService implements BaseServiceInterface
         return $newStr;
     }
 
-
-    protected function formatJson($payload, $inputName)
-    {
-        // Lấy ra payload từ form
-        if (isset($payload[$inputName]) && !empty($payload[$inputName])) {
-            $payload[$inputName] = json_encode($payload[$inputName]);
-        }
-        return $payload;
-    }
 
     public function updateStatus()
     {

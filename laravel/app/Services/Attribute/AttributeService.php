@@ -36,13 +36,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             :
             $this->attributeRepository->all($select);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()

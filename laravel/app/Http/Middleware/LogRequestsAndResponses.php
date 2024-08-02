@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class LogRequestResponse
+class LogRequestsAndResponses
 {
     /**
      * Handle an incoming request.
@@ -20,7 +20,6 @@ class LogRequestResponse
     {
         // Log request
         Log::info('>>Incoming request<<', [
-            'timestamp' => now()->toDateTimeString(),
             'method' => $request->method(),
             'url' => $request->fullUrl(),
             'headers' => $request->headers->all(),
@@ -33,10 +32,8 @@ class LogRequestResponse
 
         // Log response
         Log::info('>>Outgoing response<<', [
-            'timestamp' => now()->toDateTimeString(),
             'status' => $response->status(),
             'headers' => $response->headers->all(),
-            'content' => $this->getContent($response),
             'request_id' => $request->header('X-Request-ID')
         ]);
 

@@ -8,6 +8,7 @@ use App\Http\Requests\Attribute\{
     StoreAttributeRequest,
     UpdateAttributeRequest
 };
+use App\Http\Resources\Attribute\AttributeCollection;
 use App\Http\Resources\Attribute\AttributeResource;
 use App\Repositories\Interfaces\Attribute\AttributeRepositoryInterface;
 use App\Services\Interfaces\Attribute\AttributeServiceInterface;
@@ -28,8 +29,9 @@ class AttributeController extends Controller
      */
     public function index()
     {
-        $response = $this->attributeService->paginate();
-        return handleResponse($response);
+        $paginator = $this->attributeService->paginate();
+        $data = new AttributeCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**

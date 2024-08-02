@@ -1,5 +1,6 @@
 <?php
 
+
 if (!function_exists('getServiceInstance')) {
     function getServiceInstance($modelName)
     {
@@ -13,7 +14,7 @@ if (!function_exists('getServiceInstance')) {
     }
 }
 if (!function_exists('generateStrongPassword')) {
-    function generateStrongPassword($length = 12)
+    function generateStrongPassword(int $length = 12)
     {
         $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $lowercase = 'abcdefghijklmnopqrstuvwxyz';
@@ -31,7 +32,7 @@ if (!function_exists('generateStrongPassword')) {
     }
 }
 if (!function_exists('getRepositoryInstance')) {
-    function getRepositoryInstance($modelName)
+    function getRepositoryInstance(string $modelName)
     {
         $repositoryInterfaceNameSpace = 'App\Repositories\Interfaces\\' . ucfirst($modelName) . 'RepositoryInterface';
         if (interface_exists($repositoryInterfaceNameSpace)) {
@@ -69,7 +70,7 @@ if (!function_exists('convertPrice')) {
 }
 if (!function_exists('formatCurrency')) {
 
-    function formatCurrency($amount, $currencyCode = 'vn')
+    function formatCurrency($amount, string $currencyCode = 'vn')
     {
         switch (strtoupper($currencyCode)) {
             case 'VN':
@@ -142,9 +143,6 @@ if (!function_exists('sortString')) {
         return $sortedNumbers;
     }
 }
-
-
-
 
 
 if (!function_exists('generateStar')) {
@@ -231,7 +229,6 @@ if (!function_exists('sortAttributeId')) {
         return $attributeId;
     }
 }
-
 
 
 if (!function_exists('convertVndTo')) {

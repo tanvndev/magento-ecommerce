@@ -8,6 +8,7 @@ use App\Http\Requests\Attribute\{
     StoreAttributeCatalogueRequest,
     UpdateAttributeCatalogueRequest
 };
+use App\Http\Resources\Attribute\AttributeCatalogueCollection;
 use App\Http\Resources\Attribute\AttributeCatalogueResource;
 use App\Repositories\Interfaces\Attribute\AttributeCatalogueRepositoryInterface;
 use App\Services\Interfaces\Attribute\AttributeCatalogueServiceInterface;
@@ -30,6 +31,10 @@ class AttributeCatalogueController extends Controller
     {
         $response = $this->productCatalogueService->paginate();
         return handleResponse($response);
+
+        $paginator = $this->productCatalogueService->paginate();
+        $data = new AttributeCatalogueCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**

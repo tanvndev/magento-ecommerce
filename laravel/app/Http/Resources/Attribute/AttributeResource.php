@@ -16,8 +16,10 @@ class AttributeResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'key' => $this->id,
             'name' => $this->name,
-            'attribute_catalogue_id' => $this->attribute_catalogue_id
+            'catalogue_id' => $this->attribute_catalogue_id,
+            'catalogue_name' => $this->attribute_catalogue->name,
         ];
     }
 }

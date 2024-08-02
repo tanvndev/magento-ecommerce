@@ -16,6 +16,7 @@ class AttributeCatalogueResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'key' => $this->id,
             'code' => $this->code,
             'name' => $this->name,
             'description' => $this->description,

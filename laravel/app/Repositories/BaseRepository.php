@@ -5,8 +5,6 @@ namespace App\Repositories;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use InvalidArgumentException;
 
 class BaseRepository implements BaseRepositoryInterface
 {
