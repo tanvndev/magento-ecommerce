@@ -8,20 +8,21 @@ use App\Http\Requests\Permission\{
     StorePermissionRequest,
     UpdatePermissionRequest
 };
+use App\Http\Resources\Permission\PermissionCollection;
 use App\Http\Resources\Permission\PermissionResource;
 use App\Repositories\Interfaces\Permission\PermissionRepositoryInterface;
 use App\Services\Interfaces\Permission\PermissionServiceInterface;
 
 class PermissionController extends Controller
 {
-    protected $userCatalogueService;
-    protected $userCatalogueRepository;
+    protected $permissionService;
+    protected $permissionRepository;
     public function __construct(
-        PermissionServiceInterface $userCatalogueService,
-        PermissionRepositoryInterface $userCatalogueRepository
+        PermissionServiceInterface $permissionService,
+        PermissionRepositoryInterface $permissionRepository
     ) {
-        $this->userCatalogueService = $userCatalogueService;
-        $this->userCatalogueRepository = $userCatalogueRepository;
+        $this->permissionService = $permissionService;
+        $this->permissionRepository = $permissionRepository;
     }
     /**
      * Display a listing of the resource.
@@ -30,8 +31,9 @@ class PermissionController extends Controller
     {
         // $this->authorize('modules', 'permissions.index');
 
-        $response = $this->userCatalogueService->paginate();
-        return handleResponse($response);
+        $paginator = $this->permissionService->paginate();
+        $data = new PermissionCollection($paginator);
+        return successResponse('', $data);
     }
 
     /**
@@ -41,7 +43,7 @@ class PermissionController extends Controller
     {
         // $this->authorize('modules', 'permissions.store');
 
-        $response = $this->userCatalogueService->create();
+        $response = $this->permissionService->create();
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
@@ -52,7 +54,7 @@ class PermissionController extends Controller
     {
         // $this->authorize('modules', 'permissions.show');
 
-        $response = new PermissionResource($this->userCatalogueRepository->findById($id));
+        $response = new PermissionResource($this->permissionRepository->findById($id));
         return successResponse('', $response);
     }
 
@@ -64,7 +66,7 @@ class PermissionController extends Controller
     {
         // $this->authorize('modules', 'permissions.update');
 
-        $response = $this->userCatalogueService->update($id);
+        $response = $this->permissionService->update($id);
         return handleResponse($response);
     }
 
@@ -76,7 +78,7 @@ class PermissionController extends Controller
     {
         // $this->authorize('modules', 'permissions.destroy');
 
-        $response = $this->userCatalogueService->destroy($id);
+        $response = $this->permissionService->destroy($id);
         return handleResponse($response);
     }
 }

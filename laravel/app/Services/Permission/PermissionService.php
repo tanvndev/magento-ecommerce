@@ -32,12 +32,7 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
             ? $this->permissionRepository->pagination($select, $condition, $pageSize)
             : $this->permissionRepository->all($select);
 
-        // Add key for table for frontend
-        $data->transform(function ($item) {
-            $item->key = $item->id;
-            return $item;
-        });
-        return successResponse('', $data);
+        return $data;
     }
 
     public function create()
