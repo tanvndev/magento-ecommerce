@@ -35,7 +35,7 @@
               <!-- Mo ta ngan san pham -->
               <a-card class="mt-3" title="Mô tả ngắn của sản phẩm">
                 <InputComponent
-                  name="short_description"
+                  name="excerpt"
                   typeInput="textarea"
                   label="Mô tả ngắn của sản phẩm"
                 />
@@ -45,6 +45,7 @@
             <div class="hidden">
               <!-- Attribute -->
               <InputComponent name="attributes" />
+              <InputComponent name="variants" />
             </div>
 
             <!-- Sidebar right -->
@@ -97,13 +98,16 @@ const { getOne, getAll, create, update, messages, data } = useCRUD();
 
 const id = computed(() => router.currentRoute.value.params.id || null);
 const attributes = computed(() => store.getters['productStore/getAttributes']);
+const variants = computed(() => store.getters['productStore/getVariants']);
 
 const { handleSubmit, setValues, setFieldValue } = useForm({
   validationSchema: yup.object({
-    // name: yup.string().required('Tiêu đề sản phẩm không được để trống.'),
-    // product_type: yup.string().required('Loại sản phẩm không được để trống.'),
+    name: yup.string().required('Tiêu đề sản phẩm không được để trống.'),
+    product_type: yup.string().required('Loại sản phẩm không được để trống.'),
     // image: yup.string().required('Ảnh sản phẩm không được để trống.'),
-    // album: yup.string().required('Thư viện sản phẩm không được để trống.')
+    // album: yup.string().required('Thư viện sản phẩm không được để trống.'),
+    product_catalogue_id: yup.string().required('Vui lòng chọn nhóm sản phẩm.'),
+    supplier_id: yup.string().required('Vui lòng chọn nhà cung cấp.')
   })
 });
 
@@ -136,9 +140,12 @@ const fetchOne = async () => {
   });
 };
 
-watch(attributes, () => {
+watch((attributes, variants), () => {
   if (!_.isEmpty(attributes.value)) {
     setFieldValue('attributes', JSON.stringify(attributes.value));
+  }
+  if (!_.isEmpty(variants.value)) {
+    setFieldValue('variants', JSON.stringify(variants.value));
   }
 });
 

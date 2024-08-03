@@ -14,7 +14,7 @@
 
     <a-card class="mt-3" title="Danh mục sản phẩm">
       <TreeSelectComponent
-        name="parent_id"
+        name="product_catalogue_id"
         :treeDefaultExpandAll="false"
         :options="state.productCatalogues"
         placeholder="Chọn danh mục sản phẩm"

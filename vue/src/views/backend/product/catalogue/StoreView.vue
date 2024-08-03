@@ -86,7 +86,7 @@ import {
   TreeSelectComponent,
   InputNumberComponent
 } from '@/components/backend';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatDataToTreeSelect, formatMessages } from '@/utils/format';
 import { useStore } from 'vuex';

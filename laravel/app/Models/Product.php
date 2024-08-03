@@ -8,18 +8,38 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-class ProductCatalogue extends Model
+class Product extends Model
 {
-    use HasFactory, SoftDeletes, QueryScopes;
+    use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = [
         'name',
-        'description',
-        'publish',
         'canonical',
+        'product_type',
+        'product_catalogue_id',
+        'brand_id',
+        'supplier_id',
+        'sku',
+        'excerpt',
+        'description',
+        'upsell_ids',
+        'weight',
+        'length',
+        'width',
+        'height',
+        'is_taxable',
+        'allow_sell',
+        'publish',
         'image',
-        'order',
-        'parent_id',
+        'album',
+        'input_tax_id',
+        'ouput_tax_id',
+        'tax_status',
+    ];
+
+    protected $casts = [
+        'upsell_ids' => 'json',
+        'album' => 'json',
     ];
 
     protected static function boot()
@@ -51,23 +71,33 @@ class ProductCatalogue extends Model
         return $canonical;
     }
 
-    public function childrens()
+    public function catalogue()
     {
-        return $this->hasMany(ProductCatalogue::class, 'parent_id')->orderBy('order');
+        return $this->belongsTo(ProductCatalogue::class);
     }
 
-    public function parent()
+    public function brand()
     {
-        return $this->belongsTo(ProductCatalogue::class, 'parent_id');
+        return $this->belongsTo(Brand::class);
     }
 
-    public function scopeWithChildren($query)
+    public function supplier()
     {
-        return $query->with('children');
+        return $this->belongsTo(Supplier::class);
     }
 
-    public function products()
+    public function warehouses()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Warehouse::class, 'product_warehouse')
+            ->withPivot(
+                'in_stock',
+                'cog_price',
+                'type'
+            );
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
     }
 }

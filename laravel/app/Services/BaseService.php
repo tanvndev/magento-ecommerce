@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
+
 /**
  * Class BaseService
  * @package App\Services
@@ -68,6 +69,8 @@ class BaseService implements BaseServiceInterface
             DB::commit();
             return $result;
         } catch (\Exception $e) {
+            getError($e);
+
             Log::error('>>Transaction failed<<', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),

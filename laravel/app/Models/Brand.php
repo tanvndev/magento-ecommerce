@@ -48,4 +48,9 @@ class Brand extends Model
 
         return $canonical;
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

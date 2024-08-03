@@ -29,6 +29,11 @@
           <span class="rounded-md bg-[#0000000a] px-4 py-2 font-bold text-primary-700">{{
             variantText
           }}</span>
+
+          <!-- Variant_count -->
+          <div class="hidden">
+            <InputComponent :name="`variable[count][${i}]`" :old-value="i + ''" />
+          </div>
         </a-space>
         <a-space>
           <!-- Edit -->
@@ -214,7 +219,7 @@ const state = reactive({
   openEdit: {},
   variantTexts: [],
   isLoading: false,
-  isDiscountTime: false
+  isDiscountTime: {}
 });
 
 // XU LY TAO RA CAC BIEN THE
@@ -229,6 +234,7 @@ const handleCreateVariant = () => {
   }
 
   const variantTextData = combineVariantText(attributes.value.texts);
+  store.commit('productStore/setVariants', variantTextData);
 
   setTimeout(() => {
     state.variantTexts = variantTextData;
@@ -238,17 +244,6 @@ const handleCreateVariant = () => {
     state.isLoading = false;
   }, 1000);
 };
-
-// const calculateTotalVariant = (attributes) => {
-//   if (_.isEmpty(attributes)) return [];
-
-//   return attributes.reduce(
-//     (acc, curr) => {
-//       return acc.flatMap((a) => curr.map((c) => [...a, c]));
-//     },
-//     [[]]
-//   );
-// };
 
 // LAM PHANG MANG VE GHEP CAC BIEN THE
 const calculateVariant = (arrays) => {
@@ -277,7 +272,7 @@ const combineVariantText = (texts) => {
   return combinations.map((combination) => {
     return attributeNames
       .map((name, index) => {
-        return `${name}: ${combination[index]}`;
+        return `${combination[index]}`;
       })
       .join(' - ');
   });

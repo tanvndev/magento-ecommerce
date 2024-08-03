@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 
 if (!function_exists('getServiceInstance')) {
     function getServiceInstance($modelName)
@@ -309,5 +311,74 @@ if (!function_exists('renderRatingFilter')) {
             $html .= '</div>';
         }
         return $html;
+    }
+}
+if (!function_exists('generateSKU')) {
+
+    function generateSKU(string $productName, int $length = 3, array $options = []): string
+    {
+        $cleanProductName = preg_replace('/[^a-z0-9]+/i', '', strtolower($productName));
+        $skuProductName = strtoupper(substr($cleanProductName, 0, $length));
+        $cleanOptions = array_map(function ($option) {
+            return strtoupper(preg_replace('/[^a-z0-9]+/i', '', strtolower($option)));
+        }, $options);
+
+        $sku = $skuProductName . '-' . implode('-', $cleanOptions);
+        return $sku;
+    }
+}
+if (!function_exists('removeEmptyValues')) {
+    function removeEmptyValues(array $array): array
+    {
+        if (empty($array)) {
+            return [];
+        }
+
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $array[$key] = removeEmptyValues($value);
+                if (empty($array[$key])) {
+                    unset($array[$key]);
+                }
+            } elseif (is_null($value) || $value === '' || (is_array($value) && empty($value))) {
+                unset($array[$key]);
+            }
+        }
+
+        return $array;
+    }
+}
+if (!function_exists('convertToFriDdMonYyyyHhMmSs')) {
+
+    function convertToFriDdMonYyyyHhMmSs($dateStr)
+    {
+        $inputFormat = 'Y-m-d H:i:s';
+        $outputFormat = 'D, d M Y H:i:s \G\M\T';
+
+        $date = Carbon::createFromFormat($inputFormat, $dateStr);
+
+        return $date->format($outputFormat);
+    }
+}
+if (!function_exists('convertToYyyyMmDdHhMmSs')) {
+
+    function convertToYyyyMmDdHhMmSs($dateStr)
+    {
+        $inputFormat = 'D, d M Y H:i:s \G\M\T';
+        $outputFormat = 'Y-m-d H:i:s';
+
+        $date = Carbon::createFromFormat($inputFormat, $dateStr);
+
+        return $date->format($outputFormat);
+    }
+}
+
+if (!function_exists('getError')) {
+    function getError($e)
+    {
+        echo "Error: " . $e->getMessage() . "<br>";
+        echo "Line: " . $e->getLine() . "<br>";
+        echo "File: " . $e->getFile() . "<br>";
+        die();
     }
 }

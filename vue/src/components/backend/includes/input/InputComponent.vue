@@ -4,15 +4,6 @@
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
   >
   <div>
-    <!-- INPUT HIDDEN -->
-    <input
-      v-if="props.typeInput == 'hidden'"
-      type="hidden"
-      :name="props.name"
-      :v-model:value="value"
-      :value="props.defaultValue"
-    />
-
     <!-- INPUT TEXT -->
     <a-input
       v-if="props.typeInput == 'text' && props.type != 'password'"
@@ -63,6 +54,8 @@
 
 <script setup>
 import { useField } from 'vee-validate';
+import { watch } from 'vue';
+import _ from 'lodash';
 
 const props = defineProps({
   typeInput: {
@@ -104,9 +97,24 @@ const props = defineProps({
   maxlength: {
     type: [String, Number, Boolean],
     default: 0
+  },
+  oldValue: {
+    type: [String, Boolean, Number],
+    default: ''
   }
 });
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
+
+// Watch for changes in oldValue and set value accordingly
+watch(
+  () => props.oldValue,
+  (newOldValue) => {
+    if (newOldValue && newOldValue !== undefined && newOldValue !== value.value) {
+      value.value = newOldValue;
+    }
+  },
+  { immediate: true }
+);
 </script>

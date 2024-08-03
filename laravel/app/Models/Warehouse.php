@@ -36,4 +36,14 @@ class Warehouse extends Model
             $model->code =  Str::upper($model->code);
         });
     }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_warehouse')
+            ->withPivot(
+                'in_stock',
+                'cog_price',
+                'type'
+            );
+    }
 }
