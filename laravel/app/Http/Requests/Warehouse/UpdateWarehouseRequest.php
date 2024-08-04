@@ -24,29 +24,40 @@ class UpdateWarehouseRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required',
-            'code' => 'required|unique:warehouses,code,' . $this->warehouse,
+        $rules = [
+            'name' => 'required|string',
             'phone' => 'required|regex:/^0[0-9]{9}$/',
-            'address' => 'required',
-            'shelve' => 'required',
-            'row' => 'required',
-            'supervisor_name' => 'required',
+            'address' => 'required|string',
+            'supervisor_name' => 'required|string',
         ];
+
+        if (!$this->has('warehouse_configurations') || !$this->get('warehouse_configurations')) {
+            $rules = array_merge($rules, [
+                'aisles_number' => 'required|integer|min:1',
+                'racks_number' => 'required|integer|min:1',
+                'shelves_number' => 'required|integer|min:1',
+                'compartments_number' => 'required|integer|min:1',
+            ]);
+        }
+
+        return $rules;
     }
+
 
     public function attributes()
     {
         return [
             'name' => 'Tên kho hàng',
-            'code' => 'Mã kho hàng',
             'phone' => 'Số điện thoại',
             'address' => 'Địa chỉ kho hàng',
-            'shelve' => 'Số kệ kho hàng',
-            'row' => 'Số hàng',
             'supervisor_name' => 'Tên người quản lý',
+            'aisles_number' => 'Số dãy',
+            'racks_number' => 'Số kệ',
+            'shelves_number' => 'Số tầng',
+            'compartments_number' => 'Số khoang',
         ];
     }
+
 
     public function messages()
     {

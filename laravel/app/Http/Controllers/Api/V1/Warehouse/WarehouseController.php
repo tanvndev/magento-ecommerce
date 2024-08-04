@@ -40,6 +40,7 @@ class WarehouseController extends Controller
     public function store(StoreWarehouseRequest $request)
     {
         $response = $this->warehouseService->create();
+        dd($response);
         return handleResponse($response, ResponseEnum::CREATED);
     }
 

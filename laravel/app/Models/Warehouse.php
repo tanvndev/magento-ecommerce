@@ -20,8 +20,12 @@ class Warehouse extends Model
         'phone',
         'supervisor_name',
         'description',
-        'row',
-        'shelve',
+        'aisles_number',
+        'racks_number',
+        'shelves_number',
+        'compartments_number',
+        'total_capacity',
+        'used_capacity',
     ];
 
     protected static function boot()
@@ -29,12 +33,29 @@ class Warehouse extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->code = Str::upper($model->code);
+            $model->code = self::generateUniqueSlug($model->name);
         });
 
         static::updating(function ($model) {
-            $model->code =  Str::upper($model->code);
+            $model->code = self::generateUniqueSlug($model->name, $model->id);
         });
+    }
+
+    public static function generateUniqueSlug($name, $excludeId = null)
+    {
+        $code = convertToAcronym(Str::slug($name));
+        $originalCanonical = $code;
+
+        $count = 1;
+
+        while (self::where('code', $code)
+            ->where('id', '!=', $excludeId)
+            ->exists()
+        ) {
+            $code = "{$originalCanonical}-" . $count++;
+        }
+
+        return Str::upper($code);
     }
 
     public function products()
@@ -45,5 +66,10 @@ class Warehouse extends Model
                 'cog_price',
                 'type'
             );
+    }
+
+    public function aisles()
+    {
+        return $this->hasMany(Aisle::class);
     }
 }

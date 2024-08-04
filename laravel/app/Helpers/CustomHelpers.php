@@ -382,3 +382,17 @@ if (!function_exists('getError')) {
         die();
     }
 }
+
+if (!function_exists('convertToAcronym')) {
+    function convertToAcronym(string $input, string $delimiter = '-'): string
+    {
+        $parts = explode($delimiter, $input);
+
+        $acronym = '';
+        foreach ($parts as $part) {
+            $acronym .= strtoupper(substr($part, 0, 1));
+        }
+
+        return $acronym;
+    }
+}

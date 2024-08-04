@@ -25,24 +25,30 @@ class StoreWarehouseRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required',
-            'code' => 'required|unique:warehouses,code',
+        $rules = [
+            'name' => 'required|string',
             'phone' => 'required|regex:/^0[0-9]{9}$/',
-            'address' => 'required',
-            'supervisor_name' => 'required',
-            'aisles_number' => 'required',
-            'racks_number' => 'required',
-            'shelves_number' => 'required',
-            'compartments_number' => 'required',
+            'address' => 'required|string',
+            'supervisor_name' => 'required|string',
         ];
+
+        if (!$this->has('warehouse_configurations') || !$this->get('warehouse_configurations')) {
+            $rules = array_merge($rules, [
+                'aisles_number' => 'required|integer|min:1',
+                'racks_number' => 'required|integer|min:1',
+                'shelves_number' => 'required|integer|min:1',
+                'compartments_number' => 'required|integer|min:1',
+            ]);
+        }
+
+        return $rules;
     }
+
 
     public function attributes()
     {
         return [
             'name' => 'Tên kho hàng',
-            'code' => 'Mã kho hàng',
             'phone' => 'Số điện thoại',
             'address' => 'Địa chỉ kho hàng',
             'supervisor_name' => 'Tên người quản lý',

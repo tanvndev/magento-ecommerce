@@ -112,14 +112,14 @@ const state = reactive({
 
 const validationSchema = computed(() => {
   return yup.object({
-    // name: yup.string().required('Tên kho hàng không được để trống.'),
-    // code: yup.string().required('Mã kho hàng không được để trống.'),
-    // address: yup.string().required('Địa chỉ kho hàng không được để trống.'),
-    // supervisor_name: yup.string().required('Tên người quản lý không được để trống.'),
-    // phone: yup
-    //   .string()
-    //   .required('Số điện thoại không được để trống.')
-    //   .matches(/(0)[0-9]{9}/, 'Số điện thoại không đúng định dạng.'),
+    name: yup.string().required('Tên kho hàng không được để trống.'),
+    code: yup.string().required('Mã kho hàng không được để trống.'),
+    address: yup.string().required('Địa chỉ kho hàng không được để trống.'),
+    supervisor_name: yup.string().required('Tên người quản lý không được để trống.'),
+    phone: yup
+      .string()
+      .required('Số điện thoại không được để trống.')
+      .matches(/(0)[0-9]{9}/, 'Số điện thoại không đúng định dạng.'),
     aisles_number: state.isConfigWarehouse
       ? yup.number().required('Số dãy không được để trống.')
       : yup.number().nullable().notRequired(),
@@ -145,8 +145,8 @@ const handleChangeConfigWarehouse = (value) => {
 };
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values);
-  return;
+  state.error = {};
+
   const response =
     id.value && id.value > 0
       ? await update(state.endpoint, id.value, values)
@@ -155,7 +155,6 @@ const onSubmit = handleSubmit(async (values) => {
     return (state.error = formatMessages(messages.value));
   }
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  state.error = {};
   router.push({ name: 'warehouse.index' });
 });
 
