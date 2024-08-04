@@ -47,6 +47,10 @@
                 />
               </template>
             </template>
+
+            <template #expandedRowRender="{ record }">
+              <ExpandedRowRender :record="record" />
+            </template>
           </a-table>
         </a-card>
         <!-- End table -->
@@ -65,6 +69,7 @@ import {
   ToolboxComponent,
   ActionComponent
 } from '@/components/backend';
+import ExpandedRowRender from './partials/ExpandedRowRender.vue';
 import { useCRUD, usePagination } from '@/composables';
 
 // STATE
@@ -99,19 +104,19 @@ const columns = [
     key: 'supervisor_name',
     sorter: (a, b) => a.supervisor_name.localeCompare(b.supervisor_name)
   },
+
   {
-    title: 'Số kệ',
-    dataIndex: 'shelve',
-    key: 'shelve',
-    sorter: (a, b) => a.shelve.localeCompare(b.shelve),
-    width: '7%'
+    title: 'Tổng sức chứa (KG)',
+    dataIndex: 'total_capacity',
+    key: 'total_capacity',
+    sorter: (a, b) => a.total_capacity.localeCompare(b.total_capacity)
   },
   {
-    title: 'Số hàng',
-    dataIndex: 'row',
-    key: 'row',
-    sorter: (a, b) => a.row.localeCompare(b.row),
-    width: '7%'
+    title: 'Đã sử dụng',
+    dataIndex: 'used_capacity',
+    key: 'used_capacity',
+    sorter: (a, b) => a.used_capacity.localeCompare(b.used_capacity),
+    width: '10%'
   },
   {
     title: 'Tình trạng',

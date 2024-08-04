@@ -23,8 +23,8 @@ return new class extends Migration
             $table->unsignedSmallInteger('racks_number')->nullable();
             $table->unsignedSmallInteger('shelves_number')->nullable();
             $table->unsignedSmallInteger('compartments_number')->nullable();
-            $table->decimal('total_capacity', 10, 2)->nullable()->comment('Tong suc chua (kg)');
-            $table->decimal('used_capacity', 10, 2)->nullable()->comment('Tong suc chua da su dung (kg)');
+            $table->decimal('total_capacity', 10, 2)->default(0)->comment('Tong suc chua (kg)');
+            $table->decimal('used_capacity', 10, 2)->default(0)->comment('Tong suc chua da su dung (kg)');
             $table->tinyInteger('publish')->default(1)->comment('1: Active, 2: Inactive');
             $table->softDeletes();
             $table->timestamps();

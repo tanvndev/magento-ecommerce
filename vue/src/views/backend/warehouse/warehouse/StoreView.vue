@@ -9,21 +9,12 @@
               <a-card class="mt-3" title="Thông tin chung">
                 <AleartError :errors="state.error" />
                 <a-row :gutter="[16, 16]">
-                  <a-col :span="12">
+                  <a-col :span="24">
                     <InputComponent
                       label="Tên kho hàng"
                       :required="true"
                       name="name"
-                      placeholder="Tên kho hàng"
-                    />
-                  </a-col>
-
-                  <a-col :span="12">
-                    <InputComponent
-                      label="Mã kho hàng"
-                      :required="true"
-                      name="code"
-                      placeholder="Mã kho hàng"
+                      placeholder="Kho + Vị trí. Ví dụ: Kho Hoàng Mai, Kho Hà Nam, ..."
                     />
                   </a-col>
 
@@ -113,7 +104,6 @@ const state = reactive({
 const validationSchema = computed(() => {
   return yup.object({
     name: yup.string().required('Tên kho hàng không được để trống.'),
-    code: yup.string().required('Mã kho hàng không được để trống.'),
     address: yup.string().required('Địa chỉ kho hàng không được để trống.'),
     supervisor_name: yup.string().required('Tên người quản lý không được để trống.'),
     phone: yup
@@ -166,8 +156,10 @@ const fetchOne = async () => {
     email: data.value?.email,
     phone: data.value?.phone,
     address: data.value?.address,
-    shelve: data.value?.shelve,
-    row: data.value?.row,
+    aisles_number: data.value?.aisles_number,
+    racks_number: data.value?.racks_number,
+    shelves_number: data.value?.shelves_number,
+    compartments_number: data.value?.compartments_number,
     supervisor_name: data.value?.supervisor_name,
     description: data.value?.description
   });

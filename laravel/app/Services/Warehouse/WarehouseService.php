@@ -43,7 +43,11 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
             'publish' => request('publish'),
             'searchFields' => ['name', 'code', 'phone', 'supervisor_name'],
         ];
-        $select = ['id', 'name', 'code', 'phone', 'shelve', 'row', 'supervisor_name', 'publish'];
+        $select = [
+            'id', 'name', 'code', 'phone', 'address', 'description', 'total_capacity',
+            'used_capacity', 'supervisor_name', 'publish', 'aisles_number',
+            'racks_number', 'shelves_number', 'compartments_number',
+        ];
         $pageSize = request('pageSize');
 
         $data = $pageSize && request('page')
@@ -60,19 +64,37 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
             $payload = $this->perparePayload();
             $warehouse = $this->warehouseRepository->create($payload);
 
-            if (!$warehouse) {
-                throw new \Exception('Warehouse not created.');
-            }
-
-            $this->warehouse = collect([
-                'code' => $warehouse->code,
-                'name' => $warehouse->name
-            ]);
-
-            $this->createWarehouseStructure($warehouse, $payload);
+            $this->createWarehouse($warehouse, $payload);
 
             return successResponse('Tạo mới thành công.');
         }, 'Tạo mới thất bại.');
+    }
+
+    public function update($id)
+    {
+        return $this->executeInTransaction(function () use ($id) {
+
+            $payload = $this->perparePayload();
+            $warehouse = $this->warehouseRepository->save($id, $payload);
+
+            $this->createWarehouse($warehouse, $payload);
+
+            return successResponse('Cập nhập thành công.');
+        }, 'Cập nhập thất bại.');
+    }
+
+    private function createWarehouse($warehouse, array $payload)
+    {
+        if (!$warehouse) {
+            throw new \Exception('Warehouse not created.');
+        }
+
+        $this->warehouse = collect([
+            'code' => $warehouse->code,
+            'name' => $warehouse->name
+        ]);
+
+        $this->createWarehouseStructure($warehouse, $payload);
     }
 
     private function perparePayload(): array
@@ -115,37 +137,53 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
     {
         $warehouseName = $this->warehouse->get('name');
         $warehouseCode = $this->warehouse->get('code');
+        $aisleCode = sprintf('%s-A%02d', $warehouseCode, $number);
 
-        return $this->aisleRepository->create([
-            'warehouse_id' => $warehouseId,
-            'name' => "Dãy {$number} tại <{$warehouseName}>",
-            'code' => sprintf('%s-A%02d', $warehouseCode, $number),
-            'description' => "Đây là dãy {$number}"
-        ]);
+        return $this->aisleRepository->firstOrCreate(
+            [
+                'code' => $aisleCode,
+            ],
+            [
+                'warehouse_id' => $warehouseId,
+                'name' => "Dãy {$number} tại <{$warehouseName}>",
+                'code' => $aisleCode,
+                'description' => "Đây là dãy {$number}"
+            ]
+        );
     }
 
     private function createRack($aisleId, $aisleCode, $rackNumber)
     {
         $rackCode = sprintf('%s-R%02d', $aisleCode, $rackNumber);
 
-        return $this->rackRepository->create([
-            'aisle_id' => $aisleId,
-            'name' => "Kệ {$rackNumber}",
-            'code' => $rackCode,
-            'description' => "Đây là kệ {$rackNumber} của dãy {$aisleCode}",
-        ]);
+        return $this->rackRepository->firstOrCreate(
+            [
+                'code' => $rackCode,
+            ],
+            [
+                'aisle_id' => $aisleId,
+                'name' => "Kệ {$rackNumber}",
+                'code' => $rackCode,
+                'description' => "Đây là kệ {$rackNumber} của dãy {$aisleCode}",
+            ]
+        );
     }
 
     private function createShelf($rackId, $aisleCode, $rackCode, $shelfNumber)
     {
         $shelfCode = sprintf('%s-S%02d', $rackCode, $shelfNumber);
 
-        return $this->shelfRepository->create([
-            'rack_id' => $rackId,
-            'name' => "Tầng {$shelfNumber}",
-            'code' => $shelfCode,
-            'description' => "Đây là tầng {$shelfNumber} trong kệ {$rackCode} của dãy {$aisleCode}",
-        ]);
+        return $this->shelfRepository->firstOrCreate(
+            [
+                'code' => $shelfCode,
+            ],
+            [
+                'rack_id' => $rackId,
+                'name' => "Tầng {$shelfNumber}",
+                'code' => $shelfCode,
+                'description' => "Đây là tầng {$shelfNumber} trong kệ {$rackCode} của dãy {$aisleCode}",
+            ]
+        );
     }
 
     private function createCompartments($shelf, $compartmentNumbers)
@@ -156,14 +194,18 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
         for ($compartmentNumber = 1; $compartmentNumber <= $compartmentNumbers; $compartmentNumber++) {
             $compartmentCode = sprintf('%s-C%02d', $shelfCode, $compartmentNumber);
 
-            $this->compartmentRepository->create([
-                'shelf_id' => $shelfId,
-                'name' => "Khoang {$compartmentNumber}",
-                'code' => $compartmentCode,
-                'unique_identifier' => $compartmentCode,
-                'description' => $this->generateCompartmentDescription($compartmentCode),
-                'max_weight_capacity' => $this->maxWeightCapacity,
-            ]);
+            $this->compartmentRepository->firstOrCreate(
+                [
+                    'code' => $compartmentCode,
+                ],
+                [
+                    'shelf_id' => $shelfId,
+                    'name' => "Khoang {$compartmentNumber}",
+                    'code' => $compartmentCode,
+                    'description' => $this->generateCompartmentDescription($compartmentCode),
+                    'max_weight_capacity' => $this->maxWeightCapacity,
+                ]
+            );
         }
     }
 
@@ -182,16 +224,7 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
         return $result;
     }
 
-    public function update($id)
-    {
-        return $this->executeInTransaction(function () use ($id) {
 
-            $payload = request()->except('_token', '_method');
-            $this->warehouseRepository->update($id, $payload);
-
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
-    }
 
     public function destroy($id)
     {

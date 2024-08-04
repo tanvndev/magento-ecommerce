@@ -29,7 +29,7 @@ class BaseService implements BaseServiceInterface
 
     public function updateStatus()
     {
-        $this->executeInTransaction(function () {
+        return $this->executeInTransaction(function () {
             $repositoryName = lcfirst(request('modelName')) . 'Repository';
 
             $payload[request('field')] = request('value');
@@ -41,7 +41,7 @@ class BaseService implements BaseServiceInterface
 
     public function updateStatusMultiple()
     {
-        $this->executeInTransaction(function () {
+        return $this->executeInTransaction(function () {
             $repositoryName = lcfirst(request('modelName')) . 'Repository';
 
             $payload[request('field')] = request('value');
@@ -53,7 +53,7 @@ class BaseService implements BaseServiceInterface
 
     public function deleteMultiple()
     {
-        $this->executeInTransaction(function () {
+        return $this->executeInTransaction(function () {
             $repositoryName = lcfirst(request('modelName')) . 'Repository';
             $this->{$repositoryName}->deleteByWhereIn('id', request('modelIds'));
 

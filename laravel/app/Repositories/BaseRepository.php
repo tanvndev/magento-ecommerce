@@ -112,6 +112,12 @@ class BaseRepository implements BaseRepositoryInterface
         return $create->fresh();
     }
 
+    public function firstOrCreate(array $condition, array $payload = [])
+    {
+        $create = $this->model->firstOrCreate($condition, $payload);
+        return $create;
+    }
+
     public function createBatch($payload = [])
     {
         return $this->model->insert($payload);
@@ -149,9 +155,9 @@ class BaseRepository implements BaseRepositoryInterface
         return  $query->customWhere($conditions)->update($payload);
     }
 
-    public function updateOrInsert($payload = [], $conditions = [])
+    public function updateOrCreate($payload = [], $conditions = [])
     {
-        $this->model->updateOrInsert($conditions, $payload);
+        $this->model->updateOrCreate($conditions, $payload);
     }
 
     public function delete($modelId)

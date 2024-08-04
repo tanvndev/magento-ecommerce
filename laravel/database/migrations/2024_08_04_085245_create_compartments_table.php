@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('code', 50)->unique();
             $table->foreignId('shelf_id')->constrained('shelves')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('unique_identifier', 100)->unique()->comment('Ma dinh danh ví dụ: "A01-R05-S03-C12"');
             $table->string('description', 255)->nullable();
             $table->decimal('max_weight_capacity', 10, 2)->nullable()->comment('Tong suc chua (Kg)');
             $table->decimal('current_weight_used', 10, 2)->nullable()->comment('Suc chua da su dung (Kg)');

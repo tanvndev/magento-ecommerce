@@ -10,7 +10,9 @@ class BaseService {
         messages: response.messages
       };
     } catch (error) {
-      let messages = error.response ? error.response.messages : 'Unexpected error occurred';
+      let messages = error.response
+        ? error.response.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
       return {
         success: false,
         messages: messages
@@ -26,7 +28,9 @@ class BaseService {
         messages: response.messages
       };
     } catch (error) {
-      let messages = error.response ? error.response.messages : 'Unexpected error occurred';
+      let messages = error.response
+        ? error.response.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
       return {
         success: false,
         messages: messages
@@ -44,7 +48,9 @@ class BaseService {
         data: response.data
       };
     } catch (error) {
-      let messages = error.response ? error.response.messages : 'Unexpected error occurred';
+      let messages = error.response
+        ? error.response.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
       return {
         success: false,
         messages: messages
@@ -64,7 +70,9 @@ class BaseService {
         data: response.data
       };
     } catch (error) {
-      let messages = error.response ? error.response.data.messages : 'Unexpected error occurred';
+      let messages = error.response
+        ? error.response.data.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
       return {
         success: false,
         messages: messages
@@ -85,7 +93,9 @@ class BaseService {
         messages: response.messages
       };
     } catch (error) {
-      let messages = error.response ? error.response.data.messages : 'Unexpected error occurred';
+      let messages = error.response
+        ? error.response.data.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
       return {
         success: false,
         messages: messages
@@ -106,7 +116,9 @@ class BaseService {
         messages: response.messages
       };
     } catch (error) {
-      let messages = error.response ? error.response.data.messages : 'Unexpected error occurred';
+      let messages = error.response
+        ? error.response.data.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
       return {
         success: false,
         messages: messages
@@ -125,7 +137,9 @@ class BaseService {
         messages: response.messages
       };
     } catch (error) {
-      let messages = error.response ? error.response.data.messages : 'Unexpected error occurred';
+      let messages = error.response
+        ? error.response.data.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
       return {
         success: false,
         messages: messages
@@ -141,7 +155,9 @@ class BaseService {
         messages: response.messages
       };
     } catch (error) {
-      let messages = error.response ? error.response.data.messages : 'Unexpected error occurred';
+      let messages = error.response
+        ? error.response.data.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
       return {
         success: false,
         messages: messages

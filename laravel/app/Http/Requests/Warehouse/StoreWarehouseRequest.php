@@ -27,6 +27,7 @@ class StoreWarehouseRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|string',
+            'code' => 'unique:warehouses,code',
             'phone' => 'required|regex:/^0[0-9]{9}$/',
             'address' => 'required|string',
             'supervisor_name' => 'required|string',
@@ -49,6 +50,7 @@ class StoreWarehouseRequest extends FormRequest
     {
         return [
             'name' => 'Tên kho hàng',
+            'code' => 'Mã kho hàng',
             'phone' => 'Số điện thoại',
             'address' => 'Địa chỉ kho hàng',
             'supervisor_name' => 'Tên người quản lý',
