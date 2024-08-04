@@ -39,10 +39,18 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
         return $this->executeInTransaction(function () {
 
             $payload = request()->except('_token', '_method');
-            $this->warehouseRepository->create($payload);
+
+            if (isset($payload['warehouse_configurations']) && !empty($payload['warehouse_configurations'])) {
+            }
+
+            // $this->warehouseRepository->create($payload);
 
             return successResponse('Tạo mới thành công.');
         }, 'Tạo mới thất bại.');
+    }
+
+    private function createWarehouseStructure($warehouse, array $payload)
+    {
     }
 
     public function update($id)

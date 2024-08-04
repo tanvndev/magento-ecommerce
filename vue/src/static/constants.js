@@ -36,4 +36,19 @@ const TAXT_STATUS = [
     label: 'Giá sản phẩm chưa bao gồm thuế'
   }
 ];
-export { PUBLISH, PAGESIZE, PRODUCT_TYPE, TAXT_STATUS };
+
+const WAREHOUSE_CONFIG = [
+  {
+    value: '5-10-3-5',
+    label: 'Nhỏ (5 dãy, 10 kệ, 3 tầng, 5 khoang)'
+  },
+  {
+    value: '10-20-4-8',
+    label: 'Trung bình (10 dãy, 20 kệ, 4 tầng, 8 khoang)'
+  },
+  {
+    value: '20-30-5-10',
+    label: 'Lớn (20 dãy, 30 kệ, 5 tầng, 10 khoang)'
+  }
+];
+export { PUBLISH, PAGESIZE, PRODUCT_TYPE, TAXT_STATUS, WAREHOUSE_CONFIG };

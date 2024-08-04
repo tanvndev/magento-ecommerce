@@ -1,8 +1,9 @@
 <template>
   <label v-if="props.label" :for="props.name" :class="props.labelClass"
     >{{ props.label }}
-    <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
-  >
+    <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
+    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" color="#108ee9" />
+  </label>
   <div>
     <!-- INPUT TEXT -->
     <a-input
@@ -55,7 +56,7 @@
 <script setup>
 import { useField } from 'vee-validate';
 import { watch } from 'vue';
-import _ from 'lodash';
+import { TooltipComponent } from '@/components/backend';
 
 const props = defineProps({
   typeInput: {
@@ -100,6 +101,11 @@ const props = defineProps({
   },
   oldValue: {
     type: [String, Boolean, Number],
+    default: ''
+  },
+
+  tooltipText: {
+    type: String,
     default: ''
   }
 });

@@ -68,7 +68,7 @@
             <a-col span="16">
               <InputComponent
                 :name="`variable[sku][${i}]`"
-                label="Mã sản phẩm"
+                label="SKU"
                 placeholder="Tự sinh nếu không nhập"
               />
             </a-col>

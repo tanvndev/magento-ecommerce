@@ -17,10 +17,14 @@ return new class extends Migration
             $table->string('code', 100)->unique();
             $table->string('phone', 15)->nullable();
             $table->string('address', 50)->nullable();
-            $table->integer('row')->default(0)->comment('So hang');
-            $table->integer('shelve')->default(0)->comment('So ke hang');
             $table->string('supervisor_name', 50)->nullable()->comment('Ten nguoi quan ly');
             $table->string('description', 255)->nullable();
+            $table->unsignedSmallInteger('aisles_number')->nullable();
+            $table->unsignedSmallInteger('racks_number')->nullable();
+            $table->unsignedSmallInteger('shelves_number')->nullable();
+            $table->unsignedSmallInteger('compartments_number')->nullable();
+            $table->decimal('total_capacity', 10, 2)->nullable()->comment('Tong suc chua (kg)');
+            $table->decimal('used_capacity', 10, 2)->nullable()->comment('Tong suc chua da su dung (kg)');
             $table->tinyInteger('publish')->default(1)->comment('1: Active, 2: Inactive');
             $table->softDeletes();
             $table->timestamps();

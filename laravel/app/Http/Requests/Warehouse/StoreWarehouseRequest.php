@@ -30,9 +30,11 @@ class StoreWarehouseRequest extends FormRequest
             'code' => 'required|unique:warehouses,code',
             'phone' => 'required|regex:/^0[0-9]{9}$/',
             'address' => 'required',
-            'shelve' => 'required',
-            'row' => 'required',
             'supervisor_name' => 'required',
+            'aisles_number' => 'required',
+            'racks_number' => 'required',
+            'shelves_number' => 'required',
+            'compartments_number' => 'required',
         ];
     }
 
@@ -43,9 +45,11 @@ class StoreWarehouseRequest extends FormRequest
             'code' => 'Mã kho hàng',
             'phone' => 'Số điện thoại',
             'address' => 'Địa chỉ kho hàng',
-            'shelve' => 'Số kệ kho hàng',
-            'row' => 'Số hàng',
             'supervisor_name' => 'Tên người quản lý',
+            'aisles_number' => 'Số dãy',
+            'racks_number' => 'Số kệ',
+            'shelves_number' => 'Số tầng',
+            'compartments_number' => 'Số khoang',
         ];
     }
 

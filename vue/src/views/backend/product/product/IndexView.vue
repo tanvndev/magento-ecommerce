@@ -82,10 +82,9 @@ const state = reactive({
 
 const columns = [
   {
-    title: 'Tên sản phẩm',
+    title: 'Sản phẩm',
     dataIndex: 'name',
-    key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name)
+    key: 'name'
   },
   {
     title: 'Địa chỉ email',

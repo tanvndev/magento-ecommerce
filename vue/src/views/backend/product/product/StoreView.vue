@@ -70,17 +70,16 @@ import {
   BreadcrumbComponent,
   AleartError,
   InputComponent,
-  SelectComponent,
   EditorComponent,
   InputFinderComponent
 } from '@/components/backend';
 import _ from 'lodash';
 import MainComponent from './partials/MainComponent.vue';
 import SidebarComponent from './partials/SidebarComponent.vue';
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, watch } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
-import { formatDataToSelect, formatMessages } from '@/utils/format';
+import { formatMessages } from '@/utils/format';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
@@ -94,7 +93,7 @@ const state = reactive({
 });
 
 const store = useStore();
-const { getOne, getAll, create, update, messages, data } = useCRUD();
+const { getOne, create, update, messages, data } = useCRUD();
 
 const id = computed(() => router.currentRoute.value.params.id || null);
 const attributes = computed(() => store.getters['productStore/getAttributes']);
@@ -112,7 +111,7 @@ const { handleSubmit, setValues, setFieldValue } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values);
+  state.error = {};
   const response =
     id.value && id.value > 0
       ? await update(state.endpoint, id.value, values)
@@ -120,9 +119,8 @@ const onSubmit = handleSubmit(async (values) => {
   if (!response) {
     return (state.error = formatMessages(messages.value));
   }
-  // store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  // error.value = {};
-  // router.push({ name: 'product.index' });
+  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  router.push({ name: 'product.index' });
 });
 
 const fetchOne = async () => {

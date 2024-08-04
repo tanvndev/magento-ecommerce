@@ -21,15 +21,20 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $condition = [
             'search' => addslashes(request('search')),
-            'searchFields' => ['fullname', 'email', 'phone', 'address'],
             'publish' => request('publish'),
         ];
 
+        $select =  ['id', 'name', 'brand_id', 'supplier_id', 'product_catalogue_id', 'sku', 'image', 'publish', 'product_type'];
+        $orderBy = ['id' => 'desc'];
+        $relations = ['variants', 'warehouses', 'catalogue', 'brand', 'supplier'];
+
         $data = $this->productRepository->pagination(
-            ['id', 'fullname', 'email', 'phone', 'address', 'publish'],
+            $select,
             $condition,
             request('pageSize'),
-            ['id' => 'desc'],
+            $orderBy,
+            [],
+            $relations
         );
 
         return $data;

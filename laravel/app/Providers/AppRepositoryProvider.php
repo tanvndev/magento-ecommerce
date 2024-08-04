@@ -39,6 +39,14 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Supplier\SupplierRepositoryInterface' => 'App\Repositories\Supplier\SupplierRepository',
         // Tax
         'App\Repositories\Interfaces\Tax\TaxRepositoryInterface' => 'App\Repositories\Tax\TaxRepository',
+        // Aisle
+        'App\Repositories\Interfaces\Warehouse\AisleRepositoryInterface' => 'App\Repositories\Warehouse\AisleRepository',
+        // Compartment
+        'App\Repositories\Interfaces\Warehouse\CompartmentRepositoryInterface' => 'App\Repositories\Warehouse\CompartmentRepository',
+        // Rack
+        'App\Repositories\Interfaces\Warehouse\RackRepositoryInterface' => 'App\Repositories\Warehouse\RackRepository',
+        // Shelf
+        'App\Repositories\Interfaces\Warehouse\ShelfRepositoryInterface' => 'App\Repositories\Warehouse\ShelfRepository',
 
     ];
 

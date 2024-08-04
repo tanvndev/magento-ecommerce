@@ -66,27 +66,7 @@
               </a-card>
             </a-col>
             <a-col :span="8">
-              <a-card class="mt-3" title="Kho hàng">
-                <a-row :gutter="[16, 16]">
-                  <a-col :span="12">
-                    <InputNumberComponent
-                      label="Số kệ"
-                      :required="true"
-                      name="shelve"
-                      placeholder="Số kệ"
-                    />
-                  </a-col>
-
-                  <a-col :span="12">
-                    <InputNumberComponent
-                      label="Số hàng"
-                      :required="true"
-                      name="row"
-                      placeholder="Số hàng"
-                    />
-                  </a-col>
-                </a-row>
-              </a-card>
+              <ConfigView @on-change-config-warehouse="handleChangeConfigWarehouse" />
             </a-col>
           </a-row>
 
@@ -107,8 +87,7 @@ import {
   MasterLayout,
   BreadcrumbComponent,
   AleartError,
-  InputComponent,
-  InputNumberComponent
+  InputComponent
 } from '@/components/backend';
 import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
@@ -117,6 +96,7 @@ import { formatMessages } from '@/utils/format';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
+import ConfigView from './partials/ConfigView.vue';
 
 const store = useStore();
 const id = computed(() => router.currentRoute.value.params.id || null);
@@ -126,25 +106,47 @@ const { getOne, create, update, messages, data } = useCRUD();
 const state = reactive({
   endpoint: 'warehouses',
   pageTitle: 'Thêm mới kho hàng',
+  isConfigWarehouse: true,
   error: {}
 });
 
-const { handleSubmit, setValues } = useForm({
-  validationSchema: yup.object({
-    name: yup.string().required('Tên kho hàng không được để trống.'),
-    code: yup.string().required('Mã kho hàng không được để trống.'),
-    address: yup.string().required('Địa chỉ kho hàng không được để trống.'),
-    shelve: yup.string().required('Số kệ kho hàng không được để trống.'),
-    row: yup.string().required('Số hàng kho hàng không được để trống.'),
-    supervisor_name: yup.string().required('Tên người quản lý không được để trống.'),
-    phone: yup
-      .string()
-      .required('Số điện thoại không được để trống.')
-      .matches(/(0)[0-9]{9}/, 'Số điện thoại không đúng định dạng.')
-  })
+const validationSchema = computed(() => {
+  return yup.object({
+    // name: yup.string().required('Tên kho hàng không được để trống.'),
+    // code: yup.string().required('Mã kho hàng không được để trống.'),
+    // address: yup.string().required('Địa chỉ kho hàng không được để trống.'),
+    // supervisor_name: yup.string().required('Tên người quản lý không được để trống.'),
+    // phone: yup
+    //   .string()
+    //   .required('Số điện thoại không được để trống.')
+    //   .matches(/(0)[0-9]{9}/, 'Số điện thoại không đúng định dạng.'),
+    aisles_number: state.isConfigWarehouse
+      ? yup.number().required('Số dãy không được để trống.')
+      : yup.number().nullable().notRequired(),
+    racks_number: state.isConfigWarehouse
+      ? yup.number().required('Số kệ không được để trống.')
+      : yup.number().nullable().notRequired(),
+    shelves_number: state.isConfigWarehouse
+      ? yup.number().required('Số tầng không được để trống.')
+      : yup.number().nullable().notRequired(),
+    compartments_number: state.isConfigWarehouse
+      ? yup.number().required('Số khoang không được để trống.')
+      : yup.number().nullable().notRequired()
+  });
 });
 
+const { handleSubmit, setValues } = useForm({
+  validationSchema
+});
+
+const handleChangeConfigWarehouse = (value) => {
+  state.isConfigWarehouse = value;
+  console.log(state.isConfigWarehouse);
+};
+
 const onSubmit = handleSubmit(async (values) => {
+  console.log(values);
+  return;
   const response =
     id.value && id.value > 0
       ? await update(state.endpoint, id.value, values)

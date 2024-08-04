@@ -101,7 +101,7 @@ const fetchOne = async () => {
 
 onMounted(() => {
   if (id.value && id.value > 0) {
-    state.pageTitle.value = 'Cập nhập nhóm thuộc tính.';
+    state.pageTitle = 'Cập nhập nhóm thuộc tính.';
     fetchOne();
   }
 });

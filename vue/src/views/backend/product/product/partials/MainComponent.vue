@@ -17,7 +17,7 @@
         />
       </a-col>
       <a-col :span="12">
-        <InputComponent name="sku" label="Mã sản phẩm" placeholder="Tự sinh nếu không nhập" />
+        <InputComponent name="sku" label="SKU" placeholder="Tự sinh nếu không nhập" />
       </a-col>
 
       <a-col :span="24" v-if="state.productType">
@@ -55,7 +55,7 @@
             <!-- Giao hang partials -->
             <ShippingComponent />
           </a-tab-pane>
-          <!--  -->
+          <!-- Upsell -->
           <a-tab-pane key="4">
             <template #tab>
               <span>
@@ -63,7 +63,7 @@
                 Các sản phẩm được kết nối
               </span>
             </template>
-            <div>Các sản phẩm được kết nối</div>
+            <UpsellComponent />
           </a-tab-pane>
           <!-- Thuoc tinh -->
           <a-tab-pane key="5" v-if="state.productType === 'variable'">
@@ -92,19 +92,18 @@
 </template>
 
 <script setup>
-import { SelectComponent, InputNumberComponent, InputComponent } from '@/components/backend';
+import { SelectComponent, InputComponent } from '@/components/backend';
 import AttributeComponent from './AttributeComponent.vue';
 import VariantComponent from './VariantComponent.vue';
 import CommonPriceComponent from './CommonPriceComponent.vue';
-import { computed, onMounted, reactive, ref } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted, reactive } from 'vue';
 import { useCRUD } from '@/composables';
 import InstockComponent from './InstockComponent.vue';
 import ShippingComponent from './ShippingComponent.vue';
+import UpsellComponent from './UpsellComponent.vue';
 import { PRODUCT_TYPE } from '@/static/constants';
 
-const { getAll, data } = useCRUD();
-const store = useStore();
+const { getAll } = useCRUD();
 
 // STATE
 const state = reactive({

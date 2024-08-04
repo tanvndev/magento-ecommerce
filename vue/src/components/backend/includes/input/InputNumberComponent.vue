@@ -1,8 +1,9 @@
 <template>
   <label v-if="props.label" :for="props.name" :class="props.labelClass"
     >{{ props.label }}
-    <span v-if="props.required" class="font-semibold text-red-500">(*)</span></label
-  >
+    <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
+    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" color="#108ee9" />
+  </label>
   <div>
     <a-input-number
       v-if="props.typeInput == 'default'"
@@ -13,8 +14,8 @@
       :status="errorMessage ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
-      :formatter="(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-      :parser="(value) => value.replace(/\\s?|(,*)/g, '')"
+      :formatter="formatNumber"
+      :parser="parseNumber"
     />
 
     <a-input-number
@@ -39,6 +40,7 @@
 </template>
 
 <script setup>
+import { TooltipComponent } from '@/components/backend';
 import { useField } from 'vee-validate';
 
 const props = defineProps({
@@ -82,8 +84,23 @@ const props = defineProps({
   max: {
     type: Number,
     default: 100
+  },
+  tooltipText: {
+    type: String,
+    default: ''
   }
 });
+
+const formatNumber = (value) => {
+  if (!value) return '';
+  // Convert to string, then add thousands separators using dot.
+  return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
+const parseNumber = (value) => {
+  // Remove all non-numeric characters (including dots) and convert to number.
+  return value.replace(/\./g, '').replace(/[^0-9]/g, '');
+};
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
