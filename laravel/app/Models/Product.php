@@ -13,63 +13,25 @@ class Product extends Model
     use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'canonical',
         'product_type',
         'product_catalogue_id',
         'brand_id',
-        'supplier_id',
-        'sku',
         'excerpt',
         'description',
         'upsell_ids',
-        'weight',
-        'length',
-        'width',
-        'height',
         'is_taxable',
-        'allow_sell',
         'publish',
-        'image',
-        'album',
         'input_tax_id',
-        'ouput_tax_id',
+        'output_tax_id',
         'tax_status',
     ];
 
     protected $casts = [
         'upsell_ids' => 'json',
         'album' => 'json',
+        'shipping_class_id' => 'json',
+        'payment_method_id' => 'json',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->canonical = self::generateUniqueSlug($model->name);
-        });
-
-        static::updating(function ($model) {
-            $model->canonical = self::generateUniqueSlug($model->name, $model->id);
-        });
-    }
-
-    public static function generateUniqueSlug($name, $excludeId = null)
-    {
-        $canonical = Str::slug($name);
-        $originalCanonical = $canonical;
-        $count = 1;
-
-        while (self::where('canonical', $canonical)
-            ->where('id', '!=', $excludeId)
-            ->exists()
-        ) {
-            $canonical = "{$originalCanonical}-" . $count++;
-        }
-
-        return $canonical;
-    }
 
     public function catalogue()
     {

@@ -129,7 +129,7 @@
           </a-row>
         </a-col>
         <!-- Giao hang -->
-        <a-col span="24" class="mb-4 border-b pb-4">
+        <a-col span="24">
           <a-row class="items-center" :gutter="[16, 10]">
             <a-col span="6">
               <InputNumberComponent
@@ -161,33 +161,6 @@
             </a-col>
           </a-row>
         </a-col>
-        <!-- Kho hang -->
-        <a-col span="24" class="mb-4 border-b pb-4" v-if="props.warehouses.length">
-          <h3 class="mb-5 text-center text-lg uppercase">Kiểm kê kho hàng</h3>
-          <a-row class="items-center" :gutter="[30, 20]">
-            <a-col
-              span="12"
-              v-for="warehouse in props.warehouses"
-              :key="`${warehouse.id}_warehouse`"
-            >
-              <h4 class="mb-2 text-center">{{ warehouse.name }}</h4>
-              <a-row :gutter="[10, 10]">
-                <a-col span="12">
-                  <InputNumberComponent
-                    :name="`stock[in_stock][${warehouse.id}][${i}]`"
-                    placeholder="Tồn kho"
-                  />
-                </a-col>
-                <a-col span="12">
-                  <InputNumberComponent
-                    :name="`stock[cog_price][${warehouse.id}][${i}]`"
-                    placeholder="Giá vốn"
-                  />
-                </a-col>
-              </a-row>
-            </a-col>
-          </a-row>
-        </a-col>
       </a-row>
     </a-col>
   </a-row>
@@ -203,13 +176,6 @@ import {
   InputFinderComponent
 } from '@/components/backend';
 import { useStore } from 'vuex';
-
-const props = defineProps({
-  warehouses: {
-    type: [Array, Object],
-    default: () => []
-  }
-});
 
 const store = useStore();
 const attributes = computed(() => store.getters['productStore/getAttributes']);

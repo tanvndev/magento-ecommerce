@@ -324,7 +324,7 @@ if (!function_exists('generateSKU')) {
         }, $options);
 
         $sku = $skuProductName . '-' . implode('-', $cleanOptions);
-        return $sku;
+        return $sku . '-' . time();
     }
 }
 if (!function_exists('removeEmptyValues')) {

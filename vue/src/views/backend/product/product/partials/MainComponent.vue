@@ -33,17 +33,6 @@
             <!-- Chung partials -->
             <CommonPriceComponent />
           </a-tab-pane>
-          <!-- Kho hang -->
-          <a-tab-pane key="2" v-if="state.productType === 'simple'">
-            <template #tab>
-              <span>
-                <i class="far fa-dolly-flatbed-alt mr-1"></i>
-                Kiểm kê kho hàng
-              </span>
-            </template>
-            <!-- Kho hang partials -->
-            <InstockComponent :warehouses="state.warehouses" />
-          </a-tab-pane>
           <!-- Giao hang -->
           <a-tab-pane key="3">
             <template #tab>
@@ -98,7 +87,6 @@ import VariantComponent from './VariantComponent.vue';
 import CommonPriceComponent from './CommonPriceComponent.vue';
 import { onMounted, reactive } from 'vue';
 import { useCRUD } from '@/composables';
-import InstockComponent from './InstockComponent.vue';
 import ShippingComponent from './ShippingComponent.vue';
 import UpsellComponent from './UpsellComponent.vue';
 import { PRODUCT_TYPE } from '@/static/constants';

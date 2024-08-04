@@ -105,8 +105,7 @@ const { handleSubmit, setValues, setFieldValue } = useForm({
     product_type: yup.string().required('Loại sản phẩm không được để trống.'),
     // image: yup.string().required('Ảnh sản phẩm không được để trống.'),
     // album: yup.string().required('Thư viện sản phẩm không được để trống.'),
-    product_catalogue_id: yup.string().required('Vui lòng chọn nhóm sản phẩm.'),
-    supplier_id: yup.string().required('Vui lòng chọn nhà cung cấp.')
+    product_catalogue_id: yup.string().required('Vui lòng chọn nhóm sản phẩm.')
   })
 });
 

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('uuid', 255)->unique();
             $table->string('name', 255)->comment('Ten san pham se luu chung');
+            $table->string('canonical', 255)->unique();
             $table->string('sku', 100)->nullable();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('price', 15, 2)->comment('Gia ban');

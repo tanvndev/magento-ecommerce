@@ -8,6 +8,7 @@ use App\Services\Interfaces\Product\ProductServiceInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
@@ -46,15 +47,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $payload = $this->preparePayload();
             $product = $this->productRepository->create($payload);
 
-            if ($payload['product_type'] == 'variable') {
-                $productVariantIds = $this->createProductVariant($product, $payload);
-
-                if (count($productVariantIds)) {
-                    $this->createProductVariantWarehouse($payload['stock'], $product, $productVariantIds);
-                }
-            } elseif ($payload['product_type'] == 'simple') {
-                $this->createProductWarehouse($product, $payload);
-            }
+            $this->createProductVariant($product, $payload);
 
             return successResponse('Tạo mới thành công.');
         }, 'Tạo mới thất bại.');
@@ -83,34 +76,56 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $payload;
     }
 
-
-
     private function createProductVariant($product, array $payload)
     {
+        $canonical = Str::slug($payload['name']);
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ',' . $canonical);
+        $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
+        $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
+
         $mainData = [
             'name' => $payload['name'] ?? null,
+            'uuid' => $uuid,
+            'canonical' => $canonical,
             'image' => $payload['image'] ?? null,
             'album' => $payload['album'] ?? null,
             'price' => $payload['price'] ?? null,
+            'sale_price' => $payload['sale_price'] ?? null,
             'import_price' => $payload['import_price'] ?? null,
+            'is_discount_time' => $is_discount_time,
             'weight' => $payload['weight'] ?? null,
             'length' => $payload['length'] ?? null,
             'width' => $payload['width'] ?? null,
             'height' => $payload['height'] ?? null,
+            'sku' => generateSKU($payload['name'], 3, ['default']),
+            'sale_price_start_at' => $sale_price_start_at ? convertToYyyyMmDdHhMmSs($sale_price_start_at) : null,
+            'sale_price_end_at' => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
         ];
+
+        $product->variants()->create($mainData);
+
+        if ($payload['product_type'] === 'variable') {
+            $this->createVariableProductVariants($product, $payload, $mainData);
+        }
+    }
+
+    private function createVariableProductVariants($product, array $payload, array $mainData)
+    {
         $variable = $payload['variable'] ?? [];
-        $variantTexts =  json_decode($payload['variants'] ?? '[]', true);
-        $attributesArray = json_decode($payload['attributes'] ?? '[]', true);
-        $attributeIds = removeEmptyValues($attributesArray)['attrIds'];
+        $variantTexts = json_decode($payload['variants'] ?? '[]', true);
+        $attributeIds = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true))['attrIds'];
 
         $productVariantPayload = collect($variable['count'] ?? [])
-            ->map(function ($count, $key) use ($mainData, $variable, $variantTexts, $product) {
+            ->map(function ($count, $key) use ($mainData, $variable, $variantTexts) {
                 $options = explode('-', $variantTexts[$key] ?? '');
                 $sku = generateSKU($mainData['name'], 3, $options);
+                $name = "{$mainData['name']} {$variantTexts[$key]}";
 
                 $variantData = [
-                    'name' => "{$mainData['name']} {$variantTexts[$key]}",
-                    'uuid' => Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . $sku),
+                    'name' => $name,
+                    'uuid' => Uuid::uuid5(Uuid::NAMESPACE_DNS, $sku),
+                    'canonical' => Str::slug($name),
                     'image' => $variable['image'][$key] ?? $mainData['image'],
                     'album' => $variable['album'][$key] ?? $mainData['album'],
                     'price' => $variable['price'][$key] ?? $mainData['price'],
@@ -122,13 +137,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'length' => $variable['length'][$key] ?? $mainData['length'],
                     'weight' => $variable['weight'][$key] ?? $mainData['weight'],
                     'sku' => $sku,
+                    'sale_price_start_at' => isset($variable['sale_price_time'][$key][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][$key][0]) : null,
+                    'sale_price_end_at' => isset($variable['sale_price_time'][$key][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][$key][1]) : null,
                 ];
-
-                if ($variantData['is_discount_time']) {
-                    $salePriceTime = $variable['sale_price_time'][$key] ?? [];
-                    $variantData['sale_price_start_at'] = !empty($salePriceTime[0]) ? convertToYyyyMmDdHhMmSs($salePriceTime[0]) : null;
-                    $variantData['sale_price_end_at'] = !empty($salePriceTime[1]) ? convertToYyyyMmDdHhMmSs($salePriceTime[1]) : null;
-                }
 
                 return $variantData;
             })
@@ -136,9 +147,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->toArray();
 
         $createdVariants = $product->variants()->createMany($productVariantPayload);
-        $productVariantIds = $createdVariants->pluck('id')->toArray();
-        $attributeCombines = $this->combineAttribute(array_values($attributeIds));
 
+        $attributeCombines = $this->combineAttribute(array_values($attributeIds));
         $variantAttributePayload = $createdVariants->flatMap(function ($variant, $index) use ($attributeCombines) {
             return collect($attributeCombines[$index])->map(function ($attributeId) use ($variant) {
                 return [
@@ -146,12 +156,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'attribute_id' => $attributeId,
                 ];
             });
-        })
-            ->values()
-            ->all();
+        })->values()->all();
 
         DB::table('product_variant_attribute')->insert($variantAttributePayload);
-        return $productVariantIds;
     }
 
 
@@ -169,43 +176,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             }, $acc)) : $attr;
         }, []);
     }
-
-
-    private function createProductWarehouse($product, array $payload)
-    {
-        $stock = $payload['stock'] ?? [];
-        $data = [];
-        if (count($stock)) {
-            foreach ($stock['in_stock'] as $key => $inStock) {
-                $data[] = [
-                    'warehouse_id' => $key,
-                    'in_stock' => $inStock[0] ?? 0,
-                    'cog_price' => $stock['cog_price'][$key][0] ?? 0,
-                    'type' => 'initial',
-                ];
-            }
-        }
-        $product->warehouses()->sync($data);
-    }
-
-    private function createProductVariantWarehouse(array $stocks, $product, array $productVariantIds)
-    {
-        $data = [];
-        foreach ($productVariantIds as $key => $productVariantId) {
-            foreach ($stocks['in_stock'] as $keyStock => $stock) {
-                $data[] = [
-                    'product_variant_id' => $productVariantId,
-                    'warehouse_id' => $keyStock,
-                    'in_stock' => $stock[$key] ?? 0,
-                    'cog_price' => $stocks['cog_price'][$keyStock][$key] ?? 0,
-                    'type' => 'initial',
-                ];
-            }
-        }
-
-        $product->warehouses()->sync($data);
-    }
-
 
     public function update($id)
     {

@@ -10,7 +10,7 @@
       <InputNumberComponent name="width" label="Rộng (cm)" placeholder="Rộng" />
     </a-col>
     <a-col span="6">
-      <InputNumberComponent name="hight" label="Cao (cm)" placeholder="Cao" />
+      <InputNumberComponent name="height" label="Cao (cm)" placeholder="Cao" />
     </a-col>
   </a-row>
   <a-row :gutter="[16, 10]" class="mt-4">
