@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Warehouse;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-
 use App\Enums\ResponseEnum;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreWarehouseRequest extends FormRequest
 {
@@ -33,7 +32,7 @@ class StoreWarehouseRequest extends FormRequest
             'supervisor_name' => 'required|string',
         ];
 
-        if (!$this->has('warehouse_configurations') || !$this->get('warehouse_configurations')) {
+        if (! $this->has('warehouse_configurations') || ! $this->get('warehouse_configurations')) {
             $rules = array_merge($rules, [
                 'aisles_number' => 'required|integer|min:1',
                 'racks_number' => 'required|integer|min:1',
@@ -44,7 +43,6 @@ class StoreWarehouseRequest extends FormRequest
 
         return $rules;
     }
-
 
     public function attributes()
     {
@@ -64,7 +62,7 @@ class StoreWarehouseRequest extends FormRequest
     public function messages()
     {
         return __('request.messages') + [
-            'phone.regex' => 'Số điện thoại không đúng dạng.'
+            'phone.regex' => 'Số điện thoại không đúng dạng.',
         ];
     }
 

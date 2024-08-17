@@ -3,10 +3,9 @@
 namespace App\Http\Requests\Tax;
 
 use App\Enums\ResponseEnum;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
 
 class StoreTaxRequest extends FormRequest
 {

@@ -1,20 +1,23 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\Brand;
 
 use App\Repositories\Interfaces\Brand\BrandRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Brand\BrandServiceInterface;
-use Illuminate\Support\Facades\DB;
 
 class BrandService extends BaseService implements BrandServiceInterface
 {
     protected $brandRepository;
+
     public function __construct(
         BrandRepositoryInterface $brandRepository,
     ) {
         $this->brandRepository = $brandRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -42,7 +45,6 @@ class BrandService extends BaseService implements BrandServiceInterface
         }, 'Tạo mới thất bại.');
     }
 
-
     public function update($id)
     {
         return $this->executeInTransaction(function () use ($id) {
@@ -54,11 +56,11 @@ class BrandService extends BaseService implements BrandServiceInterface
         }, 'Cập nhập thất bại.');
     }
 
-
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->brandRepository->delete($id);
+
             return successResponse('Xóa thành công.');
         }, 'Xóa thất bại.');
     }

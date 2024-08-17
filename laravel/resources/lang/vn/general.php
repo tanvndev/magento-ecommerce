@@ -1,4 +1,5 @@
 <?php
+
 return [
     'publish' => [
         '-1' => 'Chọn tình trạng',
@@ -54,35 +55,35 @@ return [
     ],
     'apply_condition_item_select' => [
         [
-            "id" => "staff_take_care_customer",
-            "name" => "Nhân viên chăm sóc khách hàng",
+            'id' => 'staff_take_care_customer',
+            'name' => 'Nhân viên chăm sóc khách hàng',
         ],
         [
-            "id" => "customer_group",
-            "name" => "Nhóm khách hàng",
+            'id' => 'customer_group',
+            'name' => 'Nhóm khách hàng',
         ],
         [
-            "id" => "customer_gender",
-            "name" => "Giới tính",
+            'id' => 'customer_gender',
+            'name' => 'Giới tính',
         ],
         [
-            "id" => "customer_birthday",
-            "name" => "Ngày sinh",
+            'id' => 'customer_birthday',
+            'name' => 'Ngày sinh',
         ],
     ],
     'gender' => [
         [
             'id' => 1,
-            'name' => 'Nam'
+            'name' => 'Nam',
         ],
         [
             'id' => 2,
-            'name' => 'Nữ'
+            'name' => 'Nữ',
         ],
         [
             'id' => 3,
-            'name' => 'Không xác định'
-        ]
+            'name' => 'Không xác định',
+        ],
     ],
     'day' => array_map(function ($value) {
         return ['id' => $value - 1, 'name' => $value];

@@ -1,20 +1,23 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\Tax;
 
 use App\Repositories\Interfaces\Tax\TaxRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Tax\TaxServiceInterface;
-use Illuminate\Support\Facades\DB;
 
 class TaxService extends BaseService implements TaxServiceInterface
 {
     protected $taxRepository;
+
     public function __construct(
         TaxRepositoryInterface $taxRepository,
     ) {
         $this->taxRepository = $taxRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -43,7 +46,6 @@ class TaxService extends BaseService implements TaxServiceInterface
         }, 'Tạo mới thất bại.');
     }
 
-
     public function update($id)
     {
         return $this->executeInTransaction(function () use ($id) {
@@ -55,11 +57,11 @@ class TaxService extends BaseService implements TaxServiceInterface
         }, 'Cập nhập thất bại.');
     }
 
-
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->taxRepository->delete($id);
+
             return successResponse('Xóa thành công.');
         }, 'Xóa thất bại.');
     }

@@ -52,7 +52,7 @@ class Warehouse extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $code = "{$originalCanonical}-" . $count++;
+            $code = "{$originalCanonical}-".$count++;
         }
 
         return Str::upper($code);

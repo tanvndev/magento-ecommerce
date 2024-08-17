@@ -1,22 +1,25 @@
 <?php
-// Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
-namespace App\Services\Permission;
 
+// Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
+namespace App\Services\Permission;
 
 use App\Repositories\Interfaces\Permission\PermissionRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Permission\PermissionServiceInterface;
-use Illuminate\Support\Facades\DB;
 
 class PermissionService extends BaseService implements PermissionServiceInterface
 {
     protected $permissionRepository;
+
     protected $userRepository;
+
     public function __construct(
         PermissionRepositoryInterface $permissionRepository,
     ) {
         $this->permissionRepository = $permissionRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -103,8 +106,6 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
         }, 'Tạo mới thất bại.');
     }
 
-
-
     public function update($id)
     {
         return $this->executeInTransaction(function () use ($id) {
@@ -120,6 +121,7 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->permissionRepository->delete($id);
+
             return successResponse('Xóa thành công.');
         }, 'Xóa thất bại.');
     }

@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api\V1\Attribute;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Attribute\{
-    StoreAttributeCatalogueRequest,
-    UpdateAttributeCatalogueRequest
-};
+use App\Http\Requests\Attribute\StoreAttributeCatalogueRequest;
+use App\Http\Requests\Attribute\UpdateAttributeCatalogueRequest;
 use App\Http\Resources\Attribute\AttributeCatalogueCollection;
 use App\Http\Resources\Attribute\AttributeCatalogueResource;
 use App\Repositories\Interfaces\Attribute\AttributeCatalogueRepositoryInterface;
@@ -16,7 +14,9 @@ use App\Services\Interfaces\Attribute\AttributeCatalogueServiceInterface;
 class AttributeCatalogueController extends Controller
 {
     protected $productCatalogueService;
+
     protected $productCatalogueRepository;
+
     public function __construct(
         AttributeCatalogueServiceInterface $productCatalogueService,
         AttributeCatalogueRepositoryInterface $productCatalogueRepository
@@ -24,6 +24,7 @@ class AttributeCatalogueController extends Controller
         $this->productCatalogueService = $productCatalogueService;
         $this->productCatalogueRepository = $productCatalogueRepository;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -31,6 +32,7 @@ class AttributeCatalogueController extends Controller
     {
         $paginator = $this->productCatalogueService->paginate();
         $data = new AttributeCatalogueCollection($paginator);
+
         return successResponse('', $data);
     }
 
@@ -40,6 +42,7 @@ class AttributeCatalogueController extends Controller
     public function store(StoreAttributeCatalogueRequest $request)
     {
         $response = $this->productCatalogueService->create();
+
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
@@ -49,9 +52,9 @@ class AttributeCatalogueController extends Controller
     public function show(string $id)
     {
         $response = new AttributeCatalogueResource($this->productCatalogueRepository->findById($id));
+
         return successResponse('', $response);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -59,9 +62,9 @@ class AttributeCatalogueController extends Controller
     public function update(UpdateAttributeCatalogueRequest $request, string $id)
     {
         $response = $this->productCatalogueService->update($id);
+
         return handleResponse($response);
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -69,6 +72,7 @@ class AttributeCatalogueController extends Controller
     public function destroy(string $id)
     {
         $response = $this->productCatalogueService->destroy($id);
+
         return handleResponse($response);
     }
 }

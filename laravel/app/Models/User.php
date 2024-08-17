@@ -14,7 +14,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, QueryScopes, MustVerifyEmail;
+    use HasApiTokens, HasFactory, MustVerifyEmail, Notifiable, QueryScopes;
 
     /**
      * The attributes that are mass assignable.
@@ -48,9 +48,9 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
-        "ip",
-        "user_agent",
-        "email_verified_at",
+        'ip',
+        'user_agent',
+        'email_verified_at',
     ];
 
     /**
@@ -62,6 +62,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

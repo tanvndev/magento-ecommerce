@@ -1,7 +1,8 @@
 <?php
-// Trong Laravel, Repository Pattern thường được sử dụng để tạo các lớp repository, giúp tách biệt logic của ứng dụng khỏi cơ sở dữ liệu.
-namespace App\Repositories;
 
+// Trong Laravel, Repository Pattern thường được sử dụng để tạo các lớp repository, giúp tách biệt logic của ứng dụng khỏi cơ sở dữ liệu.
+
+namespace App\Repositories;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -16,21 +17,21 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all($column = ['*'], $relation = [],  $orderBy = null)
+    public function all($column = ['*'], $relation = [], $orderBy = null)
     {
         $query = $this->model->select($column);
 
-        if (!is_null($orderBy)) {
+        if (! is_null($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if (!empty($relation)) {
+        if (! empty($relation)) {
             return $query->relation($relation)->get();
         }
 
-
         return $query->get();
     }
+
     public function findById($modelId, $column = ['*'], $relation = [])
     {
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
@@ -40,21 +41,21 @@ class BaseRepository implements BaseRepositoryInterface
     {
         $query = $this->model->select($column);
 
-        if (!empty($relation)) {
+        if (! empty($relation)) {
             $query->relation($relation);
         }
 
         $query->customWhere($conditions);
 
-        if (!empty($whereInParams)) {
+        if (! empty($whereInParams)) {
             $query->whereIn($whereInParams['field'], $whereInParams['value']);
         }
 
-        if (!is_null($orderBy)) {
+        if (! is_null($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if (!empty($withCount)) {
+        if (! empty($withCount)) {
             $query->withCount($withCount);
         }
 
@@ -66,15 +67,13 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->whereIn($field, $value)->get();
     }
 
-
-
     public function findByWhereHas($condition = [], $column = ['*'], $relation = [], $alias = '', $all = false)
     {
 
         $query = $this->model->select($column);
         $query->whereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $value) {
-                $query->where($alias . '.' . $key, $value);
+                $query->where($alias.'.'.$key, $value);
             }
         });
 
@@ -109,12 +108,14 @@ class BaseRepository implements BaseRepositoryInterface
     public function create($payload = [])
     {
         $create = $this->model->create($payload);
+
         return $create->fresh();
     }
 
     public function firstOrCreate(array $condition, array $payload = [])
     {
         $create = $this->model->firstOrCreate($condition, $payload);
+
         return $create;
     }
 
@@ -129,10 +130,10 @@ class BaseRepository implements BaseRepositoryInterface
         return $model->{$relation}()->attach($model->id, $payload);
     }
 
-
     public function update($modelId, $payload = [])
     {
         $model = $this->findById($modelId);
+
         return $model->update($payload);
     }
 
@@ -141,6 +142,7 @@ class BaseRepository implements BaseRepositoryInterface
         $model = $this->findById($modelId);
         $model->fill($payload);
         $model->save();
+
         return $model;
     }
 
@@ -149,10 +151,12 @@ class BaseRepository implements BaseRepositoryInterface
     {
         return $this->model->whereIn($whereInField, $whereIn)->update($payload);
     }
+
     public function updateByWhere($conditions = [], $payload = [])
     {
         $query = $this->model->newQuery();
-        return  $query->customWhere($conditions)->update($payload);
+
+        return $query->customWhere($conditions)->update($payload);
     }
 
     public function updateOrCreate($payload = [], $conditions = [])
@@ -168,7 +172,8 @@ class BaseRepository implements BaseRepositoryInterface
     public function deleteByWhere($conditions = [])
     {
         $query = $this->model->newQuery();
-        return  $query->customWhere($conditions)->delete();
+
+        return $query->customWhere($conditions)->delete();
     }
 
     public function deleteByWhereIn($whereInField = '', $whereIn = [])
@@ -176,17 +181,18 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->whereIn($whereInField, $whereIn)->delete();
     }
 
-
     // Xoá cứng
     public function forceDelete($modelId)
     {
         $delete = $this->findById($modelId);
+
         return $delete->forceDelete();
     }
 
     public function forceDeleteByWhere($conditions)
     {
         $query = $this->model->newQuery();
-        return  $query->customWhere($conditions)->forceDelete();
+
+        return $query->customWhere($conditions)->forceDelete();
     }
 }

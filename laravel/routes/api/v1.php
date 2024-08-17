@@ -1,22 +1,23 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Attribute\AttributeCatalogueController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeController;
+use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\Brand\BrandController;
+use App\Http\Controllers\Api\V1\Location\{LocationController};
+use App\Http\Controllers\Api\V1\Permission\PermissionController;
+use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
+use App\Http\Controllers\Api\V1\Product\ProductController;
+use App\Http\Controllers\Api\V1\Supplier\SupplierController;
+use App\Http\Controllers\Api\V1\Tax\TaxController;
+use App\Http\Controllers\Api\V1\Upload\{UploadController};
+use App\Http\Controllers\Api\V1\User\UserCatalogueController;
+use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Controllers\Api\V1\Warehouse\WarehouseController;
 use App\Http\Controllers\Api\V1\{
     DashboardController,
 };
-use App\Http\Controllers\Api\V1\Attribute\{AttributeCatalogueController, AttributeController};
-use App\Http\Controllers\Api\V1\Auth\{
-    AuthController,
-    VerificationController
-};
-use App\Http\Controllers\Api\V1\Brand\BrandController;
-use App\Http\Controllers\Api\V1\Upload\{UploadController};
-use App\Http\Controllers\Api\V1\Location\{LocationController};
-use App\Http\Controllers\Api\V1\Permission\PermissionController;
-use App\Http\Controllers\Api\V1\Product\{ProductCatalogueController, ProductController};
-use App\Http\Controllers\Api\V1\Supplier\SupplierController;
-use App\Http\Controllers\Api\V1\Tax\TaxController;
-use App\Http\Controllers\Api\V1\User\{UserCatalogueController, UserController};
-use App\Http\Controllers\Api\V1\Warehouse\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,8 +49,6 @@ Route::middleware('log.request.response')->group(function () {
         Route::get('provinces', [LocationController::class, 'getProvinces']);
         Route::get('getLocation', [LocationController::class, 'getLocation']);
     });
-
-
 
     // Routes with JWT Middleware
     Route::group(['middleware' => 'jwt.verify'], function () {

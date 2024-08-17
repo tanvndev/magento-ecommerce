@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api\V1\Warehouse;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Warehouse\{
-    StoreWarehouseRequest,
-    UpdateWarehouseRequest
-};
+use App\Http\Requests\Warehouse\StoreWarehouseRequest;
+use App\Http\Requests\Warehouse\UpdateWarehouseRequest;
 use App\Http\Resources\Warehouse\WarehouseCollection;
 use App\Http\Resources\Warehouse\WarehouseResource;
 use App\Repositories\Interfaces\Warehouse\WarehouseRepositoryInterface;
@@ -16,7 +14,9 @@ use App\Services\Interfaces\Warehouse\WarehouseServiceInterface;
 class WarehouseController extends Controller
 {
     protected $warehouseService;
+
     protected $warehouseRepository;
+
     public function __construct(
         WarehouseServiceInterface $warehouseService,
         WarehouseRepositoryInterface $warehouseRepository
@@ -24,6 +24,7 @@ class WarehouseController extends Controller
         $this->warehouseService = $warehouseService;
         $this->warehouseRepository = $warehouseRepository;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -31,6 +32,7 @@ class WarehouseController extends Controller
     {
         $paginator = $this->warehouseService->paginate();
         $data = new WarehouseCollection($paginator);
+
         return successResponse('', $data);
     }
 
@@ -40,6 +42,7 @@ class WarehouseController extends Controller
     public function store(StoreWarehouseRequest $request)
     {
         $response = $this->warehouseService->create();
+
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
@@ -49,9 +52,9 @@ class WarehouseController extends Controller
     public function show(string $id)
     {
         $response = new WarehouseResource($this->warehouseRepository->findById($id));
+
         return successResponse('', $response);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -59,6 +62,7 @@ class WarehouseController extends Controller
     public function update(UpdateWarehouseRequest $request, string $id)
     {
         $response = $this->warehouseService->update($id);
+
         return handleResponse($response);
     }
 
@@ -68,6 +72,7 @@ class WarehouseController extends Controller
     public function destroy(string $id)
     {
         $response = $this->warehouseService->destroy($id);
+
         return handleResponse($response);
     }
 }

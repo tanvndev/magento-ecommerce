@@ -6,4 +6,5 @@ use App\Repositories\Interfaces\BaseRepositoryInterface;
 
 interface AisleRepositoryInterface extends BaseRepositoryInterface
 {
+    public function findByAisle();
 }

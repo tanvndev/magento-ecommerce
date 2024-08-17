@@ -22,7 +22,7 @@ class SupplierResource extends JsonResource
             'contact_email' => $this->contact_email,
             'contact_phone' => $this->contact_phone,
             'description' => $this->description,
-            'address' => $this->address
+            'address' => $this->address,
         ];
     }
 }

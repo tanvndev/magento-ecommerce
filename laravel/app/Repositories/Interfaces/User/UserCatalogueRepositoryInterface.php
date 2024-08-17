@@ -6,4 +6,5 @@ use App\Repositories\Interfaces\BaseRepositoryInterface;
 
 interface UserCatalogueRepositoryInterface extends BaseRepositoryInterface
 {
+    // asdsadsadsadsad
 }

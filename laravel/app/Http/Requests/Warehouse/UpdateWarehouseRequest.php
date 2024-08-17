@@ -26,13 +26,13 @@ class UpdateWarehouseRequest extends FormRequest
     {
         $rules = [
             'name' => 'required|string',
-            'code' => 'unique:warehouses,code,' . $this->warehouse,
+            'code' => 'unique:warehouses,code,'.$this->warehouse,
             'phone' => 'required|regex:/^0[0-9]{9}$/',
             'address' => 'required|string',
             'supervisor_name' => 'required|string',
         ];
 
-        if (!$this->has('warehouse_configurations') || !$this->get('warehouse_configurations')) {
+        if (! $this->has('warehouse_configurations') || ! $this->get('warehouse_configurations')) {
             $rules = array_merge($rules, [
                 'aisles_number' => 'required|integer|min:1',
                 'racks_number' => 'required|integer|min:1',
@@ -43,7 +43,6 @@ class UpdateWarehouseRequest extends FormRequest
 
         return $rules;
     }
-
 
     public function attributes()
     {
@@ -60,11 +59,10 @@ class UpdateWarehouseRequest extends FormRequest
         ];
     }
 
-
     public function messages()
     {
         return __('request.messages') + [
-            'phone.regex' => 'Số điện thoại không đúng dạng.'
+            'phone.regex' => 'Số điện thoại không đúng dạng.',
         ];
     }
 

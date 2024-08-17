@@ -9,7 +9,6 @@ class AppRepositoryProvider extends ServiceProvider
     /**
      * Register services.
      */
-
     protected $repositoryBindings = [
         // Base
         'App\Repositories\Interfaces\BaseRepositoryInterface' => 'App\Repositories\BaseRepository',

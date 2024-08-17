@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api\V1\Tax;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Tax\{
-    StoreTaxRequest,
-    UpdateTaxRequest
-};
+use App\Http\Requests\Tax\StoreTaxRequest;
+use App\Http\Requests\Tax\UpdateTaxRequest;
 use App\Http\Resources\Tax\TaxCollection;
 use App\Http\Resources\Tax\TaxResource;
 use App\Repositories\Interfaces\Tax\TaxRepositoryInterface;
@@ -16,7 +14,9 @@ use App\Services\Interfaces\Tax\TaxServiceInterface;
 class TaxController extends Controller
 {
     protected $taxService;
+
     protected $taxRepository;
+
     public function __construct(
         TaxServiceInterface $taxService,
         TaxRepositoryInterface $taxRepository
@@ -24,6 +24,7 @@ class TaxController extends Controller
         $this->taxService = $taxService;
         $this->taxRepository = $taxRepository;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -31,6 +32,7 @@ class TaxController extends Controller
     {
         $paginator = $this->taxService->paginate();
         $data = new TaxCollection($paginator);
+
         return successResponse('', $data);
     }
 
@@ -40,6 +42,7 @@ class TaxController extends Controller
     public function store(StoreTaxRequest $request)
     {
         $response = $this->taxService->create();
+
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
@@ -49,6 +52,7 @@ class TaxController extends Controller
     public function show(string $id)
     {
         $response = new TaxResource($this->taxRepository->findById($id));
+
         return successResponse('', $response);
     }
 
@@ -58,6 +62,7 @@ class TaxController extends Controller
     public function update(UpdateTaxRequest $request, string $id)
     {
         $response = $this->taxService->update($id);
+
         return handleResponse($response);
     }
 
@@ -67,6 +72,7 @@ class TaxController extends Controller
     public function destroy(string $id)
     {
         $response = $this->taxService->destroy($id);
+
         return handleResponse($response);
     }
 }

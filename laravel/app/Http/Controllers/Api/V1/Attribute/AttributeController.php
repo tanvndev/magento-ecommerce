@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api\V1\Attribute;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Attribute\{
-    StoreAttributeRequest,
-    UpdateAttributeRequest
-};
+use App\Http\Requests\Attribute\StoreAttributeRequest;
+use App\Http\Requests\Attribute\UpdateAttributeRequest;
 use App\Http\Resources\Attribute\AttributeCollection;
 use App\Http\Resources\Attribute\AttributeResource;
 use App\Repositories\Interfaces\Attribute\AttributeRepositoryInterface;
@@ -16,7 +14,9 @@ use App\Services\Interfaces\Attribute\AttributeServiceInterface;
 class AttributeController extends Controller
 {
     protected $attributeService;
+
     protected $attributeRepository;
+
     public function __construct(
         AttributeServiceInterface $attributeService,
         AttributeRepositoryInterface $attributeRepository
@@ -24,6 +24,7 @@ class AttributeController extends Controller
         $this->attributeService = $attributeService;
         $this->attributeRepository = $attributeRepository;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -31,6 +32,7 @@ class AttributeController extends Controller
     {
         $paginator = $this->attributeService->paginate();
         $data = new AttributeCollection($paginator);
+
         return successResponse('', $data);
     }
 
@@ -40,6 +42,7 @@ class AttributeController extends Controller
     public function store(StoreAttributeRequest $request)
     {
         $response = $this->attributeService->create();
+
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
@@ -49,9 +52,9 @@ class AttributeController extends Controller
     public function show(string $id)
     {
         $response = new AttributeResource($this->attributeRepository->findById($id));
+
         return successResponse('', $response);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -59,6 +62,7 @@ class AttributeController extends Controller
     public function update(UpdateAttributeRequest $request, string $id)
     {
         $response = $this->attributeService->update($id);
+
         return handleResponse($response);
     }
 
@@ -68,6 +72,7 @@ class AttributeController extends Controller
     public function destroy(string $id)
     {
         $response = $this->attributeService->destroy($id);
+
         return handleResponse($response);
     }
 }

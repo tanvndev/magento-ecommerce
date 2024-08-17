@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class Brand extends Model
 {
-    use HasFactory, SoftDeletes, QueryScopes;
+    use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -43,7 +43,7 @@ class Brand extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $canonical = "{$originalCanonical}-" . $count++;
+            $canonical = "{$originalCanonical}-".$count++;
         }
 
         return $canonical;

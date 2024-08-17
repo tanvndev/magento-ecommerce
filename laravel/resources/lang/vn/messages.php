@@ -1,4 +1,5 @@
 <?php
+
 return [
     'dashboard' => [
         'index' => [
@@ -9,7 +10,7 @@ return [
         'index' => [
             'title' => 'Cài đặt cấu hình hệ thống',
             'table' => 'Thông tin nhóm hình ảnh',
-            'create' => 'Tạo mới nhóm hình ảnh'
+            'create' => 'Tạo mới nhóm hình ảnh',
         ],
         'create' => [
             'title' => 'Tạo mới nhóm hình ảnh',
@@ -31,7 +32,7 @@ return [
     'menu' => [
         'index' => [
             'table' => 'Thông tin menu',
-            'create' => 'Tạo mới menu'
+            'create' => 'Tạo mới menu',
         ],
         'show' => [
             'title' => 'Danh sách menu',
@@ -68,7 +69,7 @@ return [
     'menuCatalogue' => [
         'index' => [
             'table' => 'Thông tin nhóm menu',
-            'create' => 'Tạo mới nhóm menu'
+            'create' => 'Tạo mới nhóm menu',
         ],
         'create' => [
             'title' => 'Tạo mới nhóm menu',
@@ -86,13 +87,13 @@ return [
         ],
         'table' => [
             'name' => 'Tên nhóm menu',
-        ]
+        ],
 
     ],
     'order' => [
         'index' => [
             'table' => 'Thông tin đơn hàng',
-            'create' => 'Tạo mới đơn hàng'
+            'create' => 'Tạo mới đơn hàng',
         ],
         'create' => [
             'title' => 'Tạo mới đơn hàng',
@@ -114,15 +115,15 @@ return [
         'table' => [
             'name' => 'Tên đơn hàng',
             'create_at' => 'Ngày tạo đơn',
-            'status' => 'Trạng thái đơn hàng'
-        ]
+            'status' => 'Trạng thái đơn hàng',
+        ],
 
     ],
     'attributeCatalogue' => [
         'index' => [
             'title' => 'Danh sách nhóm thuộc tính',
             'table' => 'Thông tin nhóm thuộc tính',
-            'create' => 'Tạo mới nhóm thuộc tính'
+            'create' => 'Tạo mới nhóm thuộc tính',
         ],
         'create' => [
             'title' => 'Tạo mới nhóm thuộc tính',
@@ -140,7 +141,7 @@ return [
         ],
         'table' => [
             'name' => 'Tên nhóm',
-            'keyword' => 'Từ khoá '
+            'keyword' => 'Từ khoá ',
         ],
 
     ],
@@ -149,7 +150,7 @@ return [
         'index' => [
             'title' => 'Danh sách thuộc tính',
             'table' => 'Thông tin thuộc tính',
-            'create' => 'Tạo mới thuộc tính'
+            'create' => 'Tạo mới thuộc tính',
         ],
         'create' => [
             'title' => 'Tạo mới thuộc tính',
@@ -168,14 +169,14 @@ return [
         'table' => [
             'name' => 'Tiêu đề thuộc tính',
             'attributeCatalogue' => 'Chọn nhóm thuộc tính',
-        ]
+        ],
     ],
 
     'productCatalogue' => [
         'index' => [
             'title' => 'Danh sách nhóm sản phẩm',
             'table' => 'Thông tin nhóm sản phẩm',
-            'create' => 'Tạo mới nhóm sản phẩm'
+            'create' => 'Tạo mới nhóm sản phẩm',
         ],
         'create' => [
             'title' => 'Tạo mới nhóm sản phẩm',
@@ -195,13 +196,13 @@ return [
         'table' => [
             'name' => 'Tên nhóm',
 
-        ]
+        ],
     ],
     'product' => [
         'index' => [
             'title' => 'Danh sách sản phẩm',
             'table' => 'Thông tin sản phẩm',
-            'create' => 'Tạo mới sản phẩm'
+            'create' => 'Tạo mới sản phẩm',
         ],
         'create' => [
             'title' => 'Tạo mới sản phẩm',
@@ -220,13 +221,13 @@ return [
         'table' => [
             'name' => 'Tiêu đề sản phẩm',
             'productCatalogue' => 'Chọn nhóm sản phẩm',
-        ]
+        ],
     ],
     'postCatalogue' => [
         'index' => [
             'title' => 'Danh sách nhóm bài viết',
             'table' => 'Thông tin nhóm bài viết',
-            'create' => 'Tạo mới nhóm bài viết'
+            'create' => 'Tạo mới nhóm bài viết',
         ],
         'create' => [
             'title' => 'Tạo mới nhóm bài viết',
@@ -245,13 +246,13 @@ return [
         ],
         'table' => [
             'name' => 'Tên nhóm',
-        ]
+        ],
     ],
     'post' => [
         'index' => [
             'title' => 'Danh sách bài viết',
             'table' => 'Thông tin bài viết',
-            'create' => 'Tạo mới bài viết'
+            'create' => 'Tạo mới bài viết',
         ],
         'create' => [
             'title' => 'Tạo mới bài viết',
@@ -270,13 +271,13 @@ return [
         'table' => [
             'name' => 'Tiêu đề bài viết',
             'postCatalogue' => 'Chọn nhóm bài viết',
-        ]
+        ],
     ],
     'userCatalogue' => [
         'index' => [
             'title' => 'Danh sách nhóm thành viên',
             'table' => 'Thông tin nhóm thành viên',
-            'create' => 'Tạo mới nhóm thành viên'
+            'create' => 'Tạo mới nhóm thành viên',
         ],
         'create' => [
             'title' => 'Tạo mới nhóm thành viên',
@@ -294,19 +295,19 @@ return [
         ],
         'table' => [
             'name' => 'Tên nhóm thành viên',
-            'countUser' => 'Số thành viên'
+            'countUser' => 'Số thành viên',
         ],
         'permission' => [
             'title' => 'Cập nhập quyền',
             'success' => 'Cập nhập quyền thành công.',
             'error' => 'Cập nhập quyền thất bại.',
-        ]
+        ],
     ],
     'user' => [
         'index' => [
             'title' => 'Danh sách thành viên',
             'table' => 'Thông tin thành viên',
-            'create' => 'Tạo mới thành viên'
+            'create' => 'Tạo mới thành viên',
         ],
         'create' => [
             'title' => 'Tạo mới thành viên',
@@ -326,13 +327,13 @@ return [
             'name' => 'Tên thành viên',
             'userGroup' => 'Nhóm thành viên',
             'userGroupSelect' => 'Chọn nhóm thành viên',
-        ]
+        ],
     ],
     'customerCatalogue' => [
         'index' => [
             'title' => 'Danh sách nhóm khách hàng',
             'table' => 'Thông tin nhóm khách hàng',
-            'create' => 'Tạo mới nhóm khách hàng'
+            'create' => 'Tạo mới nhóm khách hàng',
         ],
         'create' => [
             'title' => 'Tạo mới nhóm khách hàng',
@@ -350,7 +351,7 @@ return [
         ],
         'table' => [
             'name' => 'Tên nhóm khách hàng',
-            'countUser' => 'Số khách hàng'
+            'countUser' => 'Số khách hàng',
         ],
 
     ],
@@ -358,7 +359,7 @@ return [
         'index' => [
             'title' => 'Danh sách khách hàng',
             'table' => 'Thông tin khách hàng',
-            'create' => 'Tạo mới khách hàng'
+            'create' => 'Tạo mới khách hàng',
         ],
         'create' => [
             'title' => 'Tạo mới khách hàng',
@@ -380,7 +381,7 @@ return [
             'customerGroupSelect' => 'Chọn nhóm khách hàng',
             'sourceSelect' => 'Chọn nguồn khách hàng',
             'source' => 'Nguồn khách hàng',
-        ]
+        ],
     ],
 
     'permission' => [
@@ -389,7 +390,7 @@ return [
             'table' => 'Thông tin quyền',
             'create' => 'Tạo mới quyền',
             'success' => 'Thay đổi quyền thành công.',
-            'error' => 'Thay đổi quyền thất bại.'
+            'error' => 'Thay đổi quyền thất bại.',
         ],
         'create' => [
             'title' => 'Tạo mới quyền',
@@ -407,7 +408,7 @@ return [
         ],
         'table' => [
             'name' => 'Tên quyền',
-        ]
+        ],
     ],
     'language' => [
         'index' => [
@@ -415,7 +416,7 @@ return [
             'table' => 'Thông tin ngôn ngữ',
             'create' => 'Tạo mới ngôn ngữ',
             'success' => 'Thay đổi ngôn ngữ thành công.',
-            'error' => 'Thay đổi ngôn ngữ thất bại.'
+            'error' => 'Thay đổi ngôn ngữ thất bại.',
         ],
         'create' => [
             'title' => 'Tạo mới ngôn ngữ',
@@ -441,7 +442,7 @@ return [
         'translate' => [
             'success' => 'Cập nhập bản dịch thành công.',
             'error' => 'Cập nhập bản dịch thất bại.',
-        ]
+        ],
     ],
     'generate' => [
         'index' => [
@@ -449,7 +450,7 @@ return [
             'table' => 'Thông tin module',
             'create' => 'Tạo mới module',
             'success' => 'Thay đổi module thành công.',
-            'error' => 'Thay đổi module thất bại.'
+            'error' => 'Thay đổi module thất bại.',
         ],
         'create' => [
             'title' => 'Tạo mới module',
@@ -468,14 +469,14 @@ return [
         'table' => [
             'name' => 'Tên model',
             'module' => 'Tên chức năng',
-            'path' => 'Đường dẫn'
-        ]
+            'path' => 'Đường dẫn',
+        ],
     ],
     'slide' => [
         'index' => [
             'title' => 'Danh sách slide & banner',
             'table' => 'Thông tin slide & banner',
-            'create' => 'Tạo mới slide & banner'
+            'create' => 'Tạo mới slide & banner',
         ],
         'create' => [
             'title' => 'Tạo mới slide & banner',
@@ -498,13 +499,13 @@ return [
         'table' => [
             'name' => 'Tiêu đề slide & banner',
             'attributeCatalogue' => 'Chọn nhóm slide & banner',
-        ]
+        ],
     ],
     'widget' => [
         'index' => [
             'title' => 'Danh sách widget',
             'table' => 'Thông tin widget',
-            'create' => 'Tạo mới widget'
+            'create' => 'Tạo mới widget',
         ],
         'create' => [
             'title' => 'Tạo mới widget',
@@ -527,13 +528,13 @@ return [
         ],
         'table' => [
             'name' => 'Tên widget',
-        ]
+        ],
     ],
     'promotion' => [
         'index' => [
             'title' => 'Danh sách khuyến mãi',
             'table' => 'Thông tin khuyến mãi',
-            'create' => 'Tạo mới khuyến mãi'
+            'create' => 'Tạo mới khuyến mãi',
         ],
         'create' => [
             'title' => 'Tạo mới khuyến mãi',
@@ -560,13 +561,13 @@ return [
             'discount' => 'Chiết khấu',
             'promotionType' => 'Chọn hình thức khuyến mãi',
             'promotionMethod' => 'Loại khuyến mãi',
-        ]
+        ],
     ],
     'source' => [
         'index' => [
             'title' => 'Danh sách nguồn khách',
             'table' => 'Thông tin nguồn khách',
-            'create' => 'Tạo mới nguồn khách'
+            'create' => 'Tạo mới nguồn khách',
         ],
         'create' => [
             'title' => 'Tạo mới nguồn khách',
@@ -589,31 +590,31 @@ return [
         ],
         'table' => [
             'name' => 'Tên nguồn khách',
-        ]
+        ],
     ],
     'comment' => [
         'index' => [
             'title' => 'Danh sách đánh giá',
             'table' => 'Thông tin đánh giá',
-            'create' => 'Tạo mới đánh giá'
+            'create' => 'Tạo mới đánh giá',
         ],
         'table' => [
             'fullname' => 'Người đánh giá',
             'created_at' => 'Ngày đánh giá',
-            'star' => 'Số sao'
-        ]
+            'star' => 'Số sao',
+        ],
     ],
-    'code' => "Mã",
-    'rating' => "Đánh giá",
-    'updateBtn' => "Cập nhập",
-    'customerInfo' => "Khách hàng",
-    'payment' => "Thanh toán",
-    'paymentMethod' => "Hình thức",
-    'shipping' => "Phí ship",
-    'delivery' => "Giao hàng",
-    'endTotal' => "Tổng cuối",
-    'discount' => "Giảm giá",
-    'expired' => "Hết hạn",
+    'code' => 'Mã',
+    'rating' => 'Đánh giá',
+    'updateBtn' => 'Cập nhập',
+    'customerInfo' => 'Khách hàng',
+    'payment' => 'Thanh toán',
+    'paymentMethod' => 'Hình thức',
+    'shipping' => 'Phí ship',
+    'delivery' => 'Giao hàng',
+    'endTotal' => 'Tổng cuối',
+    'discount' => 'Giảm giá',
+    'expired' => 'Hết hạn',
     'selectModule' => 'Chọn module',
     'infomation' => 'Thông tin',
     'infoDetail' => 'Thông tin chi tiết',
@@ -703,6 +704,5 @@ return [
     'cancelButton' => 'Huỷ bỏ',
     'agreeButton' => 'Đồng ý',
     'saveButton' => 'Lưu lại',
-
 
 ];

@@ -1,4 +1,5 @@
 <?php
+
 return [
     'confirm' => [
         '' => 'Chọn tình trạng',
@@ -9,7 +10,7 @@ return [
     'payment' => [
         '' => 'Chọn tình trạng thanh toán',
         'unpaid' => 'Chưa thanh toán',
-        'paid' => 'Đã thanh toán'
+        'paid' => 'Đã thanh toán',
     ],
 
     'delivery' => [

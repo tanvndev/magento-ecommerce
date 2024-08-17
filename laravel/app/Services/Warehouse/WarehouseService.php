@@ -1,26 +1,31 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\Warehouse;
 
-use App\Classes\Upload;
-use App\Repositories\Interfaces\Warehouse\{
-    WarehouseRepositoryInterface,
-    AisleRepositoryInterface,
-    RackRepositoryInterface,
-    ShelfRepositoryInterface,
-    CompartmentRepositoryInterface
-};
+use App\Repositories\Interfaces\Warehouse\AisleRepositoryInterface;
+use App\Repositories\Interfaces\Warehouse\CompartmentRepositoryInterface;
+use App\Repositories\Interfaces\Warehouse\RackRepositoryInterface;
+use App\Repositories\Interfaces\Warehouse\ShelfRepositoryInterface;
+use App\Repositories\Interfaces\Warehouse\WarehouseRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Warehouse\WarehouseServiceInterface;
 
 class WarehouseService extends BaseService implements WarehouseServiceInterface
 {
     protected $warehouseRepository;
+
     protected $aisleRepository;
+
     protected $rackRepository;
+
     protected $shelfRepository;
+
     protected $compartmentRepository;
+
     private $warehouse;
+
     private $maxWeightCapacity = 100;
 
     public function __construct(
@@ -36,6 +41,7 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
         $this->shelfRepository = $shelfRepository;
         $this->compartmentRepository = $compartmentRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -85,13 +91,13 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
 
     private function createWarehouse($warehouse, array $payload)
     {
-        if (!$warehouse) {
+        if (! $warehouse) {
             throw new \Exception('Warehouse not created.');
         }
 
         $this->warehouse = collect([
             'code' => $warehouse->code,
-            'name' => $warehouse->name
+            'name' => $warehouse->name,
         ]);
 
         $this->createWarehouseStructure($warehouse, $payload);
@@ -100,7 +106,7 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
     private function perparePayload(): array
     {
         $payload = request()->except('_token', '_method');
-        if (isset($payload['warehouse_configurations']) && !empty($payload['warehouse_configurations'])) {
+        if (isset($payload['warehouse_configurations']) && ! empty($payload['warehouse_configurations'])) {
             $configurations = explode('-', $payload['warehouse_configurations']);
             $payload['aisles_number'] = (int) $configurations[0];
             $payload['racks_number'] = (int) $configurations[1];
@@ -111,6 +117,7 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
 
         return $payload;
     }
+
     private function createWarehouseStructure($warehouse, array $payload)
     {
         $aisleNumbers = $payload['aisles_number'];
@@ -147,7 +154,7 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
                 'warehouse_id' => $warehouseId,
                 'name' => "Dãy {$number} tại <{$warehouseName}>",
                 'code' => $aisleCode,
-                'description' => "Đây là dãy {$number}"
+                'description' => "Đây là dãy {$number}",
             ]
         );
     }
@@ -221,15 +228,15 @@ class WarehouseService extends BaseService implements WarehouseServiceInterface
         $warehouseCode = $this->warehouse->get('code');
 
         $result = "Đây là khoang {$compartmentNumber} của kệ {$rackCode} trên tầng {$shelfNumber} thuộc dãy {$aisleCode} tại <{$warehouseCode} - {$warehouseName}>";
+
         return $result;
     }
-
-
 
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->warehouseRepository->delete($id);
+
             return successResponse('Xóa thành công.');
         }, 'Xóa thất bại.');
     }

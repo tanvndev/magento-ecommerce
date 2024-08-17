@@ -45,8 +45,10 @@ class StoreAttributeCatalogueRequest extends FormRequest
 
     public function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
+        throw new HttpResponseException(
+            response()->json([
+                'messages' => $validator->errors(),
+            ], ResponseEnum::UNPROCESSABLE_ENTITY)
+        );
     }
 }

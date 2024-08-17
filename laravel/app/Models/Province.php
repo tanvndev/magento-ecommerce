@@ -9,8 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 class Province extends Model
 {
     use HasFactory, QueryScopes;
+
     protected $table = 'provinces';
+
     protected $primaryKey = 'code';
+
     protected $autoincrement = false;
 
     protected $fillable = [
@@ -20,7 +23,6 @@ class Province extends Model
     protected $casts = [
         'code' => 'string',
     ];
-
 
     public function districts()
     {

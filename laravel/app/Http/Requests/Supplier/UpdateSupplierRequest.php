@@ -27,8 +27,8 @@ class UpdateSupplierRequest extends FormRequest
         return [
             'company_name' => 'required',
             'contact_name' => 'required',
-            'contact_email' => 'required|email|unique:suppliers,contact_email,' . $this->supplier,
-            'contact_phone' => 'required|regex:/(0)[0-9]{9}/|unique:suppliers,contact_phone,' . $this->supplier,
+            'contact_email' => 'required|email|unique:suppliers,contact_email,'.$this->supplier,
+            'contact_phone' => 'required|regex:/(0)[0-9]{9}/|unique:suppliers,contact_phone,'.$this->supplier,
             'address' => 'required',
         ];
     }

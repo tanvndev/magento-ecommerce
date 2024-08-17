@@ -1,4 +1,5 @@
 <?php
+
 return [
     'method' => [
         [
@@ -33,10 +34,10 @@ return [
         [
             'name' => 'economicalDelivery',
             'title' => 'Giao hàng tiết kiệm',
-            'cost' => 25000
+            'cost' => 25000,
         ],
         [
-            'name' =>  'fastdelivery',
+            'name' => 'fastdelivery',
             'title' => 'Giao hàng nhanh',
             'cost' => 35000,
         ],
@@ -45,6 +46,6 @@ return [
             'title' => 'Giao hàng hỏa tốc',
             'cost' => 105000,
         ],
-    ]
+    ],
 
 ];

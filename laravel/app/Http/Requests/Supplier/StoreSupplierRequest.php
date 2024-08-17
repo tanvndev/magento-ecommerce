@@ -3,10 +3,9 @@
 namespace App\Http\Requests\Supplier;
 
 use App\Enums\ResponseEnum;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
 
 class StoreSupplierRequest extends FormRequest
 {
@@ -48,7 +47,7 @@ class StoreSupplierRequest extends FormRequest
     public function messages()
     {
         return __('request.messages') + [
-            'phone.regex' => 'Số điện thoại không đúng dạng.'
+            'phone.regex' => 'Số điện thoại không đúng dạng.',
         ];
     }
 

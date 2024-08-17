@@ -35,7 +35,7 @@ class UserFactory extends Factory
             'user_agent' => fake()->userAgent(),
             'created_at' => now(),
             'updated_at' => now(),
-            'user_catalogue_id' => rand(1, 6)
+            'user_catalogue_id' => rand(1, 6),
         ];
     }
 

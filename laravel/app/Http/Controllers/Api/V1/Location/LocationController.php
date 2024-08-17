@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1\Location;
 
-use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\Location\DistrictRepositoryInterface;
 use App\Repositories\Interfaces\Location\ProvinceRepositoryInterface;
@@ -11,7 +10,9 @@ use Illuminate\Http\Request;
 class LocationController extends Controller
 {
     protected $provinceRepository;
+
     protected $districtRepository;
+
     public function __construct(
         ProvinceRepositoryInterface $provinceRepository,
         DistrictRepositoryInterface $districtRepository
@@ -23,8 +24,10 @@ class LocationController extends Controller
     public function getProvinces()
     {
         $data = $this->provinceRepository->all();
+
         return successResponse('Get provinces successfully', $data);
     }
+
     public function getLocation(Request $request)
     {
         $locationId = $request->location_id;

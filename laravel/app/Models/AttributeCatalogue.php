@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 class AttributeCatalogue extends Model
 {
-    use HasFactory, SoftDeletes, QueryScopes;
+    use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -28,7 +28,7 @@ class AttributeCatalogue extends Model
         });
 
         static::updating(function ($model) {
-            $model->code =  Str::upper($model->code);
+            $model->code = Str::upper($model->code);
         });
     }
 

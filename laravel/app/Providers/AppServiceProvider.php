@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use League\Glide\ServerFactory;
+use Illuminate\Support\ServiceProvider;
 use League\Glide\Responses\LaravelResponseFactory;
+use League\Glide\ServerFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Tax\TaxServiceInterface' => 'App\Services\Tax\TaxService',
 
     ];
+
     public function register(): void
     {
         foreach ($this->serviceBindings as $key => $value) {
@@ -56,10 +57,11 @@ class AppServiceProvider extends ServiceProvider
         // Register Glide server
         $this->app->singleton('League\Glide\Server', function ($app) {
             $fileSystem = $app->make(Filesystem::class);
+
             return ServerFactory::create([
                 'response' => new LaravelResponseFactory(app('request')),
                 'source' => $fileSystem->getDriver(),
-                'cache' =>  $fileSystem->getDriver(),
+                'cache' => $fileSystem->getDriver(),
                 'source_path_prefix' => env('IMAGE_SOURCE_PATH'),
                 'cache_path_prefix' => '.cache',
             ]);
@@ -69,7 +71,5 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 }

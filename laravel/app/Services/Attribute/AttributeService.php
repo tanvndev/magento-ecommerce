@@ -1,20 +1,23 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\Attribute;
 
 use App\Repositories\Interfaces\Attribute\AttributeRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Attribute\AttributeServiceInterface;
-use Illuminate\Support\Facades\DB;
 
 class AttributeService extends BaseService implements AttributeServiceInterface
 {
     protected $attributeRepository;
+
     public function __construct(
         AttributeRepositoryInterface $attributeRepository,
     ) {
         $this->attributeRepository = $attributeRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -46,6 +49,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $payload = $this->formatPayload($payload);
 
             $this->attributeRepository->createBatch($payload);
+
             return successResponse('Tạo mới thành công.');
         }, 'Tạo mới thất bại.');
     }
@@ -76,11 +80,11 @@ class AttributeService extends BaseService implements AttributeServiceInterface
         }, 'Cập nhập thất bại.');
     }
 
-
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->attributeRepository->delete($id);
+
             return successResponse('Xóa thành công.');
         }, 'Xóa thất bại.');
     }

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Auth\GoogleLoginController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use League\Glide\Server;
@@ -28,7 +27,6 @@ Route::get('/notification/{boolean}/{messages}', function ($boolean, $messages) 
         'messages'
     ));
 })->name('notifications');
-
 
 Route::get('images/{path}', function (Server $server, Request $request, $path) {
     $server->outputImage($path, $request->all());

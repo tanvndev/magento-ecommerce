@@ -7,30 +7,26 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-
 /**
  * Class BaseService
- * @package App\Services
  */
 class BaseService implements BaseServiceInterface
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     protected function convertToCode(string $str): string
     {
         $newStr = Str::slug($str);
         $newStr = strtoupper(str_replace('-', '', $newStr));
         $newStr .= rand(0, 1000);
+
         return $newStr;
     }
-
 
     public function updateStatus()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')) . 'Repository';
+            $repositoryName = lcfirst(request('modelName')).'Repository';
 
             $payload[request('field')] = request('value');
             $this->{$repositoryName}->update(request('modelId'), $payload);
@@ -42,7 +38,7 @@ class BaseService implements BaseServiceInterface
     public function updateStatusMultiple()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')) . 'Repository';
+            $repositoryName = lcfirst(request('modelName')).'Repository';
 
             $payload[request('field')] = request('value');
             $this->{$repositoryName}->updateByWhereIn('id', request('modelIds'), $payload);
@@ -54,7 +50,7 @@ class BaseService implements BaseServiceInterface
     public function deleteMultiple()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')) . 'Repository';
+            $repositoryName = lcfirst(request('modelName')).'Repository';
             $this->{$repositoryName}->deleteByWhereIn('id', request('modelIds'));
 
             return successResponse('Xoá thành công.');
@@ -67,6 +63,7 @@ class BaseService implements BaseServiceInterface
             DB::beginTransaction();
             $result = $callback();
             DB::commit();
+
             return $result;
         } catch (\Exception $e) {
             getError($e);
@@ -78,6 +75,7 @@ class BaseService implements BaseServiceInterface
                 'trace' => $e->getTraceAsString(),
             ]);
             DB::rollBack();
+
             return errorResponse($messageError);
         }
     }

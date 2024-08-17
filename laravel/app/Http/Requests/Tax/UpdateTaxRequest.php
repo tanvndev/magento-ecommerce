@@ -26,7 +26,7 @@ class UpdateTaxRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'unique:taxes,code,' . $this->tax,
+            'code' => 'unique:taxes,code,'.$this->tax,
             'rate' => 'required',
         ];
     }

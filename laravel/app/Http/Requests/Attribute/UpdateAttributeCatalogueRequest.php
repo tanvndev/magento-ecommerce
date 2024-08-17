@@ -26,7 +26,7 @@ class UpdateAttributeCatalogueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required|unique:attribute_catalogues,code,' . $this->catalogue,
+            'code' => 'required|unique:attribute_catalogues,code,'.$this->catalogue,
         ];
     }
 

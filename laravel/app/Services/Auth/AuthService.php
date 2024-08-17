@@ -1,5 +1,7 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\Auth;
 
 use App\Events\AuthForgotEvent;
@@ -7,20 +9,17 @@ use App\Events\AuthRegisteredEvent;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Auth\AuthServiceInterface;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class AuthService extends BaseService implements AuthServiceInterface
 {
     protected $userRepository;
+
     public function __construct(
         UserRepositoryInterface $userRepository,
     ) {
         $this->userRepository = $userRepository;
     }
-
-
 
     public function register()
     {
@@ -33,7 +32,7 @@ class AuthService extends BaseService implements AuthServiceInterface
                 ]
             );
 
-            if (!empty($user)) {
+            if (! empty($user)) {
                 if ($user->hasVerifiedEmail()) {
                     return errorResponse('Email đã xác nhận đăng ký vui lòng đăng nhập.');
                 }
@@ -48,7 +47,6 @@ class AuthService extends BaseService implements AuthServiceInterface
                 'user_agent' => request()->header('User-Agent'),
                 'password' => Hash::make(request()->password),
             ]);
-
 
             // Send email verification notification
             event(new AuthRegisteredEvent($user));
@@ -72,6 +70,7 @@ class AuthService extends BaseService implements AuthServiceInterface
 
             // Send email verification notification
             event(new AuthForgotEvent($user));
+
             return successResponse('Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.');
         }, 'Đặt lại mật khẩu thất bại.');
     }

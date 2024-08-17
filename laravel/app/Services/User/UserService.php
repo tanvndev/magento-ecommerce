@@ -1,22 +1,24 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\User;
 
-use App\Classes\Upload;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\User\UserServiceInterface;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService implements UserServiceInterface
 {
     protected $userRepository;
+
     public function __construct(
         UserRepositoryInterface $userRepository,
     ) {
         $this->userRepository = $userRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -75,6 +77,7 @@ class UserService extends BaseService implements UserServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->userRepository->delete($id);
+
             return successResponse('Xóa thành công.');
         }, 'Xóa thất bại.');
     }

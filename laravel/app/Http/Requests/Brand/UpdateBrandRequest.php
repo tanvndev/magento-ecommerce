@@ -26,7 +26,7 @@ class UpdateBrandRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique:brands,canonical,' . $this->brand,
+            'canonical' => 'unique:brands,canonical,'.$this->brand,
         ];
     }
 

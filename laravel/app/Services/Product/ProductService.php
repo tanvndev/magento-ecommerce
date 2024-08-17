@@ -1,23 +1,26 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\Product;
 
 use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductServiceInterface;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
     protected $productRepository;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
     ) {
         $this->productRepository = $productRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -25,7 +28,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'publish' => request('publish'),
         ];
 
-        $select =  ['id', 'name', 'brand_id', 'supplier_id', 'product_catalogue_id', 'sku', 'image', 'publish', 'product_type'];
+        $select = ['id', 'name', 'brand_id', 'supplier_id', 'product_catalogue_id', 'sku', 'image', 'publish', 'product_type'];
         $orderBy = ['id' => 'desc'];
         $relations = ['variants', 'warehouses', 'catalogue', 'brand', 'supplier'];
 
@@ -79,7 +82,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createProductVariant($product, array $payload)
     {
         $canonical = Str::slug($payload['name']);
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ',' . $canonical);
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.','.$canonical);
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
@@ -161,10 +164,9 @@ class ProductService extends BaseService implements ProductServiceInterface
         DB::table('product_variant_attribute')->insert($variantAttributePayload);
     }
 
-
     private function combineAttribute($attributeIds)
     {
-        if (!count($attributeIds)) {
+        if (! count($attributeIds)) {
             return [];
         }
 
@@ -195,17 +197,19 @@ class ProductService extends BaseService implements ProductServiceInterface
             // Xoá mềm
             $this->productRepository->delete($id);
             DB::commit();
+
             return [
                 'status' => 'success',
                 'messages' => 'Xóa thành công.',
-                'data' => null
+                'data' => null,
             ];
         } catch (\Exception $e) {
             DB::rollBack();
+
             return [
                 'status' => 'error',
                 'messages' => 'Xóa thất bại.',
-                'data' => null
+                'data' => null,
             ];
         }
     }

@@ -16,7 +16,7 @@ class Tax extends Model
         'name',
         'code',
         'rate',
-        'publish'
+        'publish',
     ];
 
     protected static function boot()
@@ -28,7 +28,7 @@ class Tax extends Model
         });
 
         static::updating(function ($model) {
-            $model->code =  Str::upper($model->code);
+            $model->code = Str::upper($model->code);
         });
     }
 }

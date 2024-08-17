@@ -1,23 +1,25 @@
 <?php
-// Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
-namespace App\Services\Product;
 
+// Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
+namespace App\Services\Product;
 
 use App\Repositories\Interfaces\Product\ProductCatalogueRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductCatalogueServiceInterface;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class ProductCatalogueService extends BaseService implements ProductCatalogueServiceInterface
 {
     protected $productCatalogueRepository;
+
     protected $productRepository;
+
     public function __construct(
         ProductCatalogueRepositoryInterface $productCatalogueRepository,
     ) {
         $this->productCatalogueRepository = $productCatalogueRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -44,11 +46,12 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
                     'total' => $data->total(),
                     'current_page' => $data->currentPage(),
                     'per_page' => $data->perPage(),
-                ]
+                ],
             ];
         }
 
         $data = $this->productCatalogueRepository->all($select, ['childrens'], $orderBy);
+
         return successResponse('', $data);
     }
 
@@ -73,7 +76,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
                     'parent_id' => $item->parent_id,
                     'order' => $item->order,
                     'image' => $item->image,
-                    'children' => $this->formatDataToTable($dataById, $item->id)
+                    'children' => $this->formatDataToTable($dataById, $item->id),
                 ];
                 $formattedData[] = $formattedItem;
             }
@@ -93,8 +96,6 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         }, 'Tạo mới thất bại.');
     }
 
-
-
     public function update($id)
     {
         return $this->executeInTransaction(function () use ($id) {
@@ -110,6 +111,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     {
         $payload = request()->except('_token', '_method');
         $payload['parent_id'] = $payload['parent_id'] ?? 0 ?: null;
+
         return $payload;
     }
 
@@ -117,6 +119,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->productCatalogueRepository->delete($id);
+
             return successResponse('Xóa thành công.');
         }, 'Xóa thất bại.');
     }
