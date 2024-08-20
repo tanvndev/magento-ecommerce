@@ -50,31 +50,23 @@ class ProductService extends BaseService implements ProductServiceInterface
             $payload = $this->preparePayload();
             $product = $this->productRepository->create($payload);
 
+            $this->syncCatalogue($product, $payload['product_catalogue_id']);
+
             $this->createProductVariant($product, $payload);
 
             return successResponse('Tạo mới thành công.');
         }, 'Tạo mới thất bại.');
     }
 
+    public function syncCatalogue($product, array $catalogueIds): void
+    {
+        $product->catalogues()->sync($catalogueIds);
+    }
+
     private function preparePayload(): array
     {
         $payload = request()->except('_token', '_method');
-        $payload['allow_sell'] = filter_var($payload['allow_sell'] ?? false, FILTER_VALIDATE_BOOLEAN);
-        $payload['is_taxable'] = filter_var($payload['is_taxable'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $payload['sku'] = generateSKU($payload['name']);
-
-        if ($payload['is_taxable']) {
-            $tax = $payload['tax'] ?? null;
-
-            if ($tax) {
-                $payload['tax_status'] = $tax['tax_status'] ?? null;
-
-                if ($tax['tax_status'] == '2') {
-                    $payload['input_tax_id'] = $tax['input_tax'] ?? null;
-                    $payload['output_tax_id'] = $tax['output_tax'] ?? null;
-                }
-            }
-        }
 
         return $payload;
     }
@@ -82,7 +74,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createProductVariant($product, array $payload)
     {
         $canonical = Str::slug($payload['name']);
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.','.$canonical);
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ',' . $canonical);
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
@@ -95,7 +87,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'album' => $payload['album'] ?? null,
             'price' => $payload['price'] ?? null,
             'sale_price' => $payload['sale_price'] ?? null,
-            'import_price' => $payload['import_price'] ?? null,
+            'cost_price' => $payload['cost_price'] ?? null,
             'is_discount_time' => $is_discount_time,
             'weight' => $payload['weight'] ?? null,
             'length' => $payload['length'] ?? null,
@@ -122,7 +114,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $productVariantPayload = collect($variable['count'] ?? [])
             ->map(function ($count, $key) use ($mainData, $variable, $variantTexts) {
                 $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options);
+                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
 
                 $variantData = [
@@ -133,7 +125,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'album' => $variable['album'][$key] ?? $mainData['album'],
                     'price' => $variable['price'][$key] ?? $mainData['price'],
                     'sale_price' => $variable['sale_price'][$key] ?? null,
-                    'import_price' => $variable['import_price'][$key] ?? $mainData['import_price'],
+                    'cost_price' => $variable['cost_price'][$key] ?? $mainData['cost_price'],
                     'is_discount_time' => filter_var($variable['is_discount_time'][$key] ?? false, FILTER_VALIDATE_BOOLEAN),
                     'width' => $variable['width'][$key] ?? $mainData['width'],
                     'height' => $variable['height'][$key] ?? $mainData['height'],

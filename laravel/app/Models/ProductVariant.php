@@ -24,7 +24,7 @@ class ProductVariant extends Model
         'album',
         'price',
         'sale_price',
-        'import_price',
+        'cost_price',
         'is_discount_time',
         'sale_price_start_at',
         'sale_price_end_at',

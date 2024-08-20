@@ -31,19 +31,12 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Product\ProductCatalogueServiceInterface' => 'App\Services\Product\ProductCatalogueService',
         // Product
         'App\Services\Interfaces\Product\ProductServiceInterface' => 'App\Services\Product\ProductService',
-        // AttributeCatalogue
-        'App\Services\Interfaces\Attribute\AttributeCatalogueServiceInterface' => 'App\Services\Attribute\AttributeCatalogueService',
+        // AttributeValue
+        'App\Services\Interfaces\Attribute\AttributeValueServiceInterface' => 'App\Services\Attribute\AttributeValueService',
         // Attribute
         'App\Services\Interfaces\Attribute\AttributeServiceInterface' => 'App\Services\Attribute\AttributeService',
-        // Warehouse
-        'App\Services\Interfaces\Warehouse\WarehouseServiceInterface' => 'App\Services\Warehouse\WarehouseService',
         // Brand
         'App\Services\Interfaces\Brand\BrandServiceInterface' => 'App\Services\Brand\BrandService',
-        // Supplier
-        'App\Services\Interfaces\Supplier\SupplierServiceInterface' => 'App\Services\Supplier\SupplierService',
-        // Tax
-        'App\Services\Interfaces\Tax\TaxServiceInterface' => 'App\Services\Tax\TaxService',
-
     ];
 
     public function register(): void

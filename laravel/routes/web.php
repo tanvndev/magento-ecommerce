@@ -21,6 +21,7 @@ Route::get('/', function () {
 Route::get('/emails', function () {
     return view('emails.forgot-email');
 });
+
 Route::get('/notification/{boolean}/{messages}', function ($boolean, $messages) {
     return view('auth.notification', compact(
         'boolean',

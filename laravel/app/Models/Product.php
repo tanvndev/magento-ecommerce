@@ -12,29 +12,23 @@ class Product extends Model
     use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = [
+        'name',
         'product_type',
-        'product_catalogue_id',
         'brand_id',
         'excerpt',
         'description',
         'upsell_ids',
-        'is_taxable',
         'publish',
-        'input_tax_id',
-        'output_tax_id',
-        'tax_status',
     ];
 
     protected $casts = [
         'upsell_ids' => 'json',
         'album' => 'json',
-        'shipping_class_id' => 'json',
-        'payment_method_id' => 'json',
     ];
 
-    public function catalogue()
+    public function catalogues()
     {
-        return $this->belongsTo(ProductCatalogue::class);
+        return $this->belongsToMany(ProductCatalogue::class, 'product_catalogue_product');
     }
 
     public function brand()

@@ -21,6 +21,9 @@ return new class extends Migration
             $table->tinyInteger('publish')->default(1);
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('product_catalogues')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('meta_title', 255)->nullable();
+            $table->string('meta_keyword', 255)->nullable();
+            $table->text('meta_description')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

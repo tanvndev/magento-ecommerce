@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Attribute\AttributeCatalogueController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
 use App\Http\Controllers\Api\V1\Attribute\AttributeController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
@@ -40,7 +40,6 @@ Route::middleware('log.request.response')->group(function () {
         Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('refreshToken', [AuthController::class, 'refreshToken']);
         Route::post('logout', [AuthController::class, 'logout']);
-        Route::get('me', [AuthController::class, 'me']);
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');
 
@@ -52,6 +51,10 @@ Route::middleware('log.request.response')->group(function () {
 
     // Routes with JWT Middleware
     Route::group(['middleware' => 'jwt.verify'], function () {
+
+        // AUTH ME
+        Route::get('me', [AuthController::class, 'me']);
+
         // DASHBOARD ROUTE
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
             Route::put('changeStatus', [DashboardController::class, 'changeStatus'])->name('changeStatus');
@@ -78,21 +81,12 @@ Route::middleware('log.request.response')->group(function () {
 
         // ATTRIBUTE ROUTE
         Route::prefix('/')->name('attributes.')->group(function () {
-            Route::apiResource('attributes/catalogues', AttributeCatalogueController::class);
+            Route::apiResource('attributes/values', AttributeValueController::class);
         });
         Route::apiResource('attributes', AttributeController::class);
 
         // BRAND ROUTE
         Route::apiResource('brands', BrandController::class);
-
-        // SUPPLIER ROUTE
-        Route::apiResource('suppliers', SupplierController::class);
-
-        // WAREHOUSE ROUTE
-        Route::apiResource('warehouses', WarehouseController::class);
-
-        // TAX ROUTE
-        Route::apiResource('taxes', TaxController::class);
 
         // UPLOAD ROUTE
         Route::apiResource('uploads', UploadController::class);

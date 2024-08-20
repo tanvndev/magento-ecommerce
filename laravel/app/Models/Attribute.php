@@ -12,12 +12,12 @@ class Attribute extends Model
 
     protected $fillable = [
         'name',
-        'attribute_catalogue_id',
+        'attribute_value_id',
     ];
 
-    public function attribute_catalogue()
+    public function attribute_value()
     {
-        return $this->belongsTo(AttributeCatalogue::class, 'attribute_catalogue_id', 'id');
+        return $this->belongsTo(AttributeValue::class, 'attribute_value_id', 'id');
     }
 
     public function product_variants()
