@@ -5,4 +5,3 @@ export { default as userRoutes } from './userRoutes';
 export { default as warehouseRoutes } from './warehouseRoutes';
 export { default as brandRoutes } from './brandRoutes';
 export { default as supplierRoutes } from './supplierRoutes';
-export { default as taxRoutes } from './taxRoutes';

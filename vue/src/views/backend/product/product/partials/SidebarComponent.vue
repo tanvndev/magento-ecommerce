@@ -21,10 +21,6 @@
       />
     </a-card>
 
-    <a-card class="mt-3" title="Thông tin bổ sung">
-      <!-- TAX COMPONENT -->
-      <TaxComponent />
-    </a-card>
   </a-col>
 </template>
 <script setup>
@@ -32,7 +28,6 @@ import { SelectComponent, InputFinderComponent, TreeSelectComponent } from '@/co
 import { useCRUD } from '@/composables';
 import { formatDataToTreeSelect, formatDataToSelect } from '@/utils/format';
 import { onMounted, reactive } from 'vue';
-import TaxComponent from './TaxComponent.vue';
 
 const { getAll, data } = useCRUD();
 

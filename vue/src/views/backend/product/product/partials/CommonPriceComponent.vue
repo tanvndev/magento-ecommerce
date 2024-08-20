@@ -1,7 +1,7 @@
 <template>
   <a-row :gutter="[16, 16]">
     <a-col span="8">
-      <InputNumberComponent name="import_price" label="Giá bán nhập" placeholder="Giá bán nhập" />
+      <InputNumberComponent name="cost_price" label="Giá bán nhập" placeholder="Giá bán nhập" />
     </a-col>
     <a-col span="8">
       <InputNumberComponent name="price" label="Giá bán" placeholder="Giá bán" />

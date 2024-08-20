@@ -42,6 +42,7 @@
 <script setup>
 import { TooltipComponent } from '@/components/backend';
 import { useField } from 'vee-validate';
+import { watch } from 'vue';
 
 const props = defineProps({
   typeInput: {
@@ -88,6 +89,10 @@ const props = defineProps({
   tooltipText: {
     type: String,
     default: ''
+  },
+  oldValue: {
+    type: [String, Boolean, Number],
+    default: ''
   }
 });
 
@@ -104,4 +109,15 @@ const parseNumber = (value) => {
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
+
+// Watch for changes in oldValue and set value accordingly
+watch(
+  () => props.oldValue,
+  (newOldValue) => {
+    if (newOldValue && newOldValue !== undefined && newOldValue !== value.value) {
+      value.value = newOldValue;
+    }
+  },
+  { immediate: true }
+);
 </script>

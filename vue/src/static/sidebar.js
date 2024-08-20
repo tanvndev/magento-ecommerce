@@ -9,19 +9,23 @@ const sidebar = [
   {
     id: 'user_sidebar',
     icon: 'fas fa-users-medical',
-    name: 'QL Thành viên',
-    route: '',
+    name: 'Thành viên',
+    active: ['user'],
     subMenu: [
       {
-        name: 'Quản lý thành viên',
+        name: 'Danh sách thành viên',
         route: 'user.index'
       },
       {
-        name: 'Quản lý nhóm thành viên',
+        name: 'Danh sách khách hàng',
+        route: 'user.index'
+      },
+      {
+        name: 'Nhóm thành viên',
         route: 'user.catalogue.index'
       },
       {
-        name: 'Quản lý quyền',
+        name: 'Quyền thành viên',
         route: 'permission.index'
       }
     ]
@@ -29,15 +33,15 @@ const sidebar = [
   {
     id: 'attribute_sidebar',
     icon: 'fab fa-buffer',
-    name: 'QL Thuộc tính',
-    route: '',
+    name: 'Thuộc tính',
+    active: ['attribute'],
     subMenu: [
       {
-        name: 'Quản nhóm thuộc tính',
+        name: 'Nhóm thuộc tính',
         route: 'attribute.catalogue.index'
       },
       {
-        name: 'Quản thuộc tính',
+        name: 'Danh sách thuộc tính',
         route: 'attribute.index'
       }
     ]
@@ -45,28 +49,19 @@ const sidebar = [
   {
     id: 'product_sidebar',
     icon: 'fas fa-box-check',
-    name: 'QL Sản phẩm',
-    route: '',
+    name: 'Sản phẩm',
+    active: ['product', 'brand'],
     subMenu: [
       {
-        name: 'Quản lý thương hiệu',
+        name: 'Danh sách thương hiệu',
         route: 'brand.index'
       },
       {
-        name: 'Quản lý nhà cung cấp',
-        route: 'supplier.index'
-      },
-      {
-        name: 'Quản lý thuế suất',
-        route: 'tax.index'
-      },
-
-      {
-        name: 'Quản lý sản phẩm',
+        name: 'Danh sách sản phẩm',
         route: 'product.index'
       },
       {
-        name: 'Quản lý nhóm sản phẩm',
+        name: 'Nhóm sản phẩm',
         route: 'product.catalogue.index'
       }
     ]
@@ -74,11 +69,27 @@ const sidebar = [
   {
     id: 'warehouse_sidebar',
     icon: 'fas fa-warehouse-alt',
-    name: 'QL kho hàng',
-    route: '',
+    name: 'Quản lý kho',
+    route: ['warehouse'],
     subMenu: [
       {
-        name: 'Quản lý kho hàng',
+        name: 'Kho hàng',
+        route: 'warehouse.index'
+      },
+      {
+        name: 'Tồn kho',
+        route: 'warehouse.index'
+      },
+      {
+        name: 'Nhập hàng',
+        route: 'warehouse.index'
+      },
+      {
+        name: 'Trả hàng nhập',
+        route: 'warehouse.index'
+      },
+      {
+        name: 'Nhà cung cấp',
         route: 'warehouse.index'
       }
     ]

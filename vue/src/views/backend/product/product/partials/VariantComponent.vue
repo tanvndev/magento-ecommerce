@@ -100,12 +100,12 @@
               <InputNumberComponent
                 :name="`variable[sale_price][${i}]`"
                 label="Giá ưu đãi"
-                placeholder="Giá ưu này"
+                placeholder="Giá ưu đãi"
               />
             </a-col>
             <a-col span="8">
               <InputNumberComponent
-                :name="`variable[import_price][${i}]`"
+                :name="`variable[cost_price][${i}]`"
                 label="Giá nhập"
                 placeholder="Giá nhập"
               />
@@ -134,7 +134,7 @@
             <a-col span="6">
               <InputNumberComponent
                 :name="`variable[weight][${i}]`"
-                label="Cân nặng (kg)"
+                label="Cân nặng (g)"
                 placeholder="Cân nặng"
               />
             </a-col>
