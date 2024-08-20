@@ -1,10 +1,11 @@
 # Hướng dẫn Cài đặt Dự án
 
-## Bước 1: Cài đặt phụ thuộc cho Vue
 
 Di chuyển vào thư mục Vue và cài đặt các phụ thuộc:
 
 ```bash
+## Bước 1: Cài đặt phụ thuộc cho Vue
+
 cd vue
 npm install
 
