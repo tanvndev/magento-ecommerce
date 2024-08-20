@@ -1,9 +1,10 @@
 # Hướng dẫn Cài đặt Dự án
 
 
-Di chuyển vào thư mục Vue và cài đặt các phụ thuộc:
 
 ```bash
+Di chuyển vào thư mục Vue và cài đặt các phụ thuộc:
+
 ## Bước 1: Cài đặt phụ thuộc cho Vue
 
 cd vue
@@ -33,4 +34,5 @@ php artisan migrate
 cd ../vue
 npm run dev
 
+* Lưu ý
 >>Đảm bảo rằng các đường dẫn thư mục (`cd vue`, `cd ../laravel`, v.v.) và lệnh (`npm install`, `composer update`, v.v.) chính xác với cấu trúc dự án của bạn.<<
