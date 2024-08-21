@@ -55,7 +55,7 @@
             <UpsellComponent />
           </a-tab-pane>
           <!-- Thuoc tinh -->
-          <a-tab-pane key="5" v-if="state.productType === 'variable'">
+          <a-tab-pane key="5">
             <template #tab>
               <span>
                 <i class="fas fa-tasks-alt mr-1"></i>
@@ -65,7 +65,8 @@
             <AttributeComponent />
           </a-tab-pane>
           <!-- Bien the -->
-          <a-tab-pane key="6" v-if="state.productType === 'variable'">
+          <!-- v-if="state.productType === 'variable'" -->
+          <a-tab-pane key="6" >
             <template #tab>
               <span>
                 <i class="far fa-table mr-1"></i>
@@ -96,8 +97,8 @@ const { getAll } = useCRUD();
 // STATE
 const state = reactive({
   warehouses: [],
-  productType: '',
-  activeKey: '1'
+  productType: 2,
+  activeKey: '6'
 });
 
 // XU LY KIEU SAN PHAM

@@ -1,50 +1,49 @@
 <template>
-  <a-row :gutter="[16, 10]" class="items-center">
-    <a-col span="4" class="text-center">
-      <label class="font-bold text-red-500">Lưu ý (*)</label>
-      <small class="block">(Vui lòng chọn thuộc tính trước khi tạo biến thể.)</small>
-    </a-col>
-    <a-col span="20">
-      <SelectComponent
-        name="attribute_catalogue_id"
-        label="Nhóm thuộc tính"
-        placeholder="Chọn nhóm thuộc tính"
-        :options="state.attributeCatalogueOptions"
-        mode="multiple"
-        @onChange="handleSelectedAttributeCatalogue"
-      />
-    </a-col>
-    <a-col span="24" class="mt-3 border-t pt-4" v-if="state.attributes.length">
-      <div
-        class="mb-4 flex items-center"
-        v-for="(attribute, index) in state.attributes"
-        :key="index"
-      >
-        <div class="w-32">
-          <span class="block text-gray-500">Tên:</span>
-          <span class="font-bold">{{ attribute.name }}</span>
-        </div>
-        <div class="w-full">
-          <SelectComponent
-            :name="`attributes[${attribute.id}]`"
-            :placeholder="`Chọn thuộc tính của nhóm ${attribute.name}`"
-            :options="formatDataToSelect(attribute.attributes)"
-            mode="multiple"
-          />
-        </div>
-      </div>
+    <a-row :gutter="[16, 10]" class="items-center">
+        <a-col span="4" class="text-center">
+            <label class="font-bold text-red-500">Lưu ý (*)</label>
+            <small class="block">(Vui lòng chọn thuộc tính trước khi tạo biến thể.)</small>
+        </a-col>
+        <a-col span="20">
+            <SelectComponent name="attribute_id" label="Thuộc tính" placeholder="Chọn thuộc tính"
+                :options="state.attributeOptions" mode="multiple" @onChange="handleSelectedAttribute" />
+        </a-col>
 
-      <a-space class="mt-1 w-full border-t pt-3">
-        <a-button @click="saveAttributes">Lưu thuộc tính</a-button>
-      </a-space>
-    </a-col>
-  </a-row>
+        <a-divider v-if="state.attributeValues.length">Chọn Giá Trị Cho Thuộc Tính
+            <TooltipComponent
+                title="Nếu bạn chọn 'Nhận' thì thuộc tính đó sẽ được chọn làm biến thể còn nếu bạn 'Hủy' thì sẽ không được chọn làm biến thể." />
+        </a-divider>
+        <!-- Value -->
+        <a-col span="24" v-if="state.attributeValues.length">
+            <div class="mb-4 flex items-center" v-for="(attributeValue, index) in state.attributeValues" :key="index">
+                <div class="w-32 mr-2">
+                    <span class="block text-gray-500">Tên:</span>
+                    <span class="font-bold">{{ attributeValue.name }}</span>
+                </div>
+
+                <div class="w-full">
+                    <SelectComponent :name="`attribute_value_ids[${attributeValue.id}]`"
+                        :placeholder="`Chọn giá trị thuộc tính của thuộc tính ${attributeValue.name}`"
+                        :options="formatDataToSelect(attributeValue.values)" mode="multiple" />
+                </div>
+
+                <div class="ml-3">
+                    <SwitchComponent :name="`enable_variation[${attributeValue.id}]`" checkText="Nhận"
+                        uncheckText="Hủy" />
+                </div>
+            </div>
+
+            <a-space class="mt-1 w-full border-t pt-3">
+                <a-button @click="saveAttributes">Lưu thuộc tính</a-button>
+            </a-space>
+        </a-col>
+    </a-row>
 </template>
 
 <script setup>
 import { useForm } from 'vee-validate';
 import { onMounted, reactive } from 'vue';
-import { SelectComponent } from '@/components/backend';
+import { SelectComponent, SwitchComponent, TooltipComponent } from '@/components/backend';
 import { useStore } from 'vuex';
 import { useCRUD } from '@/composables';
 import { formatDataToSelect } from '@/utils/format';
@@ -56,79 +55,81 @@ const { handleSubmit } = useForm();
 
 // STATE
 const state = reactive({
-  attributeCatalogueOptions: [],
-  attributeCatalogues: [],
-  attributes: []
+    attributeOptions: [],
+    attributes: [],
+    attributeValues: []
 });
 
 // XU LY VA LUU THUOC TINH VAO STORE
 const saveAttributes = handleSubmit(async (values) => {
-  // reset attribute
-  store.commit('productStore/setAttributes', []);
+    console.log(values);
 
-  const attributeIds = values.attributes;
-  const dataAttributes = {
-    attrIds: [],
-    texts: {}
-  };
+    // reset attribute
+    store.commit('productStore/setAttributes', []);
 
-  // Tao ra Map de duyet qua tim ten nhanh hon
-  const catalogueMap = new Map(
-    state.attributeCatalogues.map((catalogue) => [catalogue.id, catalogue])
-  );
+    const attributeIds = values.attributes;
+    const dataAttributes = {
+        attrIds: [],
+        texts: {}
+    };
 
-  for (const [catalogueId, ids] of Object.entries(attributeIds)) {
-    const catalogue = catalogueMap.get(Number(catalogueId));
-    if (!catalogue) continue;
+    // Tao ra Map de duyet qua tim ten nhanh hon
+    const catalogueMap = new Map(
+        state.attributes.map((catalogue) => [catalogue.id, catalogue])
+    );
 
-    const catalogueName = catalogue.name;
-    const attributes = catalogue.attributes;
+    for (const [catalogueId, ids] of Object.entries(attributeIds)) {
+        const catalogue = catalogueMap.get(Number(catalogueId));
+        if (!catalogue) continue;
 
-    if (!ids || _.isEmpty(ids)) {
-      return store.dispatch('antStore/showMessage', {
-        type: 'error',
-        message: 'Vui lòng chọn thuộc tính sản phẩm cho ' + catalogueName
-      });
+        const catalogueName = catalogue.name;
+        const attributes = catalogue.attributes;
+
+        if (!ids || _.isEmpty(ids)) {
+            return store.dispatch('antStore/showMessage', {
+                type: 'error',
+                message: 'Vui lòng chọn thuộc tính sản phẩm cho ' + catalogueName
+            });
+        }
+
+        // Filter and map attributes
+        const attributeNames = attributes
+            .filter((attribute) => ids.includes(attribute.id))
+            .map((attribute) => attribute.name);
+
+        if (!_.isEmpty(attributeNames)) {
+            dataAttributes.attrIds[catalogueId] = ids;
+            dataAttributes.texts[catalogueName] = attributeNames;
+        }
     }
 
-    // Filter and map attributes
-    const attributeNames = attributes
-      .filter((attribute) => ids.includes(attribute.id))
-      .map((attribute) => attribute.name);
+    // Save attributes
+    store.commit('productStore/setAttributes', dataAttributes);
 
-    if (!_.isEmpty(attributeNames)) {
-      dataAttributes.attrIds[catalogueId] = ids;
-      dataAttributes.texts[catalogueName] = attributeNames;
-    }
-  }
-
-  // Save attributes
-  store.commit('productStore/setAttributes', dataAttributes);
-
-  store.dispatch('antStore/showMessage', {
-    type: 'success',
-    message: 'Lưu thuộc tính thành công.'
-  });
+    store.dispatch('antStore/showMessage', {
+        type: 'success',
+        message: 'Lưu thuộc tính thành công.'
+    });
 });
 
 // XU LY NHOM THUOC TINH
-const handleSelectedAttributeCatalogue = (attributeCatalogueIds) => {
-  state.attributes = attributeCatalogueIds.map((id) => getAttributesByCatalogue(id));
+const handleSelectedAttribute = (attributeIds) => {
+    state.attributeValues = attributeIds.map((id) => getAttributeValueByAttribute(id));
 };
 
 // LAY RA THUOC TINH THEO NHOM THUOC TINH
-const getAttributesByCatalogue = (catalogueId) => {
-  return state.attributeCatalogues.find((item) => item.id === catalogueId);
+const getAttributeValueByAttribute = (attributeId) => {
+    return state.attributes.find((item) => item.id === attributeId);
 };
 
 // LAY RA TAT CA CAC NHOM THUOC TINH
-const getAttributeCatalogues = async () => {
-  await getAll('attributes/catalogues');
-  state.attributeCatalogueOptions = formatDataToSelect(data.value);
-  state.attributeCatalogues = data.value;
+const getAttributes = async () => {
+    await getAll('attributes');
+    state.attributeOptions = formatDataToSelect(data.value);
+    state.attributes = data.value;
 };
 
 onMounted(() => {
-  getAttributeCatalogues();
+    getAttributes();
 });
 </script>
