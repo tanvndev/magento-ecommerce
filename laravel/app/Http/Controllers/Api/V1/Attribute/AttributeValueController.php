@@ -13,16 +13,16 @@ use App\Services\Interfaces\Attribute\AttributeValueServiceInterface;
 
 class AttributeValueController extends Controller
 {
-    protected $productValueService;
+    protected $attributeValueService;
 
-    protected $productValueRepository;
+    protected $attributeValueRepository;
 
     public function __construct(
-        AttributeValueServiceInterface $productValueService,
-        AttributeValueRepositoryInterface $productValueRepository
+        AttributeValueServiceInterface $attributeValueService,
+        AttributeValueRepositoryInterface $attributeValueRepository
     ) {
-        $this->productValueService = $productValueService;
-        $this->productValueRepository = $productValueRepository;
+        $this->attributeValueService = $attributeValueService;
+        $this->attributeValueRepository = $attributeValueRepository;
     }
 
     /**
@@ -30,7 +30,7 @@ class AttributeValueController extends Controller
      */
     public function index()
     {
-        $paginator = $this->productValueService->paginate();
+        $paginator = $this->attributeValueService->paginate();
         $data = new AttributeValueCollection($paginator);
 
         return successResponse('', $data);
@@ -41,7 +41,7 @@ class AttributeValueController extends Controller
      */
     public function store(StoreAttributeValueRequest $request)
     {
-        $response = $this->productValueService->create();
+        $response = $this->attributeValueService->create();
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
@@ -51,7 +51,7 @@ class AttributeValueController extends Controller
      */
     public function show(string $id)
     {
-        $response = new AttributeValueResource($this->productValueRepository->findById($id));
+        $response = new AttributeValueResource($this->attributeValueRepository->findById($id));
 
         return successResponse('', $response);
     }
@@ -61,7 +61,7 @@ class AttributeValueController extends Controller
      */
     public function update(UpdateAttributeValueRequest $request, string $id)
     {
-        $response = $this->productValueService->update($id);
+        $response = $this->attributeValueService->update($id);
 
         return handleResponse($response);
     }
@@ -71,7 +71,7 @@ class AttributeValueController extends Controller
      */
     public function destroy(string $id)
     {
-        $response = $this->productValueService->destroy($id);
+        $response = $this->attributeValueService->destroy($id);
 
         return handleResponse($response);
     }

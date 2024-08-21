@@ -26,7 +26,7 @@ class UpdateAttributeRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'attribute_catalogue_id' => 'required',
+            'code' => 'required|unique:attributes,code,'.$this->attribute,
         ];
     }
 
@@ -34,7 +34,7 @@ class UpdateAttributeRequest extends FormRequest
     {
         return [
             'name' => 'Tên thuộc tính',
-            'attribute_catalogue_id' => 'Nhóm thuộc tính',
+            'code' => 'Mã thuộc tính',
         ];
     }
 

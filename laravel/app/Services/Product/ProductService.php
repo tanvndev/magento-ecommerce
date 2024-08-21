@@ -74,7 +74,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createProductVariant($product, array $payload)
     {
         $canonical = Str::slug($payload['name']);
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ',' . $canonical);
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.','.$canonical);
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
@@ -114,7 +114,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $productVariantPayload = collect($variable['count'] ?? [])
             ->map(function ($count, $key) use ($mainData, $variable, $variantTexts) {
                 $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
+                $sku = generateSKU($mainData['name'], 3, $options).'-'.($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
 
                 $variantData = [

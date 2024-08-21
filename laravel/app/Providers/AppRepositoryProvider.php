@@ -33,7 +33,6 @@ class AppRepositoryProvider extends ServiceProvider
         // Brand
         'App\Repositories\Interfaces\Brand\BrandRepositoryInterface' => 'App\Repositories\Brand\BrandRepository',
 
-
     ];
 
     public function register(): void

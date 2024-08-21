@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
 use App\Http\Controllers\Api\V1\Attribute\AttributeController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
 use App\Http\Controllers\Api\V1\Brand\BrandController;
@@ -9,12 +9,9 @@ use App\Http\Controllers\Api\V1\Location\{LocationController};
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
-use App\Http\Controllers\Api\V1\Supplier\SupplierController;
-use App\Http\Controllers\Api\V1\Tax\TaxController;
 use App\Http\Controllers\Api\V1\Upload\{UploadController};
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V1\Warehouse\WarehouseController;
 use App\Http\Controllers\Api\V1\{
     DashboardController,
 };
@@ -38,7 +35,6 @@ Route::middleware('log.request.response')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);
         Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
-        Route::post('refreshToken', [AuthController::class, 'refreshToken']);
         Route::post('logout', [AuthController::class, 'logout']);
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');
@@ -52,8 +48,9 @@ Route::middleware('log.request.response')->group(function () {
     // Routes with JWT Middleware
     Route::group(['middleware' => 'jwt.verify'], function () {
 
-        // AUTH ME
-        Route::get('me', [AuthController::class, 'me']);
+        // AUTH
+        Route::get('auth/me', [AuthController::class, 'me']);
+        Route::post('auth/refreshToken', [AuthController::class, 'refreshToken']);
 
         // DASHBOARD ROUTE
         Route::prefix('dashboard')->name('dashboard.')->group(function () {

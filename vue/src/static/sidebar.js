@@ -37,12 +37,12 @@ const sidebar = [
     active: ['attribute'],
     subMenu: [
       {
-        name: 'Nhóm thuộc tính',
-        route: 'attribute.catalogue.index'
-      },
-      {
         name: 'Danh sách thuộc tính',
         route: 'attribute.index'
+      },
+      {
+        name: 'Thêm mới giá trị',
+        route: 'attribute.value.store'
       }
     ]
   },
@@ -63,34 +63,6 @@ const sidebar = [
       {
         name: 'Nhóm sản phẩm',
         route: 'product.catalogue.index'
-      }
-    ]
-  },
-  {
-    id: 'warehouse_sidebar',
-    icon: 'fas fa-warehouse-alt',
-    name: 'Quản lý kho',
-    route: ['warehouse'],
-    subMenu: [
-      {
-        name: 'Kho hàng',
-        route: 'warehouse.index'
-      },
-      {
-        name: 'Tồn kho',
-        route: 'warehouse.index'
-      },
-      {
-        name: 'Nhập hàng',
-        route: 'warehouse.index'
-      },
-      {
-        name: 'Trả hàng nhập',
-        route: 'warehouse.index'
-      },
-      {
-        name: 'Nhà cung cấp',
-        route: 'warehouse.index'
       }
     ]
   }

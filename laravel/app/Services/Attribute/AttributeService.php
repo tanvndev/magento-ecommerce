@@ -22,22 +22,13 @@ class AttributeService extends BaseService implements AttributeServiceInterface
     {
         $condition = [
             'search' => addslashes(request('search')),
-            'publish' => request('publish'),
         ];
-        $select = ['id', 'name', 'attribute_catalogue_id'];
+        $select = ['id', 'name', 'code', 'description'];
+        $pageSize = request('pageSize');
 
-        $data = request('pageSize') && request('page')
-            ?
-            $this->attributeRepository->pagination(
-                $select,
-                $condition,
-                request('pageSize'),
-                ['id' => 'desc'],
-                [],
-                ['attribute_catalogue'],
-            )
-            :
-            $this->attributeRepository->all($select);
+        $data = $pageSize && request('page')
+            ? $this->attributeRepository->pagination($select, $condition, $pageSize)
+            : $this->attributeRepository->all($select, ['attribute_values']);
 
         return $data;
     }
@@ -45,28 +36,12 @@ class AttributeService extends BaseService implements AttributeServiceInterface
     public function create()
     {
         return $this->executeInTransaction(function () {
-            $payload = request()->except('_token', '_method');
-            $payload = $this->formatPayload($payload);
 
-            $this->attributeRepository->createBatch($payload);
+            $payload = request()->except('_token', '_method');
+            $this->attributeRepository->create($payload);
 
             return successResponse('Tạo mới thành công.');
         }, 'Tạo mới thất bại.');
-    }
-
-    private function formatPayload($payload)
-    {
-        // Xu ly thuoc tinh san pham
-        $names = array_filter(array_map('trim', explode('|', $payload['name'])));
-
-        return array_map(function ($name) use ($payload) {
-            return [
-                'name' => $name,
-                'attribute_catalogue_id' => $payload['attribute_catalogue_id'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }, $names);
     }
 
     public function update($id)

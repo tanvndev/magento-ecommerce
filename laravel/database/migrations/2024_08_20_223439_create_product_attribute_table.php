@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('enable_variation')->default(0);
         });
     }
-   
+
     /**
      * Reverse the migrations.
      */

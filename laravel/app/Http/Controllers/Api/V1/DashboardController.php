@@ -32,7 +32,6 @@ class DashboardController extends Controller
 
     public function deleteMultiple(Request $request)
     {
-
         // Lấy ra service tương ứng
         $serviceInstance = getServiceInstance($request->modelName);
 

@@ -3,15 +3,7 @@ import store from '@/store';
 
 import DashboardView from '@/views/backend/DashboardView.vue';
 
-import {
-  userRoutes,
-  authRoutes,
-  productRoutes,
-  brandRoutes,
-  supplierRoutes,
-  warehouseRoutes,
-  attributeRoutes
-} from './backend';
+import { userRoutes, authRoutes, productRoutes, brandRoutes, attributeRoutes } from './backend';
 
 import { isLoggedIn } from '@/middlewares/authenticate';
 // import { isAdmin } from '@/middlewares/authorization';
@@ -36,8 +28,6 @@ const routes = [
   ...authRoutes,
   ...productRoutes,
   ...brandRoutes,
-  ...supplierRoutes,
-  ...warehouseRoutes,
   ...productRoutes,
   ...attributeRoutes
 ];

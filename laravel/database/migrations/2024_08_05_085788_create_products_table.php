@@ -21,7 +21,7 @@ return new class extends Migration
             $table->json('upsell_ids')->nullable()->comment(' hien thi lien ket den cac san pham mong muon');
             $table->tinyInteger('publish')->default(1);
             $table->boolean('enable_manage_stock')->default(0);
-            $table->varchar('stock_status')->nullable();
+            $table->string('stock_status')->nullable();
             $table->unsignedInteger('quantity')->default(0);
             $table->string('meta_title', 255)->nullable();
             $table->string('meta_keyword', 255)->nullable();

@@ -12,8 +12,6 @@ class AttributeValueService extends BaseService implements AttributeValueService
 {
     protected $attributeValueRepository;
 
-    protected $attributeRepository;
-
     public function __construct(
         AttributeValueRepositoryInterface $attributeValueRepository,
     ) {
@@ -25,13 +23,29 @@ class AttributeValueService extends BaseService implements AttributeValueService
         $condition = [
             'search' => addslashes(request('search')),
             'publish' => request('publish'),
-        ];
-        $select = ['id', 'name', 'code', 'description', 'publish'];
-        $pageSize = request('pageSize');
 
-        $data = $pageSize && request('page')
-            ? $this->attributeValueRepository->pagination($select, $condition, $pageSize)
-            : $this->attributeValueRepository->all($select, ['attributes']);
+        ];
+
+        if (! empty(request('attribute_id'))) {
+            $condition['where'] = [
+                'attribute_id' => ['=', request('attribute_id')],
+            ];
+        }
+
+        $select = ['id', 'name', 'attribute_id'];
+
+        $data = request('pageSize') && request('page')
+            ?
+            $this->attributeValueRepository->pagination(
+                $select,
+                $condition,
+                request('pageSize'),
+                ['id' => 'desc'],
+                [],
+                ['attribute'],
+            )
+            :
+            $this->attributeValueRepository->all($select);
 
         return $data;
     }
@@ -39,12 +53,28 @@ class AttributeValueService extends BaseService implements AttributeValueService
     public function create()
     {
         return $this->executeInTransaction(function () {
-
             $payload = request()->except('_token', '_method');
-            $this->attributeValueRepository->create($payload);
+            $payload = $this->formatPayload($payload);
+
+            $this->attributeValueRepository->createBatch($payload);
 
             return successResponse('Tạo mới thành công.');
         }, 'Tạo mới thất bại.');
+    }
+
+    private function formatPayload($payload)
+    {
+        // Xu ly thuoc tinh san pham
+        $names = array_filter(array_map('trim', explode('|', $payload['name'])));
+
+        return array_map(function ($name) use ($payload) {
+            return [
+                'name' => $name,
+                'attribute_id' => $payload['attribute_id'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }, $names);
     }
 
     public function update($id)

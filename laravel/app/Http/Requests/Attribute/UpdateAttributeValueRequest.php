@@ -26,15 +26,15 @@ class UpdateAttributeValueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required|unique:attribute_values,code,' . $this->value,
+            'attribute_id' => 'required',
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên nhóm thuộc tính',
-            'code' => 'Mã nhóm thuộc tính',
+            'name' => 'Tên giá trị thuộc tính',
+            'attribute_id' => 'Thuộc tính',
         ];
     }
 

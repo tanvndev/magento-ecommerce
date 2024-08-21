@@ -5,23 +5,40 @@ namespace App\Models;
 use App\Traits\QueryScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Attribute extends Model
 {
-    use HasFactory, QueryScopes;
+    use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = [
         'name',
-        'attribute_value_id',
+        'code',
+        'description',
     ];
 
-    public function attribute_value()
+    protected static function boot()
     {
-        return $this->belongsTo(AttributeValue::class, 'attribute_value_id', 'id');
+        parent::boot();
+
+        static::creating(function ($model) {
+            $code = Str::upper(Str::slug($model->code));
+            $code = Str::replace('-', '', $code);
+
+            $model->code = Str::upper($code);
+        });
+
+        static::updating(function ($model) {
+            $code = Str::upper(Str::slug($model->code));
+            $code = Str::replace('-', '', $code);
+
+            $model->code = Str::upper($code);
+        });
     }
 
-    public function product_variants()
+    public function attribute_values()
     {
-        return $this->belongsToMany(ProductVariant::class, 'product_variant_attribute', 'attribute_id', 'product_variant_id');
+        return $this->hasMany(AttributeValue::class);
     }
 }
