@@ -48,6 +48,7 @@
 import { ref, computed, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import sidebar from '@/static/sidebar';
+import _ from 'lodash';
 
 const selectedKeys = ref([]);
 const openKeys = ref([]);
@@ -75,44 +76,35 @@ const generateGeneralPattern = (route) => {
 };
 
 const isActiveRoute = (route, currentRoute) => {
-    const currentRouteFormat = generateGeneralPattern(currentRoute);
-    const routeFormat = generateGeneralPattern(route);
+    return generateGeneralPattern(route) === generateGeneralPattern(currentRoute);
+};
 
-    return currentRouteFormat === routeFormat;
+const findSidebarItem = (currentRouteName, sidebar) => {
+    return sidebar.find(item =>
+        (item.subMenu.length && item.subMenu.some(sub => sub.route === currentRouteName)) ||
+        (item.route && item.route === currentRouteName) ||
+        (_.isArray(item.active) && item.active.includes(currentRouteName.split('.')[0]))
+    );
 };
 
 const updateMenuState = () => {
     const currentRouteName = route.name;
-    const currentRouteNamePartsOne = currentRouteName.split('.')[0];
-
-    openKeys.value = [];
-    selectedKeys.value = [];
-
     if (!currentRouteName) return;
 
-    const foundItem = sidebar.find((item) => {
-        return (
-            (item.subMenu.length && item.subMenu.some((sub) => sub.route === currentRouteName)) ||
-            (item.route && item.route === currentRouteName) ||
-            currentRouteNamePartsOne.includes(item.active)
-        );
-    });
-
-    if (!foundItem) return;
+    const foundItem = findSidebarItem(currentRouteName, sidebar);
+    if (!foundItem) {
+        openKeys.value = [];
+        selectedKeys.value = [];
+        return;
+    }
 
     openKeys.value = [foundItem.id];
 
-    if (foundItem.subMenu.length) {
-        const subItem = foundItem.subMenu.find(
-            (sub) => (sub.route === currentRouteName) || isActiveRoute(sub.route, currentRouteName)
-        );
+    const subItem = foundItem.subMenu.find(sub =>
+        sub.route === currentRouteName || isActiveRoute(sub.route, currentRouteName)
+    );
 
-        if (subItem) {
-            selectedKeys.value = [subItem.route];
-        }
-    } else {
-        selectedKeys.value = [foundItem.route];
-    }
+    selectedKeys.value = subItem ? [subItem.route] : [foundItem.route];
 };
 
 watch(() => route.name, () => {
