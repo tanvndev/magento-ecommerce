@@ -95,11 +95,12 @@ const saveAttributes = handleSubmit(async (values) => {
             });
         }
 
-
         // Filter and map attributes
         const attributeNames = attrValues
             .filter((attrValue) => valueIds.includes(attrValue.id))
-            .map((attrValue) => attrValue.name);
+            .map((attrValue) => {
+                return [attrValue.id, attrValue.name]
+            });
 
         if (!_.isEmpty(attributeNames)) {
             dataAttributes.attrIds[attributeId] = valueIds;
@@ -112,7 +113,6 @@ const saveAttributes = handleSubmit(async (values) => {
         }
 
     }
-
 
     // Save attributes
     store.commit('productStore/setAttributes', dataAttributes);

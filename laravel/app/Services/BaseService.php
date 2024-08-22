@@ -26,7 +26,7 @@ class BaseService implements BaseServiceInterface
     public function updateStatus()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
+            $repositoryName = lcfirst(request('modelName')) . 'Repository';
 
             $payload[request('field')] = request('value');
             $this->{$repositoryName}->update(request('modelId'), $payload);
@@ -38,7 +38,7 @@ class BaseService implements BaseServiceInterface
     public function updateStatusMultiple()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
+            $repositoryName = lcfirst(request('modelName')) . 'Repository';
 
             $payload[request('field')] = request('value');
             $this->{$repositoryName}->updateByWhereIn('id', request('modelIds'), $payload);
@@ -50,7 +50,7 @@ class BaseService implements BaseServiceInterface
     public function deleteMultiple()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
+            $repositoryName = lcfirst(request('modelName')) . 'Repository';
             $this->{$repositoryName}->deleteByWhereIn('id', request('modelIds'));
 
             return successResponse('Xoá thành công.');
@@ -66,7 +66,7 @@ class BaseService implements BaseServiceInterface
 
             return $result;
         } catch (\Exception $e) {
-            getError($e);
+            // getError($e);
 
             Log::error('>>Transaction failed<<', [
                 'message' => $e->getMessage(),

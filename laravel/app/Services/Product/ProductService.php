@@ -51,7 +51,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $product = $this->productRepository->create($payload);
 
             $this->syncCatalogue($product, $payload['product_catalogue_id']);
-
+            $this->createProductAttribute($product, $payload);
             $this->createProductVariant($product, $payload);
 
             return successResponse('Tạo mới thành công.');
@@ -71,7 +71,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $payload;
     }
 
-    private function createProductVariant($product, array $payload)
+    private function createProductVariant($product, array $payload): void
     {
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
@@ -97,17 +97,40 @@ class ProductService extends BaseService implements ProductServiceInterface
         $product->variants()->create($mainData);
 
         if ($payload['product_type'] === 'variable') {
-            $this->createVariableProductVariants($product, $payload, $mainData);
+            $this->createProductVariants($product, $payload, $mainData);
         }
     }
 
-    private function createVariableProductVariants($product, array $payload, array $mainData)
+    private function createProductAttribute($product, array $payload)
+    {
+        if (!isset($payload['attributes']) || empty($payload['attributes'])) {
+            return false;
+        }
+
+        $attributes = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true));
+
+        $attributePayload = [];
+
+        foreach ($attributes['attrIds'] as $attrId => $attrValueIds) {
+            $attributePayload[$attrId] = [
+                'attribute_value_ids' => json_encode($attrValueIds),
+                'enable_variation' => $attributes['enable_variation'][$attrId] ?? false,
+            ];
+        }
+
+        $product->attributes()->sync($attributePayload);
+
+        return true;
+    }
+
+    private function createProductVariants($product, array $payload, array $mainData)
     {
         $variable = $payload['variable'] ?? [];
-        // $variantTexts = json_decode($payload['variants'] ?? '[]', true);
-        $variantTexts = $payload['variants'];
-        // $attributeIds = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true))['attrIds'];
-        $attributes = removeEmptyValues($payload['attributes']);
+        $variants = json_decode($payload['variants'] ?? '[]', true);
+        $variantTexts = $variants['variantTexts'];
+        $variantIds = $variants['variantIds'];
+        $attributes = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true));
+        // $attributes = removeEmptyValues($payload['attributes']);
         $attributeIds = $attributes['attrIds'];
         $attributeIdEnableVariation = $this->formatAttributeEnableVariation($attributeIds, $attributes['enable_variation'] ?? []);
 
@@ -115,19 +138,12 @@ class ProductService extends BaseService implements ProductServiceInterface
             return false;
         }
 
-        // $attributeCombines = $this->combineAttribute(array_values($attributeIdEnableVariation));
-        $attributeCombines = $this->combineAttribute($attributeIdEnableVariation);
-        dd($attributeCombines);
-
         $productVariantPayload = collect($variable['count'] ?? [])
-            ->map(function ($count, $key) use ($mainData, $variable, $variantTexts, $attributeCombines) {
+            ->map(function ($count, $key) use ($mainData, $variable, $variantTexts, $variantIds) {
                 $options = explode('-', $variantTexts[$key] ?? '');
                 $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
-
-                $attributeCombinesKey = $attributeCombines[$key] ?? [];
-                sort($attributeCombinesKey, SORT_NUMERIC);
-                $attribute_value_combine = implode(',', $attributeCombinesKey);
+                $attribute_value_combine = sortString($variantIds[$key]);
 
                 $variantData = [
                     'name' => $name,
@@ -153,35 +169,32 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->toArray();
 
         $createdVariants = $product->variants()->createMany($productVariantPayload);
-
-        dd($attributeCombines);
+        $attributeCombines = $this->combineAttribute($attributeIdEnableVariation);
 
         $variantAttributePayload = $createdVariants->flatMap(function ($variant, $index) use ($attributeCombines) {
-            return collect($attributeCombines[$index])->map(function ($attributeId, $key) use ($variant) {
-                dd($key);
+            return collect($attributeCombines[$index])->map(function ($attributeValueId, $attributeId) use ($variant) {
                 return [
                     'product_variant_id' => $variant->id,
                     'attribute_id' => $attributeId,
-                    'attribute_value_id' => $variant->attribute_value_combine,
+                    'attribute_value_id' => $attributeValueId,
                 ];
             });
         })->values()->all();
 
-        dd($variantAttributePayload);
-
-
         DB::table('product_variant_attribute')->insert($variantAttributePayload);
     }
 
-    private function formatAttributeEnableVariation(array $attributeIds, array $enableVariantion): array
+    private function formatAttributeEnableVariation(array $attributeIds, array $enableVariantion, bool $enable = true): array
     {
         $attrIds = [];
         foreach ($enableVariantion as $key => $value) {
-            if ($value == true) {
+            if ($enable == true && $value == true) {
                 $attrIds[$key] = $attributeIds[$key];
+            } elseif ($enable == false && $value == true) {
+                unset($attributeIds[$key]);
             }
         }
-        return $attrIds;
+        return $enable ? $attrIds : $attributeIds;
     }
 
     private function combineAttribute($attributeIds)
@@ -191,24 +204,26 @@ class ProductService extends BaseService implements ProductServiceInterface
             return [];
         }
 
-        $data = array_reduce($attributeIds, function ($acc, $attr) {
+        $keys = array_keys($attributeIds);
+        $values = array_values($attributeIds);
 
-            return $acc ? array_merge(...array_map(function ($x) use ($attr) {
-                return array_map(function ($y) use ($x) {
-                    return array_merge(is_array($x) ? $x : [$x], [$y]);
+        $result = array_reduce($values, function ($acc, $attr) use ($keys) {
+            if (empty($acc)) {
+                return array_map(function ($item) use ($keys) {
+                    return [$keys[0] => $item];
                 }, $attr);
-            }, $acc)) : $attr;
+            }
+
+            $newAcc = [];
+            foreach ($acc as $existing) {
+                foreach ($attr as $newItem) {
+                    $newAcc[] = $existing + [end($keys) => $newItem];
+                }
+            }
+            return $newAcc;
         }, []);
 
-        $finaFresult = [];
-        foreach ($data as $item) {
-            $entry = [];
-            foreach ($attributeIds as $key => $values) {
-                $entry[$key] = $item[$key];
-            }
-            $finaFresult[] = $entry;
-        }
-        dd($finaFresult);
+        return $result;
     }
 
     public function update($id)

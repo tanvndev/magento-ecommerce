@@ -148,6 +148,8 @@ const handleCreateVariant = () => {
     state.isLoading = true;
 
     const attributeTexts = attributes.value.texts;
+    console.log(attributeTexts);
+
 
     if (_.isEmpty(attributeTexts)) {
         state.isLoading = false;
@@ -158,11 +160,16 @@ const handleCreateVariant = () => {
         });
     }
 
-    const variantTextData = combineVariantText(attributeTexts);
-    store.commit('productStore/setVariants', variantTextData);
+    // const variantTextData = combineVariant(attributeTexts);
+    const { variantTexts, variantIds } = combineVariant(attributeTexts);
+
+    console.log(variantTexts, variantIds);
+
+
+    store.commit('productStore/setVariants', {variantTexts, variantIds});
 
     setTimeout(() => {
-        state.variantTexts = variantTextData;
+        state.variantTexts = variantTexts;
     }, 1000);
 
     setTimeout(() => {
@@ -170,37 +177,33 @@ const handleCreateVariant = () => {
     }, 1000);
 };
 
-// LAM PHANG MANG VE GHEP CAC BIEN THE
-const calculateVariant = (arrays) => {
-    if (_.isEmpty(arrays)) return [];
-
+const calculateVariant = (obj) => {
+    const arrays = Object.values(obj);
+    if (arrays.length === 0) return [];
     return arrays.reduce(
         (acc, curr) => {
-            return _.flatMap(acc, (a) => _.map(curr, (b) => a.concat(b)));
+            return acc.flatMap(a => curr.map(b => a.concat([b])));
         },
         [[]]
     );
 };
 
-// KET HOP CA BIEN THE VUA TAO
-const combineVariantText = (texts) => {
-    if (_.isEmpty(texts)) return [];
+const combineVariant = (variants) => {
+    const combinations = calculateVariant(variants);
 
-    // Extract the attribute names and values
-    const attributeNames = _.keys(texts);
-    const attributeValues = _.values(texts);
+    const variantTexts = combinations.map(combination =>
+        combination
+            .map(item => item[1])
+            .join(' - ')
+    );
 
-    // Generate the Cartesian product of attribute values
-    const combinations = calculateVariant(attributeValues);
-
-    // Format each combination into the desired string format
-    return combinations.map((combination) => {
-        return attributeNames
-            .map((name, index) => {
-                return `${combination[index]}`;
-            })
-            .join(' - ');
-    });
+    const variantIds = combinations.map(combination =>
+        combination
+            .map(item => item[0])
+            .sort((a, b) => a - b)
+            .join(',')
+    );
+    return { variantTexts, variantIds };
 };
 
 // XU LY XOA CAC HANG BIEN THE

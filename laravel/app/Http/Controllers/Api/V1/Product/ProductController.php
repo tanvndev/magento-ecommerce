@@ -40,6 +40,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $response = $this->productService->create();
+        return response()->json($response);
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
