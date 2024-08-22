@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->json('attributes')->nullable();
-            $table->string('uuid', 255)->unique();
             $table->string('name', 255)->comment('Ten san pham se luu chung');
-            $table->string('canonical', 255)->unique();
+            $table->string('attribute_value_combine', 20)->nullable();
             $table->string('sku', 100)->nullable();
             $table->decimal('price', 15, 2)->comment('Gia ban');
             $table->decimal('sale_price', 15, 2)->nullable()->comment('Gia khuyen mai');

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('product_catalogues')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('meta_title', 255)->nullable();
-            $table->string('meta_keyword', 255)->nullable();
+            $table->string('meta_keywords', 255)->nullable();
             $table->text('meta_description')->nullable();
             $table->softDeletes();
             $table->timestamps();

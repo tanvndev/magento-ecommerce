@@ -73,16 +73,12 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function createProductVariant($product, array $payload)
     {
-        $canonical = Str::slug($payload['name']);
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ',' . $canonical);
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
 
         $mainData = [
             'name' => $payload['name'] ?? null,
-            'uuid' => $uuid,
-            'canonical' => $canonical,
             'image' => $payload['image'] ?? null,
             'album' => $payload['album'] ?? null,
             'price' => $payload['price'] ?? null,
@@ -118,18 +114,24 @@ class ProductService extends BaseService implements ProductServiceInterface
         if (empty($attributeIdEnableVariation)) {
             return false;
         }
-        // dd($attributeIdEnableVariation);
+
+        // $attributeCombines = $this->combineAttribute(array_values($attributeIdEnableVariation));
+        $attributeCombines = $this->combineAttribute($attributeIdEnableVariation);
+        dd($attributeCombines);
 
         $productVariantPayload = collect($variable['count'] ?? [])
-            ->map(function ($count, $key) use ($mainData, $variable, $variantTexts) {
+            ->map(function ($count, $key) use ($mainData, $variable, $variantTexts, $attributeCombines) {
                 $options = explode('-', $variantTexts[$key] ?? '');
                 $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
 
+                $attributeCombinesKey = $attributeCombines[$key] ?? [];
+                sort($attributeCombinesKey, SORT_NUMERIC);
+                $attribute_value_combine = implode(',', $attributeCombinesKey);
+
                 $variantData = [
                     'name' => $name,
-                    'uuid' => Uuid::uuid5(Uuid::NAMESPACE_DNS, $sku),
-                    'canonical' => Str::slug($name),
+                    'attribute_value_combine' => $attribute_value_combine,
                     'image' => $variable['image'][$key] ?? $mainData['image'],
                     'album' => $variable['album'][$key] ?? $mainData['album'],
                     'price' => $variable['price'][$key] ?? $mainData['price'],
@@ -150,21 +152,23 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->values()
             ->toArray();
 
-        // dd($productVariantPayload);
-
         $createdVariants = $product->variants()->createMany($productVariantPayload);
 
-        $attributeCombines = $this->combineAttribute(array_values($attributeIdEnableVariation));
         dd($attributeCombines);
 
         $variantAttributePayload = $createdVariants->flatMap(function ($variant, $index) use ($attributeCombines) {
-            return collect($attributeCombines[$index])->map(function ($attributeId) use ($variant) {
+            return collect($attributeCombines[$index])->map(function ($attributeId, $key) use ($variant) {
+                dd($key);
                 return [
                     'product_variant_id' => $variant->id,
                     'attribute_id' => $attributeId,
+                    'attribute_value_id' => $variant->attribute_value_combine,
                 ];
             });
         })->values()->all();
+
+        dd($variantAttributePayload);
+
 
         DB::table('product_variant_attribute')->insert($variantAttributePayload);
     }
@@ -174,7 +178,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $attrIds = [];
         foreach ($enableVariantion as $key => $value) {
             if ($value == true) {
-                $attrIds[] = $attributeIds[$key];
+                $attrIds[$key] = $attributeIds[$key];
             }
         }
         return $attrIds;
@@ -182,17 +186,29 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function combineAttribute($attributeIds)
     {
-        if (! count($attributeIds)) {
+        // dd($attributeIds);
+        if (!count($attributeIds)) {
             return [];
         }
 
-        return array_reduce($attributeIds, function ($acc, $attr) {
+        $data = array_reduce($attributeIds, function ($acc, $attr) {
+
             return $acc ? array_merge(...array_map(function ($x) use ($attr) {
                 return array_map(function ($y) use ($x) {
                     return array_merge(is_array($x) ? $x : [$x], [$y]);
                 }, $attr);
             }, $acc)) : $attr;
         }, []);
+
+        $finaFresult = [];
+        foreach ($data as $item) {
+            $entry = [];
+            foreach ($attributeIds as $key => $values) {
+                $entry[$key] = $item[$key];
+            }
+            $finaFresult[] = $entry;
+        }
+        dd($finaFresult);
     }
 
     public function update($id)

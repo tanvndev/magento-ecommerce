@@ -23,8 +23,9 @@ return new class extends Migration
             $table->boolean('enable_manage_stock')->default(0);
             $table->string('stock_status')->nullable();
             $table->unsignedInteger('quantity')->default(0);
+            $table->string('canonical', 255)->unique();
             $table->string('meta_title', 255)->nullable();
-            $table->string('meta_keyword', 255)->nullable();
+            $table->string('meta_keywords', 255)->nullable();
             $table->text('meta_description')->nullable();
             $table->softDeletes();
             $table->timestamps();
