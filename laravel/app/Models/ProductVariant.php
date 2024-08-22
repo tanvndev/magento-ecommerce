@@ -15,6 +15,7 @@ class ProductVariant extends Model
         'uuid',
         'canonical',
         'product_id',
+        'attributes',
         'sku',
         'weight',
         'length',
@@ -25,6 +26,9 @@ class ProductVariant extends Model
         'price',
         'sale_price',
         'cost_price',
+        'enable_manage_stock',
+        'stock_status',
+        'quantity',
         'is_discount_time',
         'sale_price_start_at',
         'sale_price_end_at',
@@ -32,6 +36,7 @@ class ProductVariant extends Model
 
     protected $casts = [
         'album' => 'json',
+        'attributes' => 'json',
     ];
 
     public function product()

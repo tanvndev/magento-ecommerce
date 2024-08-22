@@ -74,7 +74,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createProductVariant($product, array $payload)
     {
         $canonical = Str::slug($payload['name']);
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.','.$canonical);
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ',' . $canonical);
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
@@ -108,13 +108,22 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createVariableProductVariants($product, array $payload, array $mainData)
     {
         $variable = $payload['variable'] ?? [];
-        $variantTexts = json_decode($payload['variants'] ?? '[]', true);
-        $attributeIds = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true))['attrIds'];
+        // $variantTexts = json_decode($payload['variants'] ?? '[]', true);
+        $variantTexts = $payload['variants'];
+        // $attributeIds = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true))['attrIds'];
+        $attributes = removeEmptyValues($payload['attributes']);
+        $attributeIds = $attributes['attrIds'];
+        $attributeIdEnableVariation = $this->formatAttributeEnableVariation($attributeIds, $attributes['enable_variation'] ?? []);
+
+        if (empty($attributeIdEnableVariation)) {
+            return false;
+        }
+        // dd($attributeIdEnableVariation);
 
         $productVariantPayload = collect($variable['count'] ?? [])
             ->map(function ($count, $key) use ($mainData, $variable, $variantTexts) {
                 $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options).'-'.($key + 1);
+                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
 
                 $variantData = [
@@ -141,9 +150,13 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->values()
             ->toArray();
 
+        // dd($productVariantPayload);
+
         $createdVariants = $product->variants()->createMany($productVariantPayload);
 
-        $attributeCombines = $this->combineAttribute(array_values($attributeIds));
+        $attributeCombines = $this->combineAttribute(array_values($attributeIdEnableVariation));
+        dd($attributeCombines);
+
         $variantAttributePayload = $createdVariants->flatMap(function ($variant, $index) use ($attributeCombines) {
             return collect($attributeCombines[$index])->map(function ($attributeId) use ($variant) {
                 return [
@@ -154,6 +167,17 @@ class ProductService extends BaseService implements ProductServiceInterface
         })->values()->all();
 
         DB::table('product_variant_attribute')->insert($variantAttributePayload);
+    }
+
+    private function formatAttributeEnableVariation(array $attributeIds, array $enableVariantion): array
+    {
+        $attrIds = [];
+        foreach ($enableVariantion as $key => $value) {
+            if ($value == true) {
+                $attrIds[] = $attributeIds[$key];
+            }
+        }
+        return $attrIds;
     }
 
     private function combineAttribute($attributeIds)

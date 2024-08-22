@@ -7,6 +7,7 @@ const state = {
 // getters
 const getters = {
   getAttributes: (state) => state.attributes,
+  getEnableVariation: (state) => state.attributes.enable_variation,
   getAttributeIds: (state) => state.attributes.attrIds,
   getAttributeTexts: (state) => state.attributes.texts,
   getVariants: (state) => state.variants

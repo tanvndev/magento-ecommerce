@@ -36,20 +36,6 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function warehouses()
-    {
-        return $this->belongsToMany(Warehouse::class, 'product_warehouse')
-            ->withPivot(
-                'in_stock',
-                'cog_price',
-                'type'
-            );
-    }
 
     public function variants()
     {

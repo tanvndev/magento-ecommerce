@@ -16,7 +16,7 @@
 import TooltipComponent from '../TooltipComponent.vue';
 const emits = defineEmits(['onChange']);
 const handleChange = (value) => {
-    emits('onChange', value);
+    emits('onChange', value ?? false);
 };
 
 import { useField } from 'vee-validate';

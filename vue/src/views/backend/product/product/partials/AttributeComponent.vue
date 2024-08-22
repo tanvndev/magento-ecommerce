@@ -48,6 +48,7 @@ import { useStore } from 'vuex';
 import { useCRUD } from '@/composables';
 import { formatDataToSelect } from '@/utils/format';
 import _ from 'lodash';
+import { message } from 'ant-design-vue';
 
 const store = useStore();
 const { getAll, data } = useCRUD();
@@ -62,54 +63,60 @@ const state = reactive({
 
 // XU LY VA LUU THUOC TINH VAO STORE
 const saveAttributes = handleSubmit(async (values) => {
-    console.log(values);
-
     // reset attribute
     store.commit('productStore/setAttributes', []);
 
-    const attributeIds = values.attributes;
+    const attributeIds = values.attribute_value_ids;
+
     const dataAttributes = {
+        enable_variation: values.enable_variation,
         attrIds: [],
         texts: {}
     };
 
     // Tao ra Map de duyet qua tim ten nhanh hon
-    const catalogueMap = new Map(
-        state.attributes.map((catalogue) => [catalogue.id, catalogue])
+    const attributeMap = new Map(
+        state.attributes.map((attribute) => [attribute.id, attribute])
     );
 
-    for (const [catalogueId, ids] of Object.entries(attributeIds)) {
-        const catalogue = catalogueMap.get(Number(catalogueId));
-        if (!catalogue) continue;
 
-        const catalogueName = catalogue.name;
-        const attributes = catalogue.attributes;
+    for (const [attributeId, valueIds] of Object.entries(attributeIds)) {
 
-        if (!ids || _.isEmpty(ids)) {
+        const attribute = attributeMap.get(Number(attributeId));
+        if (!attribute) continue;
+
+        const attributeName = attribute.name;
+        const attrValues = attribute.values;
+
+        if (!valueIds || _.isEmpty(valueIds)) {
             return store.dispatch('antStore/showMessage', {
                 type: 'error',
-                message: 'Vui lòng chọn thuộc tính sản phẩm cho ' + catalogueName
+                message: 'Vui lòng chọn thuộc tính sản phẩm cho ' + attributeName
             });
         }
 
+
         // Filter and map attributes
-        const attributeNames = attributes
-            .filter((attribute) => ids.includes(attribute.id))
-            .map((attribute) => attribute.name);
+        const attributeNames = attrValues
+            .filter((attrValue) => valueIds.includes(attrValue.id))
+            .map((attrValue) => attrValue.name);
 
         if (!_.isEmpty(attributeNames)) {
-            dataAttributes.attrIds[catalogueId] = ids;
-            dataAttributes.texts[catalogueName] = attributeNames;
+            dataAttributes.attrIds[attributeId] = valueIds;
+
+            // If enable variation is true
+            if (dataAttributes.enable_variation[attributeId] == true) {
+                dataAttributes.texts[attributeName] = attributeNames;
+            }
+
         }
+
     }
+
 
     // Save attributes
     store.commit('productStore/setAttributes', dataAttributes);
-
-    store.dispatch('antStore/showMessage', {
-        type: 'success',
-        message: 'Lưu thuộc tính thành công.'
-    });
+    message.success('Lưu thuộc tính thành công.');
 });
 
 // XU LY NHOM THUOC TINH
