@@ -44,7 +44,10 @@
 
             <!-- EditForm -->
             <a-row class="mt-3 border-t px-3 pt-3" :class="state.openEdit[i] ? 'block' : 'hidden'">
-                <a-col span="24" class="mb-4 border-b pb-4">
+                <a-divider>
+                    <h1 class="text-primary-500">Ảnh chính sản phẩm</h1>
+                </a-divider>
+                <a-col span="24" class="mb-4">
                     <a-row :gutter="[16, 10]" class="items-center">
                         <a-col span="3" class="text-center">
                             <label class="font-bold">Ảnh</label>
@@ -60,7 +63,11 @@
                     </a-row>
                 </a-col>
                 <!-- Anh -->
-                <a-col span="24" class="mb-4 border-b pb-4">
+                <a-divider>
+                    <h1 class="text-primary-500">Thư viện ảnh sản phẩm</h1>
+                </a-divider>
+
+                <a-col span="24" class="mb-4">
                     <a-row class="items-center" :gutter="[16, 10]">
                         <a-col span="3" class="text-center">
                             <label class="font-bold">Thư viện ảnh</label>
@@ -72,7 +79,11 @@
                     </a-row>
                 </a-col>
                 <!-- Gia -->
-                <a-col span="24" class="mb-4 border-b pb-4">
+                <a-divider>
+                    <h1 class="text-primary-500">Giá sản phẩm</h1>
+                </a-divider>
+
+                <a-col span="24" class="mb-4">
                     <a-row class="items-center" :gutter="[16, 20]">
                         <a-col span="8">
                             <InputNumberComponent :name="`variable[price][${i}]`" label="Giá bán"
@@ -98,7 +109,11 @@
                     </a-row>
                 </a-col>
                 <!-- Giao hang -->
-                <a-col span="24">
+                <a-divider>
+                    <h1 class="text-primary-500">Giao hàng</h1>
+                </a-divider>
+
+                <a-col span="24" class="mb-6">
                     <a-row class="items-center" :gutter="[16, 10]">
                         <a-col span="6">
                             <InputNumberComponent :name="`variable[weight][${i}]`" label="Cân nặng (g)"
@@ -116,6 +131,32 @@
                         </a-col>
                     </a-row>
                 </a-col>
+
+                <a-divider>
+                    <h1 class="text-primary-500">Kiểm kê kho hàng</h1>
+                </a-divider>
+
+                <a-col span="24" class="mb-4">
+                    <a-row :gutter="[16, 16]" class="items-center">
+                        <a-col span="6">
+                            <div class="flex items-center gap-5">
+                                <label class="font-bold">Quản lý kho hàng</label>
+                                <SwitchComponent @on-change="handleEnableManageStock" name="enable_manage_stock"
+                                    check-text="Đồng ý" uncheck-text="Hủy bỏ"
+                                    tooltip-text="Các thiết lập bên dưới áp dụng cho tất cả các biến thể mà không bật chức năng quản lý kho thủ công." />
+                            </div>
+                        </a-col>
+                        <a-col span="18" v-if="state.stockStatus === 'outofstock'">
+                            <SelectComponent name="stock_status" label="Trạng thái kho hàng"
+                                :options="state.stockStatusOptions" placeholder="Chọn trạng thái kho hàng" />
+                        </a-col>
+
+                        <a-col span="18" v-if="state.stockStatus === 'instock'">
+                            <InputNumberComponent name="quantity" label="Số lượng" placeholder="Nhập số lượng" />
+                        </a-col>
+                    </a-row>
+                </a-col>
+
             </a-row>
         </a-col>
     </a-row>
@@ -128,9 +169,11 @@ import {
     SwitchComponent,
     InputComponent,
     InputDateComponent,
-    InputFinderComponent
+    InputFinderComponent,
+    SelectComponent
 } from '@/components/backend';
 import { useStore } from 'vuex';
+import { STOCK_STATUS } from '@/static/constants';
 
 const store = useStore();
 const attributes = computed(() => store.getters['productStore/getAttributes']);
@@ -140,8 +183,14 @@ const state = reactive({
     openEdit: {},
     variantTexts: [],
     isLoading: false,
-    isDiscountTime: {}
+    isDiscountTime: {},
+    stockStatusOptions: STOCK_STATUS,
+    stockStatus: 'outofstock',
 });
+
+const handleEnableManageStock = (value) => {
+    state.stockStatus = value ? 'instock' : 'outofstock';
+}
 
 // XU LY TAO RA CAC BIEN THE
 const handleCreateVariant = () => {
@@ -166,7 +215,7 @@ const handleCreateVariant = () => {
     console.log(variantTexts, variantIds);
 
 
-    store.commit('productStore/setVariants', {variantTexts, variantIds});
+    store.commit('productStore/setVariants', { variantTexts, variantIds });
 
     setTimeout(() => {
         state.variantTexts = variantTexts;

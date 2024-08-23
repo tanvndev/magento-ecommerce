@@ -88,6 +88,7 @@ trait QueryScopes
     public function scopeCustomJoin($query, $join = [])
     {
         // 'table_name_1' => ['constraint1', 'constraint2'],
+        // 'brand' => ['brand.id', 'product.brand_id']
         if (! empty($join) && is_array($join)) {
             foreach ($join as $table => $constraints) {
                 $query->join($table, ...$constraints);

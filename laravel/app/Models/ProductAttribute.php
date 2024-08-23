@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class ProductAttribute extends Model
 {
     use HasFactory;
-
-    public $table = 'product_attribute';
     public $timestamps = false;
 
     protected $fillable = [
@@ -22,4 +20,14 @@ class ProductAttribute extends Model
     protected $casts = [
         'attribute_value_ids' => 'json',
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function attribute()
+    {
+        return $this->belongsTo(Attribute::class);
+    }
 }

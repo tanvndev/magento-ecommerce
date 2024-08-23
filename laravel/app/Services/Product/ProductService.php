@@ -8,8 +8,6 @@ use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductServiceInterface;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Ramsey\Uuid\Uuid;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
@@ -28,9 +26,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             'publish' => request('publish'),
         ];
 
-        $select = ['id', 'name', 'brand_id', 'supplier_id', 'product_catalogue_id', 'sku', 'image', 'publish', 'product_type'];
+        $select = ['id', 'name', 'brand_id', 'product_catalogue_id', 'sku', 'image', 'publish', 'product_type'];
         $orderBy = ['id' => 'desc'];
-        $relations = ['variants', 'warehouses', 'catalogue', 'brand', 'supplier'];
+        $relations = ['variants', 'catalogue', 'brand'];
 
         $data = $this->productRepository->pagination(
             $select,
@@ -94,7 +92,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             'sale_price_end_at' => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
         ];
 
-        $product->variants()->create($mainData);
+        if ($payload['product_type'] === 'simple') {
+            $product->variants()->create($mainData);
+        }
 
         if ($payload['product_type'] === 'variable') {
             $this->createProductVariants($product, $payload, $mainData);
@@ -112,13 +112,14 @@ class ProductService extends BaseService implements ProductServiceInterface
         $attributePayload = [];
 
         foreach ($attributes['attrIds'] as $attrId => $attrValueIds) {
-            $attributePayload[$attrId] = [
-                'attribute_value_ids' => json_encode($attrValueIds),
+            $attributePayload[] = [
+                'attribute_id' => $attrId,
+                'attribute_value_ids' => $attrValueIds,
                 'enable_variation' => $attributes['enable_variation'][$attrId] ?? false,
             ];
         }
 
-        $product->attributes()->sync($attributePayload);
+        $product->attributes()->createMany($attributePayload);
 
         return true;
     }

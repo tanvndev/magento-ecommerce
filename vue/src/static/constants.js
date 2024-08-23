@@ -51,4 +51,15 @@ const WAREHOUSE_CONFIG = [
     label: 'Lớn (20 dãy, 30 kệ, 5 tầng, 10 khoang)'
   }
 ];
-export { PUBLISH, PAGESIZE, PRODUCT_TYPE, TAXT_STATUS, WAREHOUSE_CONFIG };
+
+const STOCK_STATUS = [
+  {
+    value: 'instock',
+    label: 'Còn hàng'
+  },
+  {
+    value: 'outofstock',
+    label: 'Hết hàng'
+  }
+];
+export { PUBLISH, PAGESIZE, PRODUCT_TYPE, TAXT_STATUS, WAREHOUSE_CONFIG, STOCK_STATUS };

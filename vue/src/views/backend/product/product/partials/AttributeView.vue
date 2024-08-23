@@ -91,7 +91,7 @@ const saveAttributes = handleSubmit(async (values) => {
         if (!valueIds || _.isEmpty(valueIds)) {
             return store.dispatch('antStore/showMessage', {
                 type: 'error',
-                message: 'Vui lòng chọn thuộc tính sản phẩm cho ' + attributeName
+                message: 'Vui lòng chọn giá trị cho ' + attributeName
             });
         }
 

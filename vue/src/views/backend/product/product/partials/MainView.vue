@@ -25,7 +25,18 @@
                             </span>
                         </template>
                         <!-- Chung partials -->
-                        <CommonPriceComponent />
+                        <CommonPriceView />
+                    </a-tab-pane>
+                    <!-- Kiem ke kho hang -->
+                    <a-tab-pane key="2">
+                        <template #tab>
+                            <span>
+                                <i class="fas fa-warehouse mr-1"></i>
+                                Kiểm kê kho hàng
+                            </span>
+                        </template>
+                        <!-- Kiem ke kho hang partials -->
+                        <InventoryView />
                     </a-tab-pane>
                     <!-- Giao hang -->
                     <a-tab-pane key="3">
@@ -36,7 +47,7 @@
                             </span>
                         </template>
                         <!-- Giao hang partials -->
-                        <ShippingComponent />
+                        <ShippingView />
                     </a-tab-pane>
                     <!-- Upsell -->
                     <a-tab-pane key="4">
@@ -46,7 +57,7 @@
                                 Các sản phẩm được kết nối
                             </span>
                         </template>
-                        <UpsellComponent />
+                        <UpsellView />
                     </a-tab-pane>
                     <!-- Thuoc tinh -->
                     <a-tab-pane key="5">
@@ -56,7 +67,7 @@
                                 Các thuộc tính
                             </span>
                         </template>
-                        <AttributeComponent />
+                        <AttributeView />
                     </a-tab-pane>
                     <!-- Bien the -->
                     <!-- v-if="state.productType === 'variable'" -->
@@ -67,7 +78,7 @@
                                 Các biến thể
                             </span>
                         </template>
-                        <VariantComponent />
+                        <VariantView />
                     </a-tab-pane>
                 </a-tabs>
             </a-col>
@@ -77,19 +88,20 @@
 
 <script setup>
 import { SelectComponent, InputComponent } from '@/components/backend';
-import AttributeComponent from './AttributeComponent.vue';
-import VariantComponent from './VariantComponent.vue';
-import CommonPriceComponent from './CommonPriceComponent.vue';
-import { reactive } from 'vue';
-import ShippingComponent from './ShippingComponent.vue';
-import UpsellComponent from './UpsellComponent.vue';
+import AttributeView from './AttributeView.vue';
+import VariantView from './VariantView.vue';
+import CommonPriceView from './CommonPriceView.vue';
+import InventoryView from './InventoryView.vue';
+import ShippingView from './ShippingView.vue';
+import UpsellView from './UpsellView.vue';
 import { PRODUCT_TYPE } from '@/static/constants';
+import { reactive } from 'vue';
 
 
 // STATE
 const state = reactive({
     productType: 2,
-    activeKey: '6'
+    activeKey: '2'
 });
 
 // XU LY KIEU SAN PHAM

@@ -20,7 +20,7 @@ class LogRequestsAndResponses
         Log::info('>>Incoming request<<', [
             'method' => $request->method(),
             'url' => $request->fullUrl(),
-            'headers' => $request->headers->all(),
+            // 'headers' => $request->headers->all(),
             'payload' => $this->getPayload($request),
             'ip' => $request->ip(),
             'user_agent' => $request->header('User-Agent'),
@@ -31,7 +31,7 @@ class LogRequestsAndResponses
         // Log response
         Log::info('>>Outgoing response<<', [
             'status' => $response->status(),
-            'headers' => $response->headers->all(),
+            // 'headers' => $response->headers->all(),
             'request_id' => $request->header('X-Request-ID'),
         ]);
 

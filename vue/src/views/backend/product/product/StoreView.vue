@@ -30,7 +30,7 @@
               </a-card>
 
               <!-- Du lieu san pham -->
-              <MainComponent />
+              <MainView />
 
               <!-- Mo ta ngan san pham -->
               <a-card class="mt-3" title="Mô tả ngắn của sản phẩm">
@@ -49,7 +49,7 @@
             </div>
 
             <!-- Sidebar right -->
-            <SidebarComponent />
+            <SidebarView />
           </a-row>
 
           <div class="fixed bottom-0 right-[19px] p-10">
@@ -74,8 +74,8 @@ import {
   InputFinderComponent
 } from '@/components/backend';
 import _ from 'lodash';
-import MainComponent from './partials/MainComponent.vue';
-import SidebarComponent from './partials/SidebarComponent.vue';
+import MainView from './partials/MainView.vue';
+import SidebarView from './partials/SidebarView.vue';
 import { computed, onMounted, reactive, watch } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';

@@ -78,8 +78,6 @@ class Product extends Model
 
     public function attributes()
     {
-        return $this
-            ->belongsToMany(Attribute::class, 'product_attribute', 'product_id', 'attribute_id')
-            ->withPivot('attribute_value_ids', 'enable_variation');
+        return $this->hasMany(ProductAttribute::class);
     }
 }

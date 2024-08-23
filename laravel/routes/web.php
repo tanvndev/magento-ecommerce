@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use League\Glide\Server;
@@ -18,6 +19,8 @@ use League\Glide\Server;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/test', [TestController::class, 'index']);
 Route::get('/emails', function () {
     return view('emails.forgot-email');
 });
