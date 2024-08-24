@@ -9,19 +9,12 @@
               <a-card class="mt-3" title="Thông tin chung">
                 <AleartError :errors="state.errors" />
                 <a-row :gutter="[16, 16]">
-                  <a-col :span="10">
+                  <a-col :span="20">
                     <InputComponent
                       name="name"
                       label="Tên nhóm sản phẩm"
                       :required="true"
                       placeholder="Tên nhóm sản phẩm"
-                    />
-                  </a-col>
-                  <a-col :span="10">
-                    <InputComponent
-                      name="canonical"
-                      label="Đường dẫn nhóm sản phẩm"
-                      placeholder="Tự động tạo nếu không nhập"
                     />
                   </a-col>
                   <a-col :span="4">
@@ -41,6 +34,9 @@
                   </a-col>
                 </a-row>
               </a-card>
+
+              <!-- SEO -->
+              <SEOComponent />
             </a-col>
 
             <a-col :span="8">
@@ -84,7 +80,8 @@ import {
   InputComponent,
   InputFinderComponent,
   TreeSelectComponent,
-  InputNumberComponent
+  InputNumberComponent,
+  SEOComponent
 } from '@/components/backend';
 import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';

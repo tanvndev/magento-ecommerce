@@ -111,7 +111,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     {
         $payload = request()->except('_token', '_method');
         $payload['parent_id'] = $payload['parent_id'] ?? 0 ?: null;
-
+        $payload = $this->createSEO($payload);
         return $payload;
     }
 

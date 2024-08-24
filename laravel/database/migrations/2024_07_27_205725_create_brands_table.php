@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('image', 255)->nullable();
             $table->string('description', 255)->nullable();
             $table->tinyInteger('publish')->default(1)->comment('1: Active, 2: Inactive');
+            $table->string('meta_title', 255)->nullable();
+            $table->string('meta_description', 255)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

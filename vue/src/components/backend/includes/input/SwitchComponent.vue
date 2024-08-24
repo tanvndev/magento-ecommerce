@@ -13,6 +13,7 @@
 </template>
 
 <script setup>
+import { watch } from 'vue';
 import TooltipComponent from '../TooltipComponent.vue';
 const emits = defineEmits(['onChange']);
 const handleChange = (value) => {
@@ -41,9 +42,13 @@ const props = defineProps({
     tooltipText: {
         type: String,
         default: ''
-    }
+    },
+
 });
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
+
+
+
 </script>

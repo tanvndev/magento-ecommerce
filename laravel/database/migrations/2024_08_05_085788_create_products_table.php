@@ -25,8 +25,7 @@ return new class extends Migration
             $table->unsignedInteger('quantity')->default(0);
             $table->string('canonical', 255)->unique();
             $table->string('meta_title', 255)->nullable();
-            $table->string('meta_keywords', 255)->nullable();
-            $table->text('meta_description')->nullable();
+            $table->string('meta_description', 255)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -48,7 +48,7 @@ const getFileFromFileList = (fileList) => {
     return [];
   }
   const fileArr = fileList.map((file) => file.url);
-  return JSON.stringify(fileArr);
+  return JSON.stringify(fileArr, null, 2);
 };
 
 const getImageToAnt = (images) => {
@@ -96,6 +96,97 @@ const cleanedData = (data) => {
   );
 };
 
+const generateSlug = (str) => {
+  if (!str) return '';
+  const specialCharsMap = {
+    à: 'a',
+    á: 'a',
+    ä: 'a',
+    â: 'a',
+    ã: 'a',
+    å: 'a',
+    ă: 'a',
+    æ: 'ae',
+    ą: 'a',
+    ç: 'c',
+    ć: 'c',
+    č: 'c',
+    đ: 'd',
+    ď: 'd',
+    è: 'e',
+    é: 'e',
+    ě: 'e',
+    ė: 'e',
+    ë: 'e',
+    ê: 'e',
+    ę: 'e',
+    ğ: 'g',
+    ǵ: 'g',
+    ḧ: 'h',
+    ì: 'i',
+    í: 'i',
+    ï: 'i',
+    î: 'i',
+    į: 'i',
+    ł: 'l',
+    ḿ: 'm',
+    ǹ: 'n',
+    ń: 'n',
+    ň: 'n',
+    ñ: 'n',
+    ò: 'o',
+    ó: 'o',
+    ö: 'o',
+    ô: 'o',
+    œ: 'oe',
+    ø: 'o',
+    ṕ: 'p',
+    ŕ: 'r',
+    ř: 'r',
+    ß: 'ss',
+    ş: 's',
+    ś: 's',
+    š: 's',
+    ș: 's',
+    ť: 't',
+    ț: 't',
+    ù: 'u',
+    ú: 'u',
+    ü: 'u',
+    û: 'u',
+    ǘ: 'u',
+    ů: 'u',
+    ű: 'u',
+    ū: 'u',
+    ų: 'u',
+    ẃ: 'w',
+    ẍ: 'x',
+    ÿ: 'y',
+    ý: 'y',
+    ỳ: 'y',
+    ỷ: 'y',
+    ỹ: 'y',
+    ỵ: 'y',
+    ź: 'z',
+    ž: 'z',
+    ż: 'z',
+    '·': '-',
+    '/': '-',
+    _: '-',
+    ',': '-',
+    ':': '-',
+    '&': '-and-'
+  };
+  return str
+    .toString()
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, (match) => specialCharsMap[match] || '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+};
+
 export {
   debounce,
   resizeImage,
@@ -104,5 +195,6 @@ export {
   getFileFromFileList,
   getImageToAnt,
   isJSONString,
-  cleanedData
+  cleanedData,
+  generateSlug
 };

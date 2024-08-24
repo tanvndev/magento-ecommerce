@@ -19,10 +19,13 @@ class Product extends Model
         'excerpt',
         'description',
         'upsell_ids',
+        'canonical',
+        'enable_manage_stock',
+        'stock_status',
+        'quantity',
         'meta_title',
         'meta_keywords',
         'meta_description',
-        'canonical',
         'publish',
     ];
 

@@ -39,7 +39,7 @@ class BrandService extends BaseService implements BrandServiceInterface
     {
         return $this->executeInTransaction(function () {
 
-            $payload = request()->except('_token', '_method');
+            $payload = $this->preparePayload();
             $this->brandRepository->create($payload);
 
             return successResponse('Tạo mới thành công.');
@@ -50,11 +50,18 @@ class BrandService extends BaseService implements BrandServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            $payload = request()->except('_token', '_method');
+            $payload = $this->preparePayload();
             $this->brandRepository->update($id, $payload);
 
             return successResponse('Cập nhập thành công.');
         }, 'Cập nhập thất bại.');
+    }
+
+    private function preparePayload(): array
+    {
+        $payload = request()->except('_token', '_method');
+        $payload = $this->createSEO($payload);
+        return $payload;
     }
 
     public function destroy($id)

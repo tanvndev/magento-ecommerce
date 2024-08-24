@@ -65,11 +65,18 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $payload = request()->except('_token', '_method');
         $payload['sku'] = generateSKU($payload['name']);
+        $payload['enable_manage_stock'] =
+            (!isset($payload['enable_manage_stock']) || $payload['enable_manage_stock'] == false) ?
+            false : $payload['enable_manage_stock'];
+
+        $payload['enable_manage_stock'] = filter_var($payload['enable_manage_stock'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $payload = $this->createSEO($payload, 'name', 'excerpt');
 
         return $payload;
     }
 
-    private function createProductVariant($product, array $payload): void
+
+    private function createProductVariant($product, array $payload)
     {
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
@@ -87,17 +94,20 @@ class ProductService extends BaseService implements ProductServiceInterface
             'length' => $payload['length'] ?? null,
             'width' => $payload['width'] ?? null,
             'height' => $payload['height'] ?? null,
+            'enable_manage_stock' => $payload['enable_manage_stock'] ?? false,
+            'stock_status' => $payload['stock_status'] ?? null,
+            'quantity' => $payload['quantity'] ?? 0,
             'sku' => generateSKU($payload['name'], 3, ['default']),
             'sale_price_start_at' => $sale_price_start_at ? convertToYyyyMmDdHhMmSs($sale_price_start_at) : null,
             'sale_price_end_at' => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
         ];
 
         if ($payload['product_type'] === 'simple') {
-            $product->variants()->create($mainData);
+            return $product->variants()->create($mainData);
         }
 
         if ($payload['product_type'] === 'variable') {
-            $this->createProductVariants($product, $payload, $mainData);
+            return $this->createProductVariants($product, $payload, $mainData);
         }
     }
 
@@ -131,7 +141,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         $variantTexts = $variants['variantTexts'];
         $variantIds = $variants['variantIds'];
         $attributes = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true));
-        // $attributes = removeEmptyValues($payload['attributes']);
         $attributeIds = $attributes['attrIds'];
         $attributeIdEnableVariation = $this->formatAttributeEnableVariation($attributeIds, $attributes['enable_variation'] ?? []);
 
@@ -160,6 +169,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'length' => $variable['length'][$key] ?? $mainData['length'],
                     'weight' => $variable['weight'][$key] ?? $mainData['weight'],
                     'sku' => $sku,
+                    'enable_manage_stock' => filter_var($variable['enable_manage_stock'][$key] ?? false, FILTER_VALIDATE_BOOLEAN) ?? $mainData['enable_manage_stock'],
+                    'stock_status' => $variable['stock_status'][$key] ?? $mainData['stock_status'],
+                    'quantity' => $variable['quantity'][$key] ?? $mainData['quantity'],
                     'sale_price_start_at' => isset($variable['sale_price_time'][$key][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][$key][0]) : null,
                     'sale_price_end_at' => isset($variable['sale_price_time'][$key][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][$key][1]) : null,
                 ];

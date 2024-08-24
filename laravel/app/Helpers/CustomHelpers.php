@@ -400,3 +400,19 @@ if (! function_exists('convertToAcronym')) {
         return $acronym;
     }
 }
+if (! function_exists('truncate')) {
+    function truncate($text, $length = 60, $appendEllipsis = false)
+    {
+        if (strlen($text) <= $length) {
+            return $text;
+        }
+
+        $truncated = substr($text, 0, $length);
+
+        if ($appendEllipsis) {
+            return $truncated . '...';
+        }
+
+        return $truncated;
+    }
+}
