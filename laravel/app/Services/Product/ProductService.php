@@ -31,9 +31,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             'publish' => request('publish'),
         ];
 
-        $select = ['id', 'name', 'brand_id', 'product_catalogue_id', 'sku', 'image', 'publish', 'product_type'];
+        $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'quantity', 'enable_manage_stock', 'stock_status'];
         $orderBy = ['id' => 'desc'];
-        $relations = ['variants', 'catalogue', 'brand'];
+        $relations = ['variants', 'catalogues', 'brand'];
 
         $data = $this->productRepository->pagination(
             $select,

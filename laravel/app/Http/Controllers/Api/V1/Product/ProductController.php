@@ -6,6 +6,7 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductVariantCollection;
 use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
@@ -30,9 +31,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $response = $this->productService->paginate();
+        $paginator = $this->productService->paginate();
+        $data = new ProductCollection($paginator);
 
-        return handleResponse($response);
+        return successResponse('', $data);
     }
 
     /**

@@ -16,18 +16,21 @@ class ProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'fullname' => $this->fullname,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'province_id' => $this->province_id,
-            'district_id' => $this->district_id,
-            'ward_id' => $this->ward_id,
-            'address' => $this->address,
-            'birthday' => $this->birthday,
-            'description' => $this->description,
-            'image' => $this->image,
+            'key' => $this->id,
+            'name' => $this->name,
+            'brand_id' => $this->brand_id,
+            'brand_name' => $this->brand->name,
             'publish' => $this->publish,
-            'user_catalogue_id' => $this->user_catalogue_id,
+            'product_type' => $this->product_type,
+            'description' => $this->description,
+            'excerpt' => $this->excerpt,
+            'upsell_ids' => $this->upsell_ids,
+            'canonical' => $this->canonical,
+            'quantity' => $this->quantity,
+            'enable_manage_stock' => $this->enable_manage_stock,
+            'stock_status' => $this->stock_status,
+            'variants' => ProductVariantResource::collection($this->variants),
+            'catalogues' => ProductCatalogueResource::collection($this->catalogues),
         ];
     }
 }

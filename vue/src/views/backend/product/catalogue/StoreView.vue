@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
+      <div class="container mx-auto min-h-screen pb-10">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
@@ -37,6 +37,9 @@
 
               <!-- SEO -->
               <SEOComponent />
+
+              <!-- ProductList -->
+              <ProductListView />
             </a-col>
 
             <a-col :span="8">
@@ -90,6 +93,7 @@ import { useStore } from 'vuex';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
+import ProductListView from './partials/ProductListView.vue';
 
 const store = useStore();
 const { getOne, create, update, getAll, messages, data } = useCRUD();

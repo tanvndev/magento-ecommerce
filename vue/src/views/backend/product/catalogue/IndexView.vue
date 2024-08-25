@@ -30,6 +30,14 @@
             @change="handleTableChange"
           >
             <template #bodyCell="{ column, record }">
+              <template v-if="column.dataIndex === 'name'">
+                <RouterLink
+                  class="text-blue-500"
+                  :to="{ name: 'product.catalogue.update', params: { id: record.id } }"
+                >
+                  {{ record.name }}
+                </RouterLink>
+              </template>
               <template v-if="column.dataIndex === 'image'">
                 <img class="w-20 object-contain" :src="record.image" :alt="record.name" />
               </template>
@@ -39,15 +47,6 @@
                   :record="record"
                   :modelName="state.modelName"
                   :field="column.dataIndex"
-                />
-              </template>
-
-              <template v-if="column.dataIndex === 'action'">
-                <ActionComponent
-                  @onDelete="onDelete"
-                  :id="record.id"
-                  :routeUpdate="state.routeUpdate"
-                  :endpoint="state.endpoint"
                 />
               </template>
             </template>
@@ -66,10 +65,10 @@ import {
   MasterLayout,
   FilterComponent,
   PublishSwitchComponent,
-  ToolboxComponent,
-  ActionComponent
+  ToolboxComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
+import { RouterLink } from 'vue-router';
 
 // STATE
 const state = reactive({
@@ -111,12 +110,6 @@ const columns = [
     dataIndex: 'publish',
     key: 'publish',
     width: '7%'
-  },
-  {
-    title: 'Thực thi',
-    dataIndex: 'action',
-    key: 'action',
-    width: '6%'
   }
 ];
 
