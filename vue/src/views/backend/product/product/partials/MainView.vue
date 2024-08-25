@@ -25,7 +25,7 @@
                             </span>
                         </template>
                         <!-- Chung partials -->
-                        <CommonPriceView />
+                        <CommonPriceView :product-type="state.productType"/>
                     </a-tab-pane>
                     <!-- Kiem ke kho hang -->
                     <a-tab-pane key="2">
@@ -67,11 +67,10 @@
                                 Các thuộc tính
                             </span>
                         </template>
-                        <AttributeView />
+                        <AttributeView :product-type="state.productType" />
                     </a-tab-pane>
                     <!-- Bien the -->
-                    <!-- v-if="state.productType === 'variable'" -->
-                    <a-tab-pane key="6">
+                    <a-tab-pane key="6" v-if="state.productType === 'variable'">
                         <template #tab>
                             <span>
                                 <i class="far fa-table mr-1"></i>
@@ -96,17 +95,20 @@ import ShippingView from './ShippingView.vue';
 import UpsellView from './UpsellView.vue';
 import { PRODUCT_TYPE } from '@/static/constants';
 import { reactive } from 'vue';
-
+import { useStore } from 'vuex';
 
 // STATE
 const state = reactive({
-    productType: 2,
-    activeKey: '2'
+    productType: 'simple',
+    activeKey: '4'
 });
+
+const store = useStore();
 
 // XU LY KIEU SAN PHAM
 const handleType = (value) => {
     state.productType = value;
+    store.commit('productStore/setProductType', value );
 };
 
 </script>

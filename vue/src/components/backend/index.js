@@ -6,6 +6,7 @@ export { default as ToolboxComponent } from './includes/ToolboxComponent.vue';
 export { default as ActionComponent } from './includes/ActionComponent.vue';
 export { default as SelectComponent } from './includes/Select/SelectComponent.vue';
 export { default as TreeSelectComponent } from './includes/Select/TreeSelectComponent.vue';
+export { default as SelectSearchComponent } from './includes/Select/SelectSearchComponent.vue';
 export { default as InputFinderComponent } from './includes/input/InputFinderComponent.vue';
 export { default as EditorComponent } from './includes/EditorComponent.vue';
 export { default as InputNumberComponent } from './includes/input/InputNumberComponent.vue';

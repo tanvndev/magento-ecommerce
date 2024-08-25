@@ -1,16 +1,16 @@
 <template>
     <a-row :gutter="[16, 10]" class="items-center">
-        <a-col span="4" class="text-center">
+        <a-col span="4" class="text-center" v-if="props.productType == 'variable'">
             <label class="font-bold text-red-500">Lưu ý (*)</label>
             <small class="block">(Vui lòng chọn thuộc tính trước khi tạo biến thể.)</small>
         </a-col>
-        <a-col span="20">
+        <a-col :span="props.productType == 'variable' ? 20 : 24">
             <SelectComponent name="attribute_id" label="Thuộc tính" placeholder="Chọn thuộc tính"
                 :options="state.attributeOptions" mode="multiple" @onChange="handleSelectedAttribute" />
         </a-col>
 
         <a-divider v-if="state.attributeValues.length">Chọn Giá Trị Cho Thuộc Tính
-            <TooltipComponent
+            <TooltipComponent v-if="props.productType == 'variable'"
                 title="Nếu bạn chọn 'Nhận' thì thuộc tính đó sẽ được chọn làm biến thể còn nếu bạn 'Hủy' thì sẽ không được chọn làm biến thể." />
         </a-divider>
         <!-- Value -->
@@ -27,7 +27,7 @@
                         :options="formatDataToSelect(attributeValue.values)" mode="multiple" />
                 </div>
 
-                <div class="ml-3">
+                <div class="ml-3" v-if="props.productType == 'variable'">
                     <SwitchComponent :name="`enable_variation[${attributeValue.id}]`" checkText="Nhận"
                         uncheckText="Hủy" />
                 </div>
@@ -54,6 +54,13 @@ const store = useStore();
 const { getAll, data } = useCRUD();
 const { handleSubmit } = useForm();
 
+const props = defineProps({
+    productType: {
+        type: String,
+        default: ''
+    }
+});
+
 // STATE
 const state = reactive({
     attributeOptions: [],
@@ -64,15 +71,17 @@ const state = reactive({
 // XU LY VA LUU THUOC TINH VAO STORE
 const saveAttributes = handleSubmit(async (values) => {
     // reset attribute
+
     store.commit('productStore/setAttributes', []);
 
     const attributeIds = values.attribute_value_ids;
 
     const dataAttributes = {
-        enable_variation: values.enable_variation,
+        enable_variation: values?.enable_variation,
         attrIds: [],
         texts: {}
     };
+
 
     // Tao ra Map de duyet qua tim ten nhanh hon
     const attributeMap = new Map(
@@ -106,7 +115,7 @@ const saveAttributes = handleSubmit(async (values) => {
             dataAttributes.attrIds[attributeId] = valueIds;
 
             // If enable variation is true
-            if (dataAttributes.enable_variation[attributeId] == true) {
+            if (dataAttributes.enable_variation && dataAttributes.enable_variation[attributeId] == true) {
                 dataAttributes.texts[attributeName] = attributeNames;
             }
 

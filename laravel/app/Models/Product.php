@@ -24,7 +24,6 @@ class Product extends Model
         'stock_status',
         'quantity',
         'meta_title',
-        'meta_keywords',
         'meta_description',
         'publish',
     ];

@@ -14,10 +14,12 @@ class Brand extends Model
 
     protected $fillable = [
         'name',
-        'canonical',
         'description',
         'publish',
         'image',
+        'canonical',
+        'meta_title',
+        'meta_description',
     ];
 
     protected static function boot()

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Product\ProductResource;
+use App\Http\Resources\Product\ProductVariantCollection;
 use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
 use App\Services\Interfaces\Product\ProductServiceInterface;
 
@@ -39,6 +40,7 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
+        // dd($request->all());
         // return response()->json($request->all());
 
         $response = $this->productService->create();
@@ -75,5 +77,13 @@ class ProductController extends Controller
         $response = $this->productService->destroy($id);
 
         return handleResponse($response);
+    }
+
+    public function getProductVariants()
+    {
+        $paginator = $this->productService->getProductVariants();
+        $data = new ProductVariantCollection($paginator);
+        // dd($data);
+        return successResponse('', $data);
     }
 }

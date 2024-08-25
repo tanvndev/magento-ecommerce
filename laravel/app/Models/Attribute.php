@@ -48,4 +48,9 @@ class Attribute extends Model
             ->belongsToMany(Attribute::class, 'product_attribute', 'attribute_id', 'product_id')
             ->withPivot('attribute_value_ids', 'enable_variation');
     }
+
+    public function product_variants()
+    {
+        return $this->belongsToMany(Attribute::class, 'product_variant_attribute', 'attribute_id', 'product_variant_id');
+    }
 }

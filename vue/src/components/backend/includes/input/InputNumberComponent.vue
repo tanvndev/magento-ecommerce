@@ -11,11 +11,12 @@
       :class="className"
       :id="props.name"
       :placeholder="props.placeholder"
-      :status="errorMessage ? 'error' : ''"
+      :status="errorMessage || props.activeError ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
       :formatter="formatNumber"
       :parser="parseNumber"
+      @change="handleChange"
     />
 
     <a-input-number
@@ -24,25 +25,29 @@
       :class="className"
       :id="props.name"
       :placeholder="props.placeholder"
-      :status="errorMessage ? 'error' : ''"
+      :status="errorMessage || props.activeError ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
       :min="props.min"
       :max="props.max"
       :formatter="(value) => `${value}%`"
       :parser="(value) => value.replace('%', '')"
+      @change="handleChange"
     />
 
-    <span v-if="errorMessage" class="mt-[6px] block text-[12px] text-red-500">{{
-      errorMessage
+    <span v-if="errorMessage || props.activeError" class="mt-[6px] block text-[12px] text-red-500">{{
+      errorMessage || props.activeError
     }}</span>
   </div>
 </template>
 
 <script setup>
 import { TooltipComponent } from '@/components/backend';
+import { debounce } from '@/utils/helpers';
 import { useField } from 'vee-validate';
 import { watch } from 'vue';
+
+const emits = defineEmits(['onChange']);
 
 const props = defineProps({
   typeInput: {
@@ -93,8 +98,20 @@ const props = defineProps({
   oldValue: {
     type: [String, Boolean, Number],
     default: ''
+  },
+  activeError: {
+    type: [Boolean, String],
+    default: false
   }
 });
+
+const debouncedHandleChange = debounce((value) => {
+  emits('onChange', value);
+}, 500);
+
+const handleChange = (value) => {
+  debouncedHandleChange(value);
+};
 
 const formatNumber = (value) => {
   if (!value) return '';

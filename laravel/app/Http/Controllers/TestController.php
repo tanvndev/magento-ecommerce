@@ -13,15 +13,16 @@ class TestController extends Controller
 
         $product = Product::query()
             ->with([
-                'variants',
-                'attributes' => function ($query) {
-                    $query->with(['attribute' => function ($queryAttribute) {
-                        $queryAttribute->select(['id', 'name'])
-                            ->with('attribute_values');
-                    }]);
-                }
+                'variants.attribute_values',
+                // 'attributes' => function ($query) {
+                //     $query->with(['attribute' => function ($queryAttribute) {
+                //         $queryAttribute->select(['id', 'name'])
+                //             ->with('attribute_values');
+                //     }]);
+                // }
             ])
-            ->find(7);
+            ->find(19);
+        dd($product->toArray());
 
         $product->attributes->transform(function ($productAttribute) {
             $attribute = $productAttribute->attribute;

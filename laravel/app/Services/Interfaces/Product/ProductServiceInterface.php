@@ -15,4 +15,5 @@ interface ProductServiceInterface
     public function updateStatus();
 
     public function updateStatusMultiple();
+    public function getProductVariants();
 }

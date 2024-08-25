@@ -4,6 +4,8 @@ return [
     'messages' => [
         'required' => ':attribute không được để trống.',
         'unique' => ':attribute đã tồn tại.',
+        'lte' => ':attribute phải nhỏ hơn hoặc bằng :value.',
+        'lt' => ':attribute phải nhỏ hơn :value.',
         'string' => ':attribute phải là chuỗi ký tự.',
         'integer' => ':attribute phải là số nguyên.',
         'min' => ':attribute phải có ít nhất :min ký tự.',

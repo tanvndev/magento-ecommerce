@@ -5,6 +5,7 @@
 namespace App\Services\Product;
 
 use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
+use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductServiceInterface;
 use Illuminate\Support\Facades\DB;
@@ -12,11 +13,15 @@ use Illuminate\Support\Facades\DB;
 class ProductService extends BaseService implements ProductServiceInterface
 {
     protected $productRepository;
+    protected $productVariantRepository;
+
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
+        ProductVariantRepositoryInterface $productVariantRepository
     ) {
         $this->productRepository = $productRepository;
+        $this->productVariantRepository = $productVariantRepository;
     }
 
     public function paginate()
@@ -42,12 +47,33 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $data;
     }
 
+    public function getProductVariants()
+    {
+        $condition = [
+            'search' => addslashes(request('search')),
+        ];
+
+        $select = ['id', 'name', 'product_id', 'price', 'cost_price', 'sale_price', 'image', 'attribute_value_combine'];
+        $orderBy = ['id' => 'desc'];
+        $relations = ['attribute_values'];
+
+        $data = $this->productVariantRepository->pagination(
+            $select,
+            $condition,
+            request('pageSize', 20),
+            $orderBy,
+            [],
+            $relations
+        );
+
+        return $data;
+    }
+
     public function create()
     {
         return $this->executeInTransaction(function () {
             $payload = $this->preparePayload();
             $product = $this->productRepository->create($payload);
-
             $this->syncCatalogue($product, $payload['product_catalogue_id']);
             $this->createProductAttribute($product, $payload);
             $this->createProductVariant($product, $payload);
@@ -95,7 +121,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'width' => $payload['width'] ?? null,
             'height' => $payload['height'] ?? null,
             'enable_manage_stock' => $payload['enable_manage_stock'] ?? false,
-            'stock_status' => $payload['stock_status'] ?? null,
+            'stock_status' => $payload['stock_status'] ?? 'instock',
             'quantity' => $payload['quantity'] ?? 0,
             'sku' => generateSKU($payload['name'], 3, ['default']),
             'sale_price_start_at' => $sale_price_start_at ? convertToYyyyMmDdHhMmSs($sale_price_start_at) : null,
@@ -109,6 +135,73 @@ class ProductService extends BaseService implements ProductServiceInterface
         if ($payload['product_type'] === 'variable') {
             return $this->createProductVariants($product, $payload, $mainData);
         }
+    }
+
+
+
+    private function createProductVariants($product, array $payload, array $mainData)
+    {
+        $variables = $payload['variable'] ?? [];
+        // dd($variables);
+        $variants = json_decode($payload['variants'] ?? '[]', true);
+        $variantTexts = $variants['variantTexts'];
+        $variantIds = $variants['variantIds'];
+        $attributes = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true));
+        $attributeIds = $attributes['attrIds'];
+        $attributeIdEnableVariation = $this->formatAttributeEnableVariation($attributeIds, $attributes['enable_variation'] ?? []);
+
+        if (empty($attributeIdEnableVariation)) {
+            return false;
+        }
+
+        $productVariantPayload = collect($variables ?? [])
+            ->map(function ($variable, $key) use ($mainData, $variantTexts, $variantIds) {
+
+                $options = explode('-', $variantTexts[$key] ?? '');
+                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
+                $name = "{$mainData['name']} {$variantTexts[$key]}";
+                $attribute_value_combine = sortString($variantIds[$key]);
+
+                $variantData = [
+                    'name' => $name,
+                    'attribute_value_combine' => $attribute_value_combine,
+                    'image' => $variable['image'] ?? $mainData['image'],
+                    'album' => $variable['album'] ?? $mainData['album'],
+                    'price' => $variable['price'] ?? $mainData['price'],
+                    'sale_price' => $variable['sale_price'] ?? null,
+                    'cost_price' => $variable['cost_price'] ?? $mainData['cost_price'],
+                    'is_discount_time' => filter_var($variable['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                    'width' => $variable['width'] ?? $mainData['width'],
+                    'height' => $variable['height'] ?? $mainData['height'],
+                    'length' => $variable['length'] ?? $mainData['length'],
+                    'weight' => $variable['weight'] ?? $mainData['weight'],
+                    'sku' => $sku,
+                    'enable_manage_stock' => filter_var($variable['enable_manage_stock'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                    'stock_status' => $variable['stock_status'] ?? 'instock',
+                    'quantity' => $variable['quantity'] ?? 0,
+                    'sale_price_start_at' => isset($variable['sale_price_time'][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][0]) : null,
+                    'sale_price_end_at' => isset($variable['sale_price_time'][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][1]) : null,
+                ];
+
+                return $variantData;
+            })
+            ->values()
+            ->toArray();
+
+        $createdVariants = $product->variants()->createMany($productVariantPayload);
+        $attributeCombines = $this->combineAttribute($attributeIdEnableVariation);
+
+        $variantAttributePayload = $createdVariants->flatMap(function ($variant, $index) use ($attributeCombines) {
+            return collect($attributeCombines[$index])->map(function ($attributeValueId, $attributeId) use ($variant) {
+                return [
+                    'product_variant_id' => $variant->id,
+                    'attribute_id' => $attributeId,
+                    'attribute_value_id' => $attributeValueId,
+                ];
+            });
+        })->values()->all();
+
+        DB::table('product_variant_attribute')->insert($variantAttributePayload);
     }
 
     private function createProductAttribute($product, array $payload)
@@ -132,69 +225,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         $product->attributes()->createMany($attributePayload);
 
         return true;
-    }
-
-    private function createProductVariants($product, array $payload, array $mainData)
-    {
-        $variable = $payload['variable'] ?? [];
-        $variants = json_decode($payload['variants'] ?? '[]', true);
-        $variantTexts = $variants['variantTexts'];
-        $variantIds = $variants['variantIds'];
-        $attributes = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true));
-        $attributeIds = $attributes['attrIds'];
-        $attributeIdEnableVariation = $this->formatAttributeEnableVariation($attributeIds, $attributes['enable_variation'] ?? []);
-
-        if (empty($attributeIdEnableVariation)) {
-            return false;
-        }
-
-        $productVariantPayload = collect($variable['count'] ?? [])
-            ->map(function ($count, $key) use ($mainData, $variable, $variantTexts, $variantIds) {
-                $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
-                $name = "{$mainData['name']} {$variantTexts[$key]}";
-                $attribute_value_combine = sortString($variantIds[$key]);
-
-                $variantData = [
-                    'name' => $name,
-                    'attribute_value_combine' => $attribute_value_combine,
-                    'image' => $variable['image'][$key] ?? $mainData['image'],
-                    'album' => $variable['album'][$key] ?? $mainData['album'],
-                    'price' => $variable['price'][$key] ?? $mainData['price'],
-                    'sale_price' => $variable['sale_price'][$key] ?? null,
-                    'cost_price' => $variable['cost_price'][$key] ?? $mainData['cost_price'],
-                    'is_discount_time' => filter_var($variable['is_discount_time'][$key] ?? false, FILTER_VALIDATE_BOOLEAN),
-                    'width' => $variable['width'][$key] ?? $mainData['width'],
-                    'height' => $variable['height'][$key] ?? $mainData['height'],
-                    'length' => $variable['length'][$key] ?? $mainData['length'],
-                    'weight' => $variable['weight'][$key] ?? $mainData['weight'],
-                    'sku' => $sku,
-                    'enable_manage_stock' => filter_var($variable['enable_manage_stock'][$key] ?? false, FILTER_VALIDATE_BOOLEAN) ?? $mainData['enable_manage_stock'],
-                    'stock_status' => $variable['stock_status'][$key] ?? $mainData['stock_status'],
-                    'quantity' => $variable['quantity'][$key] ?? $mainData['quantity'],
-                    'sale_price_start_at' => isset($variable['sale_price_time'][$key][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][$key][0]) : null,
-                    'sale_price_end_at' => isset($variable['sale_price_time'][$key][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][$key][1]) : null,
-                ];
-
-                return $variantData;
-            })
-            ->values()
-            ->toArray();
-
-        $createdVariants = $product->variants()->createMany($productVariantPayload);
-        $attributeCombines = $this->combineAttribute($attributeIdEnableVariation);
-
-        $variantAttributePayload = $createdVariants->flatMap(function ($variant, $index) use ($attributeCombines) {
-            return collect($attributeCombines[$index])->map(function ($attributeValueId, $attributeId) use ($variant) {
-                return [
-                    'product_variant_id' => $variant->id,
-                    'attribute_id' => $attributeId,
-                    'attribute_value_id' => $attributeValueId,
-                ];
-            });
-        })->values()->all();
-
-        DB::table('product_variant_attribute')->insert($variantAttributePayload);
     }
 
     private function formatAttributeEnableVariation(array $attributeIds, array $enableVariantion, bool $enable = true): array

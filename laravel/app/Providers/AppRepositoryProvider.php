@@ -26,6 +26,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Product\ProductCatalogueRepositoryInterface' => 'App\Repositories\Product\ProductCatalogueRepository',
         // Product
         'App\Repositories\Interfaces\Product\ProductRepositoryInterface' => 'App\Repositories\Product\ProductRepository',
+        // ProductVariant
+        'App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface' => 'App\Repositories\Product\ProductVariantRepository',
         // AttributeValue
         'App\Repositories\Interfaces\Attribute\AttributeValueRepositoryInterface' => 'App\Repositories\Attribute\AttributeValueRepository',
         // Attribute

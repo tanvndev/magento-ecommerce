@@ -19,7 +19,6 @@ class ProductCatalogue extends Model
         'image',
         'order',
         'meta_title',
-        'meta_keywords',
         'meta_description',
         'canonical',
         'parent_id',

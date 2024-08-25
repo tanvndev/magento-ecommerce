@@ -74,6 +74,7 @@ Route::middleware('log.request.response')->group(function () {
         Route::prefix('/')->name('products.')->group(function () {
             Route::apiResource('products/catalogues', ProductCatalogueController::class);
         });
+        Route::get('products/variants', [ProductController::class, 'getProductVariants']);
         Route::apiResource('products', ProductController::class);
 
         // ATTRIBUTE ROUTE

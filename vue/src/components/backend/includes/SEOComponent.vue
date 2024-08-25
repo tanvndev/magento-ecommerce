@@ -5,7 +5,7 @@
             <TooltipComponent color="#108ee9"
                 title="Nếu bạn không nhập thì sẽ tự động lấy 'Tiêu đề', 'Mô tả ngắn sản phẩm' để SEO " />
         </template>
-        <div v-if="metaTitle || metaDescription || metaKeywords">
+        <div v-if="metaTitle || metaDescription">
             <h2 class="text-[16px]">Xem trước kết quả tìm kiếm</h2>
 
             <div class="mb-4 pb-3 bg-gray-50 rounded px-4 py-3 shadow">

@@ -30,7 +30,7 @@ return new class extends Migration
             $table->dateTime('sale_price_start_at')->nullable();
             $table->dateTime('sale_price_end_at')->nullable();
             $table->boolean('enable_manage_stock')->default(0);
-            $table->string('stock_status')->nullable();
+            $table->string('stock_status', 20)->default('instock');
             $table->unsignedInteger('quantity')->default(0);
             $table->timestamps();
         });
