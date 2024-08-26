@@ -2,7 +2,7 @@
   <label v-if="props.label" :for="props.name" :class="props.labelClass"
     >{{ props.label }}
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
-    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" color="#108ee9" />
+    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" />
   </label>
   <div>
     <a-input-number
@@ -35,9 +35,11 @@
       @change="handleChange"
     />
 
-    <span v-if="errorMessage || props.activeError" class="mt-[6px] block text-[12px] text-red-500">{{
-      errorMessage || props.activeError
-    }}</span>
+    <span
+      v-if="errorMessage || props.activeError"
+      class="mt-[6px] block text-[12px] text-red-500"
+      >{{ errorMessage || props.activeError }}</span
+    >
   </div>
 </template>
 

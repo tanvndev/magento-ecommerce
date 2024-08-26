@@ -148,12 +148,37 @@
             </a-col>
           </a-row>
         </a-col>
+        <!-- Kiem ke kho hang -->
+        <a-divider>
+          <h1 class="capitalize text-primary-500">Kiểm kê kho hàng</h1>
+        </a-divider>
+
+        <a-col span="24" class="mb-6">
+          <a-row :gutter="[16, 16]" class="items-center">
+            <a-col span="12">
+              <InputNumberComponent
+                :name="`variable[${i}]stock`"
+                label="Số lượng"
+                placeholder="Nhập số lượng"
+              />
+            </a-col>
+            <a-col span="12">
+              <InputNumberComponent
+                :name="`variable[${i}]low_stock_amount`"
+                label="Ngưỡng sắp hết hàng"
+                placeholder="Ngưỡng sắp hết hàng"
+                tooltip-text="Khi lượng hàng tồn kho đạt đến số lượng này, bạn sẽ được thông báo qua email. Có thể xác định các giá trị khác nhau cho từng biến thể riêng lẻ."
+              />
+            </a-col>
+          </a-row>
+        </a-col>
+
         <!-- Giao hang -->
         <a-divider>
           <h1 class="capitalize text-primary-500">Giao hàng</h1>
         </a-divider>
 
-        <a-col span="24" class="mb-6">
+        <a-col span="24" class="mb-4">
           <a-row class="items-center" :gutter="[16, 10]">
             <a-col span="6">
               <InputNumberComponent
@@ -185,42 +210,6 @@
             </a-col>
           </a-row>
         </a-col>
-
-        <a-divider>
-          <h1 class="capitalize text-primary-500">Kiểm kê kho hàng</h1>
-        </a-divider>
-
-        <a-col span="24" class="mb-4">
-          <a-row :gutter="[16, 16]" class="items-center">
-            <a-col span="6">
-              <div class="flex items-center gap-5">
-                <label class="font-bold">Quản lý kho hàng</label>
-                <SwitchComponent
-                  @on-change="(value) => handleEnableManageStock(value, i)"
-                  :name="`variable[${i}]enable_manage_stock`"
-                  check-text="Đồng ý"
-                  uncheck-text="Hủy bỏ"
-                />
-              </div>
-            </a-col>
-            <a-col span="18" v-if="!state.stockStatus[i] || state.stockStatus[i] === 'outofstock'">
-              <SelectComponent
-                :name="`variable[${i}]stock_status`"
-                label="Trạng thái kho hàng"
-                :options="state.stockStatusOptions"
-                placeholder="Chọn trạng thái kho hàng"
-              />
-            </a-col>
-
-            <a-col span="18" v-if="state.stockStatus[i] === 'instock'">
-              <InputNumberComponent
-                :name="`variable[${i}]quantity`"
-                label="Số lượng"
-                placeholder="Nhập số lượng"
-              />
-            </a-col>
-          </a-row>
-        </a-col>
       </a-row>
     </a-col>
   </a-row>
@@ -234,11 +223,9 @@ import {
   InputComponent,
   InputDateComponent,
   InputFinderComponent,
-  SelectComponent,
   TooltipComponent
 } from '@/components/backend';
 import { useStore } from 'vuex';
-import { STOCK_STATUS } from '@/static/constants';
 
 const store = useStore();
 const attributes = computed(() => store.getters['productStore/getAttributes']);
@@ -251,15 +238,9 @@ const state = reactive({
   variantTexts: [],
   isLoading: false,
   isDiscountTime: {},
-  stockStatusOptions: STOCK_STATUS,
-  stockStatus: {},
   variantPrice: [],
   priceErrors: []
 });
-
-const handleEnableManageStock = (value, index) => {
-  state.stockStatus[index] = value ? 'instock' : 'outofstock';
-};
 
 // XU LY TAO RA CAC BIEN THE
 const handleCreateVariant = () => {
@@ -307,7 +288,7 @@ const handlePriceChange = (value, index, field) => {
 const validatePrices = (index) => {
   const { price, salePrice } = state.variantPrice[index];
 
-  if (price !== undefined && salePrice !== undefined) {
+  if (price && salePrice) {
     if (salePrice >= price) {
       state.priceErrors[index] = 'Giá ưu đãi phải nhỏ hơn giá bán.';
     } else {

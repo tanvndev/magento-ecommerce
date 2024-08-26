@@ -1,5 +1,11 @@
 <template>
   <a-row :gutter="[16, 16]">
+    <a-col span="12" v-if="props.productType === 'simple'">
+      <InputNumberComponent name="stock" label="Số lượng" placeholder="Nhập số lượng" />
+    </a-col>
+    <a-col span="12" v-if="props.productType === 'simple'">
+      <InputNumberComponent name="low_stock_amount" label="Ngưỡng sắp hết hàng" placeholder="Nhập số lượng" tooltip-text="Khi lượng hàng tồn kho đạt đến số lượng này, bạn sẽ được thông báo qua email. Có thể xác định các giá trị khác nhau cho từng biến thể riêng lẻ." />
+    </a-col>
     <a-col span="8">
       <InputNumberComponent
         name="cost_price"

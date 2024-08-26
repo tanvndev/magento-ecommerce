@@ -20,8 +20,6 @@ class Product extends Model
         'description',
         'upsell_ids',
         'canonical',
-        'enable_manage_stock',
-        'stock_status',
         'quantity',
         'meta_title',
         'meta_description',

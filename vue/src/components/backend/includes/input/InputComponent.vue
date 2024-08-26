@@ -2,7 +2,7 @@
   <label v-if="props.label" :for="props.name" :class="props.labelClass"
     >{{ props.label }}
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
-    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" color="#108ee9" />
+    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" />
   </label>
   <div>
     <!-- INPUT TEXT -->

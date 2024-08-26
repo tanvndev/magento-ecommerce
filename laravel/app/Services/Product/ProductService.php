@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductServiceInterface;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
@@ -107,8 +108,10 @@ class ProductService extends BaseService implements ProductServiceInterface
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . 'default');
 
         $mainData = [
+            'uuid' => $uuid,
             'name' => $payload['name'] ?? null,
             'image' => $payload['image'] ?? null,
             'album' => $payload['album'] ?? null,
@@ -120,13 +123,13 @@ class ProductService extends BaseService implements ProductServiceInterface
             'length' => $payload['length'] ?? null,
             'width' => $payload['width'] ?? null,
             'height' => $payload['height'] ?? null,
-            'enable_manage_stock' => $payload['enable_manage_stock'] ?? false,
-            'stock_status' => $payload['stock_status'] ?? 'instock',
-            'quantity' => $payload['quantity'] ?? 0,
+            'stock' => $payload['stock'] ?? 0,
+            'low_stock_amount' => $payload['low_stock_amount'] ?? 0,
             'sku' => generateSKU($payload['name'], 3, ['default']),
             'sale_price_start_at' => $sale_price_start_at ? convertToYyyyMmDdHhMmSs($sale_price_start_at) : null,
             'sale_price_end_at' => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
         ];
+
 
         if ($payload['product_type'] === 'simple') {
             return $product->variants()->create($mainData);
@@ -142,7 +145,6 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function createProductVariants($product, array $payload, array $mainData)
     {
         $variables = $payload['variable'] ?? [];
-        // dd($variables);
         $variants = json_decode($payload['variants'] ?? '[]', true);
         $variantTexts = $variants['variantTexts'];
         $variantIds = $variants['variantIds'];
@@ -155,14 +157,16 @@ class ProductService extends BaseService implements ProductServiceInterface
         }
 
         $productVariantPayload = collect($variables ?? [])
-            ->map(function ($variable, $key) use ($mainData, $variantTexts, $variantIds) {
+            ->map(function ($variable, $key) use ($mainData, $variantTexts, $variantIds, $product) {
 
                 $options = explode('-', $variantTexts[$key] ?? '');
                 $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
                 $attribute_value_combine = sortString($variantIds[$key]);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
 
                 $variantData = [
+                    'uuid' => $uuid,
                     'name' => $name,
                     'attribute_value_combine' => $attribute_value_combine,
                     'image' => $variable['image'] ?? $mainData['image'],
@@ -176,9 +180,8 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'length' => $variable['length'] ?? $mainData['length'],
                     'weight' => $variable['weight'] ?? $mainData['weight'],
                     'sku' => $sku,
-                    'enable_manage_stock' => filter_var($variable['enable_manage_stock'] ?? false, FILTER_VALIDATE_BOOLEAN),
-                    'stock_status' => $variable['stock_status'] ?? 'instock',
-                    'quantity' => $variable['quantity'] ?? 0,
+                    'stock' => $variable['stock'] ?? 0,
+                    'low_stock_amount' => $variable['low_stock_amount'] ?? 0,
                     'sale_price_start_at' => isset($variable['sale_price_time'][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][0]) : null,
                     'sale_price_end_at' => isset($variable['sale_price_time'][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][1]) : null,
                 ];
@@ -189,19 +192,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->toArray();
 
         $createdVariants = $product->variants()->createMany($productVariantPayload);
-        $attributeCombines = $this->combineAttribute($attributeIdEnableVariation);
+        $variantAttributePayload = $this->combineAttribute($createdVariants);
 
-        $variantAttributePayload = $createdVariants->flatMap(function ($variant, $index) use ($attributeCombines) {
-            return collect($attributeCombines[$index])->map(function ($attributeValueId, $attributeId) use ($variant) {
-                return [
-                    'product_variant_id' => $variant->id,
-                    'attribute_id' => $attributeId,
-                    'attribute_value_id' => $attributeValueId,
-                ];
-            });
-        })->values()->all();
-
-        DB::table('product_variant_attribute')->insert($variantAttributePayload);
+        DB::table('product_variant_attribute_value')->insert($variantAttributePayload);
     }
 
     private function createProductAttribute($product, array $payload)
@@ -240,33 +233,24 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $enable ? $attrIds : $attributeIds;
     }
 
-    private function combineAttribute($attributeIds)
+    private function combineAttribute($productVariants)
     {
-        // dd($attributeIds);
-        if (!count($attributeIds)) {
+        if (!count($productVariants)) {
             return [];
         }
 
-        $keys = array_keys($attributeIds);
-        $values = array_values($attributeIds);
+        $result = $productVariants->flatMap(function ($item) {
+            $attributeValueIds = explode(',', $item['attribute_value_combine']);
+            return collect($attributeValueIds)->map(function ($value) use ($item) {
+                return [
+                    'attribute_value_id' => $value,
+                    'product_variant_id' => $item['id']
+                ];
+            });
+        });
 
-        $result = array_reduce($values, function ($acc, $attr) use ($keys) {
-            if (empty($acc)) {
-                return array_map(function ($item) use ($keys) {
-                    return [$keys[0] => $item];
-                }, $attr);
-            }
 
-            $newAcc = [];
-            foreach ($acc as $existing) {
-                foreach ($attr as $newItem) {
-                    $newAcc[] = $existing + [end($keys) => $newItem];
-                }
-            }
-            return $newAcc;
-        }, []);
-
-        return $result;
+        return $result->toArray();
     }
 
     public function update($id)

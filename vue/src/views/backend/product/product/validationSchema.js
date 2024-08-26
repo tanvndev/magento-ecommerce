@@ -42,7 +42,7 @@ const validationSchema = yup.object({
     .nullable()
     .test('is-less-than-price', 'Giá ưu đãi phải nhỏ hơn giá bán.', function (value) {
       const { price } = this.parent;
-      return value === undefined || value < price;
+      return !value || value < price;
     })
 });
 

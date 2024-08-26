@@ -11,6 +11,7 @@ class ProductVariant extends Model
     use HasFactory, QueryScopes;
 
     protected $fillable = [
+        'uuid',
         'name',
         'product_id',
         'attribute_value_combine',
@@ -24,9 +25,8 @@ class ProductVariant extends Model
         'price',
         'sale_price',
         'cost_price',
-        'enable_manage_stock',
-        'stock_status',
-        'quantity',
+        'stock',
+        'low_stock_amount',
         'is_discount_time',
         'sale_price_start_at',
         'sale_price_end_at',
