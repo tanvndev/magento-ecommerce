@@ -29,7 +29,13 @@ cd ../laravel
 php artisan key:generate
 php artisan migrate
 
-## Bước 5: Khởi động Ứng dụng Vue
+
+## Bước 5: Khởi tạo Cơ sở dữ liệu Laravel
+
+cd ../laravel
+php artisan db:seed
+
+## Bước 6: Khởi động Ứng dụng Vue
 
 cd ../vue
 npm run dev
