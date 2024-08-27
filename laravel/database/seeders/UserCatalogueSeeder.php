@@ -12,14 +12,9 @@ class UserCatalogueSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 20; $i <= 30; $i++) {
-            DB::table('user_catalogues')->insert([
-                'name' => 'User Catalogue '.$i,
-                'description' => 'Description of User '.$i,
-                // Các trường dữ liệu khác nếu có
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        DB::table('user_catalogues')->insert([
+            ['id' => 1, 'name' => 'Quản trị viên', 'code' => 'admin', 'description' => 'Người có quyền hành cao nhất', 'publish' => 1, 'deleted_at' => NULL, 'created_at' => '2024-07-20 05:47:27', 'updated_at' => '2024-07-20 05:47:27'],
+            ['id' => 2, 'name' => 'Khách hàng', 'code' => 'customer', 'description' => 'Không có quyền truy cập vào trang quản trị', 'publish' => 1, 'deleted_at' => NULL, 'created_at' => '2024-07-20 05:48:34', 'updated_at' => '2024-08-04 08:36:22'],
+        ]);
     }
 }

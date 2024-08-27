@@ -24,15 +24,11 @@ class Attribute extends Model
 
         static::creating(function ($model) {
             $code = Str::upper(Str::slug($model->code));
-            $code = Str::replace('-', '', $code);
-
             $model->code = Str::upper($code);
         });
 
         static::updating(function ($model) {
             $code = Str::upper(Str::slug($model->code));
-            $code = Str::replace('-', '', $code);
-
             $model->code = Str::upper($code);
         });
     }
