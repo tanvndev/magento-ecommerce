@@ -34,14 +34,18 @@
               <template v-if="column.dataIndex === 'product_type'">
                 {{ getProductTypeLabel(record.product_type) }}
               </template>
-              <template v-if="column.dataIndex === 'stock'">
-                <a-tag :color="getStockTagColor(record)">{{ getStockLabel(record) }}</a-tag>
+              <template v-if="column.dataIndex === 'total_stock'">
+                <a-tag :color="record.total_stock_color">{{ record.total_stock }}</a-tag>
               </template>
               <template v-if="column.dataIndex === 'brand_name'">
                 <a-tag color="cyan">{{ record.brand_name }}</a-tag>
               </template>
               <template v-if="column.dataIndex === 'name'">
-                <RouterLink to="#" class="text-blue-500">{{ record.name }}</RouterLink>
+                <RouterLink
+                  :to="{ name: 'product.update', params: { id: record.id } }"
+                  class="text-blue-500"
+                  >{{ record.name }}</RouterLink
+                >
               </template>
               <template v-if="column.dataIndex === 'catalogues'">
                 <div v-html="renderCatalogues(record.catalogues)"></div>
@@ -63,14 +67,22 @@
                       <div class="rounded border p-1">
                         <img class="h-[50px] w-[50px] object-cover" :src="record.image" />
                       </div>
-                      <RouterLink to="#" class="ml-2 text-blue-500">{{ record.name }}</RouterLink>
+                      <RouterLink
+                        :to="{
+                          name: 'product.update',
+                          params: { id: record.product_id },
+                          query: { variant_id: record.id }
+                        }"
+                        class="ml-2 text-blue-500"
+                        >{{ record.name }}</RouterLink
+                      >
                     </div>
                   </template>
                   <template v-if="column.key === 'stock'">
-                    <a-tag :color="getStockTagColor(record)">{{ getStockLabel(record) }}</a-tag>
+                    <a-tag :color="record.stock_color">{{ record.stock }}</a-tag>
                   </template>
                   <template v-if="column.key === 'shipping'">
-                    <ul class="list-disc mb-0">
+                    <ul class="mb-0 list-disc">
                       <li>
                         Cân nặng: <span class="font-bold">{{ record.weight }}</span>
                       </li>
@@ -176,16 +188,6 @@ const renderCatalogues = (catalogues) =>
         `<a href="/product/catalogue/update/${catalogue.id}" style="color: blue; margin-left: 3px">${catalogue.name}</a>`
     )
     .join(',');
-
-const getStockLabel = (record) =>
-  record.enable_manage_stock === 1 ? record.quantity : record.stock_status;
-
-const getStockTagColor = (record) => {
-  if (record.enable_manage_stock === 1) {
-    return record.quantity > 2 ? 'green' : 'red';
-  }
-  return record.stock_status === 'instock' ? 'green' : 'red';
-};
 
 // Lifecycle Hook
 onMounted(fetchData);

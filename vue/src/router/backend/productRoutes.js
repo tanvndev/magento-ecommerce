@@ -1,5 +1,6 @@
 import ProductIndexView from '@/views/backend/product/product/IndexView.vue';
 import ProductStoreView from '@/views/backend/product/product/StoreView.vue';
+import ProductUpdateView from '@/views/backend/product/product/UpdateView.vue';
 import ProductCatalogueIndexView from '@/views/backend/product/catalogue/IndexView.vue';
 import ProductCatalogueStoreView from '@/views/backend/product/catalogue/StoreView.vue';
 import { isLoggedIn } from '@/middlewares/authenticate';
@@ -20,7 +21,7 @@ const productRoutes = [
   {
     path: '/product/update/:id(\\d+)',
     name: 'product.update',
-    component: ProductStoreView,
+    component: ProductUpdateView,
     beforeEnter: [isLoggedIn]
   },
   {

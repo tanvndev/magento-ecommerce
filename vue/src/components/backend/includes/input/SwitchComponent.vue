@@ -1,6 +1,11 @@
 <template>
   <div class="flex items-center">
-    <a-switch v-model:checked="value" :size="props.size" @change="handleChange">
+    <a-switch
+      v-model:checked="value"
+      :size="props.size"
+      @change="handleChange"
+      :disabled="props.disabled"
+    >
       <template #checkedChildren>
         {{ props.checkText }}
       </template>
@@ -13,7 +18,6 @@
 </template>
 
 <script setup>
-import { watch } from 'vue';
 import TooltipComponent from '../TooltipComponent.vue';
 const emits = defineEmits(['onChange']);
 const handleChange = (value) => {
@@ -42,6 +46,10 @@ const props = defineProps({
   tooltipText: {
     type: String,
     default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 

@@ -48,6 +48,8 @@
             :name="`enable_variation[${attributeValue.id}]`"
             checkText="Nhận"
             uncheckText="Hủy"
+            :disabled="exceedsVariationLimit && !state.enableVariation[attributeValue.id]"
+            @onChange="handleEnableVariation($event, attributeValue.id)"
           />
         </div>
       </div>
@@ -61,7 +63,7 @@
 
 <script setup>
 import { useForm } from 'vee-validate';
-import { onMounted, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { SelectComponent, SwitchComponent, TooltipComponent } from '@/components/backend';
 import { useStore } from 'vuex';
 import { useCRUD } from '@/composables';
@@ -84,15 +86,22 @@ const props = defineProps({
 const state = reactive({
   attributeOptions: [],
   attributes: [],
-  attributeValues: []
+  attributeValues: [],
+  enableVariation: {}
+});
+
+const exceedsVariationLimit = computed(() => {
+  // Check if the number of enabled variations exceeds the limit
+  return Object.values(state.enableVariation).filter(Boolean).length > 3;
 });
 
 // XU LY VA LUU THUOC TINH VAO STORE
 const saveAttributes = handleSubmit(async (values) => {
-  // reset attribute
+  if (exceedsVariationLimit.value) {
+    return message.error('Bạn chỉ được chọn tối đa 3 thuộc tính làm biến thể.');
+  }
 
   store.commit('productStore/setAttributes', []);
-
   const attributeIds = values.attribute_value_ids;
 
   const dataAttributes = {
@@ -139,6 +148,16 @@ const saveAttributes = handleSubmit(async (values) => {
   store.commit('productStore/setAttributes', dataAttributes);
   message.success('Lưu thuộc tính thành công.');
 });
+
+const handleEnableVariation = (checked, attributeId) => {
+  if (checked && exceedsVariationLimit.value) {
+    message.warning('Bạn chỉ được chọn tối đa 3 thuộc tính làm biến thể.');
+    // Reset the switch if limit exceeded
+    state.enableVariation[attributeId] = false;
+  } else {
+    state.enableVariation[attributeId] = checked;
+  }
+};
 
 // XU LY NHOM THUOC TINH
 const handleSelectedAttribute = (attributeIds) => {

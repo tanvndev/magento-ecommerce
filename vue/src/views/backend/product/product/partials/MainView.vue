@@ -4,7 +4,7 @@
       <span> Dữ liệu sản phẩm </span>
     </template>
     <a-row :gutter="[16, 16]">
-      <a-col :span="12" >
+      <a-col :span="12">
         <SelectComponent
           name="product_type"
           label="Loại sản phẩm"
@@ -16,11 +16,11 @@
           @onChange="handleType"
         />
       </a-col>
-      <a-col :span="12" >
+      <a-col :span="12">
         <InputComponent name="sku" label="SKU" placeholder="Tự sinh nếu không nhập" />
       </a-col>
 
-      <a-col :span="24" v-if="state.productType">
+      <a-col :span="24" v-if="props.update || state.productType">
         <a-tabs v-model:activeKey="state.activeKey" tab-position="top">
           <!-- Chung -->
           <a-tab-pane key="1">
@@ -91,10 +91,16 @@ import { PRODUCT_TYPE } from '@/static/constants';
 import { reactive } from 'vue';
 import { useStore } from 'vuex';
 
+const props = defineProps({
+  update: {
+    type: Boolean,
+    default: false
+  }
+});
 // STATE
 const state = reactive({
-  productType: 'simple',
-  activeKey: '4'
+  productType: '',
+  activeKey: '1'
 });
 
 const store = useStore();

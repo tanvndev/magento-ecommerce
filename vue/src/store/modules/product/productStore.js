@@ -24,8 +24,8 @@ const getters = {
   getAttributeIds: (state) => state.attributes.attrIds,
   getAttributeTexts: (state) => state.attributes.texts,
   getVariants: (state) => state.variants,
-  getPrice : (state) => state.price.price,
-  getCostPrice : (state) => state.price.cost_price
+  getPrice: (state) => state.price.price,
+  getCostPrice: (state) => state.price.cost_price
 };
 // actions
 const actions = {};
@@ -53,6 +53,24 @@ const mutations = {
       state.variants.variantIds.splice(index, 1);
       state.variants.variantTexts.splice(index, 1);
     }
+  },
+  removeAll(state) {
+    state = {
+      productType: '',
+      attributes: {
+        enable_variation: false,
+        attrIds: [],
+        texts: []
+      },
+      variants: {
+        variantIds: [],
+        variantTexts: []
+      },
+      price: {
+        cost_price: 0,
+        price: 0
+      }
+    };
   }
 };
 

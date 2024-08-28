@@ -16,6 +16,7 @@
       :status="errorMessage ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
+      :disabled="props.disabled"
     />
 
     <!-- INPUT PASSWORD -->
@@ -29,6 +30,7 @@
       :status="errorMessage ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
+      :disabled="props.disabled"
     />
 
     <!-- INPUT TEXTAREA -->
@@ -45,6 +47,7 @@
       :auto-size="{ minRows: 2, maxRows: 50 }"
       show-count
       :maxlength="props.maxlength"
+      :disabled="props.disabled"
     />
 
     <span v-if="errorMessage" class="mt-[6px] block text-[12px] text-red-500">{{
@@ -107,6 +110,10 @@ const props = defineProps({
   tooltipText: {
     type: String,
     default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 

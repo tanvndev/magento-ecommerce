@@ -81,7 +81,7 @@ import {
 import _ from 'lodash';
 import MainView from './partials/MainView.vue';
 import SidebarView from './partials/SidebarView.vue';
-import { computed, onMounted, reactive, watch, watchEffect } from 'vue';
+import { computed, reactive, watch, watchEffect } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
@@ -91,21 +91,19 @@ import { useCRUD } from '@/composables';
 // STATE
 const state = reactive({
   endpoint: 'products',
-  pageTitle: 'Thêm mới thành viên',
+  pageTitle: 'Thêm mới sản phẩm',
   error: {},
-  userCatalogues: []
 });
 
 const store = useStore();
-const { getOne, create, update, messages, data } = useCRUD();
+const { create, messages } = useCRUD();
 
-const id = computed(() => router.currentRoute.value.params.id || null);
 const attributes = computed(() => store.getters['productStore/getAttributes']);
 const variants = computed(() => store.getters['productStore/getVariants']);
 const productType = computed(() => store.getters['productStore/getProductType']);
 import validationSchema from './validationSchema';
 
-const { handleSubmit, setValues, setFieldValue, errors } = useForm({
+const { handleSubmit, setFieldValue, errors } = useForm({
   validationSchema
 });
 
@@ -115,40 +113,20 @@ const onSubmit = handleSubmit(async (values) => {
   }
 
   state.error = {};
-  const response =
-    id.value && id.value > 0
-      ? await update(state.endpoint, id.value, values)
-      : await create(state.endpoint, values);
+  const response = await create(state.endpoint, values);
   if (!response) {
     return (state.error = formatMessages(messages.value));
   }
 
   state.error = {};
-  store.commit('productStore/setAttributes', {});
-  store.commit('productStore/setVariants', {});
-  store.commit('productStore/setProductType', '');
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
-  //   router.push({ name: 'product.index' });
+  store.commit('productStore/removeAll');
+  router.push({ name: 'product.index' });
 });
 
 watch(errors, (newErrors) => {
   state.error = newErrors;
 });
-
-const fetchOne = async () => {
-  await getOne(state.endpoint, id.value);
-  setValues({
-    fullname: data.value?.fullname,
-    email: data.value?.email,
-    user_catalogue_id: data.value?.user_catalogue_id,
-    phone: data.value?.phone,
-    address: data.value?.address,
-    province_id: data.value?.province_id,
-    district_id: data.value?.district_id,
-    ward_id: data.value?.ward_id,
-    image: data.value?.image
-  });
-};
 
 watchEffect(() => {
   if (!_.isEmpty(attributes.value)) {
@@ -156,13 +134,6 @@ watchEffect(() => {
   }
   if (!_.isEmpty(variants.value)) {
     setFieldValue('variants', JSON.stringify(variants.value));
-  }
-});
-
-onMounted(async () => {
-  if (id.value) {
-    fetchOne();
-    state.pageTitle = 'Cập nhập thành viên.';
   }
 });
 </script>

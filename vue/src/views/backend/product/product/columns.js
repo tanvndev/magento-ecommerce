@@ -10,9 +10,9 @@ const columns = [
     key: 'product_type'
   },
   {
-    title: 'Tồn kho',
-    dataIndex: 'stock',
-    key: 'stock'
+    title: 'Tổng tồn kho',
+    dataIndex: 'total_stock',
+    key: 'total_stock'
   },
   {
     title: 'Thương hiệu',
