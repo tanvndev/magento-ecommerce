@@ -32,7 +32,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'publish' => request('publish'),
         ];
 
-        $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'quantity', 'enable_manage_stock', 'stock_status'];
+        $select = ['id', 'name', 'brand_id', 'publish', 'product_type'];
         $orderBy = ['id' => 'desc'];
         $relations = ['variants', 'catalogues', 'brand'];
 

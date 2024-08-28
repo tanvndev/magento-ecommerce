@@ -27,10 +27,14 @@ class ProductResource extends JsonResource
             'upsell_ids' => $this->upsell_ids,
             'canonical' => $this->canonical,
             'quantity' => $this->quantity,
-            'enable_manage_stock' => $this->enable_manage_stock,
-            'stock_status' => $this->stock_status,
+            'meta_title' => $this->meta_title,
+            'meta_description' => $this->meta_description,
+            'canonical' => $this->canonical,
+            'total_stock' => $this->variants->sum('stock'), // Sum the stock values
+            'total_stock_color' => getColorForStock($this->variants->sum('stock')),
             'variants' => ProductVariantResource::collection($this->variants),
             'catalogues' => ProductCatalogueResource::collection($this->catalogues),
+            'product_catalogue_ids' => $this->catalogues->pluck('id'),
         ];
     }
 }

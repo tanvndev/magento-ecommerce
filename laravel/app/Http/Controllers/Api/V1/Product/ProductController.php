@@ -56,7 +56,9 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $response = new ProductResource($this->productRepository->findById($id));
+        $response = new ProductResource(
+            $this->productRepository->findById($id)
+        );
 
         return successResponse('', $response);
     }

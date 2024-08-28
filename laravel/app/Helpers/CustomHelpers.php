@@ -61,6 +61,21 @@ if (! function_exists('formatToCommas')) {
         return $str;
     }
 }
+
+if (! function_exists('getColorForStock')) {
+    function getColorForStock(int $stock): string
+    {
+        if ($stock <= 0) {
+            return 'red';
+        }
+
+        if ($stock <= 5) {
+            return 'orange';
+        }
+
+        return 'green';
+    }
+}
 if (! function_exists('convertPrice')) {
 
     function convertPrice($priceString)

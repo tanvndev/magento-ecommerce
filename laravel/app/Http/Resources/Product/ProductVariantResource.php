@@ -35,10 +35,12 @@ class ProductVariantResource extends JsonResource
             'is_discount_time' => $this->is_discount_time,
             'sale_price_start_at' => $this->sale_price_start_at,
             'sale_price_end_at' => $this->sale_price_end_at,
-            'enable_manage_stock' => $this->enable_manage_stock,
-            'stock_status' => $this->stock_status,
-            'quantity' => $this->quantity,
+            'stock' => $this->stock,
+            'stock_color' => getColorForStock($this->stock),
+            'low_stock_amount' => $this->low_stock_amount,
             'attributes' => AttributeValueResource::collection($this->attribute_values),
+            'attribute_values' => $this->attribute_values->pluck('name')->implode(' - ') ?? 'Default',
+
         ];
     }
 }
