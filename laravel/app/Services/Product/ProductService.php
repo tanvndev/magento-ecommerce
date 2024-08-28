@@ -75,6 +75,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $this->executeInTransaction(function () {
             $payload = $this->preparePayload();
             $product = $this->productRepository->create($payload);
+            // dd($payload);
             $this->syncCatalogue($product, $payload['product_catalogue_id']);
             $this->createProductAttribute($product, $payload);
             $this->createProductVariant($product, $payload);

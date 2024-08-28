@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 const debounce = (func, delay) => {
   let timerId;
   return (...args) => {
@@ -187,6 +188,15 @@ const generateSlug = (str) => {
     .replace(/-+$/, '');
 };
 
+const handleDateChangeToAnt = (dates) => {
+  if (!Array.isArray(dates) || dates.length !== 2) {
+    return [];
+  }
+  const formattedDates = dates.map((date) => dayjs(date));
+
+  return formattedDates;
+};
+
 export {
   debounce,
   resizeImage,
@@ -196,5 +206,6 @@ export {
   getImageToAnt,
   isJSONString,
   cleanedData,
-  generateSlug
+  generateSlug,
+  handleDateChangeToAnt
 };

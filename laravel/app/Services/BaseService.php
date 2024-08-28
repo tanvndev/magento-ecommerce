@@ -16,8 +16,8 @@ class BaseService implements BaseServiceInterface
 
     protected function createSEO(array $payload, string $title = 'name', string $description = 'description'): array
     {
-        $payload['meta_title'] = $payload['meta_title'] ?? $payload[$title];
-        $payload['meta_description'] = $payload['meta_description'] ?? $payload[$description];
+        $payload['meta_title'] = $payload['meta_title'] ?? $payload[$title] ?? '';
+        $payload['meta_description'] = $payload['meta_description'] ?? $payload[$description] ?? '';
         $payload['meta_title'] = truncate($payload['meta_title']);
         $payload['meta_description'] = truncate($payload['meta_description'], 160);
 

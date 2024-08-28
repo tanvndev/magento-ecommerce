@@ -55,22 +55,10 @@ const mutations = {
     }
   },
   removeAll(state) {
-    state = {
-      productType: '',
-      attributes: {
-        enable_variation: false,
-        attrIds: [],
-        texts: []
-      },
-      variants: {
-        variantIds: [],
-        variantTexts: []
-      },
-      price: {
-        cost_price: 0,
-        price: 0
-      }
-    };
+    state.variants = {};
+    state.attributes = {};
+    state.productType = '';
+    state.price = {};
   }
 };
 

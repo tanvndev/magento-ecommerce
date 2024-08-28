@@ -25,22 +25,53 @@ class ProductVariantResource extends JsonResource
             'image' => $this->image,
             'album' => $this->album,
             'sku' => $this->sku,
-            'price' => formatToCommas($this->price) . ' ₫',
-            'cost_price' => formatToCommas($this->cost_price ?? 0) . ' ₫',
-            'sale_price' => formatToCommas($this->sale_price ?? '-') . ' ₫',
-            'weight' => ($this->weight ?? '-') . ' g',
-            'length' => ($this->length ?? '-') . ' cm',
-            'width' => ($this->width ?? '-') . ' cm',
-            'height' => ($this->height ?? '-') . ' cm',
+            'price' => formatToCommas($this->price, null),
+            'cost_price' => formatToCommas($this->cost_price ?? null),
+            'sale_price' => formatToCommas($this->sale_price ?? null),
+            'weight' => ($this->weight ?? null),
+            'length' => ($this->length ?? null),
+            'width' => ($this->width ?? null),
+            'height' => ($this->height ?? null),
             'is_discount_time' => $this->is_discount_time,
-            'sale_price_start_at' => $this->sale_price_start_at,
-            'sale_price_end_at' => $this->sale_price_end_at,
+            'sale_price_time' => $this->getSalePriceTime(),
             'stock' => $this->stock,
             'stock_color' => getColorForStock($this->stock),
             'low_stock_amount' => $this->low_stock_amount,
             'attributes' => AttributeValueResource::collection($this->attribute_values),
             'attribute_values' => $this->attribute_values->pluck('name')->implode(' - ') ?? 'Default',
+            'is_used' => $this->is_used,
+            'lock_color' => $this->getColorForLock($this->is_used),
+            'lock_icon' => $this->getIconLock($this->is_used),
 
         ];
+    }
+
+    private function getColorForLock($is_used)
+    {
+        if ($is_used) {
+            return 'red';
+        }
+        return '';
+    }
+
+    private function getIconLock($is_used)
+    {
+        if ($is_used) {
+            return 'fas fa-lock-alt';
+        }
+        return 'fas fa-lock-open-alt';
+    }
+
+    private function getSalePriceTime()
+    {
+        if ($this->is_discount_time) {
+            return [
+                // convertToFriDdMonYyyyHhMmSs($this->sale_price_start_at),
+                // convertToFriDdMonYyyyHhMmSs($this->sale_price_end_at)
+                $this->sale_price_start_at,
+                $this->sale_price_end_at
+            ];
+        }
+        return [];
     }
 }

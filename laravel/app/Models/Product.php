@@ -20,7 +20,6 @@ class Product extends Model
         'description',
         'upsell_ids',
         'canonical',
-        'quantity',
         'meta_title',
         'meta_description',
         'publish',

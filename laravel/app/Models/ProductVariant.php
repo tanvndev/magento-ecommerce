@@ -26,6 +26,7 @@ class ProductVariant extends Model
         'sale_price',
         'cost_price',
         'stock',
+        'is_used',
         'low_stock_amount',
         'is_discount_time',
         'sale_price_start_at',
@@ -34,7 +35,8 @@ class ProductVariant extends Model
 
     protected $casts = [
         'album' => 'json',
-        'attributes' => 'json',
+        'is_discount_time' => 'boolean',
+        'is_used' => 'boolean',
     ];
 
     public function product()

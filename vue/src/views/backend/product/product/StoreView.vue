@@ -81,18 +81,19 @@ import {
 import _ from 'lodash';
 import MainView from './partials/MainView.vue';
 import SidebarView from './partials/SidebarView.vue';
-import { computed, reactive, watch, watchEffect } from 'vue';
+import { computed, onMounted, reactive, watch, watchEffect } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
 import router from '@/router';
 import { useCRUD } from '@/composables';
+import validationSchema from './validationSchema';
 
 // STATE
 const state = reactive({
   endpoint: 'products',
   pageTitle: 'Thêm mới sản phẩm',
-  error: {},
+  error: {}
 });
 
 const store = useStore();
@@ -101,7 +102,6 @@ const { create, messages } = useCRUD();
 const attributes = computed(() => store.getters['productStore/getAttributes']);
 const variants = computed(() => store.getters['productStore/getVariants']);
 const productType = computed(() => store.getters['productStore/getProductType']);
-import validationSchema from './validationSchema';
 
 const { handleSubmit, setFieldValue, errors } = useForm({
   validationSchema
@@ -121,7 +121,7 @@ const onSubmit = handleSubmit(async (values) => {
   state.error = {};
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
   store.commit('productStore/removeAll');
-  router.push({ name: 'product.index' });
+  //   router.push({ name: 'product.index' });
 });
 
 watch(errors, (newErrors) => {
@@ -135,5 +135,10 @@ watchEffect(() => {
   if (!_.isEmpty(variants.value)) {
     setFieldValue('variants', JSON.stringify(variants.value));
   }
+});
+onMounted(() => {
+  console.log(123);
+
+  store.commit('productStore/removeAll');
 });
 </script>

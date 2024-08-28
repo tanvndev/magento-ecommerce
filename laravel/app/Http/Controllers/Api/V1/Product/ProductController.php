@@ -43,7 +43,6 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         // dd($request->all());
-        // return response()->json($request->all());
 
         $response = $this->productService->create();
         return response()->json($response);
