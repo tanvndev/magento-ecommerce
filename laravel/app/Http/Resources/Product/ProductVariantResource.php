@@ -33,7 +33,10 @@ class ProductVariantResource extends JsonResource
             'width' => ($this->width ?? null),
             'height' => ($this->height ?? null),
             'is_discount_time' => $this->is_discount_time,
-            'sale_price_time' => $this->getSalePriceTime(),
+            'sale_price_time' => [
+                $this->sale_price_start_at,
+                $this->sale_price_end_at
+            ],
             'stock' => $this->stock,
             'stock_color' => getColorForStock($this->stock),
             'low_stock_amount' => $this->low_stock_amount,
@@ -60,18 +63,5 @@ class ProductVariantResource extends JsonResource
             return 'fas fa-lock-alt';
         }
         return 'fas fa-lock-open-alt';
-    }
-
-    private function getSalePriceTime()
-    {
-        if ($this->is_discount_time) {
-            return [
-                // convertToFriDdMonYyyyHhMmSs($this->sale_price_start_at),
-                // convertToFriDdMonYyyyHhMmSs($this->sale_price_end_at)
-                $this->sale_price_start_at,
-                $this->sale_price_end_at
-            ];
-        }
-        return [];
     }
 }
