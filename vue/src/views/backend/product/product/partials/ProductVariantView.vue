@@ -220,8 +220,8 @@ const state = reactive({
   attributes: []
 });
 
-const { handleSubmit, setValues, errors } = useForm({
-  validationVariantSchema
+const { handleSubmit, setValues } = useForm({
+  validationSchema: validationVariantSchema
 });
 
 // Function to fetch variant data and update form values
@@ -250,7 +250,7 @@ const fetchAndSetVariant = async (variantId) => {
     });
     state.attributes = variant?.attributes || [];
     state.activeVariantSelectedId = variantId;
-    state.isDiscountTime = variant?.is_discount_time
+    state.isDiscountTime = variant?.is_discount_time;
   }
 };
 

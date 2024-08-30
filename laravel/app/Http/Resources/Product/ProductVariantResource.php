@@ -25,16 +25,20 @@ class ProductVariantResource extends JsonResource
             'image' => $this->image,
             'album' => $this->album,
             'sku' => $this->sku,
-            'price' => formatToCommas($this->price, null),
-            'cost_price' => formatToCommas($this->cost_price ?? null),
-            'sale_price' => formatToCommas($this->sale_price ?? null),
+            'price' => $this->price,
+            null,
+            'cost_price' => $this->cost_price ?? null,
+            'sale_price' => $this->sale_price ?? null,
             'weight' => ($this->weight ?? null),
             'length' => ($this->length ?? null),
             'width' => ($this->width ?? null),
             'height' => ($this->height ?? null),
             'is_discount_time' => $this->is_discount_time,
-            'sale_price_time' => $this->getSalePriceTime(),
-            'stock' => $this->stock,
+            'sale_price_time' => [
+                $this->sale_price_start_at,
+                $this->sale_price_end_at
+            ],
+            'stock' => $this->stock ?? 0,
             'stock_color' => getColorForStock($this->stock),
             'low_stock_amount' => $this->low_stock_amount,
             'attributes' => AttributeValueResource::collection($this->attribute_values),
@@ -60,18 +64,5 @@ class ProductVariantResource extends JsonResource
             return 'fas fa-lock-alt';
         }
         return 'fas fa-lock-open-alt';
-    }
-
-    private function getSalePriceTime()
-    {
-        if ($this->is_discount_time) {
-            return [
-                // convertToFriDdMonYyyyHhMmSs($this->sale_price_start_at),
-                // convertToFriDdMonYyyyHhMmSs($this->sale_price_end_at)
-                $this->sale_price_start_at,
-                $this->sale_price_end_at
-            ];
-        }
-        return [];
     }
 }

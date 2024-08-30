@@ -104,6 +104,7 @@ import { computed, onMounted, reactive, watch, watchEffect } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
 import { formatDataToSelect, formatDataToTreeSelect, formatMessages } from '@/utils/format';
+import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 import { PRODUCT_TYPE } from '@/static/constants';
@@ -125,11 +126,21 @@ const id = computed(() => router.currentRoute.value.params.id || null);
 const attributes = computed(() => store.getters['productStore/getAttributes']);
 const variants = computed(() => store.getters['productStore/getVariants']);
 const productType = computed(() => store.getters['productStore/getProductType']);
-import validationSchema from './validationSchema';
 import ProductVariantView from './partials/ProductVariantView.vue';
 
 const { handleSubmit, setValues, setFieldValue, errors } = useForm({
-  validationSchema
+  validationSchema: yup.object({
+    name: yup.string().required('Tiêu đề sản phẩm không được để trống.'),
+    product_type: yup.string().required('Loại sản phẩm không được để trống.'),
+    product_catalogue_id: yup
+      .mixed()
+      .test(
+        'is-string-or-array',
+        'Vui lòng chọn nhóm sản phẩm.',
+        (value) => typeof value === 'string' || (Array.isArray(value) && !_.isEmpty(value))
+      )
+      .required('Vui lòng chọn nhóm sản phẩm.')
+  })
 });
 
 const onSubmit = handleSubmit(async (values) => {
