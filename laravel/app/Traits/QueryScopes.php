@@ -10,17 +10,21 @@ trait QueryScopes
 
             if (! empty($fieldSearch)) {
                 foreach ($fieldSearch as $field) {
-                    $query->orWhere($field, 'LIKE', '%'.$keyword.'%');
+                    $query->orWhere($field, 'LIKE', '%' . $keyword . '%');
                 }
             } else {
-                $query->where('name', 'LIKE', '%'.$keyword.'%');
+                $query->where('name', 'LIKE', '%' . $keyword . '%');
             }
         }
 
         if (! empty($whereHas)) {
+            // $whereHas = [
+            //     'field' => 'name',
+            //     'relation' => 'product_catalogues',
+            // ];
             $field = $whereHas['field'];
             $query->orWhereHas($whereHas['relation'], function ($q) use ($field, $keyword) {
-                $q->where($field, 'LIKE', '%'.$keyword.'%');
+                $q->where($field, 'LIKE', '%' . $keyword . '%');
             });
         }
 
