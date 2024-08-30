@@ -76,6 +76,21 @@ if (! function_exists('getColorForStock')) {
         return 'green';
     }
 }
+
+
+if (!function_exists('formatIso8601ToDatetime')) {
+    function formatIso8601ToDatetime($isoDate)
+    {
+        if (empty($isoDate)) {
+            return null;
+        }
+        // Parse the ISO 8601 date-time string to a Carbon instance
+        $carbonDate = \Carbon\Carbon::parse($isoDate);
+        // Format the Carbon instance to 'YYYY-mm-dd H:i:s'
+        return $carbonDate->format('Y-m-d H:i:s');
+    }
+}
+
 if (! function_exists('convertPrice')) {
 
     function convertPrice($priceString)

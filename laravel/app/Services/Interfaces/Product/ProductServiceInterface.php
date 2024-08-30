@@ -15,5 +15,10 @@ interface ProductServiceInterface
     public function updateStatus();
 
     public function updateStatusMultiple();
+
     public function getProductVariants();
+
+    public function updateVariant();
+
+    public function deleteVariant($id);
 }

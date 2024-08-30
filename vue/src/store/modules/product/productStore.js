@@ -13,7 +13,12 @@ const state = {
   price: {
     cost_price: 0,
     price: 0
-  }
+  },
+  attributeData: [],
+  attributeEnableOld: [],
+  attributeEnableIds: [],
+  attributeNotEnableOld: [],
+  attributeNotEnableIds: []
 };
 
 // getters
@@ -25,7 +30,12 @@ const getters = {
   getAttributeTexts: (state) => state.attributes.texts,
   getVariants: (state) => state.variants,
   getPrice: (state) => state.price.price,
-  getCostPrice: (state) => state.price.cost_price
+  getCostPrice: (state) => state.price.cost_price,
+  getAttributeData: (state) => state.attributeData,
+  getAttributeEnableOld: (state) => state.attributeEnableOld,
+  getAttributeEnableIds: (state) => state.attributeEnableIds,
+  getAttributeNotEnableOld: (state) => state.attributeNotEnableOld,
+  getAttributeNotEnableIds: (state) => state.attributeNotEnableIds
 };
 // actions
 const actions = {};
@@ -53,6 +63,21 @@ const mutations = {
       state.variants.variantIds.splice(index, 1);
       state.variants.variantTexts.splice(index, 1);
     }
+  },
+  setAttributeData(state, attributeData) {
+    state.attributeData = attributeData;
+  },
+  setAttributeEnableOld(state, attributeEnableOld) {
+    state.attributeEnableOld = attributeEnableOld;
+  },
+  setAttributeEnableIds(state, attributeEnableIds) {
+    state.attributeEnableIds = attributeEnableIds;
+  },
+  setAttributeNotEnableOld(state, attributeNotEnableOld) {
+    state.attributeNotEnableOld = attributeNotEnableOld;
+  },
+  setAttributeNotEnableIds(state, attributeNotEnableIds) {
+    state.attributeNotEnableIds = attributeNotEnableIds;
   },
   removeAll(state) {
     state.variants = {};

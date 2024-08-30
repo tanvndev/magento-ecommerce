@@ -84,16 +84,16 @@
                   <template v-if="column.key === 'shipping'">
                     <ul class="mb-0 list-disc">
                       <li>
-                        Cân nặng: <span class="font-bold">{{ record.weight }}</span>
+                        Cân nặng: <span class="font-bold">{{ record.weight }} g</span>
                       </li>
                       <li>
-                        Cao: <span class="font-bold">{{ record.height }}</span>
+                        Cao: <span class="font-bold">{{ record.height }} cm</span>
                       </li>
                       <li>
-                        Dài: <span class="font-bold">{{ record.length }}</span>
+                        Dài: <span class="font-bold">{{ record.length }} cm</span>
                       </li>
                       <li>
-                        Rộng: <span class="font-bold">{{ record.width }}</span>
+                        Rộng: <span class="font-bold">{{ record.width }} cm</span>
                       </li>
                     </ul>
                   </template>
