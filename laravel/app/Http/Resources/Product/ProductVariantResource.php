@@ -35,7 +35,7 @@ class ProductVariantResource extends JsonResource
             'is_discount_time' => $this->is_discount_time,
             'sale_price_time' => [
                 $this->sale_price_start_at,
-                $this->sale_price_end_at
+                $this->sale_price_end_at,
             ],
             'stock' => $this->stock ?? 0,
             'stock_color' => getColorForStock($this->stock),
@@ -54,6 +54,7 @@ class ProductVariantResource extends JsonResource
         if ($is_used) {
             return 'red';
         }
+
         return '';
     }
 
@@ -62,6 +63,7 @@ class ProductVariantResource extends JsonResource
         if ($is_used) {
             return 'fas fa-lock-alt';
         }
+
         return 'fas fa-lock-open-alt';
     }
 }

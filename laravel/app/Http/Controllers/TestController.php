@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductAttribute;
-use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
@@ -41,8 +39,8 @@ class TestController extends Controller
         });
 
         dd($product->toArray());
-        return response()->json($product);
 
+        return response()->json($product);
 
         return view('test');
     }

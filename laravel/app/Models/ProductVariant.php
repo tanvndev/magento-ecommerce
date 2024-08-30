@@ -39,7 +39,6 @@ class ProductVariant extends Model
         'is_used' => 'boolean',
     ];
 
-
     protected static function boot()
     {
         parent::boot();

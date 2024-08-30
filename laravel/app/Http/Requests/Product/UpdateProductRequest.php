@@ -26,15 +26,16 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            "name" => 'required|string',
-            "product_type" => 'required',
-            "product_catalogue_id" => 'required',
+            'name' => 'required|string',
+            'product_type' => 'required',
+            'product_catalogue_id' => 'required',
         ];
 
         $product = Product::find($this->product);
         if ($product->product_type === 'variable') {
             $rules['product_type'] = 'required|in:variable';
         }
+
         return $rules;
     }
 
@@ -51,7 +52,7 @@ class UpdateProductRequest extends FormRequest
     {
         return __('request.messages') + [
             'product_type.in' => 'Bạn không thể chuyển loại sản phẩm vui lòng thử lại.',
-        ];;
+        ];
     }
 
     public function failedValidation(Validator $validator)

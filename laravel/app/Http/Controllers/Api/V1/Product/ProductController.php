@@ -85,6 +85,7 @@ class ProductController extends Controller
     {
         $paginator = $this->productService->getProductVariants();
         $data = new ProductVariantCollection($paginator);
+
         // dd($data);
         return successResponse('', $data);
     }

@@ -42,10 +42,11 @@ class StoreProductRequest extends FormRequest
                 $price = $item['price'] ?? null;
                 $sale_price = $item['sale_price'] ?? null;
                 if ($price && $sale_price) {
-                    $rules['variable.' . $key . '.sale_price'] = 'numeric|lt:variable.' . $key . '.price';
+                    $rules['variable.'.$key.'.sale_price'] = 'numeric|lt:variable.'.$key.'.price';
                 }
             }
         }
+
         return $rules;
     }
 

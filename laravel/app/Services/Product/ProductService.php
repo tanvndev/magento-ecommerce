@@ -16,8 +16,8 @@ use Ramsey\Uuid\Uuid;
 class ProductService extends BaseService implements ProductServiceInterface
 {
     protected $productRepository;
-    protected $productVariantRepository;
 
+    protected $productVariantRepository;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
@@ -77,13 +77,12 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $payload;
     }
 
-
     private function createProductVariant($product, array $payload)
     {
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . 'default');
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.'default');
 
         $mainData = [
             'uuid' => $uuid,
@@ -104,7 +103,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             'sale_price_start_at' => $sale_price_start_at ? convertToYyyyMmDdHhMmSs($sale_price_start_at) : null,
             'sale_price_end_at' => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
         ];
-
 
         if ($payload['product_type'] === 'simple') {
             return $product->variants()->create($mainData);
@@ -133,10 +131,10 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->map(function ($variable, $key) use ($mainData, $variantTexts, $variantIds, $product) {
 
                 $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
+                $sku = generateSKU($mainData['name'], 3, $options).'-'.($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
                 $attribute_value_combine = sortString($variantIds[$key]);
-                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.$attribute_value_combine);
 
                 $variantData = [
                     'uuid' => $uuid,
@@ -172,7 +170,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function createProductAttribute($product, array $payload)
     {
-        if (!isset($payload['attributes']) || empty($payload['attributes'])) {
+        if (! isset($payload['attributes']) || empty($payload['attributes'])) {
             return false;
         }
 
@@ -203,25 +201,26 @@ class ProductService extends BaseService implements ProductServiceInterface
                 unset($attributeIds[$key]);
             }
         }
+
         return $enable ? $attrIds : $attributeIds;
     }
 
     private function combineAttribute($productVariants)
     {
-        if (!count($productVariants)) {
+        if (! count($productVariants)) {
             return [];
         }
 
         $result = $productVariants->flatMap(function ($item) {
             $attributeValueIds = explode(',', $item['attribute_value_combine']);
+
             return collect($attributeValueIds)->map(function ($value) use ($item) {
                 return [
                     'attribute_value_id' => $value,
-                    'product_variant_id' => $item['id']
+                    'product_variant_id' => $item['id'],
                 ];
             });
         });
-
 
         return $result->toArray();
     }
@@ -308,7 +307,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $data;
     }
 
-
     public function updateVariant()
     {
         return $this->executeInTransaction(function () {
@@ -325,7 +323,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         // Transform keys by removing "variable_" prefix
         $payloadFormat = array_combine(
-            array_map(fn($key) => str_replace('variable_', '', $key), array_keys($payload)),
+            array_map(fn ($key) => str_replace('variable_', '', $key), array_keys($payload)),
             array_values($payload)
         );
 
@@ -336,6 +334,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $payloadFormat['sale_price_start_at'] = $payloadFormat['sale_price_time'][0] ?? null;
             $payloadFormat['sale_price_end_at'] = $payloadFormat['sale_price_time'][1] ?? null;
         }
+
         return $payloadFormat;
     }
 
@@ -344,27 +343,27 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $this->executeInTransaction(function () use ($id) {
             $variant = $this->productVariantRepository->findByWhere([
                 'id' => ['=', $id],
-                'is_used' => ['=', false]
+                'is_used' => ['=', false],
             ]);
 
-            if (!$variant) {
+            if (! $variant) {
                 throw new \Exception('VARIANT_NOT_FOUND');
             }
 
-            if (!$variant->delete()) {
+            if (! $variant->delete()) {
                 throw new \Exception('FAILED_TO_DELETE_VARIANT');
             }
 
             $remainingAttributes = ProductVariantAttributeValue::query()
-                ->whereHas('product_variant', fn($query) => $query->where('product_id', $variant->product_id))
+                ->whereHas('product_variant', fn ($query) => $query->where('product_id', $variant->product_id))
                 ->with('attribute_value:id,attribute_id')
                 ->get(['attribute_value_id'])
                 ->groupBy('attribute_value.attribute_id')
-                ->map(fn($group) => [
+                ->map(fn ($group) => [
                     'product_id' => $variant->product_id,
                     'attribute_id' => $group->first()->attribute_value->attribute_id,
                     'attribute_value_ids' => $group->pluck('attribute_value_id')->unique()->values()->toArray(),
-                    'enable_variation' => true
+                    'enable_variation' => true,
                 ])
                 ->values();
 

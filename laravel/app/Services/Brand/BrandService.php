@@ -61,6 +61,7 @@ class BrandService extends BaseService implements BrandServiceInterface
     {
         $payload = request()->except('_token', '_method');
         $payload = $this->createSEO($payload);
+
         return $payload;
     }
 

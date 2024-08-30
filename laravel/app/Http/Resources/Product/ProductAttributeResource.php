@@ -19,7 +19,7 @@ class ProductAttributeResource extends JsonResource
             'attribute_id' => $this->attribute_id,
             'attribute_name' => $this->attribute->name,
             'attribute_value_ids' => $this->attribute_value_ids,
-            'enable_variation' => $this->enable_variation
+            'enable_variation' => $this->enable_variation,
         ];
     }
 }
