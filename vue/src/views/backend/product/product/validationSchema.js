@@ -6,12 +6,14 @@ const productType = computed(() => store.getters['productStore/getProductType'])
 const validationSchema = yup.object({
   name: yup.string().required('Tiêu đề sản phẩm không được để trống.'),
   product_type: yup.string().required('Loại sản phẩm không được để trống.'),
+  image: yup.string().required('Ảnh sản phẩm không được để trống.'),
+  album: yup.string().required('Thư viện sản phẩm không được để trống.'),
   product_catalogue_id: yup
     .mixed()
     .test(
       'is-string-or-array',
       'Vui lòng chọn nhóm sản phẩm.',
-      (value) => typeof value === 'string' || Array.isArray(value)
+      (value) => typeof value === 'string' || (Array.isArray(value) && value.length > 0)
     )
     .required('Vui lòng chọn nhóm sản phẩm.'),
   cost_price: yup
