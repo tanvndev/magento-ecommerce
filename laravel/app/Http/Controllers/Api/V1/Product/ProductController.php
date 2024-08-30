@@ -6,6 +6,7 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Requests\Product\UpdateProductVariantRequest;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductVariantCollection;
@@ -43,9 +44,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         // dd($request->all());
-
         $response = $this->productService->create();
-        return response()->json($response);
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
@@ -88,5 +87,19 @@ class ProductController extends Controller
         $data = new ProductVariantCollection($paginator);
         // dd($data);
         return successResponse('', $data);
+    }
+
+    public function updateVariant(UpdateProductVariantRequest $request)
+    {
+        $response = $this->productService->updateVariant();
+
+        return handleResponse($response);
+    }
+
+    public function deleteVariant(string $id)
+    {
+        $response = $this->productService->deleteVariant($id);
+
+        return handleResponse($response);
     }
 }

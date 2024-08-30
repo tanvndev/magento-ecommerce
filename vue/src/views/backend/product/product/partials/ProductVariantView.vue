@@ -1,186 +1,200 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <a-col span="24" class="mt-3">
-      <a-row :gutter="[16, 16]">
-        <!-- Attribute -->
-        <a-col span="8">
-          <a-card>
-            <template #title>
-              <div class="flex items-center justify-between">
-                <div>
-                  <span> Phiên bản ({{ props.variants.length }})</span>
-                  <TooltipComponent
-                    title="Bạn lưu ý nếu sản phẩm bị khóa thì sẽ không được phép sửa và xóa."
-                  />
-                </div>
-                <a-button type="dashed">Sửa thuộc tính</a-button>
+    <a-row :gutter="[16, 16]">
+      <!-- Attribute -->
+      <a-col span="8">
+        <a-card>
+          <template #title>
+            <div class="flex items-center justify-between">
+              <div>
+                <span> Phiên bản ({{ props.variants.length }})</span>
+                <TooltipComponent
+                  title="Bạn lưu ý nếu sản phẩm bị khóa thì có nghĩa là sản phẩm đã được có trong đơn hàng sẽ không được phép và xóa."
+                />
               </div>
-            </template>
-            <ul class="list-variant">
-              <li
-                class="item-variant flex items-center gap-4"
-                v-for="variant in props.variants"
-                :key="variant.id"
-                :class="{ active: state.activeVariantSelectedId == variant.id }"
-                @click="handleSelectVariant(variant)"
-              >
-                <div class="flex items-center">
-                  <a-tag :color="variant.lock_color">
-                    <i :class="variant.lock_icon"></i>
-                  </a-tag>
-                  <div class="rounded border">
-                    <img class="w-[50px] object-cover" :src="variant.image" alt="Chưa có ảnh" />
-                  </div>
-                </div>
-                <div>
-                  <p class="mb-1 text-[16px] text-primary-500">{{ variant.attribute_values }}</p>
-                  <span class="text-[16px] text-gray-500"
-                    >Tồn kho: <a-tag :color="variant.stock_color">{{ variant.stock }}</a-tag>
-                  </span>
-                </div>
-                <div class="ml-auto">
-                  <a-popconfirm
-                    :title="`Bạn có chắc chắn muốn xóa phiên bản |${variant.attribute_values}|? Thao tác này không thể khôi phục.`"
-                    ok-text="Xóa"
-                    cancel-text="Hủy"
-                    @confirm="handleRemoveVariant(variant.id)"
-                  >
-                    <a-button class="text-gray-600 hover:text-red-500" type="danger">
-                      <i class="fas fa-trash-alt text-[16px]"></i>
-                    </a-button>
-                  </a-popconfirm>
-                </div>
-              </li>
-            </ul>
-          </a-card>
-        </a-col>
-        <!-- Main -->
-        <a-col span="16">
-          <a-card>
-            <template #title>
-              <div class="flex items-center justify-between">
-                <div>
-                  Thông tin phiên bản
-                  <TooltipComponent title="Bạn lưu ý nhấn 'Cập nhập phiên bản' để cập nhập." />
-                </div>
-                <a-space>
-                  <a-button html-type="submit" type="dashed">Cập nhập phiên bản</a-button>
-                </a-space>
+              <div v-if="props.productType == 'variable'">
+                <ProductVariantAttributeVariableView
+                  :attribute-enable-ids="props.attributeEnableIds"
+                  :attribute-enable-old="props.attributeEnableOld"
+                  :attribute-data="props.attributeData"
+                  v-if="productTypeOld == 'variable'"
+                />
+                <ProductVariantAttributeSimpleView
+                  :attribute-enable-ids="props.attributeEnableIds"
+                  :attribute-enable-old="props.attributeEnableOld"
+                  :attribute-data="props.attributeData"
+                  v-if="productTypeOld == 'simple'"
+                />
               </div>
-            </template>
-            <a-row :gutter="[16, 16]">
-              <a-col span="24">
-                <InputComponent
-                  name="variable[name]"
-                  label="Tên phiên bản"
-                  placeholder="Tên phiên bản"
-                />
-              </a-col>
-              <a-col span="24">
-                <InputComponent name="variable[sku]" label="SKU" placeholder="SKU" />
-              </a-col>
-              <a-col span="6">
-                <InputNumberComponent
-                  name="variable[weight]"
-                  label="Cân nặng (kg)"
-                  placeholder="Cân nặng"
-                />
-              </a-col>
-              <a-col span="6">
-                <InputNumberComponent name="variable[length]" label="Dài (cm)" placeholder="Dài" />
-              </a-col>
-              <a-col span="6">
-                <InputNumberComponent name="variable[width]" label="Rộng (cm)" placeholder="Rộng" />
-              </a-col>
-              <a-col span="6">
-                <InputNumberComponent name="variable[height]" label="Cao (cm)" placeholder="Cao" />
-              </a-col>
-              <a-col span="12">
-                <InputNumberComponent
-                  name="variable[stock]"
-                  label="Số lượng"
-                  placeholder="Số lượng"
-                />
-              </a-col>
-              <a-col span="12">
-                <InputNumberComponent
-                  name="variable[low_stock_amount]"
-                  label="Ngưỡng sắp hết hàng"
-                  placeholder="Ngưỡng sắp hết hàng"
-                />
-              </a-col>
-            </a-row>
-          </a-card>
-
-          <a-card title="Thuộc tính" class="mt-3">
-            <a-row :gutter="[16, 16]">
-              <a-col span="12">
-                <div v-for="attribute in state.attributes" :key="attribute.id" class="mb-3">
-                  <label class="mb-2 block text-sm font-medium text-gray-900">
-                    {{ attribute.attribute_name }}
-                  </label>
-                  <div class="flex h-[40px] w-full items-center rounded-[10px] border px-3">
-                    {{ attribute.name }}
-                  </div>
+            </div>
+          </template>
+          <ul class="list-variant">
+            <li
+              class="item-variant flex items-center gap-4"
+              v-for="variant in props.variants"
+              :key="variant.id"
+              :class="{ active: state.activeVariantSelectedId == variant.id }"
+              @click="handleSelectVariant(variant)"
+            >
+              <div class="flex items-center">
+                <a-tag :color="variant.lock_color">
+                  <i :class="variant.lock_icon"></i>
+                </a-tag>
+                <div class="rounded border">
+                  <img class="w-[50px] object-cover" :src="variant.image" alt="Chưa có ảnh" />
                 </div>
-              </a-col>
-              <a-col span="12" class="flex flex-col items-center justify-center">
-                <h2 class="-ml-[10px] text-sm">Ảnh</h2>
-                <InputFinderComponent name="variable[image]" />
-              </a-col>
-            </a-row>
-          </a-card>
+              </div>
+              <div>
+                <p class="mb-1 text-[16px] text-primary-500">
+                  {{ variant.attribute_values || 'Mặc định' }}
+                </p>
+                <span class="text-[16px] text-gray-500"
+                  >Tồn kho: <a-tag :color="variant.stock_color">{{ variant.stock }}</a-tag>
+                </span>
+              </div>
+              <div class="ml-auto" v-if="props.variants.length > 1 && variant.is_used == false">
+                <a-popconfirm
+                  :title="`Bạn có chắc chắn muốn xóa phiên bản |${variant.attribute_values}|? Thao tác này không thể khôi phục.`"
+                  ok-text="Xóa"
+                  cancel-text="Hủy"
+                  @confirm="handleRemoveVariant(variant.id)"
+                >
+                  <a-button class="text-gray-600 hover:text-red-500" type="danger">
+                    <i class="fas fa-trash-alt text-[16px]"></i>
+                  </a-button>
+                </a-popconfirm>
+              </div>
+            </li>
+          </ul>
+        </a-card>
+      </a-col>
+      <!-- Main -->
+      <a-col span="16">
+        <a-card>
+          <template #title>
+            <div class="flex items-center justify-between">
+              <div>
+                Thông tin phiên bản
+                <TooltipComponent title="Bạn lưu ý nhấn 'Cập nhập phiên bản' để cập nhập." />
+              </div>
+              <a-space>
+                <a-button html-type="submit" type="dashed">Cập nhập phiên bản</a-button>
+              </a-space>
+            </div>
+          </template>
+          <AleartError :errors="state.error" />
+          <a-row :gutter="[16, 16]">
+            <div class="hidden">
+              <!-- variant_id -->
+              <InputComponent name="variable_id" />
+              <SwitchComponent name="variable_is_used" />
+            </div>
+            <a-col span="24">
+              <InputComponent
+                name="variable_name"
+                label="Tên phiên bản"
+                placeholder="Tên phiên bản"
+              />
+            </a-col>
+            <a-col span="24">
+              <InputComponent name="variable_sku" label="SKU" placeholder="SKU" />
+            </a-col>
+            <a-col span="6">
+              <InputNumberComponent
+                name="variable_weight"
+                label="Cân nặng (kg)"
+                placeholder="Cân nặng"
+              />
+            </a-col>
+            <a-col span="6">
+              <InputNumberComponent name="variable_length" label="Dài (cm)" placeholder="Dài" />
+            </a-col>
+            <a-col span="6">
+              <InputNumberComponent name="variable_width" label="Rộng (cm)" placeholder="Rộng" />
+            </a-col>
+            <a-col span="6">
+              <InputNumberComponent name="variable_height" label="Cao (cm)" placeholder="Cao" />
+            </a-col>
+            <a-col span="12">
+              <InputNumberComponent name="variable_stock" label="Số lượng" placeholder="Số lượng" />
+            </a-col>
+            <a-col span="12">
+              <InputNumberComponent
+                name="variable_low_stock_amount"
+                label="Ngưỡng sắp hết hàng"
+                placeholder="Ngưỡng sắp hết hàng"
+              />
+            </a-col>
+          </a-row>
+        </a-card>
 
-          <a-card title="Giá bán" class="mt-3">
-            <a-row :gutter="[16, 16]">
-              <a-col span="8">
-                <InputNumberComponent
-                  name="variable[cost_price]"
-                  label="Giá bán nhập"
-                  placeholder="Giá bán nhập"
-                />
-              </a-col>
-              <a-col span="8">
-                <InputNumberComponent
-                  name="variable[price]"
-                  label="Giá bán"
-                  placeholder="Giá bán"
-                />
-              </a-col>
-              <a-col span="8">
-                <InputNumberComponent
-                  name="variable[sale_price]"
-                  label="Giá bán ưu đãi"
-                  placeholder="Giá bán ưu đãi"
-                />
-              </a-col>
-              <a-col>
-                <SwitchComponent
-                  name="variable[is_discount_time]"
-                  checkText="Lên lịch"
-                  uncheckText="Hủy lên lịch"
-                  @onChange="handleDiscountTime"
-                />
-              </a-col>
-            </a-row>
-            <a-row :gutter="[16, 16]" class="mt-4" v-if="state.isDiscountTime">
-              <a-col span="24">
-                <InputDateComponent
-                  type="date-range"
-                  name="variable[sale_price_time]"
-                  :showTime="true"
-                />
-              </a-col>
-            </a-row>
-          </a-card>
+        <a-card title="Thuộc tính" class="mt-3">
+          <a-row :gutter="[16, 16]">
+            <a-col span="12" v-if="state.attributes.length > 0">
+              <div v-for="attribute in state.attributes" :key="attribute.id" class="mb-3">
+                <label class="mb-2 block text-sm font-medium text-gray-900">
+                  {{ attribute.attribute_name }}
+                </label>
+                <div class="flex h-[40px] w-full items-center rounded-[10px] border px-3">
+                  {{ attribute.name }}
+                </div>
+              </div>
+            </a-col>
+            <a-col span="12" v-else>
+              <a-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
+            </a-col>
+            <a-col span="12" class="flex flex-col items-center justify-center">
+              <h2 class="-ml-[10px] text-sm">Ảnh</h2>
+              <InputFinderComponent name="variable_image" />
+            </a-col>
+          </a-row>
+        </a-card>
 
-          <!-- Album -->
-          <a-card class="mt-3" title="Thư viện sản phẩm">
-            <InputFinderComponent :multipleFile="true" name="variable[album]" />
-          </a-card>
-        </a-col>
-      </a-row>
-    </a-col>
+        <a-card title="Giá bán" class="mt-3">
+          <a-row :gutter="[16, 16]">
+            <a-col span="8">
+              <InputNumberComponent
+                name="variable_cost_price"
+                label="Giá bán nhập"
+                placeholder="Giá bán nhập"
+              />
+            </a-col>
+            <a-col span="8">
+              <InputNumberComponent name="variable_price" label="Giá bán" placeholder="Giá bán" />
+            </a-col>
+            <a-col span="8">
+              <InputNumberComponent
+                name="variable_sale_price"
+                label="Giá bán ưu đãi"
+                placeholder="Giá bán ưu đãi"
+              />
+            </a-col>
+            <a-col>
+              <SwitchComponent
+                name="variable_is_discount_time"
+                checkText="Lên lịch"
+                uncheckText="Hủy lên lịch"
+                @onChange="handleDiscountTime"
+              />
+            </a-col>
+          </a-row>
+          <a-row :gutter="[16, 16]" class="mt-4" v-if="state.isDiscountTime">
+            <a-col span="24">
+              <InputDateComponent
+                type="date-range"
+                name="variable_sale_price_time"
+                :showTime="true"
+              />
+            </a-col>
+          </a-row>
+        </a-card>
+
+        <!-- Album -->
+        <a-card class="mt-3" title="Thư viện sản phẩm">
+          <InputFinderComponent :multipleFile="true" name="variable_album" />
+        </a-card>
+      </a-col>
+    </a-row>
   </form>
 </template>
 <script setup>
@@ -190,34 +204,59 @@ import {
   InputDateComponent,
   InputFinderComponent,
   SwitchComponent,
-  TooltipComponent
+  TooltipComponent,
+  AleartError
 } from '@/components/backend';
 import { useCRUD } from '@/composables';
-import { reactive, watchEffect, onMounted } from 'vue';
+import { computed, reactive, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-const { getOne, getAll, update, messages, data } = useCRUD();
+const { update, deleteOne, messages } = useCRUD();
 import { useForm } from 'vee-validate';
-import validationVariantSchema from '../validationVariantSchema';
+import { validationVariantSchema } from '../validationSchema';
 import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
 import _ from 'lodash';
 import { handleDateChangeToAnt } from '@/utils/helpers';
+import { message } from 'ant-design-vue';
+import { Empty } from 'ant-design-vue';
+import ProductVariantAttributeVariableView from './ProductVariantAttributeVariableView.vue';
+import ProductVariantAttributeSimpleView from './ProductVariantAttributeSimpleView.vue';
 
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
 
+const emits = defineEmits(['onReload']);
 const props = defineProps({
   variants: {
+    type: Array,
+    default: () => []
+  },
+  productType: {
+    type: String,
+    default: ''
+  },
+  attributeEnableOld: {
+    type: Array,
+    default: () => []
+  },
+  attributeEnableIds: {
+    type: Array,
+    default: () => []
+  },
+  attributeData: {
     type: Array,
     default: () => []
   }
 });
 
+const productTypeOld = computed(() => store.getters['productStore/getProductType']);
 const state = reactive({
   isDiscountTime: false,
   activeVariantSelectedId: null,
-  attributes: []
+  attributes: [],
+  error: {},
+  endpoint: 'products/variants'
 });
 
 const { handleSubmit, setValues } = useForm({
@@ -232,21 +271,23 @@ const fetchAndSetVariant = async (variantId) => {
   }
   if (variant) {
     setValues({
-      'variable[name]': variant?.name || '',
-      'variable[sku]': variant?.sku || '',
-      'variable[weight]': variant?.weight || '',
-      'variable[length]': variant?.length || '',
-      'variable[width]': variant?.width || '',
-      'variable[height]': variant?.height || '',
-      'variable[stock]': variant?.stock || '',
-      'variable[low_stock_amount]': variant?.low_stock_amount || '',
-      'variable[cost_price]': variant?.cost_price || '',
-      'variable[price]': variant?.price || '',
-      'variable[sale_price]': variant?.sale_price || '',
-      'variable[image]': variant?.image || '',
-      'variable[album]': variant?.album || [],
-      'variable[is_discount_time]': variant?.is_discount_time,
-      'variable[sale_price_time]': handleDateChangeToAnt(variant?.sale_price_time)
+      variable_id: variant?.id || 0,
+      variable_name: variant?.name || '',
+      variable_sku: variant?.sku || '',
+      variable_weight: variant?.weight || null,
+      variable_length: variant?.length || null,
+      variable_width: variant?.width || null,
+      variable_height: variant?.height || null,
+      variable_stock: variant?.stock || null,
+      variable_low_stock_amount: variant?.low_stock_amount || null,
+      variable_cost_price: variant?.cost_price || null,
+      variable_price: variant?.price || null,
+      variable_sale_price: variant?.sale_price || null,
+      variable_image: variant?.image || '',
+      variable_album: variant?.album || [],
+      variable_is_discount_time: variant?.is_discount_time,
+      variable_sale_price_time: handleDateChangeToAnt(variant?.sale_price_time),
+      variable_is_used: variant?.is_used
     });
     state.attributes = variant?.attributes || [];
     state.activeVariantSelectedId = variantId;
@@ -255,17 +296,22 @@ const fetchAndSetVariant = async (variantId) => {
 };
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values);
+  const endpoint = state.endpoint + '/update';
+  const response = await update(endpoint, null, values);
+
+  if (!response) {
+    return (state.error = formatMessages(messages.value));
+  }
 
   state.error = {};
-  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  message.success(messages.value);
   store.commit('productStore/removeAll');
-  // router.push({ name: 'product.index' });
+  emits('onReload');
 });
 
 const handleDiscountTime = (value) => {
   setValues({
-    'variable[is_discount_time]': value
+    variable_is_discount_time: value
   });
 
   state.isDiscountTime = value;
@@ -278,8 +324,29 @@ const handleSelectVariant = (variant) => {
   });
 };
 
-const handleRemoveVariant = () => {
-  //   router.push({ path: router.currentRoute.value.path, query: {} });
+const handleRemoveVariant = async (variantId) => {
+  if (props.variants.length <= 1) {
+    message.warning('Phải giữ lại ít nhất một phiên bản.');
+    return;
+  }
+
+  const endpoint = `${state.endpoint}/delete`;
+  const response = await deleteOne(endpoint, variantId);
+
+  if (!response) {
+    message.error(messages.value);
+    return;
+  }
+
+  message.success(messages.value);
+  const remainingVariants = props.variants.filter((v) => v.id !== variantId);
+  if (remainingVariants.length > 0) {
+    const newQuery = { ...router.currentRoute.value.query, variant_id: remainingVariants[0].id };
+    if (router.currentRoute.value.query.variant_id !== remainingVariants[0].id) {
+      router.push({ path: router.currentRoute.value.path, query: newQuery });
+    }
+  }
+  emits('onReload');
 };
 
 watchEffect(() => {

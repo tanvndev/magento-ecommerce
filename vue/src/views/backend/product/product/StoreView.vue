@@ -87,7 +87,8 @@ import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
 import router from '@/router';
 import { useCRUD } from '@/composables';
-import validationSchema from './validationSchema';
+import { validationSchema } from './validationSchema';
+import { message } from 'ant-design-vue';
 
 // STATE
 const state = reactive({
@@ -119,7 +120,7 @@ const onSubmit = handleSubmit(async (values) => {
   }
 
   state.error = {};
-  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  message.success(messages.value);
   store.commit('productStore/removeAll');
   //   router.push({ name: 'product.index' });
 });

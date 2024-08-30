@@ -75,6 +75,8 @@ Route::middleware('log.request.response')->group(function () {
             Route::apiResource('products/catalogues', ProductCatalogueController::class);
         });
         Route::get('products/variants', [ProductController::class, 'getProductVariants']);
+        Route::put('products/variants/update', [ProductController::class, 'updateVariant']);
+        Route::delete('products/variants/delete/{id}', [ProductController::class, 'deleteVariant']);
         Route::apiResource('products', ProductController::class);
 
         // ATTRIBUTE ROUTE

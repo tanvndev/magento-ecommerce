@@ -159,14 +159,8 @@ const handleEnableVariation = (checked, attributeId) => {
   }
 };
 
-// XU LY NHOM THUOC TINH
 const handleSelectedAttribute = (attributeIds) => {
-  state.attributeValues = attributeIds.map((id) => getAttributeValueByAttribute(id));
-};
-
-// LAY RA THUOC TINH THEO NHOM THUOC TINH
-const getAttributeValueByAttribute = (attributeId) => {
-  return state.attributes.find((item) => item.id === attributeId);
+  state.attributeValues = attributeIds.map((id) => state.attributes.find((item) => item.id === id));
 };
 
 // LAY RA TAT CA CAC NHOM THUOC TINH

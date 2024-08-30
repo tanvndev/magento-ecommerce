@@ -32,12 +32,6 @@
                 </a-row>
               </a-card>
             </a-col>
-            <div class="hidden">
-              <!-- Attribute -->
-              <InputComponent name="attributes" />
-              <InputComponent name="variants" />
-            </div>
-
             <!-- Sidebar right -->
             <a-col :span="7">
               <a-card class="mt-3" title="Thương hiệu">
@@ -57,23 +51,46 @@
                 />
               </a-card>
               <a-card class="mt-3" title="Loại sản phẩm">
-                <SelectComponent
-                  name="product_type"
-                  label="Loại sản phẩm"
-                  :required="true"
-                  :options="PRODUCT_TYPE"
-                  :showSearch="false"
-                  tooltip-text="Sản phẩm đơn giản là sản phẩm có không có phiên bản. Sản phẩm biến thể có nhiều phiên bản khác nhau."
-                  placeholder="Chọn loại sản phẩm"
-                />
+                <div>
+                  <SelectComponent
+                    name="product_type"
+                    label="Loại sản phẩm"
+                    :required="true"
+                    :options="PRODUCT_TYPE"
+                    :showSearch="false"
+                    tooltip-text="Lưu ý bạn chỉ có thể cập nhập từ sản phẩm ''đơn sản'' sang sản phẩm ''biến thể'' không để cập nhập ngược lại, các phiên bản cũ sẽ bị xóa vĩnh viễn nếu bạn cập nhập từ sản phẩm ''đơn giản'' sang ''biến thể''."
+                    placeholder="Chọn loại sản phẩm"
+                    @on-change="handleProductType"
+                  />
+                </div>
               </a-card>
             </a-col>
 
-            <!-- Main data -->
-            <ProductVariantView :variants="state.variants" />
-            <!-- SEO -->
+            <a-col span="24" class="mt-3">
+              <!-- Main data -->
+              <ProductVariantView
+                :variants="state.variants"
+                :attribute-data="state.attributeData"
+                :product-type="state.productType"
+                :attribute-enable-old="state.attributeEnableOld"
+                :attribute-enable-ids="state.attributeEnableIds"
+                @onReload="fetchOne"
+              />
+            </a-col>
 
-            <SEOComponent span="24" />
+            <a-col span="9">
+              <!-- ProductAttribute -->
+              <ProductAttributeView
+                :attribute-data="state.attributeData"
+                :attribute-not-enable-old="state.attributeNotEnableOld"
+                :attribute-not-enable-ids="state.attributeNotEnableIds"
+              />
+            </a-col>
+
+            <!-- SEO -->
+            <a-col span="15">
+              <SEOComponent />
+            </a-col>
           </a-row>
 
           <div class="fixed bottom-0 right-[19px] p-10">
@@ -100,7 +117,7 @@ import {
   TreeSelectComponent
 } from '@/components/backend';
 import _ from 'lodash';
-import { computed, onMounted, reactive, watch, watchEffect } from 'vue';
+import { computed, onMounted, reactive, watch } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
 import { formatDataToSelect, formatDataToTreeSelect, formatMessages } from '@/utils/format';
@@ -108,6 +125,9 @@ import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 import { PRODUCT_TYPE } from '@/static/constants';
+import ProductVariantView from './partials/ProductVariantView.vue';
+import { message } from 'ant-design-vue';
+import ProductAttributeView from './partials/ProductAttributeView.vue';
 
 // STATE
 const state = reactive({
@@ -116,19 +136,20 @@ const state = reactive({
   error: {},
   productCatalogues: [],
   brands: [],
-  variants: []
+  variants: [],
+  attributeData: [],
+  attributeNotEnableOld: [],
+  attributeNotEnableIds: [],
+  attributeEnableOld: [],
+  attributeEnableIds: [],
+  productType: ''
 });
 
 const store = useStore();
 const { getOne, getAll, update, messages, data } = useCRUD();
 
 const id = computed(() => router.currentRoute.value.params.id || null);
-const attributes = computed(() => store.getters['productStore/getAttributes']);
-const variants = computed(() => store.getters['productStore/getVariants']);
-const productType = computed(() => store.getters['productStore/getProductType']);
-import ProductVariantView from './partials/ProductVariantView.vue';
-
-const { handleSubmit, setValues, setFieldValue, errors } = useForm({
+const { handleSubmit, setValues, errors } = useForm({
   validationSchema: yup.object({
     name: yup.string().required('Tiêu đề sản phẩm không được để trống.'),
     product_type: yup.string().required('Loại sản phẩm không được để trống.'),
@@ -144,10 +165,6 @@ const { handleSubmit, setValues, setFieldValue, errors } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  if (productType.value == 'variable' && _.isEmpty(variants.value)) {
-    return (state.error = { variants: 'Vui lòng tạo ít nhất một biến thể sản phẩm.' });
-  }
-
   state.error = {};
   const response = await update(state.endpoint, id.value, values);
   if (!response) {
@@ -155,7 +172,7 @@ const onSubmit = handleSubmit(async (values) => {
   }
 
   state.error = {};
-  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  message.success(messages.value);
   store.commit('productStore/removeAll');
   //   router.push({ name: 'product.index' });
 });
@@ -166,6 +183,7 @@ watch(errors, (newErrors) => {
 
 const fetchOne = async () => {
   await getOne(state.endpoint, id.value);
+  const productType = data.value?.product_type;
   setValues({
     name: data.value?.name,
     description: data.value?.description,
@@ -173,24 +191,37 @@ const fetchOne = async () => {
     meta_title: data.value?.meta_title,
     meta_description: data.value?.meta_description,
     canonical: data.value?.canonical,
-    product_type: data.value?.product_type,
+    product_type: productType,
     brand_id: data.value?.brand_id,
-    product_catalogue_id: data.value?.product_catalogue_ids
+    product_catalogue_id: data.value?.product_catalogue_ids,
+    attribute_id: data.value?.attribute_not_enabled_ids
   });
 
   if (!_.isEmpty(data.value?.variants)) {
     state.variants = data.value?.variants;
   }
-};
 
-watchEffect(() => {
-  if (!_.isEmpty(attributes.value)) {
-    setFieldValue('attributes', JSON.stringify(attributes.value));
+  if (!_.isEmpty(productType)) {
+    state.productType = productType;
+    store.commit('productStore/setProductType', productType);
   }
-  if (!_.isEmpty(variants.value)) {
-    setFieldValue('variants', JSON.stringify(variants.value));
+
+  if (!_.isEmpty(data.value?.attribute_not_enabled_ids)) {
+    state.attributeNotEnableIds = data.value?.attribute_not_enabled_ids;
   }
-});
+
+  if (!_.isEmpty(data.value?.attribute_not_enabled)) {
+    state.attributeNotEnableOld = data.value?.attribute_not_enabled;
+  }
+
+  if (!_.isEmpty(data.value?.attribute_enabled)) {
+    state.attributeEnableOld = data.value?.attribute_enabled;
+  }
+
+  if (!_.isEmpty(data.value?.attribute_enabled_ids)) {
+    state.attributeEnableIds = data.value?.attribute_enabled_ids;
+  }
+};
 
 // LAY RA TOAN BO PRODUCT CATALOGUE
 const getProductCatalogues = async () => {
@@ -204,11 +235,19 @@ const getBrands = async () => {
   state.brands = formatDataToSelect(data.value);
 };
 
-// LAY RA TOAN BO SUPPLIER
+const handleProductType = (value) => {
+  state.productType = value;
+};
+
+const getAttributes = async () => {
+  await getAll('attributes');
+  state.attributeData = data.value;
+};
 
 onMounted(async () => {
   getProductCatalogues();
   getBrands();
+  getAttributes();
   if (id.value) {
     fetchOne();
   }

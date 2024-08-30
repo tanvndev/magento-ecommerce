@@ -34,6 +34,10 @@ class ProductResource extends JsonResource
             'total_stock_color' => getColorForStock($this->variants->sum('stock')),
             'variants' => ProductVariantResource::collection($this->variants),
             'catalogues' => ProductCatalogueResource::collection($this->catalogues),
+            'attribute_not_enabled' => ProductAttributeResource::collection($this->attributes->where('enable_variation', false)),
+            'attribute_not_enabled_ids' => $this->attributes->where('enable_variation', false)->pluck('attribute_id'),
+            'attribute_enabled' => ProductAttributeResource::collection($this->attributes->where('enable_variation', true)),
+            'attribute_enabled_ids' => $this->attributes->where('enable_variation', true)->pluck('attribute_id'),
             'product_catalogue_ids' => $this->catalogues->pluck('id'),
         ];
     }

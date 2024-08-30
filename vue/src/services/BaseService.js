@@ -105,7 +105,10 @@ class BaseService {
 
   async update(endpoint, id, payload) {
     try {
-      const response = await axios.post(`${endpoint}/${id}?_method=PUT`, payload, {
+      const endpointUpdate =
+        id == null ? `${endpoint}?_method=PUT` : `${endpoint}/${id}?_method=PUT`;
+
+      const response = await axios.post(endpointUpdate, payload, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

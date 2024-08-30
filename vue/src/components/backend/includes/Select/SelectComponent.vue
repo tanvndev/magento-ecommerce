@@ -30,6 +30,7 @@
 <script setup>
 import { useField } from 'vee-validate';
 import { TooltipComponent } from '@/components/backend';
+import { watch } from 'vue';
 
 const emits = defineEmits(['onChange']);
 const props = defineProps({
@@ -76,6 +77,10 @@ const props = defineProps({
   tooltipText: {
     type: String,
     default: ''
+  },
+  oldValue: {
+    type: [String, Array, Number],
+    default: ''
   }
 });
 
@@ -88,6 +93,17 @@ const handleChange = (value) => {
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
+
+// Watch for changes in oldValue and set value accordingly
+watch(
+  () => props.oldValue,
+  (newOldValue) => {
+    if (newOldValue && newOldValue !== undefined && newOldValue !== value.value) {
+      value.value = newOldValue;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>

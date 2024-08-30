@@ -39,14 +39,20 @@ class ProductVariant extends Model
         'is_used' => 'boolean',
     ];
 
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($model) {
+            $model->sale_price_start_at = formatIso8601ToDatetime($model->sale_price_start_at);
+            $model->sale_price_end_at = formatIso8601ToDatetime($model->sale_price_end_at);
+        });
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    public function attributes()
-    {
-        return $this->belongsToMany(Attribute::class, 'product_variant_attribute', 'product_variant_id', 'attribute_id');
     }
 
     public function attribute_values()
