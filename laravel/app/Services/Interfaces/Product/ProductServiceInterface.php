@@ -21,4 +21,8 @@ interface ProductServiceInterface
     public function updateVariant();
 
     public function deleteVariant($id);
+
+    public function createAttribute();
+
+    public function updateAttribute(string $productId);
 }

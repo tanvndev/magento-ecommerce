@@ -22,7 +22,7 @@ class ProductVariantResource extends JsonResource
             'name' => $this->name,
             'price' => $this->price,
             'attribute_value_combine' => $this->attribute_value_combine,
-            'image' => $this->image,
+            'image' => $this->image ?? [],
             'album' => $this->album,
             'sku' => $this->sku,
             'price' => $this->price,

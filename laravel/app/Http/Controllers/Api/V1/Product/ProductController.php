@@ -86,7 +86,6 @@ class ProductController extends Controller
         $paginator = $this->productService->getProductVariants();
         $data = new ProductVariantCollection($paginator);
 
-        // dd($data);
         return successResponse('', $data);
     }
 
@@ -100,6 +99,14 @@ class ProductController extends Controller
     public function deleteVariant(string $id)
     {
         $response = $this->productService->deleteVariant($id);
+
+        return handleResponse($response);
+    }
+
+    public function updateAttribute(string $productId)
+    {
+        // return response()->json(request()->all());
+        $response = $this->productService->updateAttribute($productId);
 
         return handleResponse($response);
     }

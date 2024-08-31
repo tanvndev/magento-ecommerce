@@ -42,7 +42,7 @@ import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { useCRUD } from '@/composables';
 
-const { create, messages } = useCRUD();
+const { update, messages } = useCRUD();
 const props = defineProps({
   attributeData: {
     type: Array,
@@ -61,7 +61,8 @@ const props = defineProps({
 // STATE
 const state = reactive({
   open: false,
-  attributeValues: []
+  attributeValues: [],
+  endpoint: 'products/attributes/update'
 });
 
 const { handleSubmit } = useForm({
@@ -73,10 +74,10 @@ const { handleSubmit } = useForm({
 const onSubmit = handleSubmit(async (values) => {
   console.log(values);
 
-  //   const response = await create(state.endpoint, values);
-  //   if (!response) {
-  //     return;
-  //   }
+  const response = await update(state.endpoint, 5, values);
+  if (!response) {
+    return;
+  }
 });
 
 const handleSelectedAttribute = (attributeIds) => {

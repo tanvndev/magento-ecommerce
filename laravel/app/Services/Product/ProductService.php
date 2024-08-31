@@ -6,6 +6,7 @@ namespace App\Services\Product;
 
 use App\Models\ProductAttribute;
 use App\Models\ProductVariantAttributeValue;
+use App\Repositories\Interfaces\Attribute\AttributeValueRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Services\BaseService;
@@ -19,12 +20,17 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     protected $productVariantRepository;
 
+    protected $attributeValueRepository;
+
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        ProductVariantRepositoryInterface $productVariantRepository
+        ProductVariantRepositoryInterface $productVariantRepository,
+        AttributeValueRepositoryInterface $attributeValueRepository
     ) {
         $this->productRepository = $productRepository;
         $this->productVariantRepository = $productVariantRepository;
+        $this->attributeValueRepository = $attributeValueRepository;
     }
 
     public function paginate()
@@ -82,7 +88,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.'default');
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . 'default');
 
         $mainData = [
             'uuid' => $uuid,
@@ -131,10 +137,10 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->map(function ($variable, $key) use ($mainData, $variantTexts, $variantIds, $product) {
 
                 $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options).'-'.($key + 1);
+                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
                 $attribute_value_combine = sortString($variantIds[$key]);
-                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.$attribute_value_combine);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
 
                 $variantData = [
                     'uuid' => $uuid,
@@ -163,9 +169,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->toArray();
 
         $createdVariants = $product->variants()->createMany($productVariantPayload);
-        $variantAttributePayload = $this->combineAttribute($createdVariants);
+        $variantAttributeValuePayload = $this->combineVariantAttributeValue($createdVariants);
 
-        DB::table('product_variant_attribute_value')->insert($variantAttributePayload);
+        DB::table('product_variant_attribute_value')->insert($variantAttributeValuePayload);
     }
 
     private function createProductAttribute($product, array $payload)
@@ -205,7 +211,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $enable ? $attrIds : $attributeIds;
     }
 
-    private function combineAttribute($productVariants)
+    private function combineVariantAttributeValue($productVariants)
     {
         if (! count($productVariants)) {
             return [];
@@ -259,29 +265,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $product->attributes()->createMany($attributePayload);
     }
 
-    public function destroy($id)
-    {
-        DB::beginTransaction();
-        try {
-            // Xoá mềm
-            $this->productRepository->delete($id);
-            DB::commit();
-
-            return [
-                'status' => 'success',
-                'messages' => 'Xóa thành công.',
-                'data' => null,
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return [
-                'status' => 'error',
-                'messages' => 'Xóa thất bại.',
-                'data' => null,
-            ];
-        }
-    }
+    public function destroy($id) {}
 
     // VARIANT
 
@@ -323,7 +307,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         // Transform keys by removing "variable_" prefix
         $payloadFormat = array_combine(
-            array_map(fn ($key) => str_replace('variable_', '', $key), array_keys($payload)),
+            array_map(fn($key) => str_replace('variable_', '', $key), array_keys($payload)),
             array_values($payload)
         );
 
@@ -355,11 +339,11 @@ class ProductService extends BaseService implements ProductServiceInterface
             }
 
             $remainingAttributes = ProductVariantAttributeValue::query()
-                ->whereHas('product_variant', fn ($query) => $query->where('product_id', $variant->product_id))
+                ->whereHas('product_variant', fn($query) => $query->where('product_id', $variant->product_id))
                 ->with('attribute_value:id,attribute_id')
                 ->get(['attribute_value_id'])
                 ->groupBy('attribute_value.attribute_id')
-                ->map(fn ($group) => [
+                ->map(fn($group) => [
                     'product_id' => $variant->product_id,
                     'attribute_id' => $group->first()->attribute_value->attribute_id,
                     'attribute_value_ids' => $group->pluck('attribute_value_id')->unique()->values()->toArray(),
@@ -377,5 +361,125 @@ class ProductService extends BaseService implements ProductServiceInterface
 
             return successResponse('Xóa thành công.');
         }, 'Xóa thất bại.');
+    }
+
+    public function createAttribute()
+    {
+        return $this->executeInTransaction(function () {});
+    }
+
+
+    public function updateAttribute(string $productId)
+    {
+        return $this->executeInTransaction(function () use ($productId) {
+            $payload = request()->input('attribute_attribute_value_ids');
+
+            if (empty($payload)) {
+                throw new \Exception('PAYLOAD_NOT_FOUND');
+            }
+
+            $product = $this->productRepository->findById($productId, ['id', 'name'], ['variants']);
+
+            if (empty($product)) {
+                throw new \Exception('PRODUCT_NOT_FOUND');
+            }
+
+            $attributeValueCombine = $this->generateCombinationAttributeIds($payload);
+            $payloadVariantByAttribute = $this->payloadVariantByAttribute($product, $attributeValueCombine);
+
+            if (empty($payloadVariantByAttribute)) {
+                throw new \Exception('VARIANT_NOT_FOUND');
+            }
+
+            $this->createProductAttributeFromUpdateAttribute($payload, $product);
+
+            $createdVariants = $product->variants()->createMany($payloadVariantByAttribute);
+            $variantAttributeValuePayload = $this->combineVariantAttributeValue($createdVariants);
+
+            DB::table('product_variant_attribute_value')->insert($variantAttributeValuePayload);
+            
+            return successResponse('Cập nhập thành công.');
+        }, 'Cập nhập thất bại.');
+    }
+
+    private function createProductAttributeFromUpdateAttribute($payload, $product)
+    {
+        collect($payload)->each(function ($attrValueIds, $attrId) use ($product) {
+            $product->attributes()->updateOrCreate(
+                ['attribute_id' => $attrId, 'enable_variation' => true],
+                ['attribute_value_ids' => $attrValueIds]
+            );
+        });
+    }
+
+    private function payloadVariantByAttribute($product, $attributeValueCombines)
+    {
+        $productVariants = $product->variants;
+        if (empty($productVariants)) {
+            return [];
+        }
+
+        $existingAttributeCombines = $productVariants->pluck('attribute_value_combine')->toArray();
+
+        $productVariantPayload = $attributeValueCombines->map(function ($attributeValueCombine, $key) use ($existingAttributeCombines, $product) {
+            if (!in_array($attributeValueCombine['attribute_value_combine'], $existingAttributeCombines)) {
+                $productName = $product->name;
+                $options = explode(' - ', $attributeValueCombine['attributeText'] ?? '');
+                $sku = generateSKU($productName, 3, $options) . '-' . ($key + 1);
+                $name = "{$productName} {$attributeValueCombine['attributeText']}";
+                $attribute_value_combine = $attributeValueCombine['attribute_value_combine'];
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
+
+                return [
+                    'uuid' => $uuid,
+                    'name' => $name,
+                    'attribute_value_combine' => $attribute_value_combine,
+                    'sku' => $sku,
+                    'price' => 0,
+                    'cost_price' => 0,
+                ];
+            }
+        })->filter()
+            ->values()
+            ->toArray();
+
+        return $productVariantPayload;
+    }
+
+    private function generateCombinationAttributeIds($input)
+    {
+        $input = collect($input)->sortKeys();
+
+        $keys = $input->keys()->toArray();
+        $values = $input->values()->toArray();
+
+        $result = $this->generateCombinationsRecursive($keys, $values);
+
+        return $result->map(function ($combination) {
+            ksort($combination);
+            $attributeValue = $this->attributeValueRepository->findByWhereIn($combination);
+            $data = [
+                'attributeText' => implode(' - ', $attributeValue->pluck('name')->toArray()),
+                'attribute_value_combine' => implode(',', array_values($combination)),
+            ];
+            return $data;
+        })->values();
+    }
+
+    private function generateCombinationsRecursive($keys, $values, $current = [], $index = 0)
+    {
+        if ($index >= count($keys)) {
+            return collect([$current]);
+        }
+
+        $result = collect();
+
+        foreach ($values[$index] as $value) {
+            $newCurrent = $current;
+            $newCurrent[$keys[$index]] = $value;
+            $result = $result->concat($this->generateCombinationsRecursive($keys, $values, $newCurrent, $index + 1));
+        }
+
+        return $result;
     }
 }
