@@ -31,7 +31,8 @@ class SystemConfigController extends Controller
 
     public function index()
     {
-        return $this->systemConfigService->all();
+        $response = $this->systemConfigService->all();
+        return successResponse('', $response);
     }
 
 
@@ -42,20 +43,22 @@ class SystemConfigController extends Controller
     }
 
 
-    public function show(string $id){
+    public function show(string $id)
+    {
         $systemConfig = new SystemConfigResource($this->systemConfigRepository->findById($id));
         return successResponse('', $systemConfig);
     }
 
 
-    public function update(UpdateSystemConfigRequest $request,$id)
+    public function update(UpdateSystemConfigRequest $request, $id)
     {
         $response = $this->systemConfigService->update($id);
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
 
-    public function destroy(string $id){
+    public function destroy(string $id)
+    {
         $response = $this->systemConfigService->destroy($id);
         return handleResponse($response);
     }
