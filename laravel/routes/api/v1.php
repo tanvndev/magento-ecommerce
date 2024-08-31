@@ -14,8 +14,9 @@ use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\{
     DashboardController,
-};
+}
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
+use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,6 +79,7 @@ Route::middleware('log.request.response')->group(function () {
         Route::get('products/variants', [ProductController::class, 'getProductVariants']);
         Route::put('products/variants/update', [ProductController::class, 'updateVariant']);
         Route::delete('products/variants/delete/{id}', [ProductController::class, 'deleteVariant']);
+        Route::put('products/attributes/update/{productId}', [ProductController::class, 'updateAttribute']);
         Route::apiResource('products', ProductController::class);
 
         // ATTRIBUTE ROUTE
@@ -94,5 +96,8 @@ Route::middleware('log.request.response')->group(function () {
 
         // SHIPPING METHOD ROUTE
         Route::apiResource('shipping-methods', ShippingMethodController::class);
+
+        // SYSTEM CONFIG ROUTE
+        Route::apiResource('system-configs', SystemConfigController::class);
     });
 });

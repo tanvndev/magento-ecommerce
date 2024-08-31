@@ -92,7 +92,7 @@
               <h2 class="text-l mb-2 uppercase">Chi tiết tệp đính kèm</h2>
               <a-image
                 class="w-full rounded-[6px] border object-cover"
-                :src="imageInfo.link"
+                :src="resizeImage(imageInfo.link)"
                 :alt="imageInfo.name"
               />
               <div class="mt-2 flex flex-col px-1 text-[12px] text-gray-700">

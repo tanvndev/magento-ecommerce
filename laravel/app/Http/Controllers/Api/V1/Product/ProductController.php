@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Product;
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductAttributeRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Requests\Product\UpdateProductVariantRequest;
 use App\Http\Resources\Product\ProductCollection;
@@ -66,6 +67,7 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, string $id)
     {
+        return response()->json(request()->all());
         $response = $this->productService->update($id);
 
         return handleResponse($response);
@@ -86,7 +88,6 @@ class ProductController extends Controller
         $paginator = $this->productService->getProductVariants();
         $data = new ProductVariantCollection($paginator);
 
-        // dd($data);
         return successResponse('', $data);
     }
 
@@ -100,6 +101,13 @@ class ProductController extends Controller
     public function deleteVariant(string $id)
     {
         $response = $this->productService->deleteVariant($id);
+
+        return handleResponse($response);
+    }
+
+    public function updateAttribute(UpdateProductAttributeRequest $request, string $productId)
+    {
+        $response = $this->productService->updateAttribute($productId);
 
         return handleResponse($response);
     }

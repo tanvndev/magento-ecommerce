@@ -27,7 +27,7 @@
           <div class="flex items-center">
             <span class="mr-2 font-bold">#{{ index + 1 }}</span>
             <div class="rounded border p-1">
-              <img class="h-[50px] w-[50px] object-cover" :src="item.image" />
+              <img class="h-[50px] w-[50px] object-cover" :src="resizeImage(item.image)" />
             </div>
             <span class="ml-2">{{ item.name }}</span>
           </div>
@@ -39,7 +39,7 @@
     </a-row>
 
     <!-- Modal -->
-    <a-modal v-model:open="state.open" width="1000px" title="Nhập tìm kiếm sản phẩm" @ok="handleOk">
+    <a-modal v-model:open="state.open" width="1000px" title="Nhập tìm kiếm sản phẩm" class="top-3">
       <a-input
         v-model:value="state.search"
         @change="handleSearch"
@@ -57,6 +57,7 @@
           :data-source="state.dataSource"
           :row-selection="rowSelection"
           :pagination="pagination"
+          :scroll="{ y: '65vh' }"
           :loading="loading"
           @change="handleTableChange"
         >
@@ -66,25 +67,37 @@
                 <div class="rounded border p-1">
                   <img
                     class="h-[50px] w-[50px] object-cover"
-                    :src="record.image"
+                    :src="resizeImage(record.image)"
                     :alt="record.name"
                   />
                 </div>
                 <span class="ml-2">{{ record.name }}</span>
               </div>
             </template>
+            <template v-if="column.dataIndex === 'price'">
+              {{ formatCurrency(record.price) }}
+            </template>
+            <template v-if="column.dataIndex === 'sale_price'">
+              {{ formatCurrency(record.sale_price) }}
+            </template>
           </template>
         </a-table>
       </div>
+
+      <template #footer>
+        <a-button @click="state.open = false">Hủy bỏ</a-button>
+        <a-button html-type="submit" @click="handleOk" type="primary">Lưu lại</a-button>
+      </template>
     </a-modal>
   </div>
 </template>
 <script setup>
 import { TooltipComponent } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
-import { debounce } from '@/utils/helpers';
+import { formatCurrency } from '@/utils/format';
+import { debounce, resizeImage } from '@/utils/helpers';
 import { useField } from 'vee-validate';
-import { reactive, watch } from 'vue';
+import { reactive, watch, onMounted } from 'vue';
 
 // STATE
 const state = reactive({
@@ -108,13 +121,13 @@ const columns = [
     title: 'Giá bán',
     dataIndex: 'price',
     key: 'price',
-    sorter: (a, b) => a.price.localeCompare(b.price)
+    width: '15%'
   },
   {
     title: 'Giá khuyến mãi',
     dataIndex: 'sale_price',
     key: 'sale_price',
-    sorter: (a, b) => a.sale_price.localeCompare(b.sale_price)
+    width: '15%'
   }
 ];
 
@@ -130,6 +143,13 @@ const {
   handleTableChange
 } = usePagination();
 
+const props = defineProps({
+  oldValue: {
+    type: Array,
+    default: () => []
+  }
+});
+
 // Fetchdata
 const fetchData = async () => {
   const payload = {
@@ -137,6 +157,7 @@ const fetchData = async () => {
     pageSize: pagination.pageSize,
     ...state.filterOptions
   };
+  console.log(payload);
   const response = await getAll(state.endpoint, payload);
   state.dataSource = response.data;
   pagination.current = response.current_page;
@@ -152,7 +173,7 @@ const debounceHandleSearch = debounce(() => {
     search: state.search
   };
   fetchData();
-}, 100);
+}, 400);
 
 const handleSearch = () => {
   debounceHandleSearch();
@@ -175,8 +196,35 @@ const handleOk = () => {
 };
 
 const handleDeleteRow = (id) => {
-  state.productVariants = state.productVariants.filter(variant => variant.id !== id);
-  state.productVariantIds = state.productVariantIds.filter(variantId => variantId !== id);
+  state.productVariants = state.productVariants.filter((variant) => variant.id != id);
+  state.productVariantIds = state.productVariantIds.filter((variantId) => variantId != id);
+  value.value = state.productVariantIds;
 };
 
+// Add this function to fetch product variants by IDs
+const fetchProductVariants = async (ids) => {
+  if (ids && ids.length > 0) {
+    const response = await getAll(state.endpoint, { ids: ids.join(',') });
+    state.productVariants = response;
+    state.productVariantIds = ids;
+  }
+};
+
+// Modify the watch function
+watch(
+  () => props.oldValue,
+  (newOldValue) => {
+    if (newOldValue && newOldValue.length > 0) {
+      fetchProductVariants(newOldValue);
+    }
+  },
+  { immediate: true }
+);
+
+// Add onMounted hook
+onMounted(() => {
+  if (props.oldValue && props.oldValue.length > 0) {
+    fetchProductVariants(props.oldValue);
+  }
+});
 </script>

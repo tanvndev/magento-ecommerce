@@ -1,3 +1,5 @@
+const LARAVEL_URL = import.meta.env.VITE_LARAVEL_URL;
+
 const PUBLISH = [
   {
     value: 0,
@@ -62,4 +64,12 @@ const STOCK_STATUS = [
     label: 'Hết hàng'
   }
 ];
-export { PUBLISH, PAGESIZE, PRODUCT_TYPE, TAXT_STATUS, WAREHOUSE_CONFIG, STOCK_STATUS };
+export {
+  PUBLISH,
+  PAGESIZE,
+  PRODUCT_TYPE,
+  TAXT_STATUS,
+  WAREHOUSE_CONFIG,
+  STOCK_STATUS,
+  LARAVEL_URL
+};

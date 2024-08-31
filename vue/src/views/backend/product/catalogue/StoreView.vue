@@ -89,13 +89,12 @@ import {
 import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatDataToTreeSelect, formatMessages } from '@/utils/format';
-import { useStore } from 'vuex';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
 import ProductListView from './partials/ProductListView.vue';
+import { message } from 'ant-design-vue';
 
-const store = useStore();
 const { getOne, create, update, getAll, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 
@@ -122,7 +121,7 @@ const onSubmit = handleSubmit(async (values) => {
     return (state.errors = formatMessages(messages.value));
   }
 
-  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  message.success(messages.value);
   state.errors = {};
   router.push({ name: 'product.catalogue.index' });
 });
