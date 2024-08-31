@@ -12,7 +12,7 @@ interface BaseRepositoryInterface
 
     public function findByWhereHas($condition = [], $column = ['*'], $relation = [], $alias = '', $all = false);
 
-    public function findByWhereIn(array $value, string $field = 'id');
+    public function findByWhereIn(array $value, string $field = 'id', array $column = ['*'], array $relation = []);
 
     public function create($payload = []);
 

@@ -271,24 +271,22 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function getProductVariants()
     {
-        if ($search = request('search')) {
-            $condition = ['search' => addslashes($search)];
-        }
-
-        if ($ids = request('ids')) {
-            $condition['where'] = ['id' => ['in', explode(',', $ids)]];
-        }
+        $condition = ['search' => addslashes(request('search'))];
 
         $select = ['id', 'name', 'product_id', 'price', 'cost_price', 'sale_price', 'image', 'attribute_value_combine'];
 
-        return $this->productVariantRepository->pagination(
-            $select,
-            $condition,
-            request('pageSize', 20),
-            ['id' => 'desc'],
-            [],
-            ['attribute_values']
-        );
+        $data = ($ids = request('ids'))
+            ? $this->productVariantRepository->findByWhereIn(explode(',', $ids), 'id', $select, ['attribute_values'])
+            :  $this->productVariantRepository->pagination(
+                $select,
+                $condition,
+                request('pageSize', 20),
+                ['id' => 'desc'],
+                [],
+                ['attribute_values']
+            );
+
+        return $data;
     }
 
     public function updateVariant()

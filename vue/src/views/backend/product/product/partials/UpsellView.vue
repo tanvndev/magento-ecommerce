@@ -27,7 +27,7 @@
           <div class="flex items-center">
             <span class="mr-2 font-bold">#{{ index + 1 }}</span>
             <div class="rounded border p-1">
-              <img class="h-[50px] w-[50px] object-cover" :src="item.image" />
+              <img class="h-[50px] w-[50px] object-cover" :src="resizeImage(item.image)" />
             </div>
             <span class="ml-2">{{ item.name }}</span>
           </div>
@@ -67,12 +67,18 @@
                 <div class="rounded border p-1">
                   <img
                     class="h-[50px] w-[50px] object-cover"
-                    :src="record.image"
+                    :src="resizeImage(record.image)"
                     :alt="record.name"
                   />
                 </div>
                 <span class="ml-2">{{ record.name }}</span>
               </div>
+            </template>
+            <template v-if="column.dataIndex === 'price'">
+              {{ formatCurrency(record.price) }}
+            </template>
+            <template v-if="column.dataIndex === 'sale_price'">
+              {{ formatCurrency(record.sale_price) }}
             </template>
           </template>
         </a-table>
@@ -88,7 +94,8 @@
 <script setup>
 import { TooltipComponent } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
-import { debounce } from '@/utils/helpers';
+import { formatCurrency } from '@/utils/format';
+import { debounce, resizeImage } from '@/utils/helpers';
 import { useField } from 'vee-validate';
 import { reactive, watch, onMounted } from 'vue';
 
@@ -114,13 +121,13 @@ const columns = [
     title: 'Giá bán',
     dataIndex: 'price',
     key: 'price',
-    sorter: (a, b) => a.price.localeCompare(b.price)
+    width: '15%'
   },
   {
     title: 'Giá khuyến mãi',
     dataIndex: 'sale_price',
     key: 'sale_price',
-    sorter: (a, b) => a.sale_price.localeCompare(b.sale_price)
+    width: '15%'
   }
 ];
 
@@ -189,15 +196,16 @@ const handleOk = () => {
 };
 
 const handleDeleteRow = (id) => {
-  state.productVariants = state.productVariants.filter((variant) => variant.id !== id);
-  state.productVariantIds = state.productVariantIds.filter((variantId) => variantId !== id);
+  state.productVariants = state.productVariants.filter((variant) => variant.id != id);
+  state.productVariantIds = state.productVariantIds.filter((variantId) => variantId != id);
+  value.value = state.productVariantIds;
 };
 
 // Add this function to fetch product variants by IDs
 const fetchProductVariants = async (ids) => {
   if (ids && ids.length > 0) {
     const response = await getAll(state.endpoint, { ids: ids.join(',') });
-    state.productVariants = response.data;
+    state.productVariants = response;
     state.productVariantIds = ids;
   }
 };
@@ -219,5 +227,4 @@ onMounted(() => {
     fetchProductVariants(props.oldValue);
   }
 });
-
 </script>
