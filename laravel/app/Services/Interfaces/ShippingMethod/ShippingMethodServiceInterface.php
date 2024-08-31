@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Interfaces\Brand;
+namespace App\Services\Interfaces\ShippingMethod;
 
-interface BrandServiceInterface
+interface ShippingMethodServiceInterface
 {
     public function paginate();
 
