@@ -37,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Attribute\AttributeServiceInterface' => 'App\Services\Attribute\AttributeService',
         // Brand
         'App\Services\Interfaces\Brand\BrandServiceInterface' => 'App\Services\Brand\BrandService',
+        // SystemConfig
+        'App\Services\Interfaces\SystemConfig\SystemConfigServiceInterface' => 'App\Services\SystemConfig\SystemConfigService',
     ];
 
     public function register(): void

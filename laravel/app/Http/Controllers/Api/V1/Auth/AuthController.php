@@ -31,6 +31,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
+        
         $credentials = $request->only('email', 'password');
 
         // Kiểm tra xác thực email
