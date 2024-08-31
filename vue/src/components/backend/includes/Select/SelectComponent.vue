@@ -18,6 +18,7 @@
       :class="props.className"
       :mode="props.mode"
       :status="errorMessage ? 'error' : ''"
+      :disabled="props.disabled"
       @change="handleChange"
     >
     </a-select>
@@ -81,6 +82,10 @@ const props = defineProps({
   oldValue: {
     type: [String, Array, Number],
     default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 

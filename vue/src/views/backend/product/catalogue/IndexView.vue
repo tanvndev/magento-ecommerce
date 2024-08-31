@@ -39,7 +39,11 @@
                 </RouterLink>
               </template>
               <template v-if="column.dataIndex === 'image'">
-                <img class="w-20 object-contain" :src="record.image" :alt="record.name" />
+                <img
+                  class="w-20 object-contain"
+                  :src="resizeImage(record.image)"
+                  :alt="record.name"
+                />
               </template>
 
               <template v-if="column.dataIndex === 'publish'">
@@ -69,6 +73,7 @@ import {
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
 import { RouterLink } from 'vue-router';
+import { resizeImage } from '@/utils/helpers';
 
 // STATE
 const state = reactive({

@@ -5,7 +5,7 @@
         class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]"
       >
         <img
-          src="http://127.0.0.1:8000/images/2024/07/registerpng_669bc58c82ee7.webp"
+          :src="`${LARAVEL_URL}/images/2024/07/registerpng_669bc58c82ee7.webp`"
           alt=""
           class="imig-fluid"
         />
@@ -66,8 +66,10 @@ import router from '@/router';
 import { formatMessages } from '@/utils/format';
 import { AuthService } from '@/services';
 import { useAntToast } from '@/utils/antToast';
+import { LARAVEL_URL } from '@/static/constants';
 
 // STATE
+const laravelUrl = import.meta.env.VITE_LARAVEL_URL;
 const state = reactive({
   errors: {},
   loading: false

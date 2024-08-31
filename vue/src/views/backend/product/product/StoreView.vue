@@ -122,7 +122,7 @@ const onSubmit = handleSubmit(async (values) => {
   state.error = {};
   message.success(messages.value);
   store.commit('productStore/removeAll');
-  //   router.push({ name: 'product.index' });
+  router.push({ name: 'product.index' });
 });
 
 watch(errors, (newErrors) => {
@@ -138,8 +138,6 @@ watchEffect(() => {
   }
 });
 onMounted(() => {
-  console.log(123);
-
   store.commit('productStore/removeAll');
 });
 </script>

@@ -5,7 +5,7 @@
         class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]"
       >
         <img
-          src="http://127.0.0.1:8000/images/2024/07/loginpng_669bb542d3a1d.webp"
+          :src="`${LARAVEL_URL}/images/2024/07/loginpng_669bb542d3a1d.webp`"
           alt=""
           class="imig-fluid"
         />
@@ -64,10 +64,11 @@ import { RouterLink } from 'vue-router';
 import router from '@/router';
 import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
+import { LARAVEL_URL } from '@/static/constants';
 
 const store = useStore();
-
 const errors = ref({});
+
 
 // VALIDATION
 const { handleSubmit } = useForm({

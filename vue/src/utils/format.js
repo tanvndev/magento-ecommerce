@@ -78,7 +78,7 @@ const formatTimestampToDate = (timestamp, dateFormat = 'YYYY-MM-DD') => {
   return formattedDate;
 };
 
-function formatBytesToKBMB(bytes) {
+const formatBytesToKBMB = (bytes) => {
   if (bytes < 1000) {
     return `${bytes} bytes`;
   } else if (bytes < 1000000) {
@@ -88,12 +88,32 @@ function formatBytesToKBMB(bytes) {
     const mb = (bytes / 1000000).toFixed(0);
     return `${mb} MB`;
   }
-}
+};
+
+const formatCurrency = (amount, currencyCode = 'vn') => {
+  amount = parseFloat(amount);
+
+  if (!amount) {
+    return '-'
+  }
+
+  switch (currencyCode.toUpperCase()) {
+    case 'VN':
+      return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    case 'CN':
+      return amount.toLocaleString('zh-CN', { style: 'currency', currency: 'CNY' });
+    case 'EN':
+      return amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    default:
+      return amount.toString();
+  }
+};
 
 export {
   formatMessages,
   formatDataToSelect,
   formatTimestampToDate,
   formatBytesToKBMB,
-  formatDataToTreeSelect
+  formatDataToTreeSelect,
+  formatCurrency
 };

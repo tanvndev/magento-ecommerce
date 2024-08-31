@@ -1,10 +1,7 @@
 <template>
   <div class="mx-auto mt-20 h-screen max-w-screen-xl items-center px-4 md:px-8">
     <div class="mx-auto max-w-lg space-y-3 text-center">
-      <img
-        class="mx-auto"
-        src="http://127.0.0.1:8000/images/2024/07/notfoundpng_669bcb5612264.webp"
-      />
+      <img class="mx-auto" :src="`${LARAVEL_URL}/images/2024/07/notfoundpng_669bcb5612264.webp`" />
       <p class="text-4xl font-semibold text-gray-800 sm:text-5xl">Page not found</p>
       <p class="text-gray-600">
         Xin lỗi, trang bạn đang tìm kiếm không thể tìm thấy hoặc đã bị xóa.
@@ -29,4 +26,5 @@
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import { LARAVEL_URL } from '@/static/constants';
 </script>

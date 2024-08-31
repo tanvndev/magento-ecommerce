@@ -30,8 +30,9 @@ class ProductResource extends JsonResource
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
             'canonical' => $this->canonical,
+            'upsell_ids' => $this->upsell_ids,
             'total_stock' => $this->variants->sum('stock'), // Sum the stock values
-            'total_stock_color' => getColorForStock($this->variants->sum('stock')),
+            'total_stock_color' => getColorForStock($this->variants->sum('stock') ?? null),
             'variants' => ProductVariantResource::collection($this->variants),
             'catalogues' => ProductCatalogueResource::collection($this->catalogues),
             'attribute_not_enabled' => ProductAttributeResource::collection($this->attributes->where('enable_variation', false)),

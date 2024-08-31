@@ -95,7 +95,7 @@
         </div>
         <h1>Thành công</h1>
         <p>Chúc mừng bạn đã xác nhận đăng ký thành công xin vui lòng đăng nhập tài khoản.</p>
-        <a class="button success" href="{{ env('FRONT_END_URL') }}">Quay về trang chủ</a>
+        <a class="button success" href="{{ env('VUE_APP_URL') }}">Quay về trang chủ</a>
     </div>
     <div class="card {{ $boolean == 0 ? '' : 'hidden' }}">
         <div
@@ -107,7 +107,7 @@
         </div>
         <h1 class="error-text">Thất bại</h1>
         <p>Đường dẫn xác nhận đã hết hạn hoặc không hợp lệ vui lòng thử lại.</p>
-        <a class="button error" href="{{ env('FRONT_END_URL') }}">Quay về trang chủ</a>
+        <a class="button error" href="{{ env('VUE_APP_URL') }}">Quay về trang chủ</a>
     </div>
 </body>
 

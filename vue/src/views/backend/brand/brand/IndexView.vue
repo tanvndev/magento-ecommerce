@@ -31,7 +31,11 @@
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.dataIndex === 'image'">
-                <img class="w-20 object-contain" :src="record.image" :alt="record.name" />
+                <img
+                  class="w-20 object-contain"
+                  :src="resizeImage(record.image)"
+                  :alt="record.name"
+                />
               </template>
 
               <template v-if="column.dataIndex === 'publish'">
@@ -70,6 +74,7 @@ import {
   ActionComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
+import { resizeImage } from '@/utils/helpers';
 
 // STATE
 const state = reactive({

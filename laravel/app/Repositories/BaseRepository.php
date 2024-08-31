@@ -62,9 +62,23 @@ class BaseRepository implements BaseRepositoryInterface
         return $all ? $query->get() : $query->first();
     }
 
-    public function findByWhereIn(array $value, string $field = 'id')
-    {
-        return $this->model->whereIn($field, $value)->get();
+    public function findByWhereIn(
+        array $values,
+        string $field = 'id',
+        array $columns = ['*'],
+        array $relations = []
+    ) {
+        $query = $this->model->newQuery()->whereIn($field, $values);
+
+        if (!empty($columns)) {
+            $query->select($columns);
+        }
+
+        if (!empty($relations)) {
+            $query->with($relations);
+        }
+
+        return $query->get();
     }
 
     public function findByWhereHas($condition = [], $column = ['*'], $relation = [], $alias = '', $all = false)
@@ -73,7 +87,7 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->select($column);
         $query->whereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $value) {
-                $query->where($alias.'.'.$key, $value);
+                $query->where($alias . '.' . $key, $value);
             }
         });
 
@@ -144,6 +158,16 @@ class BaseRepository implements BaseRepositoryInterface
         $model->save();
 
         return $model;
+    }
+
+    public function lockForUpdate(array $condition, array $payload)
+    {
+        return $this->model->newQuery()
+            ->customWhere($condition)
+            ->lockForUpdate()
+            ->firstOrFail()
+            ->fill($payload)
+            ->save();
     }
 
     // Truyen vao ham updateByWhereIn (Field name, array field name, va mang data can update)

@@ -92,12 +92,12 @@ const state = reactive({
 
 const exceedsVariationLimit = computed(() => {
   // Check if the number of enabled variations exceeds the limit
-  return Object.values(state.enableVariation).filter(Boolean).length > 3;
+  return Object.values(state.enableVariation).filter(Boolean).length >= 3;
 });
 
 // XU LY VA LUU THUOC TINH VAO STORE
 const saveAttributes = handleSubmit(async (values) => {
-  if (exceedsVariationLimit.value) {
+  if (Object.values(state.enableVariation).filter(Boolean).length > 3) {
     return message.error('Bạn chỉ được chọn tối đa 3 thuộc tính làm biến thể.');
   }
 
