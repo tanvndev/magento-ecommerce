@@ -36,7 +36,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Brand\BrandRepositoryInterface' => 'App\Repositories\Brand\BrandRepository',
         // SystemConfig
         'App\Repositories\Interfaces\SystemConfig\SystemConfigRepositoryInterface' => 'App\Repositories\SystemConfig\SystemConfigRepository',
-
+        // ShippingMethod
+        'App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface' => 'App\Repositories\ShippingMethod\ShippingMethodRepository',
     ];
 
     public function register(): void
