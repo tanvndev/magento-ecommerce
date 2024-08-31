@@ -8,6 +8,7 @@ use App\Http\Requests\SystemConfig\{
     StoreSystemConfigRequest,
     UpdateSystemConfigRequest
 };
+use App\Http\Resources\SystemConfig\SystemConfigCollection;
 use App\Http\Resources\SystemConfig\SystemConfigResource;
 use App\Services\Interfaces\SystemConfig\SystemConfigServiceInterface;
 use App\Repositories\Interfaces\SystemConfig\SystemConfigRepositoryInterface;
@@ -31,8 +32,10 @@ class SystemConfigController extends Controller
 
     public function index()
     {
-        $response = $this->systemConfigService->all();
-        return successResponse('', $response);
+        $systemConfig   = $this->systemConfigService->all();
+        $data           = new SystemConfigCollection($systemConfig);
+
+        return successResponse('', $data);
     }
 
 
