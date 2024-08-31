@@ -97,5 +97,8 @@ Route::middleware('log.request.response')->group(function () {
 
         // UPLOAD ROUTE
         Route::apiResource('uploads', UploadController::class);
+
+        // UPLOAD ROUTE
+        Route::apiResource('sliders', UploadController::class);
     });
 });

@@ -16,6 +16,7 @@ class UserCatalogueSeeder extends Seeder
         for ($i = 20; $i <= 30; $i++) {
             DB::table('user_catalogues')->insert([
                 'name' => 'User Catalogue ' . $i,
+                'code' => 'Code' . $i,
                 'description' => 'Description of User ' . $i,
                 // Các trường dữ liệu khác nếu có
                 'created_at' => now(),

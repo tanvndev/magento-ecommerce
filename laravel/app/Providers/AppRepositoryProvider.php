@@ -48,6 +48,9 @@ class AppRepositoryProvider extends ServiceProvider
         // Shelf
         'App\Repositories\Interfaces\Warehouse\ShelfRepositoryInterface' => 'App\Repositories\Warehouse\ShelfRepository',
 
+        // Slider
+        'App\Repositories\Interfaces\Warehouse\SliderRepositoryInterface' => 'App\Repositories\Warehouse\SliderRepository',
+
     ];
 
     public function register(): void

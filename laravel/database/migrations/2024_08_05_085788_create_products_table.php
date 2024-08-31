@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('is_taxable')->default(false)->comment('Cot tinh trang thue');
             $table->tinyInteger('tax_status')->nullable()->comment('Trang thai thue san pham');
             $table->unsignedBigInteger('input_tax_id')->nullable()->comment('Thue dau vao');
-            $table->unsignedBigInteger('ouput_tax_id')->nullable()->comment('Thue dau ra');
+            $table->unsignedBigInteger('output_tax_id')->nullable()->comment('Thue dau ra');
             $table->foreign('input_tax_id')->references('id')->on('taxes')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreign('output_tax_id')->references('id')->on('taxes')->cascadeOnDelete()->cascadeOnUpdate();
 

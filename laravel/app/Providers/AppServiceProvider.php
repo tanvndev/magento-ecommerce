@@ -44,6 +44,9 @@ class AppServiceProvider extends ServiceProvider
         // Tax
         'App\Services\Interfaces\Tax\TaxServiceInterface' => 'App\Services\Tax\TaxService',
 
+        // Slider
+        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
+
     ];
     public function register(): void
     {
@@ -69,7 +72,5 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 }
