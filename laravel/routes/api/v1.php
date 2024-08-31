@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\{
     DashboardController,
 };
+use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -90,5 +91,8 @@ Route::middleware('log.request.response')->group(function () {
 
         // UPLOAD ROUTE
         Route::apiResource('uploads', UploadController::class);
+
+        // SYSTEM CONFIG ROUTE
+        Route::apiResource('system-configs', SystemConfigController::class);
     });
 });
