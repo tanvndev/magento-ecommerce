@@ -69,9 +69,9 @@ class ShippingMethodController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id) 
     {
-        $response = $this->brandService->destroy($id);
+        $response = $this->shippingMethodService->destroy($id);
 
         return handleResponse($response);
     }

@@ -17,11 +17,12 @@ class ShippingMethodResource extends JsonResource
         return [
             'id' => $this->id,
             'key' => $this->id,
-            'canonical' => $this->canonical,
+            'code' => $this->code,
             'name' => $this->name,
             'description' => $this->description,
             'publish' => $this->publish,
             'image' => $this->image,
+            'base_cost' => $this->base_cost,
         ];
     }
 }

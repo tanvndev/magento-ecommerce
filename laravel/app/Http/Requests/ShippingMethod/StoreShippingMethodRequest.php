@@ -25,14 +25,20 @@ class StoreShippingMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name' => 'string|required',
+            'code' => 'string|required',
+            'base_cost' => 'required|numeric',
+            'image' => 'string',
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên thương hiệu',
+            'name' => 'Tên phương thức vận chuyển',
+            'code' => 'Mã phương thức vận chuyển',
+            'image' => 'Ảnh phương thức vận chuyển',
+            'base_cost' => 'Giá cố định của phương thức vận chuyển'
         ];
     }
 

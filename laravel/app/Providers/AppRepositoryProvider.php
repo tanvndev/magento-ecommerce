@@ -32,8 +32,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Attribute\AttributeValueRepositoryInterface' => 'App\Repositories\Attribute\AttributeValueRepository',
         // Attribute
         'App\Repositories\Interfaces\Attribute\AttributeRepositoryInterface' => 'App\Repositories\Attribute\AttributeRepository',
-        // Brand
-        'App\Repositories\Interfaces\Brand\BrandRepositoryInterface' => 'App\Repositories\Brand\BrandRepository',
+        // ShippingMethod
+        'App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface' => 'App\Repositories\ShippingMethod\ShippingMethodRepository',
 
     ];
 

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description', 255)->nullable();
             $table->decimal('base_cost', 10, 2);
             $table->tinyInteger('publish')->default(1)->comment('1: Active, 2: Inactive');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
