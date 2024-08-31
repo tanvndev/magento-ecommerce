@@ -42,8 +42,8 @@ class BrandService extends BaseService implements BrandServiceInterface
             $payload = $this->preparePayload();
             $this->brandRepository->create($payload);
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
 
     public function update($id)
@@ -53,8 +53,8 @@ class BrandService extends BaseService implements BrandServiceInterface
             $payload = $this->preparePayload();
             $this->brandRepository->update($id, $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     private function preparePayload(): array
@@ -70,7 +70,7 @@ class BrandService extends BaseService implements BrandServiceInterface
         return $this->executeInTransaction(function () use ($id) {
             $this->brandRepository->delete($id);
 
-            return successResponse('Xóa thành công.');
-        }, 'Xóa thất bại.');
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 }

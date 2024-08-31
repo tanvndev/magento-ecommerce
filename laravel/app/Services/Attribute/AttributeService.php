@@ -40,8 +40,8 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $payload = request()->except('_token', '_method');
             $this->attributeRepository->create($payload);
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
 
     public function update($id)
@@ -51,8 +51,8 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $payload = request()->except('_token', '_method');
             $this->attributeRepository->update($id, $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     public function destroy($id)
@@ -60,7 +60,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
         return $this->executeInTransaction(function () use ($id) {
             $this->attributeRepository->delete($id);
 
-            return successResponse('Xóa thành công.');
-        }, 'Xóa thất bại.');
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 }

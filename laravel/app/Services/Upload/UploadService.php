@@ -57,16 +57,16 @@ class UploadService extends BaseService implements UploadServiceInterface
 
             // Xây dựng dữ liệu cho từng ảnh và thêm vào mảng images
             $imageInfo = [
-                'id' => 'ID_'.$lastModified + $size,
+                'id' => 'ID_' . $lastModified + $size,
                 'url' => asset($storedPath),
                 'link' => asset($newPath),
                 'name' => $filename,
                 'size' => $size,
                 'lastModified' => $lastModified,
                 'sizes' => [
-                    'thumbnail' => asset($newPath.$thumbnail),
-                    'medium' => asset($newPath.$medium),
-                    'large' => asset($newPath.$large),
+                    'thumbnail' => asset($newPath . $thumbnail),
+                    'medium' => asset($newPath . $medium),
+                    'large' => asset($newPath . $large),
                     'original' => asset($newPath),
                 ],
             ];
@@ -106,7 +106,7 @@ class UploadService extends BaseService implements UploadServiceInterface
                 'data' => $data['data'],
             ];
         } catch (\Exception $e) {
-            return errorResponse('Tải lên tệp thất bại.');
+            return errorResponse(__('messages.upload.create.error'));
         }
     }
 
@@ -123,9 +123,9 @@ class UploadService extends BaseService implements UploadServiceInterface
             }
             $data = $this->paginate();
 
-            return successResponse('Tệp đã được xóa thành công.', $data['data']);
+            return successResponse(__('messages.upload.delete.sucess'), $data['data']);
         } catch (\Exception $e) {
-            return errorResponse('Không tìm thấy ảnh cần xóa.');
+            return errorResponse(__('messages.upload.delete.error'));
         }
     }
 }

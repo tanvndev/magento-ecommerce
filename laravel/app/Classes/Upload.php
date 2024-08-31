@@ -67,7 +67,7 @@ class Upload
 
                 return [
                     'status' => 'success',
-                    'message' => 'Tải lên ảnh thành công.',
+                    'message' => __('messages.upload.create.success'),
                 ];
             } else {
                 return [

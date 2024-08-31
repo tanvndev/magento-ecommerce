@@ -66,8 +66,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             $this->createProductAttribute($product, $payload);
             $this->createProductVariant($product, $payload);
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
 
     public function syncCatalogue($product, array $catalogueIds): void
@@ -240,8 +240,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             $this->syncCatalogue($product, $payload['product_catalogue_id']);
             $this->updateProductAttribute($product, $payload['attribute_value_ids'] ?? []);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     private function updateProductAttribute($product, array $attributeValueIds)
@@ -297,8 +297,8 @@ class ProductService extends BaseService implements ProductServiceInterface
                 'id' => ['=', $payload['id']]
             ], $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     private function preparePayloadVariant(): array
@@ -359,8 +359,8 @@ class ProductService extends BaseService implements ProductServiceInterface
                 ProductAttribute::create($attribute);
             });
 
-            return successResponse('Xóa thành công.');
-        }, 'Xóa thất bại.');
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 
     public function createAttribute()
@@ -404,8 +404,8 @@ class ProductService extends BaseService implements ProductServiceInterface
             $variantAttributeValuePayload = $this->combineVariantAttributeValue($createdVariants);
 
             DB::table('product_variant_attribute_value')->insert($variantAttributeValuePayload);
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     private function createProductAttributeFromUpdateAttribute($payload, $product)

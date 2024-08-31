@@ -102,8 +102,8 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
                 $this->permissionRepository->create($payload);
             }
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
 
     public function update($id)
@@ -113,8 +113,8 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
             $payload = request()->except('_token', '_method');
             $this->permissionRepository->update($id, $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     public function destroy($id)
@@ -122,7 +122,7 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
         return $this->executeInTransaction(function () use ($id) {
             $this->permissionRepository->delete($id);
 
-            return successResponse('Xóa thành công.');
-        }, 'Xóa thất bại.');
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 }

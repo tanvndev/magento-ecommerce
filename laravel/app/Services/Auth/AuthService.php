@@ -34,7 +34,7 @@ class AuthService extends BaseService implements AuthServiceInterface
 
             if (! empty($user)) {
                 if ($user->hasVerifiedEmail()) {
-                    return errorResponse('Email đã xác nhận đăng ký vui lòng đăng nhập.');
+                    return errorResponse(__('messages.auth.register.email_verified'));
                 }
                 $user->delete();
             }
@@ -51,8 +51,8 @@ class AuthService extends BaseService implements AuthServiceInterface
             // Send email verification notification
             event(new AuthRegisteredEvent($user));
 
-            return successResponse('Người dùng đã đăng ký thành công. Vui lòng kiểm tra email của bạn để xác nhận đăng ký.');
-        }, 'Người dùng đã đăng ký thành công vui lòng kiểm tra lại.');
+            return successResponse(__('messages.auth.register.success'));
+        }, __('messages.auth.register.error'));
     }
 
     public function resetPassword()
@@ -71,7 +71,7 @@ class AuthService extends BaseService implements AuthServiceInterface
             // Send email verification notification
             event(new AuthForgotEvent($user));
 
-            return successResponse('Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.');
-        }, 'Đặt lại mật khẩu thất bại.');
+            return successResponse(__('messages.auth.reset_password.success'));
+        }, __('messages.auth.reset_password.error'));
     }
 }
