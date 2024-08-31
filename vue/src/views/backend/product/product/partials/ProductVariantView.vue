@@ -17,12 +17,12 @@
                   :attribute-enable-ids="props.attributeEnableIds"
                   :attribute-enable-old="props.attributeEnableOld"
                   :attribute-data="props.attributeData"
+                  @on-reload="() => emits('onReload')"
                   v-if="productTypeOld == 'variable'"
                 />
                 <ProductVariantAttributeSimpleView
-                  :attribute-enable-ids="props.attributeEnableIds"
-                  :attribute-enable-old="props.attributeEnableOld"
                   :attribute-data="props.attributeData"
+                  @on-reload="() => emits('onReload')"
                   v-if="productTypeOld == 'simple'"
                 />
               </div>
@@ -41,7 +41,11 @@
                   <i :class="variant.lock_icon"></i>
                 </a-tag>
                 <div class="rounded border">
-                  <img class="w-[50px] object-cover" :src="variant.image" alt="Chưa có ảnh" />
+                  <img
+                    class="w-[50px] object-cover"
+                    :src="resizeImage(variant.image)"
+                    alt="Chưa có ảnh"
+                  />
                 </div>
               </div>
               <div>
@@ -216,7 +220,7 @@ import { validationVariantSchema } from '../validationSchema';
 import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
 import _ from 'lodash';
-import { handleDateChangeToAnt } from '@/utils/helpers';
+import { handleDateChangeToAnt, resizeImage } from '@/utils/helpers';
 import { message } from 'ant-design-vue';
 import { Empty } from 'ant-design-vue';
 import ProductVariantAttributeVariableView from './ProductVariantAttributeVariableView.vue';

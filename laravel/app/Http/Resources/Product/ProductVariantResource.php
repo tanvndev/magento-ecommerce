@@ -38,7 +38,7 @@ class ProductVariantResource extends JsonResource
                 $this->sale_price_end_at,
             ],
             'stock' => $this->stock ?? 0,
-            'stock_color' => getColorForStock($this->stock),
+            'stock_color' => getColorForStock($this->stock ?? null),
             'low_stock_amount' => $this->low_stock_amount,
             'attributes' => AttributeValueResource::collection($this->attribute_values),
             'attribute_values' => $this->attribute_values->pluck('name')->implode(' - ') ?? 'Default',

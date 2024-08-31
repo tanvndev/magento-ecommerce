@@ -109,7 +109,7 @@ const props = defineProps({
 
 const debouncedHandleChange = debounce((value) => {
   emits('onChange', value);
-}, 500);
+}, 300);
 
 const handleChange = (value) => {
   debouncedHandleChange(value);
@@ -135,6 +135,7 @@ watch(
   (newOldValue) => {
     if (newOldValue && newOldValue !== undefined && newOldValue !== value.value) {
       value.value = newOldValue;
+      handleChange(newOldValue);
     }
   },
   { immediate: true }

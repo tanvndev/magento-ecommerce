@@ -30,6 +30,8 @@ interface BaseRepositoryInterface
 
     public function updateByWhere($condition = [], $payload = []);
 
+    public function lockForUpdate(array $condition, array $payload);
+
     public function delete($modelId);
 
     public function updateOrCreate($payload = [], $conditions = []);

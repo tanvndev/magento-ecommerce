@@ -32,7 +32,7 @@ class UpdateProductRequest extends FormRequest
         ];
 
         $product = Product::find($this->product);
-        if ($product->product_type === 'variable') {
+        if ($product && $product->product_type === 'variable') {
             $rules['product_type'] = 'required|in:variable';
         }
 

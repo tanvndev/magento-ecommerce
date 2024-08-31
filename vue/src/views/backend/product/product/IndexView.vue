@@ -65,7 +65,7 @@
                   <template v-if="column.key === 'name'">
                     <div class="flex items-center">
                       <div class="rounded border p-1">
-                        <img class="h-[50px] w-[50px] object-cover" :src="record.image" />
+                        <img class="h-[50px] w-[50px] object-cover" :src="resizeImage(record.image)" />
                       </div>
                       <RouterLink
                         :to="{
@@ -121,6 +121,7 @@ import {
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
 import { RouterLink } from 'vue-router';
+import { resizeImage } from '@/utils/helpers';
 
 // STATE
 const state = reactive({

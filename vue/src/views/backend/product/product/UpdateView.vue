@@ -78,6 +78,14 @@
               />
             </a-col>
 
+            <!-- Upsell -->
+
+            <a-col span="24" class="mt-3">
+              <a-card title="Sản phẩm được liên kết">
+                <UpsellView :old-value="state.upsellIds" />
+              </a-card>
+            </a-col>
+
             <a-col span="9">
               <!-- ProductAttribute -->
               <ProductAttributeView
@@ -128,6 +136,7 @@ import { PRODUCT_TYPE } from '@/static/constants';
 import ProductVariantView from './partials/ProductVariantView.vue';
 import { message } from 'ant-design-vue';
 import ProductAttributeView from './partials/ProductAttributeView.vue';
+import UpsellView from './partials/UpsellView.vue';
 
 // STATE
 const state = reactive({
@@ -142,7 +151,8 @@ const state = reactive({
   attributeNotEnableIds: [],
   attributeEnableOld: [],
   attributeEnableIds: [],
-  productType: ''
+  productType: '',
+  upsellIds: []
 });
 
 const store = useStore();
@@ -194,11 +204,16 @@ const fetchOne = async () => {
     product_type: productType,
     brand_id: data.value?.brand_id,
     product_catalogue_id: data.value?.product_catalogue_ids,
-    attribute_id: data.value?.attribute_not_enabled_ids
+    attribute_id: data.value?.attribute_not_enabled_ids,
+    upsell_ids: data.value?.upsell_ids
   });
 
   if (!_.isEmpty(data.value?.variants)) {
     state.variants = data.value?.variants;
+  }
+
+  if (!_.isEmpty(data.value?.upsell_ids)) {
+    state.upsellIds = data.value?.upsell_ids;
   }
 
   if (!_.isEmpty(productType)) {

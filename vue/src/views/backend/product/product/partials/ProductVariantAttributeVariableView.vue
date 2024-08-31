@@ -35,14 +35,17 @@
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { SelectComponent } from '@/components/backend';
 import { formatDataToSelect } from '@/utils/format';
 import { useForm } from 'vee-validate';
-import * as yup from 'yup';
+import router from '@/router';
 import { useCRUD } from '@/composables';
+import { message } from 'ant-design-vue';
 
 const { update, messages } = useCRUD();
+const id = computed(() => router.currentRoute.value.params.id || null);
+const emits = defineEmits(['onReload']);
 const props = defineProps({
   attributeData: {
     type: Array,
@@ -65,19 +68,22 @@ const state = reactive({
   endpoint: 'products/attributes/update'
 });
 
-const { handleSubmit } = useForm({
-  //   validationSchema: yup.object({
-  //     name: yup.string().required('Tên nhóm sản phẩm không được để trống.')
-  //   })
-});
+const { handleSubmit } = useForm();
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log(values);
-
-  const response = await update(state.endpoint, 5, values);
-  if (!response) {
-    return;
+  if (!id.value) {
+    return message.warn('Có lỗi vui lòng tải lại trang.');
   }
+
+  const response = await update(state.endpoint, id.value, values);
+
+  if (!response) {
+    return message.error(messages.value);
+  }
+
+  state.open = false;
+  emits('onReload');
+  message.success(messages.value);
 });
 
 const handleSelectedAttribute = (attributeIds) => {

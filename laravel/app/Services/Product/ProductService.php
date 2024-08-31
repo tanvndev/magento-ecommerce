@@ -40,7 +40,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'publish' => request('publish'),
         ];
 
-        $select = ['id', 'name', 'brand_id', 'publish', 'product_type'];
+        $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'upsell_ids'];
         $orderBy = ['id' => 'desc'];
         $relations = ['variants', 'catalogues', 'brand'];
 
@@ -271,31 +271,33 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function getProductVariants()
     {
-        $condition = [
-            'search' => addslashes(request('search')),
-        ];
+        if ($search = request('search')) {
+            $condition = ['search' => addslashes($search)];
+        }
+
+        if ($ids = request('ids')) {
+            $condition['where'] = ['id' => ['in', explode(',', $ids)]];
+        }
 
         $select = ['id', 'name', 'product_id', 'price', 'cost_price', 'sale_price', 'image', 'attribute_value_combine'];
-        $orderBy = ['id' => 'desc'];
-        $relations = ['attribute_values'];
 
-        $data = $this->productVariantRepository->pagination(
+        return $this->productVariantRepository->pagination(
             $select,
             $condition,
             request('pageSize', 20),
-            $orderBy,
+            ['id' => 'desc'],
             [],
-            $relations
+            ['attribute_values']
         );
-
-        return $data;
     }
 
     public function updateVariant()
     {
         return $this->executeInTransaction(function () {
             $payload = $this->preparePayloadVariant();
-            $this->productVariantRepository->update($payload['id'], $payload);
+            $this->productVariantRepository->lockForUpdate([
+                'id' => ['=', $payload['id']]
+            ], $payload);
 
             return successResponse('Cập nhập thành công.');
         }, 'Cập nhập thất bại.');
@@ -378,17 +380,24 @@ class ProductService extends BaseService implements ProductServiceInterface
                 throw new \Exception('PAYLOAD_NOT_FOUND');
             }
 
-            $product = $this->productRepository->findById($productId, ['id', 'name'], ['variants']);
+            $product = $this->productRepository->findById($productId, ['id', 'name', 'product_type'], ['variants']);
 
             if (empty($product)) {
                 throw new \Exception('PRODUCT_NOT_FOUND');
+            }
+
+            if ($product->product_type == 'simple') {
+                $product->variants()->delete();
+                $product->product_type = 'variable';
+                $product->publish = 2;
+                $product->save();
             }
 
             $attributeValueCombine = $this->generateCombinationAttributeIds($payload);
             $payloadVariantByAttribute = $this->payloadVariantByAttribute($product, $attributeValueCombine);
 
             if (empty($payloadVariantByAttribute)) {
-                throw new \Exception('VARIANT_NOT_FOUND');
+                return errorResponse('Sản phẩm đã đầy đủ đủ phiên bản.');
             }
 
             $this->createProductAttributeFromUpdateAttribute($payload, $product);
@@ -397,7 +406,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             $variantAttributeValuePayload = $this->combineVariantAttributeValue($createdVariants);
 
             DB::table('product_variant_attribute_value')->insert($variantAttributeValuePayload);
-            
             return successResponse('Cập nhập thành công.');
         }, 'Cập nhập thất bại.');
     }
@@ -407,7 +415,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         collect($payload)->each(function ($attrValueIds, $attrId) use ($product) {
             $product->attributes()->updateOrCreate(
                 ['attribute_id' => $attrId, 'enable_variation' => true],
-                ['attribute_value_ids' => $attrValueIds]
+                ['attribute_value_ids' => array_map('intval', $attrValueIds)]
             );
         });
     }

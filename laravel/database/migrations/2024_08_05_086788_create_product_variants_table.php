@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('cost_price', 15, 2)->comment('Gia nhap');
             $table->unsignedInteger('stock')->default(0);
             $table->unsignedSmallInteger('low_stock_amount')->default(0);
-            $table->string('image', 255)->nullable();
+            $table->string('image', 255)->default('http://127.0.0.1:8000/images/2024/08/no-imagejpeg_66d29cc6320bf.webp');
             $table->json('album')->nullable();
             $table->float('weight')->nullable()->comment('g');
             $table->float('length')->nullable()->comment('cm');

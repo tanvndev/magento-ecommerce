@@ -73,7 +73,7 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->select($column);
         $query->whereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $value) {
-                $query->where($alias.'.'.$key, $value);
+                $query->where($alias . '.' . $key, $value);
             }
         });
 
@@ -144,6 +144,16 @@ class BaseRepository implements BaseRepositoryInterface
         $model->save();
 
         return $model;
+    }
+
+    public function lockForUpdate(array $condition, array $payload)
+    {
+        return $this->model->newQuery()
+            ->customWhere($condition)
+            ->lockForUpdate()
+            ->firstOrFail()
+            ->fill($payload)
+            ->save();
     }
 
     // Truyen vao ham updateByWhereIn (Field name, array field name, va mang data can update)

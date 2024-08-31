@@ -10,10 +10,10 @@ trait QueryScopes
 
             if (! empty($fieldSearch)) {
                 foreach ($fieldSearch as $field) {
-                    $query->orWhere($field, 'LIKE', '%'.$keyword.'%');
+                    $query->orWhere($field, 'LIKE', '%' . $keyword . '%');
                 }
             } else {
-                $query->where('name', 'LIKE', '%'.$keyword.'%');
+                $query->where('name', 'LIKE', '%' . $keyword . '%');
             }
         }
 
@@ -24,7 +24,7 @@ trait QueryScopes
             // ];
             $field = $whereHas['field'];
             $query->orWhereHas($whereHas['relation'], function ($q) use ($field, $keyword) {
-                $q->where($field, 'LIKE', '%'.$keyword.'%');
+                $q->where($field, 'LIKE', '%' . $keyword . '%');
             });
         }
 
@@ -40,13 +40,25 @@ trait QueryScopes
         return $query;
     }
 
-    public function scopeCustomWhere($query, $where = [])
+    public function scopeCustomWhere($query, $conditions = [])
     {
-        // 'column' => ['<>', 100]
-        if (! empty($where) && is_array($where)) {
-            foreach ($where as $column => $value) {
-                // dd($column, ...$value);
-                $query->where($column, ...$value);
+        // where: ['status' => 'active']
+        // where với toán tử: ['price' => ['>', 100]]
+        // whereIn: ['category_id' => ['in', [1, 2, 3]]]
+
+        if (!empty($where) && is_array($where)) {
+            foreach ($conditions as $column => $value) {
+                if (is_array($value)) {
+                    if ($value[0] === 'in') {
+                        $query->whereIn($column, $value[1]);
+                    } else {
+                        $operator = $value[0];
+                        $val = isset($value[1]) ? $value[1] : null;
+                        $query->where($column, $operator, $val);
+                    }
+                } else {
+                    $query->where($column, $value);
+                }
             }
         }
 
