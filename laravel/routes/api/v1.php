@@ -12,9 +12,7 @@ use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\Upload\{UploadController};
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V1\{
-    DashboardController,
-}
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use Illuminate\Support\Facades\Route;

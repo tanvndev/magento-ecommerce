@@ -42,8 +42,8 @@ class ShippingMethodService extends BaseService implements ShippingMethodService
             $payload = $this->preparePayload();
             $this->shippingMethodRepository->create($payload);
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
 
     public function update($id)
@@ -53,14 +53,13 @@ class ShippingMethodService extends BaseService implements ShippingMethodService
             $payload = $this->preparePayload();
             $this->shippingMethodRepository->update($id, $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     private function preparePayload(): array
     {
         $payload = request()->except('_token', '_method');
-        $payload = $this->createSEO($payload);
 
         return $payload;
     }
@@ -70,7 +69,7 @@ class ShippingMethodService extends BaseService implements ShippingMethodService
         return $this->executeInTransaction(function () use ($id) {
             $this->shippingMethodRepository->delete($id);
 
-            return successResponse('Xóa thành công.');
-        }, 'Xóa thất bại.');
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 }
