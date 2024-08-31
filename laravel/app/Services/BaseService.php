@@ -36,35 +36,35 @@ class BaseService implements BaseServiceInterface
     public function updateStatus()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
+            $repositoryName = lcfirst(request('modelName')) . 'Repository';
 
             $payload[request('field')] = request('value');
             $this->{$repositoryName}->update(request('modelId'), $payload);
 
-            return successResponse('Cập nhập trạng thái thành công.');
-        }, 'Cập nhập trạng thái thất bại.');
+            return successResponse(__('messages.publish.success'));
+        }, __('messages.publish.error'));
     }
 
     public function updateStatusMultiple()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
+            $repositoryName = lcfirst(request('modelName')) . 'Repository';
 
             $payload[request('field')] = request('value');
             $this->{$repositoryName}->updateByWhereIn('id', request('modelIds'), $payload);
 
-            return successResponse('Cập nhập trạng thái thành công.');
-        }, 'Cập nhập trạng thái thất bại.');
+            return successResponse(__('messages.publish.success'));
+        }, __('messages.publish.error'));
     }
 
     public function deleteMultiple()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
+            $repositoryName = lcfirst(request('modelName')) . 'Repository';
             $this->{$repositoryName}->deleteByWhereIn('id', request('modelIds'));
 
-            return successResponse('Xoá thành công.');
-        }, 'Xóa thất bại.');
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 
     protected function executeInTransaction($callback, string $messageError = '')

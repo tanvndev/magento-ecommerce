@@ -29,8 +29,8 @@ class SystemConfigService extends BaseService implements SystemConfigServiceInte
             $payload = $this->preparePayload();
             $this->systemConfigRepository->create($payload);
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo thất bại!');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
 
     public function update($id)
@@ -41,8 +41,8 @@ class SystemConfigService extends BaseService implements SystemConfigServiceInte
             $payload = $this->preparePayload();
             $this->systemConfigRepository->update($id, $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhật thất bại!');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     public function destroy($id)
@@ -51,8 +51,8 @@ class SystemConfigService extends BaseService implements SystemConfigServiceInte
         return $this->executeInTransaction(function () use ($id) {
 
             $this->systemConfigRepository->delete($id);
-            return successResponse('Xóa thành công!');
-        }, 'Xóa thất bại!');
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 
     private function preparePayload(): array

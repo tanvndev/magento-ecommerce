@@ -92,8 +92,8 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             $payload = $this->preparePayload();
             $this->productCatalogueRepository->create($payload);
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
 
     public function update($id)
@@ -103,8 +103,8 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             $payload = $this->preparePayload();
             $this->productCatalogueRepository->update($id, $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     private function preparePayload(): array
@@ -121,7 +121,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         return $this->executeInTransaction(function () use ($id) {
             $this->productCatalogueRepository->delete($id);
 
-            return successResponse('Xóa thành công.');
-        }, 'Xóa thất bại.');
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 }
