@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\Upload\{UploadController};
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use Illuminate\Support\Facades\Route;
@@ -94,6 +95,10 @@ Route::middleware('log.request.response')->group(function () {
 
         // SHIPPING METHOD ROUTE
         Route::apiResource('shipping-methods', ShippingMethodController::class);
+
+        // PAYMENT METHOD ROUTE
+        Route::apiResource('payment-methods', PaymentMethodController::class);
+
 
         // SYSTEM CONFIG ROUTE
         Route::apiResource('system-configs', SystemConfigController::class);
