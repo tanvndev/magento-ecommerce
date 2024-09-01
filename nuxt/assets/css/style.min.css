@@ -3159,7 +3159,7 @@ blockquote {
 /* -------------------------------------------
     Swiper Container
 ---------------------------------------------- */
-.swiper {
+/* .swiper {
   position: relative;
 }
 .swiper > .swiper-container {
@@ -3556,7 +3556,7 @@ blockquote {
 .nav-xxl-show > .swiper-button-next {
     display: block;
   }
-}
+} */
 /* -------------------------------------------
     No UiSlider
 ---------------------------------------------- */
@@ -8281,7 +8281,7 @@ textarea {
 .iconbox-boxed-section .row > * {
   padding: 0 3rem;
 }
-.iconbox-boxed-section .shadow-swiper {
+/* .iconbox-boxed-section .shadow-swiper {
   overflow-y: auto;
   padding: 4rem;
   margin: -4rem;
@@ -8292,7 +8292,7 @@ textarea {
     padding: 4rem 2rem;
     margin: -4rem -2rem;
   }
-}
+} */
 @media (min-width: 768px) {
   .icon-box-side.icon-box-money {
     margin-top: 0.2rem;
@@ -10635,7 +10635,7 @@ body .product-popup {
   white-space: normal;
 }
 
-.product-thumbs-wrap,
+/* .product-thumbs-wrap,
 .product-single-swiper {
   -ms-flex-preferred-size: 100%;
       flex-basis: 100%;
@@ -10650,7 +10650,7 @@ body .product-popup {
   background-color: transparent;
   border: 0;
   font-size: 2rem;
-}
+} */
 
 .product-image {
   position: relative;
@@ -10667,7 +10667,7 @@ body .product-popup {
   width: 100%;
 }
 
-.product-thumbs-wrap button,
+/* .product-thumbs-wrap button,
 .product-thumbs-wrap .swiper-button-prev,
 .product-thumbs-wrap .swiper-button-next {
   bottom: 0;
@@ -10710,7 +10710,7 @@ body .product-popup {
   opacity: 0.9;
   -webkit-transform: none;
           transform: none;
-}
+} */
 
 .product-thumbs-wrap button,
 .product-thumb::before {
@@ -10727,7 +10727,7 @@ body .product-popup {
   display: flex;
 }
 
-.product-gallery:not(.product-gallery-vertical) .swiper-slide img {
+/* .product-gallery:not(.product-gallery-vertical) .swiper-slide img {
   width: 100%;
 }
 .product-gallery:not(.product-gallery-vertical) .product-thumbs:not(.swiper-wrapper) {
@@ -10739,7 +10739,7 @@ body .product-popup {
 }
 .product-gallery:not(.product-gallery-vertical) .product-thumbs:not(.swiper-wrapper) .product-thumb::before {
   content: none;
-}
+} */
 
 .product-thumb {
   position: relative;
