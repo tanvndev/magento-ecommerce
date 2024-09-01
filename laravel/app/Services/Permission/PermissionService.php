@@ -1,22 +1,25 @@
 <?php
-// Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
-namespace App\Services\Permission;
 
+// Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
+namespace App\Services\Permission;
 
 use App\Repositories\Interfaces\Permission\PermissionRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Permission\PermissionServiceInterface;
-use Illuminate\Support\Facades\DB;
 
 class PermissionService extends BaseService implements PermissionServiceInterface
 {
     protected $permissionRepository;
+
     protected $userRepository;
+
     public function __construct(
         PermissionRepositoryInterface $permissionRepository,
     ) {
         $this->permissionRepository = $permissionRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -99,11 +102,9 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
                 $this->permissionRepository->create($payload);
             }
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
-
-
 
     public function update($id)
     {
@@ -112,15 +113,16 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
             $payload = request()->except('_token', '_method');
             $this->permissionRepository->update($id, $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->permissionRepository->delete($id);
-            return successResponse('Xóa thành công.');
-        }, 'Xóa thất bại.');
+
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
     }
 }

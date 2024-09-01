@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Product;
 
 use App\Enums\ResponseEnum;
+use App\Models\Product;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -24,29 +25,34 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'email' => 'required|string|email|unique:users,email,' . $this->user,
-            'phone' => 'required|unique:users,phone,' . $this->user,
-            'fullname' => 'required|string',
-            'user_catalogue_id' => 'required|integer|gt:0',
-
+        $rules = [
+            'name' => 'required|string',
+            'product_type' => 'required',
+            'product_catalogue_id' => 'required',
         ];
+
+        $product = Product::find($this->product);
+        if ($product && $product->product_type === 'variable') {
+            $rules['product_type'] = 'required|in:variable';
+        }
+
+        return $rules;
     }
 
     public function attributes()
     {
         return [
-            'email' => 'Email',
-            'fullname' => 'Họ tên thành viên',
-            'phone' => 'Số điện thoại',
-            'user_catalogue_id' => 'Nhóm thành viên',
-
+            'name' => 'Tiêu đề sản phẩm',
+            'product_type' => 'Loại sản phẩm',
+            'product_catalogue_id' => 'Nhóm sản phẩm',
         ];
     }
 
     public function messages()
     {
-        return __('request.messages');
+        return __('request.messages') + [
+            'product_type.in' => 'Bạn không thể chuyển loại sản phẩm vui lòng thử lại.',
+        ];
     }
 
     public function failedValidation(Validator $validator)

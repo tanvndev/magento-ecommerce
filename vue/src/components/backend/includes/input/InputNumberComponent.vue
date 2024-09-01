@@ -2,7 +2,7 @@
   <label v-if="props.label" :for="props.name" :class="props.labelClass"
     >{{ props.label }}
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
-    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" color="#108ee9" />
+    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" />
   </label>
   <div>
     <a-input-number
@@ -11,11 +11,12 @@
       :class="className"
       :id="props.name"
       :placeholder="props.placeholder"
-      :status="errorMessage ? 'error' : ''"
+      :status="errorMessage || props.activeError ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
       :formatter="formatNumber"
       :parser="parseNumber"
+      @change="handleChange"
     />
 
     <a-input-number
@@ -24,24 +25,31 @@
       :class="className"
       :id="props.name"
       :placeholder="props.placeholder"
-      :status="errorMessage ? 'error' : ''"
+      :status="errorMessage || props.activeError ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
       :min="props.min"
       :max="props.max"
       :formatter="(value) => `${value}%`"
       :parser="(value) => value.replace('%', '')"
+      @change="handleChange"
     />
 
-    <span v-if="errorMessage" class="mt-[6px] block text-[12px] text-red-500">{{
-      errorMessage
-    }}</span>
+    <span
+      v-if="errorMessage || props.activeError"
+      class="mt-[6px] block text-[12px] text-red-500"
+      >{{ errorMessage || props.activeError }}</span
+    >
   </div>
 </template>
 
 <script setup>
 import { TooltipComponent } from '@/components/backend';
+import { debounce } from '@/utils/helpers';
 import { useField } from 'vee-validate';
+import { watch } from 'vue';
+
+const emits = defineEmits(['onChange']);
 
 const props = defineProps({
   typeInput: {
@@ -88,8 +96,24 @@ const props = defineProps({
   tooltipText: {
     type: String,
     default: ''
+  },
+  oldValue: {
+    type: [String, Boolean, Number],
+    default: ''
+  },
+  activeError: {
+    type: [Boolean, String],
+    default: false
   }
 });
+
+const debouncedHandleChange = debounce((value) => {
+  emits('onChange', value);
+}, 300);
+
+const handleChange = (value) => {
+  debouncedHandleChange(value);
+};
 
 const formatNumber = (value) => {
   if (!value) return '';
@@ -104,4 +128,16 @@ const parseNumber = (value) => {
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
+
+// Watch for changes in oldValue and set value accordingly
+watch(
+  () => props.oldValue,
+  (newOldValue) => {
+    if (newOldValue && newOldValue !== undefined && newOldValue !== value.value) {
+      value.value = newOldValue;
+      handleChange(newOldValue);
+    }
+  },
+  { immediate: true }
+);
 </script>

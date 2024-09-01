@@ -1,23 +1,38 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\Product;
 
+use App\Models\ProductAttribute;
+use App\Models\ProductVariantAttributeValue;
+use App\Repositories\Interfaces\Attribute\AttributeValueRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
+use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductServiceInterface;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Str;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
     protected $productRepository;
+
+    protected $productVariantRepository;
+
+    protected $attributeValueRepository;
+
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
+        ProductVariantRepositoryInterface $productVariantRepository,
+        AttributeValueRepositoryInterface $attributeValueRepository
     ) {
         $this->productRepository = $productRepository;
+        $this->productVariantRepository = $productVariantRepository;
+        $this->attributeValueRepository = $attributeValueRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -25,9 +40,9 @@ class ProductService extends BaseService implements ProductServiceInterface
             'publish' => request('publish'),
         ];
 
-        $select =  ['id', 'name', 'brand_id', 'supplier_id', 'product_catalogue_id', 'sku', 'image', 'publish', 'product_type'];
+        $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'upsell_ids'];
         $orderBy = ['id' => 'desc'];
-        $relations = ['variants', 'warehouses', 'catalogue', 'brand', 'supplier'];
+        $relations = ['variants', 'catalogues', 'brand'];
 
         $data = $this->productRepository->pagination(
             $select,
@@ -46,99 +61,106 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $this->executeInTransaction(function () {
             $payload = $this->preparePayload();
             $product = $this->productRepository->create($payload);
-
+            // dd($payload);
+            $this->syncCatalogue($product, $payload['product_catalogue_id']);
+            $this->createProductAttribute($product, $payload);
             $this->createProductVariant($product, $payload);
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
+    }
+
+    public function syncCatalogue($product, array $catalogueIds): void
+    {
+        $product->catalogues()->sync($catalogueIds);
     }
 
     private function preparePayload(): array
     {
         $payload = request()->except('_token', '_method');
-        $payload['allow_sell'] = filter_var($payload['allow_sell'] ?? false, FILTER_VALIDATE_BOOLEAN);
-        $payload['is_taxable'] = filter_var($payload['is_taxable'] ?? false, FILTER_VALIDATE_BOOLEAN);
-        $payload['sku'] = generateSKU($payload['name']);
-
-        if ($payload['is_taxable']) {
-            $tax = $payload['tax'] ?? null;
-
-            if ($tax) {
-                $payload['tax_status'] = $tax['tax_status'] ?? null;
-
-                if ($tax['tax_status'] == '2') {
-                    $payload['input_tax_id'] = $tax['input_tax'] ?? null;
-                    $payload['output_tax_id'] = $tax['output_tax'] ?? null;
-                }
-            }
-        }
+        $payload = $this->createSEO($payload, 'name', 'excerpt');
 
         return $payload;
     }
 
     private function createProductVariant($product, array $payload)
     {
-        $canonical = Str::slug($payload['name']);
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ',' . $canonical);
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . 'default');
 
         $mainData = [
-            'name' => $payload['name'] ?? null,
             'uuid' => $uuid,
-            'canonical' => $canonical,
+            'name' => $payload['name'] ?? null,
             'image' => $payload['image'] ?? null,
             'album' => $payload['album'] ?? null,
             'price' => $payload['price'] ?? null,
             'sale_price' => $payload['sale_price'] ?? null,
-            'import_price' => $payload['import_price'] ?? null,
+            'cost_price' => $payload['cost_price'] ?? null,
             'is_discount_time' => $is_discount_time,
             'weight' => $payload['weight'] ?? null,
             'length' => $payload['length'] ?? null,
             'width' => $payload['width'] ?? null,
             'height' => $payload['height'] ?? null,
+            'stock' => $payload['stock'] ?? 0,
+            'low_stock_amount' => $payload['low_stock_amount'] ?? 0,
             'sku' => generateSKU($payload['name'], 3, ['default']),
             'sale_price_start_at' => $sale_price_start_at ? convertToYyyyMmDdHhMmSs($sale_price_start_at) : null,
             'sale_price_end_at' => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
         ];
 
-        $product->variants()->create($mainData);
+        if ($payload['product_type'] === 'simple') {
+            return $product->variants()->create($mainData);
+        }
 
         if ($payload['product_type'] === 'variable') {
-            $this->createVariableProductVariants($product, $payload, $mainData);
+            return $this->createProductVariants($product, $payload, $mainData);
         }
     }
 
-    private function createVariableProductVariants($product, array $payload, array $mainData)
+    private function createProductVariants($product, array $payload, array $mainData)
     {
-        $variable = $payload['variable'] ?? [];
-        $variantTexts = json_decode($payload['variants'] ?? '[]', true);
-        $attributeIds = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true))['attrIds'];
+        $variables = $payload['variable'] ?? [];
+        $variants = json_decode($payload['variants'] ?? '[]', true);
+        $variantTexts = $variants['variantTexts'];
+        $variantIds = $variants['variantIds'];
+        $attributes = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true));
+        $attributeIds = $attributes['attrIds'];
+        $attributeIdEnableVariation = $this->formatAttributeEnableVariation($attributeIds, $attributes['enable_variation'] ?? []);
 
-        $productVariantPayload = collect($variable['count'] ?? [])
-            ->map(function ($count, $key) use ($mainData, $variable, $variantTexts) {
+        if (empty($attributeIdEnableVariation)) {
+            return false;
+        }
+
+        $productVariantPayload = collect($variables ?? [])
+            ->map(function ($variable, $key) use ($mainData, $variantTexts, $variantIds, $product) {
+
                 $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options);
+                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
+                $attribute_value_combine = sortString($variantIds[$key]);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
 
                 $variantData = [
+                    'uuid' => $uuid,
                     'name' => $name,
-                    'uuid' => Uuid::uuid5(Uuid::NAMESPACE_DNS, $sku),
-                    'canonical' => Str::slug($name),
-                    'image' => $variable['image'][$key] ?? $mainData['image'],
-                    'album' => $variable['album'][$key] ?? $mainData['album'],
-                    'price' => $variable['price'][$key] ?? $mainData['price'],
-                    'sale_price' => $variable['sale_price'][$key] ?? null,
-                    'import_price' => $variable['import_price'][$key] ?? $mainData['import_price'],
-                    'is_discount_time' => filter_var($variable['is_discount_time'][$key] ?? false, FILTER_VALIDATE_BOOLEAN),
-                    'width' => $variable['width'][$key] ?? $mainData['width'],
-                    'height' => $variable['height'][$key] ?? $mainData['height'],
-                    'length' => $variable['length'][$key] ?? $mainData['length'],
-                    'weight' => $variable['weight'][$key] ?? $mainData['weight'],
+                    'attribute_value_combine' => $attribute_value_combine,
+                    'image' => $variable['image'] ?? $mainData['image'],
+                    'album' => $variable['album'] ?? $mainData['album'],
+                    'price' => $variable['price'] ?? $mainData['price'],
+                    'sale_price' => $variable['sale_price'] ?? null,
+                    'cost_price' => $variable['cost_price'] ?? $mainData['cost_price'],
+                    'is_discount_time' => filter_var($variable['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                    'width' => $variable['width'] ?? $mainData['width'],
+                    'height' => $variable['height'] ?? $mainData['height'],
+                    'length' => $variable['length'] ?? $mainData['length'],
+                    'weight' => $variable['weight'] ?? $mainData['weight'],
                     'sku' => $sku,
-                    'sale_price_start_at' => isset($variable['sale_price_time'][$key][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][$key][0]) : null,
-                    'sale_price_end_at' => isset($variable['sale_price_time'][$key][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][$key][1]) : null,
+                    'stock' => $variable['stock'] ?? 0,
+                    'low_stock_amount' => $variable['low_stock_amount'] ?? 0,
+                    'sale_price_start_at' => isset($variable['sale_price_time'][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][0]) : null,
+                    'sale_price_end_at' => isset($variable['sale_price_time'][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][1]) : null,
                 ];
 
                 return $variantData;
@@ -147,66 +169,323 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->toArray();
 
         $createdVariants = $product->variants()->createMany($productVariantPayload);
+        $variantAttributeValuePayload = $this->combineVariantAttributeValue($createdVariants);
 
-        $attributeCombines = $this->combineAttribute(array_values($attributeIds));
-        $variantAttributePayload = $createdVariants->flatMap(function ($variant, $index) use ($attributeCombines) {
-            return collect($attributeCombines[$index])->map(function ($attributeId) use ($variant) {
-                return [
-                    'product_variant_id' => $variant->id,
-                    'attribute_id' => $attributeId,
-                ];
-            });
-        })->values()->all();
-
-        DB::table('product_variant_attribute')->insert($variantAttributePayload);
+        DB::table('product_variant_attribute_value')->insert($variantAttributeValuePayload);
     }
 
-
-    private function combineAttribute($attributeIds)
+    private function createProductAttribute($product, array $payload)
     {
-        if (!count($attributeIds)) {
+        if (! isset($payload['attributes']) || empty($payload['attributes'])) {
+            return false;
+        }
+
+        $attributes = removeEmptyValues(json_decode($payload['attributes'] ?? '[]', true));
+
+        $attributePayload = [];
+
+        foreach ($attributes['attrIds'] as $attrId => $attrValueIds) {
+            $attributePayload[] = [
+                'attribute_id' => $attrId,
+                'attribute_value_ids' => $attrValueIds,
+                'enable_variation' => $attributes['enable_variation'][$attrId] ?? false,
+            ];
+        }
+
+        $product->attributes()->createMany($attributePayload);
+
+        return true;
+    }
+
+    private function formatAttributeEnableVariation(array $attributeIds, array $enableVariantion, bool $enable = true): array
+    {
+        $attrIds = [];
+        foreach ($enableVariantion as $key => $value) {
+            if ($enable == true && $value == true) {
+                $attrIds[$key] = $attributeIds[$key];
+            } elseif ($enable == false && $value == true) {
+                unset($attributeIds[$key]);
+            }
+        }
+
+        return $enable ? $attrIds : $attributeIds;
+    }
+
+    private function combineVariantAttributeValue($productVariants)
+    {
+        if (! count($productVariants)) {
             return [];
         }
 
-        return array_reduce($attributeIds, function ($acc, $attr) {
-            return $acc ? array_merge(...array_map(function ($x) use ($attr) {
-                return array_map(function ($y) use ($x) {
-                    return array_merge(is_array($x) ? $x : [$x], [$y]);
-                }, $attr);
-            }, $acc)) : $attr;
-        }, []);
+        $result = $productVariants->flatMap(function ($item) {
+            $attributeValueIds = explode(',', $item['attribute_value_combine']);
+
+            return collect($attributeValueIds)->map(function ($value) use ($item) {
+                return [
+                    'attribute_value_id' => $value,
+                    'product_variant_id' => $item['id'],
+                ];
+            });
+        });
+
+        return $result->toArray();
     }
 
     public function update($id)
     {
         return $this->executeInTransaction(function () use ($id) {
-            $payload = request()->except('_token', '_method');
+            $payload = $this->preparePayload();
 
-            $this->productRepository->update($id, $payload);
+            $product = $this->productRepository->save($id, $payload);
+            $this->syncCatalogue($product, $payload['product_catalogue_id']);
+            $this->updateProductAttribute($product, $payload['attribute_value_ids'] ?? []);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
-    public function destroy($id)
+    private function updateProductAttribute($product, array $attributeValueIds)
     {
-        DB::beginTransaction();
-        try {
-            // Xoá mềm
-            $this->productRepository->delete($id);
-            DB::commit();
-            return [
-                'status' => 'success',
-                'messages' => 'Xóa thành công.',
-                'data' => null
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'status' => 'error',
-                'messages' => 'Xóa thất bại.',
-                'data' => null
+        if (empty($attributeValueIds)) {
+            return;
+        }
+
+        $attributeValueIds = removeEmptyValues($attributeValueIds);
+        $attributePayload = [];
+
+        foreach ($attributeValueIds as $attrId => $attributeValueId) {
+            $attributePayload[] = [
+                'attribute_id' => $attrId,
+                'attribute_value_ids' => array_map('intval', $attributeValueId),
+                'enable_variation' => false,
             ];
         }
+
+        $product->attributes()->where('enable_variation', false)->delete();
+        $product->attributes()->createMany($attributePayload);
+    }
+
+    public function destroy($id) {}
+
+    // VARIANT
+
+    public function getProductVariants()
+    {
+        $condition = ['search' => addslashes(request('search'))];
+
+        $select = ['id', 'name', 'product_id', 'price', 'cost_price', 'sale_price', 'image', 'attribute_value_combine'];
+
+        $data = ($ids = request('ids'))
+            ? $this->productVariantRepository->findByWhereIn(explode(',', $ids), 'id', $select, ['attribute_values'])
+            :  $this->productVariantRepository->pagination(
+                $select,
+                $condition,
+                request('pageSize', 20),
+                ['id' => 'desc'],
+                [],
+                ['attribute_values']
+            );
+
+        return $data;
+    }
+
+    public function updateVariant()
+    {
+        return $this->executeInTransaction(function () {
+            $payload = $this->preparePayloadVariant();
+            $this->productVariantRepository->lockForUpdate([
+                'id' => ['=', $payload['id']]
+            ], $payload);
+
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
+    }
+
+    private function preparePayloadVariant(): array
+    {
+        $payload = request()->except(['_token', '_method', 'variable_is_used']);
+
+        // Transform keys by removing "variable_" prefix
+        $payloadFormat = array_combine(
+            array_map(fn($key) => str_replace('variable_', '', $key), array_keys($payload)),
+            array_values($payload)
+        );
+
+        $is_discount_time = filter_var($payloadFormat['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $payloadFormat['is_discount_time'] = $is_discount_time;
+
+        if ($is_discount_time) {
+            $payloadFormat['sale_price_start_at'] = $payloadFormat['sale_price_time'][0] ?? null;
+            $payloadFormat['sale_price_end_at'] = $payloadFormat['sale_price_time'][1] ?? null;
+        }
+
+        return $payloadFormat;
+    }
+
+    public function deleteVariant($id)
+    {
+        return $this->executeInTransaction(function () use ($id) {
+            $variant = $this->productVariantRepository->findByWhere([
+                'id' => ['=', $id],
+                'is_used' => ['=', false],
+            ]);
+
+            if (! $variant) {
+                throw new \Exception('VARIANT_NOT_FOUND');
+            }
+
+            if (! $variant->delete()) {
+                throw new \Exception('FAILED_TO_DELETE_VARIANT');
+            }
+
+            $remainingAttributes = ProductVariantAttributeValue::query()
+                ->whereHas('product_variant', fn($query) => $query->where('product_id', $variant->product_id))
+                ->with('attribute_value:id,attribute_id')
+                ->get(['attribute_value_id'])
+                ->groupBy('attribute_value.attribute_id')
+                ->map(fn($group) => [
+                    'product_id' => $variant->product_id,
+                    'attribute_id' => $group->first()->attribute_value->attribute_id,
+                    'attribute_value_ids' => $group->pluck('attribute_value_id')->unique()->values()->toArray(),
+                    'enable_variation' => true,
+                ])
+                ->values();
+
+            ProductAttribute::where('enable_variation', true)
+                ->where('product_id', $variant->product_id)
+                ->delete();
+
+            $remainingAttributes->each(function ($attribute) {
+                ProductAttribute::create($attribute);
+            });
+
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
+    }
+
+    public function createAttribute()
+    {
+        return $this->executeInTransaction(function () {});
+    }
+
+
+    public function updateAttribute(string $productId)
+    {
+        return $this->executeInTransaction(function () use ($productId) {
+            $payload = request()->input('attribute_attribute_value_ids');
+
+            if (empty($payload)) {
+                throw new \Exception('PAYLOAD_NOT_FOUND');
+            }
+
+            $product = $this->productRepository->findById($productId, ['id', 'name', 'product_type'], ['variants']);
+
+            if (empty($product)) {
+                throw new \Exception('PRODUCT_NOT_FOUND');
+            }
+
+            if ($product->product_type == 'simple') {
+                $product->variants()->delete();
+                $product->product_type = 'variable';
+                $product->publish = 2;
+                $product->save();
+            }
+
+            $attributeValueCombine = $this->generateCombinationAttributeIds($payload);
+            $payloadVariantByAttribute = $this->payloadVariantByAttribute($product, $attributeValueCombine);
+
+            if (empty($payloadVariantByAttribute)) {
+                return errorResponse('Sản phẩm đã đầy đủ đủ phiên bản.');
+            }
+
+            $this->createProductAttributeFromUpdateAttribute($payload, $product);
+
+            $createdVariants = $product->variants()->createMany($payloadVariantByAttribute);
+            $variantAttributeValuePayload = $this->combineVariantAttributeValue($createdVariants);
+
+            DB::table('product_variant_attribute_value')->insert($variantAttributeValuePayload);
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
+    }
+
+    private function createProductAttributeFromUpdateAttribute($payload, $product)
+    {
+        collect($payload)->each(function ($attrValueIds, $attrId) use ($product) {
+            $product->attributes()->updateOrCreate(
+                ['attribute_id' => $attrId, 'enable_variation' => true],
+                ['attribute_value_ids' => array_map('intval', $attrValueIds)]
+            );
+        });
+    }
+
+    private function payloadVariantByAttribute($product, $attributeValueCombines)
+    {
+        $productVariants = $product->variants;
+        if (empty($productVariants)) {
+            return [];
+        }
+
+        $existingAttributeCombines = $productVariants->pluck('attribute_value_combine')->toArray();
+
+        $productVariantPayload = $attributeValueCombines->map(function ($attributeValueCombine, $key) use ($existingAttributeCombines, $product) {
+            if (!in_array($attributeValueCombine['attribute_value_combine'], $existingAttributeCombines)) {
+                $productName = $product->name;
+                $options = explode(' - ', $attributeValueCombine['attributeText'] ?? '');
+                $sku = generateSKU($productName, 3, $options) . '-' . ($key + 1);
+                $name = "{$productName} {$attributeValueCombine['attributeText']}";
+                $attribute_value_combine = $attributeValueCombine['attribute_value_combine'];
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
+
+                return [
+                    'uuid' => $uuid,
+                    'name' => $name,
+                    'attribute_value_combine' => $attribute_value_combine,
+                    'sku' => $sku,
+                    'price' => 0,
+                    'cost_price' => 0,
+                ];
+            }
+        })->filter()
+            ->values()
+            ->toArray();
+
+        return $productVariantPayload;
+    }
+
+    private function generateCombinationAttributeIds($input)
+    {
+        $input = collect($input)->sortKeys();
+
+        $keys = $input->keys()->toArray();
+        $values = $input->values()->toArray();
+
+        $result = $this->generateCombinationsRecursive($keys, $values);
+
+        return $result->map(function ($combination) {
+            ksort($combination);
+            $attributeValue = $this->attributeValueRepository->findByWhereIn($combination);
+            $data = [
+                'attributeText' => implode(' - ', $attributeValue->pluck('name')->toArray()),
+                'attribute_value_combine' => implode(',', array_values($combination)),
+            ];
+            return $data;
+        })->values();
+    }
+
+    private function generateCombinationsRecursive($keys, $values, $current = [], $index = 0)
+    {
+        if ($index >= count($keys)) {
+            return collect([$current]);
+        }
+
+        $result = collect();
+
+        foreach ($values[$index] as $value) {
+            $newCurrent = $current;
+            $newCurrent[$keys[$index]] = $value;
+            $result = $result->concat($this->generateCombinationsRecursive($keys, $values, $newCurrent, $index + 1));
+        }
+
+        return $result;
     }
 }

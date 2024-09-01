@@ -3,10 +3,9 @@
 namespace App\Http\Requests\Attribute;
 
 use App\Enums\ResponseEnum;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
 
 class StoreAttributeRequest extends FormRequest
 {
@@ -27,7 +26,7 @@ class StoreAttributeRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'attribute_catalogue_id' => 'required',
+            'code' => 'required|unique:attributes',
         ];
     }
 
@@ -35,7 +34,7 @@ class StoreAttributeRequest extends FormRequest
     {
         return [
             'name' => 'Tên thuộc tính',
-            'attribute_catalogue_id' => 'Nhóm thuộc tính',
+            'code' => 'Mã thuộc tính',
         ];
     }
 

@@ -3,10 +3,9 @@
 namespace App\Http\Requests\Product;
 
 use App\Enums\ResponseEnum;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-
 
 class StoreProductRequest extends FormRequest
 {
@@ -25,32 +24,52 @@ class StoreProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            // 'email' => 'required|string|email|unique:users',
-            // 'phone' => 'required|unique:users|regex:/(0)[0-9]{9}/',
-            // 'fullname' => 'required|string',
-            // 'user_catalogue_id' => 'required|integer|gt:0',
-            // 'password' => 'required|string|min:6',
-
+        $rules = [
+            'name' => 'string|required',
+            'image' => 'string|required',
+            'album' => 'string|required',
+            'product_catalogue_id' => 'required',
+            'product_type' => 'required',
+            'cost_price' => 'required|numeric',
+            'price' => 'required|numeric',
+            'sale_price' => 'nullable|numeric|lt:price',
         ];
+
+        if ($this->product_type == 'variable') {
+            $rules['variants'] = 'required';
+
+            foreach ($this->variable as $key => $item) {
+                $price = $item['price'] ?? null;
+                $sale_price = $item['sale_price'] ?? null;
+                if ($price && $sale_price) {
+                    $rules['variable.'.$key.'.sale_price'] = 'numeric|lt:variable.'.$key.'.price';
+                }
+            }
+        }
+
+        return $rules;
     }
 
     public function attributes()
     {
         return [
-            // 'email' => 'Email',
-            // 'fullname' => 'Họ tên thành viên',
-            // 'phone' => 'Số điện thoại',
-            // 'user_catalogue_id' => 'Nhóm thành viên',
-            // 'password' => 'Mật khẩu',
-
+            'name' => 'Tiêu đề sản phẩm',
+            'image' => 'Ảnh sản phẩm',
+            'album' => 'Thư viện ảnh',
+            'product_type' => 'Loại sản phẩm',
+            'product_catalogue_id' => 'Nhóm sản phẩm',
+            'cost_price' => 'Giá nhập',
+            'price' => 'Giá bán',
+            'sale_price' => 'Giá khuyến mãi',
+            'variable.*.sale_price' => 'Giá khuyến mãi biến thể',
+            'variable.*.price' => 'Giá gốc biến thể',
         ];
     }
 
     public function messages()
     {
         return __('request.messages') + [
-            'phone.regex' => 'Số điện thoại không đúng dạng.'
+            'variable.*.sale_price.lt' => 'Giá khuyến mãi biến thể phải nhỏ hơn giá bán biến thể.',
         ];
     }
 

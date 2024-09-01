@@ -2,7 +2,7 @@
   <label v-if="props.label" :for="props.name" :class="props.labelClass"
     >{{ props.label }}
     <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
-    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" color="#108ee9" />
+    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" />
   </label>
   <div>
     <a-select
@@ -18,6 +18,7 @@
       :class="props.className"
       :mode="props.mode"
       :status="errorMessage ? 'error' : ''"
+      :disabled="props.disabled"
       @change="handleChange"
     >
     </a-select>
@@ -30,6 +31,7 @@
 <script setup>
 import { useField } from 'vee-validate';
 import { TooltipComponent } from '@/components/backend';
+import { watch } from 'vue';
 
 const emits = defineEmits(['onChange']);
 const props = defineProps({
@@ -76,6 +78,14 @@ const props = defineProps({
   tooltipText: {
     type: String,
     default: ''
+  },
+  oldValue: {
+    type: [String, Array, Number],
+    default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -88,6 +98,17 @@ const handleChange = (value) => {
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
+
+// Watch for changes in oldValue and set value accordingly
+watch(
+  () => props.oldValue,
+  (newOldValue) => {
+    if (newOldValue && newOldValue !== undefined && newOldValue !== value.value) {
+      value.value = newOldValue;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>

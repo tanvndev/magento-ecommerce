@@ -13,29 +13,55 @@ class Product extends Model
     use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = [
+        'name',
         'product_type',
-        'product_catalogue_id',
         'brand_id',
         'excerpt',
         'description',
         'upsell_ids',
-        'is_taxable',
+        'canonical',
+        'meta_title',
+        'meta_description',
         'publish',
-        'input_tax_id',
-        'output_tax_id',
-        'tax_status',
     ];
 
     protected $casts = [
         'upsell_ids' => 'json',
         'album' => 'json',
-        'shipping_class_id' => 'json',
-        'payment_method_id' => 'json',
     ];
 
-    public function catalogue()
+    protected static function boot()
     {
-        return $this->belongsTo(ProductCatalogue::class);
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->canonical = self::generateUniqueSlug($model->name);
+        });
+
+        static::updating(function ($model) {
+            $model->canonical = self::generateUniqueSlug($model->name, $model->id);
+        });
+    }
+
+    public static function generateUniqueSlug($name, $excludeId = null)
+    {
+        $canonical = Str::slug($name);
+        $originalCanonical = $canonical;
+        $count = 1;
+
+        while (self::where('canonical', $canonical)
+            ->where('id', '!=', $excludeId)
+            ->exists()
+        ) {
+            $canonical = "{$originalCanonical}-".$count++;
+        }
+
+        return $canonical;
+    }
+
+    public function catalogues()
+    {
+        return $this->belongsToMany(ProductCatalogue::class, 'product_catalogue_product');
     }
 
     public function brand()
@@ -43,23 +69,13 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function warehouses()
-    {
-        return $this->belongsToMany(Warehouse::class, 'product_warehouse')
-            ->withPivot(
-                'in_stock',
-                'cog_price',
-                'type'
-            );
-    }
-
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    public function attributes()
+    {
+        return $this->hasMany(ProductAttribute::class);
     }
 }

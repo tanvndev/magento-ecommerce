@@ -13,9 +13,8 @@
 
 <script setup>
 import BaseService from '@/services/BaseService';
-import { useStore } from 'vuex';
+import { message } from 'ant-design-vue';
 
-const store = useStore();
 const props = defineProps({
   record: Object,
   field: String,
@@ -32,6 +31,6 @@ const handleChangePublish = async (event) => {
   const response = await BaseService.changeStatus(payload);
   const type = response.success ? 'success' : 'error';
 
-  store.dispatch('antStore/showMessage', { type, message: response.messages });
+  message[type](response.messages);
 };
 </script>

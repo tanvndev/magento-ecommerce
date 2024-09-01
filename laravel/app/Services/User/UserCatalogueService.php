@@ -1,23 +1,25 @@
 <?php
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
+
 namespace App\Services\User;
 
-
 use App\Repositories\Interfaces\User\UserCatalogueRepositoryInterface;
-use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\User\UserCatalogueServiceInterface;
-use Illuminate\Support\Facades\DB;
 
 class UserCatalogueService extends BaseService implements UserCatalogueServiceInterface
 {
     protected $userCatalogueRepository;
+
     protected $userRepository;
+
     public function __construct(
         UserCatalogueRepositoryInterface $userCatalogueRepository,
     ) {
         $this->userCatalogueRepository = $userCatalogueRepository;
     }
+
     public function paginate()
     {
         $condition = [
@@ -48,8 +50,8 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             $payload = request()->except('_token', '_method');
             $this->userCatalogueRepository->create($payload);
 
-            return successResponse('Tạo mới thành công.');
-        }, 'Tạo mới thất bại.');
+            return successResponse(__('messages.create.success'));
+        }, __('messages.create.error'));
     }
 
     public function update($id)
@@ -59,18 +61,18 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             $payload = request()->except('_token', '_method');
             $this->userCatalogueRepository->update($id, $payload);
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
             $this->userCatalogueRepository->delete($id);
-            return successResponse('Xóa thành công.');
-        }, 'Xóa thất bại.');
-    }
 
+            return successResponse(__('messages.delete.success'));
+        }, __('messages.delete.error'));
+    }
 
     public function updatePermissions()
     {
@@ -85,7 +87,7 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
                 $userCatalogue->permissions()->sync($permissionIds);
             }
 
-            return successResponse('Cập nhập thành công.');
-        }, 'Cập nhập thất bại.');
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
     }
 }

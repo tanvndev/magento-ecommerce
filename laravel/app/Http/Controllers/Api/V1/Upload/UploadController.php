@@ -10,14 +10,17 @@ use Illuminate\Http\Request;
 class UploadController extends Controller
 {
     private $uploadService;
+
     public function __construct(
         UploadServiceInterface $uploadService
     ) {
         $this->uploadService = $uploadService;
     }
+
     public function index()
     {
         $response = $this->uploadService->paginate();
+
         return handleResponse($response);
     }
 
@@ -27,6 +30,7 @@ class UploadController extends Controller
     public function store(Request $request)
     {
         $response = $this->uploadService->create();
+
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
@@ -36,6 +40,7 @@ class UploadController extends Controller
     public function destroy(string $id)
     {
         $response = $this->uploadService->destroy($id);
+
         return handleResponse($response, ResponseEnum::CREATED);
     }
 }

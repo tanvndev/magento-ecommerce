@@ -1,4 +1,5 @@
 <?php
+
 return [
     'model' => [
         'PostCatalogue' => 'Nhóm bài viết',

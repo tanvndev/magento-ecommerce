@@ -1,25 +1,26 @@
 <?php
+
 return [
     'rating' => [
         [
             'text' => 'Không thích',
-            'star' => 1
+            'star' => 1,
         ],
         [
             'text' => 'Tạm được',
-            'star' => 2
+            'star' => 2,
         ],
         [
             'text' => 'Bình thường',
-            'star' => 3
+            'star' => 3,
         ],
         [
             'text' => 'Hài lòng',
-            'star' => 4
+            'star' => 4,
         ],
         [
             'text' => 'Tuyệt vời',
-            'star' => 5
-        ]
+            'star' => 5,
+        ],
     ],
 ];

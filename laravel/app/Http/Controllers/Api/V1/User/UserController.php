@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\{
-    StoreUserRequest,
-    UpdateUserRequest
-};
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
@@ -16,7 +14,9 @@ use App\Services\Interfaces\User\UserServiceInterface;
 class UserController extends Controller
 {
     protected $userService;
+
     protected $userRepository;
+
     public function __construct(
         UserServiceInterface $userService,
         UserRepositoryInterface $userRepository
@@ -24,6 +24,7 @@ class UserController extends Controller
         $this->userService = $userService;
         $this->userRepository = $userRepository;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -33,6 +34,7 @@ class UserController extends Controller
 
         $paginator = $this->userService->paginate();
         $data = new UserCollection($paginator);
+
         return successResponse('', $data);
     }
 
@@ -44,6 +46,7 @@ class UserController extends Controller
         // $this->authorize('modules', 'users.store');
 
         $response = $this->userService->create();
+
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
@@ -55,9 +58,9 @@ class UserController extends Controller
         // $this->authorize('modules', 'users.show');
 
         $response = new UserResource($this->userRepository->findById($id));
+
         return successResponse('', $response);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -67,6 +70,7 @@ class UserController extends Controller
         // $this->authorize('modules', 'users.update');
 
         $response = $this->userService->update($id);
+
         return handleResponse($response);
     }
 
@@ -78,6 +82,7 @@ class UserController extends Controller
         // $this->authorize('modules', 'users.destroy');
 
         $response = $this->userService->destroy($id);
+
         return handleResponse($response);
     }
 }

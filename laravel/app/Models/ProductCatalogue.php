@@ -10,15 +10,17 @@ use Illuminate\Support\Str;
 
 class ProductCatalogue extends Model
 {
-    use HasFactory, SoftDeletes, QueryScopes;
+    use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = [
         'name',
         'description',
         'publish',
-        'canonical',
         'image',
         'order',
+        'meta_title',
+        'meta_description',
+        'canonical',
         'parent_id',
     ];
 
@@ -45,7 +47,7 @@ class ProductCatalogue extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $canonical = "{$originalCanonical}-" . $count++;
+            $canonical = "{$originalCanonical}-".$count++;
         }
 
         return $canonical;
@@ -68,6 +70,6 @@ class ProductCatalogue extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class, 'product_catalogue_product');
     }
 }

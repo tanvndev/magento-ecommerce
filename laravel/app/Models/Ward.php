@@ -10,7 +10,9 @@ class Ward extends Model
     use HasFactory;
 
     protected $table = 'wards';
+
     protected $primaryKey = 'code';
+
     protected $autoincrement = false;
 
     protected $casts = [

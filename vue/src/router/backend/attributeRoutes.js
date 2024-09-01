@@ -1,7 +1,6 @@
 import AttributeIndexView from '@/views/backend/attribute/attribute/IndexView.vue';
 import AttributeStoreView from '@/views/backend/attribute/attribute/StoreView.vue';
-import AttributeCatalogueIndexView from '@/views/backend/attribute/catalogue/IndexView.vue';
-import AttributeCatalogueStoreView from '@/views/backend/attribute/catalogue/StoreView.vue';
+import AttributeValueStoreView from '@/views/backend/attribute/value/StoreView.vue';
 import { isLoggedIn } from '@/middlewares/authenticate';
 
 const attributeRoutes = [
@@ -24,21 +23,15 @@ const attributeRoutes = [
     beforeEnter: [isLoggedIn]
   },
   {
-    path: '/attribute/catalogue/index',
-    name: 'attribute.catalogue.index',
-    component: AttributeCatalogueIndexView,
+    path: '/attribute/value/store',
+    name: 'attribute.value.store',
+    component: AttributeValueStoreView,
     beforeEnter: [isLoggedIn]
   },
   {
-    path: '/attribute/catalogue/store',
-    name: 'attribute.catalogue.store',
-    component: AttributeCatalogueStoreView,
-    beforeEnter: [isLoggedIn]
-  },
-  {
-    path: '/attribute/catalogue/update/:id(\\d+)',
-    name: 'attribute.catalogue.update',
-    component: AttributeCatalogueStoreView,
+    path: '/attribute/value/update/:id(\\d+)',
+    name: 'attribute.value.update',
+    component: AttributeValueStoreView,
     beforeEnter: [isLoggedIn]
   }
 ];

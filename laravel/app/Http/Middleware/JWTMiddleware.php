@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-
 class JWTMiddleware
 {
     /**

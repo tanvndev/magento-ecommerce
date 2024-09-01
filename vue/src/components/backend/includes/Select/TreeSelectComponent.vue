@@ -17,6 +17,8 @@
       :status="errorMessage ? 'error' : ''"
       :mode="props.mode"
       :tree-default-expand-all="props.treeDefaultExpandAll"
+      :multiple="props.multiple"
+      :show-checked-strategy="SHOW_ALL"
       tree-node-filter-prop="label"
       @change="handleChange"
     >
@@ -29,7 +31,8 @@
 
 <script setup>
 import { useField } from 'vee-validate';
-
+import { TreeSelect } from 'ant-design-vue';
+const SHOW_ALL = TreeSelect.SHOW_ALL;
 const emits = defineEmits(['onChange']);
 const props = defineProps({
   required: {
@@ -73,6 +76,10 @@ const props = defineProps({
     default: 'default'
   },
   treeDefaultExpandAll: {
+    type: Boolean,
+    default: true
+  },
+  multiple: {
     type: Boolean,
     default: true
   }

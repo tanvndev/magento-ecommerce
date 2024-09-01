@@ -30,16 +30,20 @@
               </a-card>
 
               <!-- Du lieu san pham -->
-              <MainComponent />
+              <MainView />
 
               <!-- Mo ta ngan san pham -->
               <a-card class="mt-3" title="Mô tả ngắn của sản phẩm">
                 <InputComponent
                   name="excerpt"
                   typeInput="textarea"
+                  placeholder="Mô tả ngắn của sản phẩm"
                   label="Mô tả ngắn của sản phẩm"
                 />
               </a-card>
+
+              <!-- SEO -->
+              <SEOComponent />
             </a-col>
 
             <div class="hidden">
@@ -49,7 +53,7 @@
             </div>
 
             <!-- Sidebar right -->
-            <SidebarComponent />
+            <SidebarView />
           </a-row>
 
           <div class="fixed bottom-0 right-[19px] p-10">
@@ -71,73 +75,61 @@ import {
   AleartError,
   InputComponent,
   EditorComponent,
-  InputFinderComponent
+  InputFinderComponent,
+  SEOComponent
 } from '@/components/backend';
 import _ from 'lodash';
-import MainComponent from './partials/MainComponent.vue';
-import SidebarComponent from './partials/SidebarComponent.vue';
-import { computed, onMounted, reactive, watch } from 'vue';
+import MainView from './partials/MainView.vue';
+import SidebarView from './partials/SidebarView.vue';
+import { computed, onMounted, reactive, watch, watchEffect } from 'vue';
 import { useForm } from 'vee-validate';
 import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
-import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
+import { validationSchema } from './validationSchema';
+import { message } from 'ant-design-vue';
 
 // STATE
 const state = reactive({
   endpoint: 'products',
-  pageTitle: 'Thêm mới thành viên',
-  error: {},
-  userCatalogues: []
+  pageTitle: 'Thêm mới sản phẩm',
+  error: {}
 });
 
 const store = useStore();
-const { getOne, create, update, messages, data } = useCRUD();
+const { create, messages } = useCRUD();
 
-const id = computed(() => router.currentRoute.value.params.id || null);
 const attributes = computed(() => store.getters['productStore/getAttributes']);
 const variants = computed(() => store.getters['productStore/getVariants']);
+const productType = computed(() => store.getters['productStore/getProductType']);
 
-const { handleSubmit, setValues, setFieldValue } = useForm({
-  validationSchema: yup.object({
-    name: yup.string().required('Tiêu đề sản phẩm không được để trống.'),
-    product_type: yup.string().required('Loại sản phẩm không được để trống.'),
-    // image: yup.string().required('Ảnh sản phẩm không được để trống.'),
-    // album: yup.string().required('Thư viện sản phẩm không được để trống.'),
-    product_catalogue_id: yup.string().required('Vui lòng chọn nhóm sản phẩm.')
-  })
+const { handleSubmit, setFieldValue, errors } = useForm({
+  validationSchema
 });
 
 const onSubmit = handleSubmit(async (values) => {
+  if (productType.value == 'variable' && _.isEmpty(variants.value)) {
+    return (state.error = { variants: 'Vui lòng tạo ít nhất một biến thể sản phẩm.' });
+  }
+
   state.error = {};
-  const response =
-    id.value && id.value > 0
-      ? await update(state.endpoint, id.value, values)
-      : await create(state.endpoint, values);
+  const response = await create(state.endpoint, values);
   if (!response) {
     return (state.error = formatMessages(messages.value));
   }
-  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+
+  state.error = {};
+  message.success(messages.value);
+  store.commit('productStore/removeAll');
   router.push({ name: 'product.index' });
 });
 
-const fetchOne = async () => {
-  await getOne(state.endpoint, id.value);
-  setValues({
-    fullname: data.value?.fullname,
-    email: data.value?.email,
-    user_catalogue_id: data.value?.user_catalogue_id,
-    phone: data.value?.phone,
-    address: data.value?.address,
-    province_id: data.value?.province_id,
-    district_id: data.value?.district_id,
-    ward_id: data.value?.ward_id,
-    image: data.value?.image
-  });
-};
+watch(errors, (newErrors) => {
+  state.error = newErrors;
+});
 
-watch((attributes, variants), () => {
+watchEffect(() => {
   if (!_.isEmpty(attributes.value)) {
     setFieldValue('attributes', JSON.stringify(attributes.value));
   }
@@ -145,11 +137,7 @@ watch((attributes, variants), () => {
     setFieldValue('variants', JSON.stringify(variants.value));
   }
 });
-
-onMounted(async () => {
-  if (id.value) {
-    fetchOne();
-    state.pageTitle = 'Cập nhập thành viên.';
-  }
+onMounted(() => {
+  store.commit('productStore/removeAll');
 });
 </script>

@@ -3,9 +3,11 @@
 namespace App\Http\Requests\Auth;
 
 use App\Enums\ResponseEnum;
+use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Hash;
 
 class LoginRequest extends FormRequest
 {
@@ -24,6 +26,7 @@ class LoginRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             'email' => 'required|email',
             'password' => 'required',

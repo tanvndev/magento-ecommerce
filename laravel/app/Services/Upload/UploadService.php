@@ -9,7 +9,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-
 class UploadService extends BaseService implements UploadServiceInterface
 {
     public function paginate()
@@ -58,7 +57,7 @@ class UploadService extends BaseService implements UploadServiceInterface
 
             // Xây dựng dữ liệu cho từng ảnh và thêm vào mảng images
             $imageInfo = [
-                'id' => "ID_" . $lastModified + $size,
+                'id' => 'ID_' . $lastModified + $size,
                 'url' => asset($storedPath),
                 'link' => asset($newPath),
                 'name' => $filename,
@@ -69,13 +68,13 @@ class UploadService extends BaseService implements UploadServiceInterface
                     'medium' => asset($newPath . $medium),
                     'large' => asset($newPath . $large),
                     'original' => asset($newPath),
-                ]
+                ],
             ];
 
             $images[] = $imageInfo;
         }
         // Sắp xếp mảng theo thời gian sửa đổi cuối cùng (lastModified), giảm dần
-        if (!empty($images)) {
+        if (! empty($images)) {
             usort($images, function ($a, $b) {
                 return $b['lastModified'] - $a['lastModified'];
             });
@@ -83,6 +82,7 @@ class UploadService extends BaseService implements UploadServiceInterface
 
         return $images;
     }
+
     public function create()
     {
         try {
@@ -90,7 +90,7 @@ class UploadService extends BaseService implements UploadServiceInterface
             $files = $payload['files'] ?? null;
 
             // Xu ly anh resize
-            if (isset($files) && !empty($files)) {
+            if (isset($files) && ! empty($files)) {
                 foreach ($files as $key => $file) {
                     $message = Upload::uploadImage($file);
                     if ($message['status'] == 'error') {
@@ -103,12 +103,13 @@ class UploadService extends BaseService implements UploadServiceInterface
             return [
                 'status' => 'success',
                 'messages' => $messages ?? [],
-                'data' => $data['data']
+                'data' => $data['data'],
             ];
         } catch (\Exception $e) {
-            return errorResponse('Tải lên tệp thất bại.');
+            return errorResponse(__('messages.upload.create.error'));
         }
     }
+
     public function destroy($id)
     {
         try {
@@ -122,9 +123,9 @@ class UploadService extends BaseService implements UploadServiceInterface
             }
             $data = $this->paginate();
 
-            return successResponse('Tệp đã được xóa thành công.', $data['data']);
+            return successResponse(__('messages.upload.delete.sucess'), $data['data']);
         } catch (\Exception $e) {
-            return errorResponse('Không tìm thấy ảnh cần xóa.');
+            return errorResponse(__('messages.upload.delete.error'));
         }
     }
 }

@@ -12,7 +12,7 @@ class Permission extends Model
 
     public $fillable = [
         'name',
-        'canonical'
+        'canonical',
     ];
 
     public function user_catalogues()

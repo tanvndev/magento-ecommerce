@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
+      <div class="container mx-auto min-h-screen pb-10">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
@@ -9,19 +9,12 @@
               <a-card class="mt-3" title="Thông tin chung">
                 <AleartError :errors="state.errors" />
                 <a-row :gutter="[16, 16]">
-                  <a-col :span="10">
+                  <a-col :span="20">
                     <InputComponent
                       name="name"
                       label="Tên nhóm sản phẩm"
                       :required="true"
                       placeholder="Tên nhóm sản phẩm"
-                    />
-                  </a-col>
-                  <a-col :span="10">
-                    <InputComponent
-                      name="canonical"
-                      label="Đường dẫn nhóm sản phẩm"
-                      placeholder="Tự động tạo nếu không nhập"
                     />
                   </a-col>
                   <a-col :span="4">
@@ -41,6 +34,12 @@
                   </a-col>
                 </a-row>
               </a-card>
+
+              <!-- SEO -->
+              <SEOComponent />
+
+              <!-- ProductList -->
+              <ProductListView />
             </a-col>
 
             <a-col :span="8">
@@ -84,17 +83,18 @@ import {
   InputComponent,
   InputFinderComponent,
   TreeSelectComponent,
-  InputNumberComponent
+  InputNumberComponent,
+  SEOComponent
 } from '@/components/backend';
 import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatDataToTreeSelect, formatMessages } from '@/utils/format';
-import { useStore } from 'vuex';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
+import ProductListView from './partials/ProductListView.vue';
+import { message } from 'ant-design-vue';
 
-const store = useStore();
 const { getOne, create, update, getAll, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 
@@ -121,7 +121,7 @@ const onSubmit = handleSubmit(async (values) => {
     return (state.errors = formatMessages(messages.value));
   }
 
-  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  message.success(messages.value);
   state.errors = {};
   router.push({ name: 'product.catalogue.index' });
 });

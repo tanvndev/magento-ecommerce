@@ -26,7 +26,7 @@ class UpdatePermissionRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'canonical' => 'required|string|unique:permissions,canonical,' . $this->permission,
+            'canonical' => 'required|string|unique:permissions,canonical,'.$this->permission,
         ];
     }
 

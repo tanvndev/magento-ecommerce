@@ -4,6 +4,4 @@ namespace App\Repositories\Interfaces\Permission;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 
-interface PermissionRepositoryInterface extends BaseRepositoryInterface
-{
-}
+interface PermissionRepositoryInterface extends BaseRepositoryInterface {}

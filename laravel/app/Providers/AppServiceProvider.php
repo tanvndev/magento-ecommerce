@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use League\Glide\ServerFactory;
+use Illuminate\Support\ServiceProvider;
 use League\Glide\Responses\LaravelResponseFactory;
+use League\Glide\ServerFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,23 +31,18 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Product\ProductCatalogueServiceInterface' => 'App\Services\Product\ProductCatalogueService',
         // Product
         'App\Services\Interfaces\Product\ProductServiceInterface' => 'App\Services\Product\ProductService',
-        // AttributeCatalogue
-        'App\Services\Interfaces\Attribute\AttributeCatalogueServiceInterface' => 'App\Services\Attribute\AttributeCatalogueService',
+        // AttributeValue
+        'App\Services\Interfaces\Attribute\AttributeValueServiceInterface' => 'App\Services\Attribute\AttributeValueService',
         // Attribute
         'App\Services\Interfaces\Attribute\AttributeServiceInterface' => 'App\Services\Attribute\AttributeService',
-        // Warehouse
-        'App\Services\Interfaces\Warehouse\WarehouseServiceInterface' => 'App\Services\Warehouse\WarehouseService',
         // Brand
         'App\Services\Interfaces\Brand\BrandServiceInterface' => 'App\Services\Brand\BrandService',
-        // Supplier
-        'App\Services\Interfaces\Supplier\SupplierServiceInterface' => 'App\Services\Supplier\SupplierService',
-        // Tax
-        'App\Services\Interfaces\Tax\TaxServiceInterface' => 'App\Services\Tax\TaxService',
-
-        // Slider
-        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
-
+        // ShippingMethod
+        'App\Services\Interfaces\ShippingMethod\ShippingMethodServiceInterface' => 'App\Services\ShippingMethod\ShippingMethodService',
+        // SystemConfig
+        'App\Services\Interfaces\SystemConfig\SystemConfigServiceInterface' => 'App\Services\SystemConfig\SystemConfigService',
     ];
+
     public function register(): void
     {
         foreach ($this->serviceBindings as $key => $value) {
@@ -59,10 +54,11 @@ class AppServiceProvider extends ServiceProvider
         // Register Glide server
         $this->app->singleton('League\Glide\Server', function ($app) {
             $fileSystem = $app->make(Filesystem::class);
+
             return ServerFactory::create([
                 'response' => new LaravelResponseFactory(app('request')),
                 'source' => $fileSystem->getDriver(),
-                'cache' =>  $fileSystem->getDriver(),
+                'cache' => $fileSystem->getDriver(),
                 'source_path_prefix' => env('IMAGE_SOURCE_PATH'),
                 'cache_path_prefix' => '.cache',
             ]);
