@@ -1,0 +1,238 @@
+/* Helper */
+
+.mx-0 {
+    margin-left: 0rem !important;
+    margin-right: 0rem !important;
+  }
+
+  .mx-1 {
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
+  }
+
+  .mx-2 {
+    margin-left: 1rem !important;
+    margin-right: 1rem !important;
+  }
+
+  .mx-3 {
+    margin-left: 1.5rem !important;
+    margin-right: 1.5rem !important;
+  }
+
+  .mx-4 {
+    margin-left: 2rem !important;
+    margin-right: 2rem !important;
+  }
+
+  .mx-5 {
+    margin-left: 2.5rem !important;
+    margin-right: 2.5rem !important;
+  }
+
+  .mx-6 {
+    margin-left: 3rem !important;
+    margin-right: 3rem !important;
+  }
+
+  .mx-7 {
+    margin-left: 3.5rem !important;
+    margin-right: 3.5rem !important;
+  }
+
+  .mx-8 {
+    margin-left: 4rem !important;
+    margin-right: 4rem !important;
+  }
+
+  .mx-9 {
+    margin-left: 4.5rem !important;
+    margin-right: 4.5rem !important;
+  }
+
+  .mx-10 {
+    margin-left: 5rem !important;
+    margin-right: 5rem !important;
+  }
+  .my-0 {
+    margin-top: 0rem !important;
+    margin-bottom: 0rem !important;
+  }
+
+  .my-1 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .my-2 {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .my-3 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .my-4 {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .my-5 {
+    margin-top: 2.5rem !important;
+    margin-bottom: 2.5rem !important;
+  }
+
+  .my-6 {
+    margin-top: 3rem !important;
+    margin-bottom: 3rem !important;
+  }
+
+  .my-7 {
+    margin-top: 3.5rem !important;
+    margin-bottom: 3.5rem !important;
+  }
+
+  .my-8 {
+    margin-top: 4rem !important;
+    margin-bottom: 4rem !important;
+  }
+
+  .my-9 {
+    margin-top: 4.5rem !important;
+    margin-bottom: 4.5rem !important;
+  }
+
+  .my-10 {
+    margin-top: 5rem !important;
+    margin-bottom: 5rem !important;
+  }
+
+  .px-0 {
+    padding-left: 0rem !important;
+    padding-right: 0rem !important;
+  }
+
+  .px-1 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .px-2 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .px-3 {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  .px-4 {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
+  .px-5 {
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+
+  .px-6 {
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+  }
+
+  .px-7 {
+    padding-left: 3.5rem !important;
+    padding-right: 3.5rem !important;
+  }
+
+  .px-8 {
+    padding-left: 4rem !important;
+    padding-right: 4rem !important;
+  }
+
+  .px-9 {
+    padding-left: 4.5rem !important;
+    padding-right: 4.5rem !important;
+  }
+
+  .px-10 {
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+  }
+
+  .py-0 {
+    padding-top: 0rem !important;
+    padding-bottom: 0rem !important;
+  }
+
+  .py-1 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .py-2 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .py-3 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .py-4 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .py-5 {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .py-6 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  .py-7 {
+    padding-top: 3.5rem !important;
+    padding-bottom: 3.5rem !important;
+  }
+
+  .py-8 {
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+  }
+
+  .py-9 {
+    padding-top: 4.5rem !important;
+    padding-bottom: 4.5rem !important;
+  }
+
+  .py-10 {
+    padding-top: 5rem !important;
+    padding-bottom: 5rem !important;
+  }
+
+  .-mx-2 {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+  }
+
+  .position-relative {
+    position: relative !important;
+  }
+  .d-flex {
+    display: flex !important;
+  }
+  .justify-between{
+    justify-content: space-between !important;
+  }
+  .items-center{
+    align-items: center !important;
+  }

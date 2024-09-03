@@ -136,7 +136,7 @@
 
               <div class="dropdown-box">
                 <ul class="menu vertical-menu category-menu">
-                  <li>
+                  <li class="has-submenu">
                     <a href="shop-fullwidth-banner.html">
                       <i class="w-icon-tshirt2"></i>Fashion
                     </a>
@@ -238,7 +238,7 @@
                       </li>
                     </ul>
                   </li>
-                  <li>
+                  <li class="has-submenu">
                     <a href="shop-fullwidth-banner.html">
                       <i class="w-icon-home"></i>Home & Garden
                     </a>
