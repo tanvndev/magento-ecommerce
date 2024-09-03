@@ -1,0 +1,5 @@
+export { default as HomeBanner } from '~/components/home/HomeBanner.vue'
+export { default as HomeCategory } from '~/components/home/HomeCategory.vue'
+export { default as HomeProduct } from '~/components/home/HomeProduct.vue'
+export { default as MoreInfomation } from '~/components/product/MoreInfomation.vue'
+export { default as ProductAside } from '~/components/product/ProductAside.vue'

@@ -1,0 +1,30 @@
+{
+    "name": "nuxt-app",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "format": "prettier --write .",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
+    },
+    "dependencies": {
+        "@nuxt/scripts": "^0.7.1",
+        "axios": "^1.7.2",
+        "js-cookie": "^3.0.5",
+        "lodash": "^4.17.21",
+        "nuxt": "^3.13.0",
+        "nuxt-easy-lightbox": "^1.0.2",
+        "nuxt-swiper": "^1.2.2",
+        "vue": "latest"
+    },
+    "devDependencies": {
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "prettier": "^3.3.3"
+    }
+}
