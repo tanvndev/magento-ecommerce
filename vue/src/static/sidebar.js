@@ -65,6 +65,13 @@ const sidebar = [
         route: 'product.catalogue.index'
       }
     ]
+  },
+  {
+    id: 'setting_sidebar',
+    icon: 'fas fa-cog text-[16px]',
+    name: 'Cấu hình',
+    route: 'setting',
+    subMenu: []
   }
 ];
 export default sidebar;

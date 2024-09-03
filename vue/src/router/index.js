@@ -24,6 +24,12 @@ const routes = [
     component: DashboardView,
     beforeEnter: [isLoggedIn]
   },
+  {
+    path: '/setting',
+    name: 'setting',
+    component: () => import('@/views/backend/setting/IndexVue.vue'),
+    beforeEnter: [isLoggedIn]
+  },
   ...userRoutes,
   ...authRoutes,
   ...productRoutes,
