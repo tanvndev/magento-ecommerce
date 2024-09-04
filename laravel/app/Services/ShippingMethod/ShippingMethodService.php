@@ -63,13 +63,4 @@ class ShippingMethodService extends BaseService implements ShippingMethodService
 
         return $payload;
     }
-
-    public function destroy($id)
-    {
-        return $this->executeInTransaction(function () use ($id) {
-            $this->shippingMethodRepository->delete($id);
-
-            return successResponse(__('messages.delete.success'));
-        }, __('messages.delete.error'));
-    }
 }

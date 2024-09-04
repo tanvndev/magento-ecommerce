@@ -87,4 +87,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(UserCatalogue::class);
     }
+
+    public function system_configurations()
+    {
+        return $this->hasMany(SystemConfiguration::class);
+    }
 }

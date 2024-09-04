@@ -65,14 +65,4 @@ class PaymentMethodController extends Controller
 
         return handleResponse($response);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $response = $this->paymentMethodService->destroy($id);
-
-        return handleResponse($response);
-    }
 }

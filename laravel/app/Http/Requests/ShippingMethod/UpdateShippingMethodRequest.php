@@ -26,7 +26,7 @@ class UpdateShippingMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|required',
+            'code' => 'string|required|unique:shipping_methods,code,'.$this->shipping_method,
             'base_cost' => 'required|numeric',
             'image' => 'string',
         ];
@@ -38,7 +38,7 @@ class UpdateShippingMethodRequest extends FormRequest
             'name' => 'Tên phương thức vận chuyển',
             'code' => 'Mã phương thức vận chuyển',
             'image' => 'Ảnh phương thức vận chuyển',
-            'base_cost' => 'Giá cố định của phương thức vận chuyển'
+            'base_cost' => 'Giá cố định của phương thức vận chuyển',
         ];
     }
 
