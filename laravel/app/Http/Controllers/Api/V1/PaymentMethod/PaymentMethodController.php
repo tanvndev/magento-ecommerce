@@ -4,25 +4,25 @@ namespace App\Http\Controllers\Api\V1\PaymentMethod;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ShippingMethod\StoreShippingMethodRequest;
-use App\Http\Requests\ShippingMethod\UpdateShippingMethodRequest;
-use App\Http\Resources\ShippingMethod\ShippingMethodCollection;
-use App\Http\Resources\ShippingMethod\ShippingMethodResource;
-use App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface;
-use App\Services\Interfaces\ShippingMethod\ShippingMethodServiceInterface;
+use App\Http\Requests\PaymentMethod\StorePaymentMethodRequest;
+use App\Http\Requests\PaymentMethod\UpdatePaymentMethodRequest;
+use App\Http\Resources\PaymentMethod\PaymentMethodCollection;
+use App\Http\Resources\PaymentMethod\PaymentMethodResource;
+use App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface;
+use App\Services\Interfaces\PaymentMethod\PaymentMethodServiceInterface;
 
 class PaymentMethodController extends Controller
 {
-    protected $shippingMethodService;
+    protected $paymentMethodService;
 
-    protected $shippingMethodRepository;
+    protected $paymentMethodRepository;
 
     public function __construct(
-        ShippingMethodServiceInterface $shippingMethodService,
-        ShippingMethodRepositoryInterface $shippingMethodRepository
+        PaymentMethodServiceInterface $paymentMethodService,
+        PaymentMethodRepositoryInterface $paymentMethodRepository
     ) {
-        $this->shippingMethodService = $shippingMethodService;
-        $this->shippingMethodRepository = $shippingMethodRepository;
+        $this->paymentMethodService = $paymentMethodService;
+        $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
     /**
@@ -30,8 +30,8 @@ class PaymentMethodController extends Controller
      */
     public function index()
     {
-        $paginator = $this->shippingMethodService->paginate();
-        $data = new ShippingMethodCollection($paginator);
+        $paginator = $this->paymentMethodService->paginate();
+        $data = new PaymentMethodCollection($paginator);
 
         return successResponse('', $data);
     }
@@ -39,9 +39,9 @@ class PaymentMethodController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreShippingMethodRequest $request)
+    public function store(StorePaymentMethodRequest $request)
     {
-        $response = $this->shippingMethodService->create();
+        $response = $this->paymentMethodService->create();
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
@@ -51,17 +51,17 @@ class PaymentMethodController extends Controller
      */
     public function show(string $id)
     {
-        $shippingMethod = new ShippingMethodResource($this->shippingMethodRepository->findById($id));
+        $paymentMethod = new PaymentMethodResource($this->paymentMethodRepository->findById($id));
 
-        return successResponse('', $shippingMethod);
+        return successResponse('', $paymentMethod);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateShippingMethodRequest $request, string $id)
+    public function update(UpdatePaymentMethodRequest $request, string $id)
     {
-        $response = $this->shippingMethodService->update($id);
+        $response = $this->paymentMethodService->update($id);
 
         return handleResponse($response);
     }
@@ -71,7 +71,7 @@ class PaymentMethodController extends Controller
      */
     public function destroy(string $id)
     {
-        $response = $this->shippingMethodService->destroy($id);
+        $response = $this->paymentMethodService->destroy($id);
 
         return handleResponse($response);
     }
