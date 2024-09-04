@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StorePaymentMethodRequest extends FormRequest
+class UpdatePaymentMethodRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +25,9 @@ class StorePaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => 'string|unique',
-            'code'      => 'string|required',
-            'image'     => 'string|image',
-            'settings'  => 'string',
+            'name' => 'string|unique',
+            'code' => 'string|required|unique,payment_methods,code,'.$this->payment_method,
+            'image' => 'string',
         ];
     }
 
@@ -38,7 +37,6 @@ class StorePaymentMethodRequest extends FormRequest
             'name' => 'Tên phương thức thanh toán',
             'code' => 'Mã phương thức thanh toán',
             'image' => 'Ảnh phương thức thanh toán',
-            'settings' => 'Cấu hình phương thức thanh toán'
         ];
     }
 

@@ -63,13 +63,4 @@ class PaymentMethodService extends BaseService implements PaymentMethodServiceIn
 
         return $payload;
     }
-
-    public function destroy($id)
-    {
-        return $this->executeInTransaction(function () use ($id) {
-            $this->paymentMethodRepository->delete($id);
-
-            return successResponse(__('messages.delete.success'));
-        }, __('messages.delete.error'));
-    }
 }

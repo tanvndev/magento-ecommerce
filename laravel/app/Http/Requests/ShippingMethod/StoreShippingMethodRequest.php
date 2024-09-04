@@ -26,7 +26,7 @@ class StoreShippingMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|required',
+            'code' => 'string|required|unique',
             'base_cost' => 'required|numeric',
             'image' => 'string',
         ];
@@ -38,7 +38,7 @@ class StoreShippingMethodRequest extends FormRequest
             'name' => 'Tên phương thức vận chuyển',
             'code' => 'Mã phương thức vận chuyển',
             'image' => 'Ảnh phương thức vận chuyển',
-            'base_cost' => 'Giá cố định của phương thức vận chuyển'
+            'base_cost' => 'Giá cố định của phương thức vận chuyển',
         ];
     }
 

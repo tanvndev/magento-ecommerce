@@ -3,8 +3,8 @@
 namespace App\Http\Requests\SystemConfig;
 
 use App\Enums\ResponseEnum;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateSystemConfigRequest extends FormRequest
@@ -26,7 +26,7 @@ class UpdateSystemConfigRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer',
-            'code' => 'required|string|unique:system_configurations,code,' . $this->system_config,
+            'code' => 'required|string|unique:system_configurations,code,'.$this->system_config,
         ];
     }
 
@@ -43,7 +43,8 @@ class UpdateSystemConfigRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator){
+    protected function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(response()->json([
             'messages' => $validator->errors(),
         ], ResponseEnum::UNPROCESSABLE_ENTITY));

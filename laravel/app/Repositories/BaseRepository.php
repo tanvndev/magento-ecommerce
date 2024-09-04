@@ -70,11 +70,11 @@ class BaseRepository implements BaseRepositoryInterface
     ) {
         $query = $this->model->newQuery()->whereIn($field, $values);
 
-        if (!empty($columns)) {
+        if (! empty($columns)) {
             $query->select($columns);
         }
 
-        if (!empty($relations)) {
+        if (! empty($relations)) {
             $query->with($relations);
         }
 
@@ -87,7 +87,7 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->select($column);
         $query->whereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $value) {
-                $query->where($alias . '.' . $key, $value);
+                $query->where($alias.'.'.$key, $value);
             }
         });
 

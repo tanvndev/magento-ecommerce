@@ -3,32 +3,32 @@
 return [
     'create' => [
         'success' => 'Tạo mới bản ghi thành công.',
-        'error' => 'Tạo mới bản ghi thất bại.'
+        'error' => 'Tạo mới bản ghi thất bại.',
     ],
     'update' => [
         'success' => 'Cập nhật bản ghi thành công.',
-        'error' => 'Cập nhật bản ghi thất bại.'
+        'error' => 'Cập nhật bản ghi thất bại.',
     ],
     'show' => [
         'success' => 'Hiển thị bản ghi thành công.',
-        'error' => 'Không thể hiển thị bản ghi.'
+        'error' => 'Không thể hiển thị bản ghi.',
     ],
     'delete' => [
         'success' => 'Xóa bản ghi thành công.',
-        'error' => 'Xóa bản ghi thất bại.'
+        'error' => 'Xóa bản ghi thất bại.',
     ],
     'publish' => [
         'success' => 'Cập nhập trạng thái thành công.',
-        'error' => 'Cập nhập trạng thái thất bại.'
+        'error' => 'Cập nhập trạng thái thất bại.',
     ],
     'upload' => [
         'create' => [
             'success' => 'Tải lên tệp mới thành công.',
-            'error' => 'Tải lên tệp mới thất bại.'
+            'error' => 'Tải lên tệp mới thất bại.',
         ],
         'delete' => [
             'success' => 'Xóa tệp thành công.',
-            'error' => 'Xóa tệp thất bại.'
+            'error' => 'Xóa tệp thất bại.',
         ],
     ],
     'auth' => [

@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\SystemConfig\SystemConfigRepositoryInterface;
 class SystemConfigRepository extends BaseRepository implements SystemConfigRepositoryInterface
 {
     public $model;
+
     public function __construct(SystemConfiguration $model)
     {
         $this->model = $model;

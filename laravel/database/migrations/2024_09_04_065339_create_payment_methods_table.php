@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('code', 50)->unique();
-            $table->text('description')->nullable();
+            $table->string('description', 255)->nullable();
             $table->string('image')->nullable();
-            $table->integer('order');
+            $table->integer('order')->default(0);
             $table->json('settings')->nullable();
-            $table->tinyInteger('publish')->default('1');
+            $table->tinyInteger('publish')->default(1)->comment('1: Active, 2: Inactive');
             $table->timestamps();
         });
     }
