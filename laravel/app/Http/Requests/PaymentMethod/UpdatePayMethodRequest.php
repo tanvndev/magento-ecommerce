@@ -25,10 +25,10 @@ class UpdatePaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'      => 'string|required',
+            'name'      => 'string|unique',
             'code'      => 'string|required',
             'image'     => 'string|image',
-            'settings'  => 'string|required',
+            'settings'  => 'string',
         ];
     }
 
