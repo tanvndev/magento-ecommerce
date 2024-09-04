@@ -38,6 +38,9 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\SystemConfig\SystemConfigRepositoryInterface' => 'App\Repositories\SystemConfig\SystemConfigRepository',
         // ShippingMethod
         'App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface' => 'App\Repositories\ShippingMethod\ShippingMethodRepository',
+        // PaymentMethod
+        'App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface' => 'App\Repositories\PaymentMethod\PaymentMethodRepository',
+
     ];
 
     public function register(): void

@@ -41,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\ShippingMethod\ShippingMethodServiceInterface' => 'App\Services\ShippingMethod\ShippingMethodService',
         // SystemConfig
         'App\Services\Interfaces\SystemConfig\SystemConfigServiceInterface' => 'App\Services\SystemConfig\SystemConfigService',
+        // PaymentMethod
+        'App\Services\Interfaces\PaymentMethod\PaymentMethodServiceInterface' => 'App\Services\PaymentMethod\PaymentMethodService',
     ];
 
     public function register(): void
