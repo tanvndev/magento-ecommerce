@@ -64,4 +64,10 @@ lerna-debug.log*
 /.idea
 /.vscode
 
-
+# Nuxt dev/build outputs
+/.output
+/.data
+/.nuxt
+/.nitro
+/.cache
+/dist

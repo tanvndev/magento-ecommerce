@@ -6,6 +6,9 @@
       <a-col span="12">
         <InputComponent name="name" label="Tên cửa hàng" placeholder="Nhập tên cửa hàng" />
       </a-col>
+      <a-col span="12">
+        <InputComponent name="phone" label="Số điện thoại" placeholder="Nhập số điện thoại" />
+      </a-col>
     </a-row>
   </a-card>
 </template>
