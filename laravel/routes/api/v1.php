@@ -1,22 +1,23 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Attribute\AttributeController;
-use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
-use App\Http\Controllers\Api\V1\Auth\AuthController;
-use App\Http\Controllers\Api\V1\Auth\VerificationController;
-use App\Http\Controllers\Api\V1\Brand\BrandController;
-use App\Http\Controllers\Api\V1\DashboardController;
-use App\Http\Controllers\Api\V1\Location\{LocationController};
-use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
-use App\Http\Controllers\Api\V1\Permission\PermissionController;
-use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
-use App\Http\Controllers\Api\V1\Product\ProductController;
-use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
-use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
-use App\Http\Controllers\Api\V1\Upload\{UploadController};
-use App\Http\Controllers\Api\V1\User\UserCatalogueController;
-use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Controllers\Api\V1\Cart\CartController;
+use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Controllers\Api\V1\Brand\BrandController;
+use App\Http\Controllers\Api\V1\Product\ProductController;
+use App\Http\Controllers\Api\V1\Upload\{UploadController};
+use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\User\UserCatalogueController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeController;
+use App\Http\Controllers\Api\V1\Location\{LocationController};
+use App\Http\Controllers\Api\V1\Permission\PermissionController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
+use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
+use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
+use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
+use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,5 +102,13 @@ Route::middleware('log.request.response')->group(function () {
 
         // SYSTEM CONFIG ROUTE
         Route::apiResource('system-configs', SystemConfigController::class);
+
+        // CART ROUTE
+        Route::controller(CartController::class)->name('cart.')->group(function () {
+            Route::get('carts', 'index')->name('index');
+            Route::post('carts', 'store')->name('store');
+            Route::put('carts/{id}', 'update')->name('update');
+            Route::delete('carts/{id}', 'destroy')->name('destroy');
+        });
     });
 });

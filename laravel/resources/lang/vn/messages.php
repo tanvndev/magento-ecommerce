@@ -31,6 +31,17 @@ return [
             'error' => 'Xóa tệp thất bại.',
         ],
     ],
+    'cart' => [
+        'create' => [
+            'success' => 'Thêm giỏ hàng thành công.',
+            'error' => 'Thêm giỏ hàng thất bại!',
+            'stock' => 'Số lượng trong kho không đủ!.',
+        ],
+        'delete' => [
+            'success' => 'Xóa tệp thành công.',
+            'error' => 'Xóa tệp thất bại.',
+        ],
+    ],
     'auth' => [
         'register' => [
             'success' => 'Người dùng đã đăng ký thành công. Vui lòng kiểm tra email của bạn để xác nhận đăng ký.',
