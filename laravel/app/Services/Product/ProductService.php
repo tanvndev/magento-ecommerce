@@ -283,7 +283,13 @@ class ProductService extends BaseService implements ProductServiceInterface
                 request('pageSize', 20),
                 ['id' => 'desc'],
                 [],
-                ['attribute_values']
+                ['attribute_values'],
+                [],
+                [
+                    'product' => function ($q) {
+                        $q->where('publish', 1);
+                    }
+                ]
             );
 
         return $data;

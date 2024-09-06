@@ -47,11 +47,12 @@ interface BaseRepositoryInterface
     public function pagination(
         $column = ['*'],
         $condition = [],
-        $perPage = 1,
-        $orderBy = [],
+        $perPage = 10,
+        $orderBy = ['id' => 'DESC'],
         $join = [],
         $relations = [],
         $groupBy = [],
+        $withWhereHas = [],
         $rawQuery = [],
     );
 }
