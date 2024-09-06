@@ -5,7 +5,7 @@ namespace App\Services\Interfaces\Cart;
 interface CartServiceInterface{
 public function getCart();
 
-public function StoreOrUpdate($request);
+public function CreateOrUpdate($request);
 
 public function deleteOneItem($request);
 

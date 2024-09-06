@@ -107,8 +107,9 @@ Route::middleware('log.request.response')->group(function () {
         Route::controller(CartController::class)->name('cart.')->group(function () {
             Route::get('carts', 'index')->name('index');
             Route::post('carts', 'store')->name('store');
-            Route::put('carts/{id}', 'update')->name('update');
+            Route::put('carts', 'update')->name('update');
             Route::delete('carts/{id}', 'destroy')->name('destroy');
+            Route::delete('carts/clear', 'forceDestroy')->name('force-destroy');
         });
     });
 });

@@ -58,4 +58,9 @@ class ProductVariant extends Model
     {
         return $this->belongsToMany(AttributeValue::class, 'product_variant_attribute_value', 'product_variant_id', 'attribute_value_id');
     }
+
+    public function cart_items ()
+    {
+        return $this->hasMany(CartItem::class);
+    }
 }
