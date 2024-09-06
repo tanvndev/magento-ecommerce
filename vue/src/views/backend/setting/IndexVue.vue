@@ -46,5 +46,5 @@ import PaymentView from './partials/PaymentView.vue';
 import ShippingView from './partials/ShippingView.vue';
 import StoreView from './partials/StoreView.vue';
 
-const activeKey = ref('store');
+const activeKey = ref('payment');
 </script>

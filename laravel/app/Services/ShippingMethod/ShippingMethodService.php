@@ -20,17 +20,15 @@ class ShippingMethodService extends BaseService implements ShippingMethodService
 
     public function paginate()
     {
-        $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
+        $select = ['id', 'name', 'publish', 'description', 'base_cost', 'image'];
+        $data = $this->shippingMethodRepository->all($select);
 
-        ];
-        $select = ['id', 'name', 'publish', 'description', 'code', 'image'];
-        $pageSize = request('pageSize');
+        return $data;
+    }
 
-        $data = $pageSize && request('page')
-            ? $this->shippingMethodRepository->pagination($select, $condition, $pageSize)
-            : $this->shippingMethodRepository->all($select);
+    public function list()
+    {
+        $data = $this->shippingMethodRepository->findByWhere(['publish' => 1]);
 
         return $data;
     }

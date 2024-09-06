@@ -26,7 +26,7 @@ class StorePaymentMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|required|unique',
+            'code' => 'string|unique',
             'image' => 'string',
         ];
     }

@@ -6,5 +6,5 @@ interface SystemConfigServiceInterface
 {
     public function all();
 
-    public function update($id);
+    public function update();
 }

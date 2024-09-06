@@ -26,7 +26,7 @@ class StoreShippingMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|required|unique',
+            'code' => 'string|unique',
             'base_cost' => 'required|numeric',
             'image' => 'string',
         ];

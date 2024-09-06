@@ -26,7 +26,7 @@ class UpdateShippingMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|required|unique:shipping_methods,code,'.$this->shipping_method,
+            'code' => 'string|unique:shipping_methods,code,'.$this->shipping_method,
             'base_cost' => 'required|numeric',
             'image' => 'string',
         ];
