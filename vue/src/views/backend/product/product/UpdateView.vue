@@ -29,6 +29,15 @@
                       label="Mô tả ngắn của sản phẩm"
                     />
                   </a-col>
+                  <a-col span="24" class="-mt-5">
+                    <SelectComponent
+                      name="shipping_ids"
+                      label="Lớp giao hàng"
+                      mode="multiple"
+                      placeholder="Chọn lớp giao hàng"
+                      :options="state.paymentMethods"
+                    />
+                  </a-col>
                 </a-row>
               </a-card>
             </a-col>
@@ -152,7 +161,8 @@ const state = reactive({
   attributeEnableOld: [],
   attributeEnableIds: [],
   productType: '',
-  upsellIds: []
+  upsellIds: [],
+  paymentMethods: []
 });
 
 const store = useStore();
@@ -193,19 +203,37 @@ watch(errors, (newErrors) => {
 
 const fetchOne = async () => {
   await getOne(state.endpoint, id.value);
-  const productType = data.value?.product_type;
+  const {
+    product_type,
+    name,
+    description,
+    excerpt,
+    meta_title,
+    meta_description,
+    canonical,
+    brand_id,
+    product_catalogue_ids,
+    attribute_not_enabled_ids,
+    attribute_not_enabled,
+    attribute_enabled,
+    attribute_enabled_ids,
+    upsell_ids,
+    shipping_ids
+  } = data.value;
+
   setValues({
-    name: data.value?.name,
-    description: data.value?.description,
-    excerpt: data.value?.excerpt,
-    meta_title: data.value?.meta_title,
-    meta_description: data.value?.meta_description,
-    canonical: data.value?.canonical,
-    product_type: productType,
-    brand_id: data.value?.brand_id,
-    product_catalogue_id: data.value?.product_catalogue_ids,
-    attribute_id: data.value?.attribute_not_enabled_ids,
-    upsell_ids: data.value?.upsell_ids
+    name,
+    description,
+    excerpt,
+    meta_title,
+    meta_description,
+    canonical,
+    product_type,
+    brand_id,
+    product_catalogue_id: product_catalogue_ids,
+    attribute_id: attribute_not_enabled_ids,
+    upsell_ids,
+    shipping_ids
   });
 
   if (!_.isEmpty(data.value?.variants)) {
@@ -216,25 +244,25 @@ const fetchOne = async () => {
     state.upsellIds = data.value?.upsell_ids;
   }
 
-  if (!_.isEmpty(productType)) {
-    state.productType = productType;
-    store.commit('productStore/setProductType', productType);
+  if (!_.isEmpty(product_type)) {
+    state.productType = product_type;
+    store.commit('productStore/setProductType', product_type);
   }
 
-  if (!_.isEmpty(data.value?.attribute_not_enabled_ids)) {
-    state.attributeNotEnableIds = data.value?.attribute_not_enabled_ids;
+  if (!_.isEmpty(attribute_not_enabled_ids)) {
+    state.attributeNotEnableIds = attribute_not_enabled_ids;
   }
 
-  if (!_.isEmpty(data.value?.attribute_not_enabled)) {
-    state.attributeNotEnableOld = data.value?.attribute_not_enabled;
+  if (!_.isEmpty(attribute_not_enabled)) {
+    state.attributeNotEnableOld = attribute_not_enabled;
   }
 
-  if (!_.isEmpty(data.value?.attribute_enabled)) {
-    state.attributeEnableOld = data.value?.attribute_enabled;
+  if (!_.isEmpty(attribute_enabled)) {
+    state.attributeEnableOld = attribute_enabled;
   }
 
-  if (!_.isEmpty(data.value?.attribute_enabled_ids)) {
-    state.attributeEnableIds = data.value?.attribute_enabled_ids;
+  if (!_.isEmpty(attribute_enabled_ids)) {
+    state.attributeEnableIds = attribute_enabled_ids;
   }
 };
 
@@ -259,10 +287,16 @@ const getAttributes = async () => {
   state.attributeData = data.value;
 };
 
+const getAllShippingMethods = async () => {
+  await getAll('shipping-methods', { list: true });
+  state.paymentMethods = formatDataToSelect(data.value);
+};
+
 onMounted(async () => {
   getProductCatalogues();
   getBrands();
   getAttributes();
+  getAllShippingMethods();
   if (id.value) {
     fetchOne();
   }
