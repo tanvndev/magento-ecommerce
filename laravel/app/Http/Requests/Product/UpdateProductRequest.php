@@ -54,11 +54,4 @@ class UpdateProductRequest extends FormRequest
             'product_type.in' => 'Bạn không thể chuyển loại sản phẩm vui lòng thử lại.',
         ];
     }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
-    }
 }

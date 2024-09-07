@@ -52,11 +52,4 @@ class StoreUserRequest extends FormRequest
             'phone.regex' => 'Số điện thoại không đúng dạng.',
         ];
     }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
-    }
 }

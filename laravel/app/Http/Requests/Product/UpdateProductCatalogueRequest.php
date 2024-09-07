@@ -26,7 +26,7 @@ class UpdateProductCatalogueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique|product_catalogues,canonical,'.$this->catalogue,
+            'canonical' => 'unique|product_catalogues,canonical,' . $this->catalogue,
         ];
     }
 
@@ -41,12 +41,5 @@ class UpdateProductCatalogueRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

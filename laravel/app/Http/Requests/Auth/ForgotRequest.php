@@ -40,11 +40,4 @@ class ForgotRequest extends FormRequest
     {
         return __('request.messages');
     }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
-    }
 }
