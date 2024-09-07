@@ -22,6 +22,8 @@ class PaymentMethodResource extends JsonResource
             'image' => $this->image,
             'order' => $this->order,
             'publish' => $this->publish,
+            'status' => $this->publish == 1 ? 'Đang sử dụng' : 'Hủy sử dụng',
+            'color' => $this->publish == 1 ? 'green' : 'red',
             'settings' => $this->settings,
         ];
     }

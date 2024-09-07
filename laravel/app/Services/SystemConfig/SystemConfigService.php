@@ -18,25 +18,32 @@ class SystemConfigService extends BaseService implements SystemConfigServiceInte
 
     public function all()
     {
-        return $this->systemConfigRepository->all();
+        $data = $this->systemConfigRepository->all();
+
+        $result = $data->mapWithKeys(function ($item) {
+            return [$item->code => $item->content];
+        });
+
+        return $result;
     }
 
-    public function update($id)
+    public function update()
     {
-        return $this->executeInTransaction(function () use ($id) {
+        return $this->executeInTransaction(function () {
 
-            $payload = $this->preparePayload();
-            $this->systemConfigRepository->update($id, $payload);
+            $payload = request()->except('_token', '_method');
+
+            foreach ($payload as $key => $value) {
+                $payload = [
+                    'code' => $key,
+                    'content' => $value,
+                    'user_id' => auth()->user()->id,
+                ];
+                $condition = ['code' => $key];
+                $this->systemConfigRepository->updateOrCreate($payload, $condition);
+            }
 
             return successResponse(__('messages.update.success'));
         }, __('messages.update.error'));
-    }
-
-    private function preparePayload(): array
-    {
-        $payload = request()->except('_token', '_method');
-        $payload['user_id'] = auth()->user()->id;
-
-        return $payload;
     }
 }

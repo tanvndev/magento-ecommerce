@@ -26,7 +26,7 @@ class UpdatePermissionRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'canonical' => 'required|string|unique:permissions,canonical,'.$this->permission,
+            'canonical' => 'required|string|unique:permissions,canonical,' . $this->permission,
         ];
     }
 
@@ -41,12 +41,5 @@ class UpdatePermissionRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

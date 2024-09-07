@@ -26,7 +26,7 @@ class UpdateBrandRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique:brands,canonical,'.$this->brand,
+            'canonical' => 'unique:brands,canonical,' . $this->brand,
         ];
     }
 
@@ -41,12 +41,5 @@ class UpdateBrandRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

@@ -26,7 +26,7 @@ class StoreShippingMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|required|unique',
+            'code' => 'string|unique',
             'base_cost' => 'required|numeric',
             'image' => 'string',
         ];
@@ -45,12 +45,5 @@ class StoreShippingMethodRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

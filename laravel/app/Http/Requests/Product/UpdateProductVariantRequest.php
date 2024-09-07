@@ -64,11 +64,4 @@ class UpdateProductVariantRequest extends FormRequest
             'variable_is_used.in' => 'Sản phẩm đã bị khóa vui lòng chọn khác.',
         ];
     }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
-    }
 }

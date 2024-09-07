@@ -100,6 +100,7 @@ Route::middleware('log.request.response')->group(function () {
         Route::apiResource('payment-methods', PaymentMethodController::class);
 
         // SYSTEM CONFIG ROUTE
-        Route::apiResource('system-configs', SystemConfigController::class);
+        Route::get('system-configs', [SystemConfigController::class, 'index']);
+        Route::put('system-configs', [SystemConfigController::class, 'update']);
     });
 });

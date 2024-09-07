@@ -1,9 +1,5 @@
 <template>
-    <!-- Filter -->
-    <!-- <FilterComponent @onFilter="onFilterOptions" /> -->
-
     <a-card>
-
         <a-space :size="12" class="flex justify-between">
             <div>
                 <a-button @click="state.openCreateValue = true">

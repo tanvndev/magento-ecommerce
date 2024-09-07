@@ -28,22 +28,13 @@ class SystemConfigController extends Controller
 
     public function index()
     {
-        $systemConfig = $this->systemConfigService->all();
-        $data = new SystemConfigCollection($systemConfig);
-
+        $data = $this->systemConfigService->all();
         return successResponse('', $data);
     }
 
-    public function show(string $id)
+    public function update()
     {
-        $systemConfig = new SystemConfigResource($this->systemConfigRepository->findById($id));
-
-        return successResponse('', $systemConfig);
-    }
-
-    public function update(UpdateSystemConfigRequest $request, $id)
-    {
-        $response = $this->systemConfigService->update($id);
+        $response = $this->systemConfigService->update();
 
         return handleResponse($response, ResponseEnum::CREATED);
     }

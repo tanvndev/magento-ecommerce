@@ -25,8 +25,8 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string|email|unique:users,email,'.$this->user,
-            'phone' => 'required|unique:users,phone,'.$this->user,
+            'email' => 'required|string|email|unique:users,email,' . $this->user,
+            'phone' => 'required|unique:users,phone,' . $this->user,
             'fullname' => 'required|string',
             'user_catalogue_id' => 'required|integer|gt:0',
 
@@ -47,12 +47,5 @@ class UpdateUserRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

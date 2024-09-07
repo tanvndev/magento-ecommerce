@@ -42,7 +42,7 @@ class StoreProductRequest extends FormRequest
                 $price = $item['price'] ?? null;
                 $sale_price = $item['sale_price'] ?? null;
                 if ($price && $sale_price) {
-                    $rules['variable.'.$key.'.sale_price'] = 'numeric|lt:variable.'.$key.'.price';
+                    $rules['variable.' . $key . '.sale_price'] = 'numeric|lt:variable.' . $key . '.price';
                 }
             }
         }
@@ -71,12 +71,5 @@ class StoreProductRequest extends FormRequest
         return __('request.messages') + [
             'variable.*.sale_price.lt' => 'Giá khuyến mãi biến thể phải nhỏ hơn giá bán biến thể.',
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

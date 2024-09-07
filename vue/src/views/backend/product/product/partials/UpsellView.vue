@@ -40,17 +40,19 @@
 
     <!-- Modal -->
     <a-modal v-model:open="state.open" width="1000px" title="Nhập tìm kiếm sản phẩm" class="top-3">
-      <a-input
-        v-model:value="state.search"
-        @change="handleSearch"
-        placeholder="Tìm kiếm theo tên sản phẩm"
-        size="large"
-      >
-        <template #prefix>
-          <i class="far fa-search pr-1 text-gray-500"></i>
-        </template>
-      </a-input>
-      <div class="mt-5 border-t pt-5">
+      <div class="mt-5">
+        <a-input
+          v-model:value="state.search"
+          @change="handleSearch"
+          placeholder="Tìm kiếm theo tên sản phẩm"
+          size="large"
+        >
+          <template #prefix>
+            <i class="far fa-search pr-1 text-gray-500"></i>
+          </template>
+        </a-input>
+      </div>
+      <div class="my-5 border-t pt-5" v-if="state.dataSource.length > 0">
         <a-table
           bordered
           :columns="columns"
@@ -82,6 +84,20 @@
             </template>
           </template>
         </a-table>
+      </div>
+      <div v-else class="my-10">
+        <a-empty
+          image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"
+          :image-style="{
+            height: '60px',
+            display: 'inline-block',
+            'text-align': 'center'
+          }"
+        >
+          <template #description>
+            <span> Vui lòng nhập để tìm kiếm sản phẩm. </span>
+          </template>
+        </a-empty>
       </div>
 
       <template #footer>

@@ -26,7 +26,7 @@ class StorePaymentMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|required|unique',
+            'code' => 'string|unique',
             'image' => 'string',
         ];
     }
@@ -43,12 +43,5 @@ class StorePaymentMethodRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }
