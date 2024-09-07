@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\PaymentMethod;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class UpdatePaymentMethodRequest extends FormRequest
 {
@@ -25,7 +23,7 @@ class UpdatePaymentMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|unique,payment_methods,code,' . $this->payment_method,
+            'code' => 'string|unique,payment_methods,code,'.$this->payment_method,
             'image' => 'string',
         ];
     }

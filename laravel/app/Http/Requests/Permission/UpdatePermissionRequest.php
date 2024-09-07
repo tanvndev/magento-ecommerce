@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Permission;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class UpdatePermissionRequest extends FormRequest
 {
@@ -25,7 +23,7 @@ class UpdatePermissionRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'canonical' => 'required|string|unique:permissions,canonical,' . $this->permission,
+            'canonical' => 'required|string|unique:permissions,canonical,'.$this->permission,
         ];
     }
 

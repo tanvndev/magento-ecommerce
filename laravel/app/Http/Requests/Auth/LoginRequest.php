@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Enums\ResponseEnum;
 use App\Models\User;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class LoginRequest extends FormRequest
 {

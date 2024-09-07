@@ -18,7 +18,6 @@ class Widget extends Model
         'advertisement_banners' => 'json',
     ];
 
-
     protected static function boot()
     {
         parent::boot();
@@ -42,7 +41,7 @@ class Widget extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $code = "{$originalCode}-" . $count++;
+            $code = "{$originalCode}-".$count++;
         }
 
         return $code;

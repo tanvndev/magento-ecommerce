@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Attribute;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class StoreAttributeRequest extends FormRequest
 {

@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Brand;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class UpdateBrandRequest extends FormRequest
 {
@@ -25,7 +23,7 @@ class UpdateBrandRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique:brands,canonical,' . $this->brand,
+            'canonical' => 'unique:brands,canonical,'.$this->brand,
         ];
     }
 

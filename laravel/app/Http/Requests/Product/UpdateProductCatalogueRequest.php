@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class UpdateProductCatalogueRequest extends FormRequest
 {
@@ -25,7 +23,7 @@ class UpdateProductCatalogueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique|product_catalogues,canonical,' . $this->catalogue,
+            'canonical' => 'unique|product_catalogues,canonical,'.$this->catalogue,
         ];
     }
 

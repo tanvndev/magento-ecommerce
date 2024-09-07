@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\ShippingMethod;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class StoreShippingMethodRequest extends FormRequest
 {

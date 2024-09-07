@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Widget;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class UpdateWidgetRequest extends FormRequest
 {
@@ -25,7 +23,7 @@ class UpdateWidgetRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique:brands,canonical,' . $this->brand,
+            'canonical' => 'unique:brands,canonical,'.$this->brand,
         ];
     }
 

@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests\Product;
 
-use App\Enums\ResponseEnum;
 use App\Models\Product;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class UpdateProductRequest extends FormRequest
 {

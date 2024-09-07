@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Attribute;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class UpdateAttributeRequest extends FormRequest
 {
@@ -25,7 +23,7 @@ class UpdateAttributeRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required|unique:attributes,code,' . $this->attribute,
+            'code' => 'required|unique:attributes,code,'.$this->attribute,
         ];
     }
 

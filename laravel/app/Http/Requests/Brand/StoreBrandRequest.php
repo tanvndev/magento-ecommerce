@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Brand;
 
-
 use Illuminate\Foundation\Http\FormRequest;
-
 
 class StoreBrandRequest extends FormRequest
 {
