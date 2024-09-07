@@ -40,4 +40,12 @@ class DashboardController extends Controller
 
         return handleResponse($response);
     }
+
+    public function getDataByModel(Request $request)
+    {
+        $serviceInstance = getServiceInstance($request->model);
+        $response = $serviceInstance->paginate();
+
+        return handleResponse($response);
+    }
 }

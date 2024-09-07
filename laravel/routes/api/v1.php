@@ -58,6 +58,7 @@ Route::middleware('log.request.response')->group(function () {
             Route::put('changeStatus', [DashboardController::class, 'changeStatus'])->name('changeStatus');
             Route::put('changeStatusMultiple', [DashboardController::class, 'changeStatusMultiple'])->name('changeStatusMultiple');
             Route::delete('deleteMultiple', [DashboardController::class, 'deleteMultiple'])->name('deleteMultiple');
+            Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
 
         // USER ROUTE

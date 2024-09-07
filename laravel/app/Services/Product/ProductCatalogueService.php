@@ -50,7 +50,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             ];
         }
 
-        $data = $this->productCatalogueRepository->all($select, ['childrens'], $orderBy);
+        $data = $this->productCatalogueRepository->findByWhere(['publish' => 1], $select, ['childrens'], true, $orderBy);
 
         return successResponse('', $data);
     }

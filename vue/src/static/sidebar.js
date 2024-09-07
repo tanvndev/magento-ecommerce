@@ -67,6 +67,13 @@ const sidebar = [
     ]
   },
   {
+    id: 'widget_sidebar',
+    icon: 'fas fa-shapes text-[16px]',
+    name: 'Widget',
+    route: 'widget.index',
+    subMenu: []
+  },
+  {
     id: 'setting_sidebar',
     icon: 'fas fa-cog text-[16px]',
     name: 'Cấu hình',

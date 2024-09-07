@@ -64,6 +64,33 @@ const STOCK_STATUS = [
     label: 'Hết hàng'
   }
 ];
+
+const WIDGET_MODEL = [
+  {
+    value: 'Product',
+    label: 'Sản phẩm'
+  },
+  {
+    value: 'ProductCatalogue',
+    label: 'Nhóm sản phẩm'
+  },
+  {
+    value: 'Brand',
+    label: 'Thương hiệu'
+  }
+];
+
+const WIDGET_TYPE = [
+  {
+    value: 'advertisement',
+    label: 'Hiển thị dạng quảng cáo'
+  },
+  {
+    value: 'product',
+    label: 'Hiển thị dạng sản phẩm'
+  }
+];
+
 export {
   PUBLISH,
   PAGESIZE,
@@ -71,5 +98,7 @@ export {
   TAXT_STATUS,
   WAREHOUSE_CONFIG,
   STOCK_STATUS,
-  LARAVEL_URL
+  LARAVEL_URL,
+  WIDGET_MODEL,
+  WIDGET_TYPE
 };
