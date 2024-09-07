@@ -33,16 +33,18 @@ return [
     ],
     'cart' => [
         'success'   => [
-            'create'    => 'Thêm giỏ hàng thành công.',
-            'update'    => 'Cập nhật giỏ hàng thành công.',
-            'delete'    => 'Xóa thành công.',
+            'create'            => 'Thêm giỏ hàng thành công.',
+            'update'            => 'Cập nhật giỏ hàng thành công.',
+            'delete'            => 'Xóa thành công.',
+            'clear'             => 'Xóa thành công giỏ hàng.',
         ],
         'error'     => [
-            'not_found' => 'Sản phẩm không tồn tại trên hệ thống!',
-            'max'       => 'Số lượng trong kho không đủ!',
-            'min'       => 'Số lượng đã đạt đến giá trị tối thiểu!',
-            'delete'    => 'Xóa thất bại!',
-            "item_not_found" => "Sản phẩm này không có trong giỏ hàng!",
+            'not_found'         => 'Sản phẩm không tồn tại trên hệ thống!',
+            'max'               => 'Số lượng trong kho không đủ!',
+            'min'               => 'Số lượng trong giỏ hàng không đủ!',
+            'delete'            => 'Xóa thất bại!',
+            "item_not_found"    => "Sản phẩm này không có trong giỏ hàng!",
+            'cart_not_found'    => "Người dùng chưa có giỏ hàng!"
         ],
     ],
     'auth' => [

@@ -2,16 +2,13 @@
 
 namespace App\Services\Interfaces\Cart;
 
-interface CartServiceInterface{
-public function getCart();
+interface CartServiceInterface
+{
+    public function getCart();
 
-public function CreateOrUpdate($request);
+    public function createOrUpdate($request);
 
-public function deleteOneItem($request);
+    public function deleteOneItem($request);
 
-public function deleteAllCart();
-
-
+    public function clearCart();
 }
-
-?>

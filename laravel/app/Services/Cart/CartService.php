@@ -19,41 +19,27 @@ class CartService extends BaseService implements CartServiceInterface
     public function __construct(
         CartRepositoryInterface $cartRepository,
         ProductVariantRepositoryInterface $productVariantRepository,
-        AttributeValueRepositoryInterface $attributeValueRepository
     ) {
         $this->cartRepository = $cartRepository;
         $this->productVariantRepository = $productVariantRepository;
-        $this->attributeValueRepository = $attributeValueRepository;
     }
 
 
     public function getCart()
     {
-        $userId = auth()->user()->id;
+        $userId     = auth()->user()->id;
 
-        $cart = $this->cartRepository->findByWhere(["user_id" => $userId], ['*'], ["cart_items.product_variant.attribute_values"]);
+        $cart       = $this->cartRepository
+            ->findByWhere(
+                ["user_id" => $userId],
+                ['*'],
+                ["cart_items.product_variant.attribute_values"]
+            );
 
-        $result = [];
-
-        if (!empty($cart) && !empty($cart->cart_items)) {
-            foreach ($cart->cart_items as $cartItem) {
-                $productVariant = $cartItem['product_variant'];
-
-                $result[] = [
-                    'quantity' => $cartItem['quantity'],
-                    'name' => $productVariant['name'],
-                    'price' => $productVariant['price'],
-                    'sale_price' => $productVariant['sale_price'],
-                    'image' => $productVariant['image'],
-                    'attributes' => implode(' - ', array_column($productVariant['attribute_values']->toArray(), 'name'))
-                ];
-            }
-        }
-
-        return $result;
+        return $cart->cart_items ?? collect();
     }
 
-    public function CreateOrUpdate($request)
+    public function createOrUpdate($request)
     {
 
         return $this->executeInTransaction(function () use ($request) {
@@ -83,10 +69,19 @@ class CartService extends BaseService implements CartServiceInterface
 
             if ($existingCartItem) {
 
-                $newQuantity = $existingCartItem->quantity + ($request->plus ? $request->quantity : -$request->quantity);
+                $newQuantity = $existingCartItem->quantity + ($request->minus ? -1 : 1);
 
                 if ($newQuantity > $productVariant->stock) {
                     return errorResponse(__('messages.cart.error.max'));
+                }
+
+                if ($newQuantity < 1) {
+                    return errorResponse(__('messages.cart.error.min'));
+                }
+
+                // xử lý sự kiện khi không bấm
+                if (!isset($request->minus) && !isset($request->plus)) {
+                    $newQuantity = $request->quantity;
                 }
 
                 $existingCartItem->update(['quantity' => $newQuantity]);
@@ -118,6 +113,10 @@ class CartService extends BaseService implements CartServiceInterface
 
             $cart = $this->cartRepository->findByWhere(["user_id" => $userId]);
 
+            if (!$cart) {
+                return errorResponse(__('messages.cart.error.not_found'));
+            }
+
             $cartItem = $cart->cart_items()->where('id', $id)->first();
 
             if ($cartItem) {
@@ -140,5 +139,19 @@ class CartService extends BaseService implements CartServiceInterface
         }, __('messages.cart.error.item_not_found'));
     }
 
-    public function deleteAllCart() {}
+    public function clearCart()
+    {
+
+        return $this->executeInTransaction(function () {
+            $user = auth()->user();
+
+            if (!$user->cart) {
+                return errorResponse(__('messages.cart.error.cart_not_found'));
+            }
+
+            $user->cart->delete();
+
+            return successResponse(__('messages.cart.success.clear'));
+        }, __('messages.cart.error.delete'));
+    }
 }
