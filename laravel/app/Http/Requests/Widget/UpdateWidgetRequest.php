@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Brand;
+namespace App\Http\Requests\Widget;
 
 
 use Illuminate\Foundation\Http\FormRequest;

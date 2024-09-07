@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('code', 255)->unique();
             $table->string('type', 50);
             $table->string('description', 255)->nullable();
-            $table->string('model', 50);
+            $table->string('model', 50)->nullable();
             $table->json('model_ids')->nullable();
-            $table->json('album')->nullable();
+            $table->json('advertisement_banners')->nullable()->comment('banner quang cao bao gom tat ca thong tin ve quang cao do');
             $table->unsignedTinyInteger('order')->default(1);
             $table->tinyInteger('publish')->default(1)->comment('1: Active, 2: Inactive');
             $table->softDeletes();

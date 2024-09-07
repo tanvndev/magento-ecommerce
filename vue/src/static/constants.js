@@ -82,12 +82,12 @@ const WIDGET_MODEL = [
 
 const WIDGET_TYPE = [
   {
-    value: 'advertisement',
-    label: 'Hiển thị dạng quảng cáo'
-  },
-  {
     value: 'product',
     label: 'Hiển thị dạng sản phẩm'
+  },
+  {
+    value: 'advertisement',
+    label: 'Hiển thị dạng quảng cáo'
   }
 ];
 

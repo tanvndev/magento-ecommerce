@@ -58,15 +58,19 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  watch(value, () => {
-    if (value.value) {
-      if (isJSONString(value.value)) {
-        fileList.value = getImageToAnt(JSON.parse(value.value));
-      } else {
-        fileList.value = getImageToAnt(value.value);
+  watch(
+    value,
+    () => {
+      if (value.value) {
+        if (isJSONString(value.value)) {
+          fileList.value = getImageToAnt(JSON.parse(value.value));
+        } else {
+          fileList.value = getImageToAnt(value.value);
+        }
       }
-    }
-  });
+    },
+    { immediate: true }
+  );
 });
 
 watch(fileList, (newFiles) => {

@@ -40,6 +40,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface' => 'App\Repositories\ShippingMethod\ShippingMethodRepository',
         // PaymentMethod
         'App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface' => 'App\Repositories\PaymentMethod\PaymentMethodRepository',
+        // Widget
+        'App\Repositories\Interfaces\Widget\WidgetRepositoryInterface' => 'App\Repositories\Widget\WidgetRepository',
 
     ];
 

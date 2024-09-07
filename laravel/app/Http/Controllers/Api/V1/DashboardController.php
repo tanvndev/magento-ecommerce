@@ -46,6 +46,6 @@ class DashboardController extends Controller
         $serviceInstance = getServiceInstance($request->model);
         $response = $serviceInstance->paginate();
 
-        return handleResponse($response);
+        return successResponse('', $response);
     }
 }

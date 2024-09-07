@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto mb-[50px] min-h-screen">
+      <div class="container mx-auto pb-[100px] min-h-screen">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
@@ -44,7 +44,7 @@
                     />
                   </a-col>
                 </a-row>
-                <a-row :gutter="[16, 16]" class="mt-6">
+                <a-row :gutter="[16, 16]" class="mt-6" v-if="state.type == 'product'">
                   <a-col :span="24">
                     <SelectComponent
                       name="model"
@@ -56,13 +56,22 @@
                     />
                   </a-col>
 
-                  <a-col span="24">
-                    <SearchProductView />
+                  <a-col span="24" v-if="state.model == 'Product'">
+                    <SearchProductView :old-value="state.modelIds" />
                   </a-col>
-                  <a-col span="24">
-                    <SearchCatalogueView :model="state.model"/>
+                  <a-col
+                    span="24"
+                    v-if="state.model == 'Brand' || state.model == 'ProductCatalogue'"
+                  >
+                    <SearchCatalogueView :model="state.model" :modelIdOld="state.modelIds" />
                   </a-col>
                 </a-row>
+
+                <!-- Advertisement -->
+                <AdvertisementView
+                  v-if="state.type == 'advertisement'"
+                  :advertisementBanners="state.advertisementBanners"
+                />
               </a-card>
             </a-col>
           </a-row>
@@ -97,6 +106,7 @@ import { useCRUD } from '@/composables';
 import { WIDGET_MODEL, WIDGET_TYPE } from '@/static/constants';
 import SearchProductView from './partials/SearchProductView.vue';
 import SearchCatalogueView from './partials/SearchCatalogueView.vue';
+import AdvertisementView from './partials/AdvertisementView.vue';
 
 // VARIABLES
 
@@ -106,14 +116,16 @@ const id = computed(() => router.currentRoute.value.params.id || null);
 
 // STATE
 const state = reactive({
-  endpoint: 'brands',
+  endpoint: 'widgets',
   pageTitle: 'Thêm mới widget',
   errors: {},
   type: '',
-  model: ''
+  model: '',
+  advertisementBanners: [],
+  modelIds: []
 });
 
-const { handleSubmit, setValues } = useForm({
+const { handleSubmit, setValues, setFieldValue } = useForm({
   validationSchema: yup.object({
     name: yup.string().required('Tên widget không được để trống.'),
     type: yup.string().required('Loại widget không được để trống.')
@@ -131,7 +143,7 @@ const onSubmit = handleSubmit(async (values) => {
 
   store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
   state.errors = {};
-  router.push({ name: 'brand.index' });
+  //   router.push({ name: 'brand.index' });
 });
 
 const handleType = (value) => {
@@ -144,17 +156,39 @@ const handleModel = (value) => {
 
 const fetchOne = async () => {
   await getOne(state.endpoint, id.value);
+
+  const { name, description, type, model, model_ids, advertisement_banners } = data.value;
+
   setValues({
-    name: data.value.name,
-    description: data.value.description,
-    canonical: data.value.canonical,
-    image: data.value.image
+    name,
+    description,
+    type,
+    model,
+    model_ids
   });
+
+  state.advertisementBanners = advertisement_banners;
+  state.modelIds = model_ids;
+
+  setOldValueForAdvertisementBanner();
+  handleType(type);
+  handleModel(model);
+};
+
+const setOldValueForAdvertisementBanner = () => {
+  if (state.advertisementBanners.length > 0) {
+    state.advertisementBanners.forEach((advertisementBanner, index) => {
+      setFieldValue(`alt[][${index}]`, advertisementBanner.alt || '');
+      setFieldValue(`image[][${index}]`, advertisementBanner.image || '');
+      setFieldValue(`url[][${index}]`, advertisementBanner.url || '');
+      setFieldValue(`content[][${index}]`, advertisementBanner.content || '');
+    });
+  }
 };
 
 onMounted(() => {
   if (id.value && id.value > 0) {
-    state.pageTitle = 'Cập nhập thương hiệu.';
+    state.pageTitle = 'Cập nhập widget.';
     fetchOne();
   }
 });

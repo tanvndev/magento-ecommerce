@@ -46,11 +46,25 @@
                 />
               </template>
 
-              <template v-if="column.dataIndex === 'action'">
-                <ActionComponent
-                  @onDelete="onDelete"
-                  :id="record.id"
-                  :routeUpdate="state.routeUpdate"
+              <template v-if="column.dataIndex === 'name'">
+                <RouterLink
+                  :to="{ name: 'widget.update', params: { id: record.id } }"
+                  class="text-blue-500"
+                  >{{ record.name }}</RouterLink
+                >
+              </template>
+              <template v-if="column.dataIndex === 'type'">
+                {{ typeName(record.type) }}
+              </template>
+
+              <template v-if="column.dataIndex === 'model'">
+                {{ modelName(record.model) }}
+              </template>
+
+              <template v-if="column.dataIndex === 'order'">
+                <EditOrderComponent
+                  :record="record"
+                  :dataSource="state.dataSource"
                   :endpoint="state.endpoint"
                 />
               </template>
@@ -71,10 +85,12 @@ import {
   FilterComponent,
   PublishSwitchComponent,
   ToolboxComponent,
-  ActionComponent
+  EditOrderComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
 import { resizeImage } from '@/utils/helpers';
+import { RouterLink } from 'vue-router';
+import { WIDGET_TYPE, WIDGET_MODEL } from '@/static/constants';
 
 // STATE
 const state = reactive({
@@ -91,38 +107,38 @@ const state = reactive({
 
 const columns = [
   {
-    title: 'Ảnh',
-    dataIndex: 'image',
-    key: 'image',
-    width: '10%'
-  },
-  {
-    title: 'Tên thương hiệu',
+    title: 'Tên widget',
     dataIndex: 'name',
-    key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name)
+    key: 'name'
   },
   {
-    title: 'Đường dẫn',
-    dataIndex: 'canonical',
-    key: 'canonical',
-    sorter: (a, b) => a.canonical.localeCompare(b.canonical)
+    title: 'Loại widget',
+    dataIndex: 'type',
+    key: 'type'
+  },
+  {
+    title: 'Module',
+    dataIndex: 'model',
+    key: 'model'
+  },
+  {
+    title: 'Vị trí',
+    dataIndex: 'order',
+    key: 'order',
+    width: '8%'
   },
   {
     title: 'Tình trạng',
     dataIndex: 'publish',
     key: 'publish',
     width: '7%'
-  },
-  {
-    title: 'Thực thi',
-    dataIndex: 'action',
-    key: 'action',
-    width: '6%'
   }
 ];
 
 const { getAll, loading } = useCRUD();
+
+const typeName = (type) => WIDGET_TYPE.find((item) => item.value === type)?.label || '-';
+const modelName = (model) => WIDGET_MODEL.find((item) => item.value === model)?.label || '-';
 
 // Pagination
 const {
@@ -162,10 +178,6 @@ const onFilterOptions = (filterValue) => {
 
 const onChangeToolbox = () => {
   fetchData();
-};
-
-const onDelete = (key) => {
-  state.dataSource = state.dataSource.filter((item) => item.key !== key);
 };
 
 // Lifecycle hook

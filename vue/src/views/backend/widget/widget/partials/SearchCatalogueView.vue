@@ -25,6 +25,10 @@ const props = defineProps({
   model: {
     type: String,
     default: ''
+  },
+  modelIdOld: {
+    type: Array,
+    default: () => []
   }
 });
 
@@ -45,6 +49,15 @@ watch(
   () => props.model,
   () => {
     getDataModel();
-  }
+  },
+  { immediate: true }
+);
+
+watch(
+  () => props.modelIdOld,
+  (newOldValue) => {
+    state.modelIds = newOldValue;
+  },
+  { immediate: true }
 );
 </script>

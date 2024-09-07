@@ -7,6 +7,21 @@ const sidebar = [
     subMenu: []
   },
   {
+    id: 'widget_sidebar',
+    icon: 'fas fa-shapes text-[16px]',
+    name: 'Widget',
+    route: 'widget.index',
+    active: ['widget'],
+    subMenu: []
+  },
+  {
+    id: 'setting_sidebar',
+    icon: 'fas fa-cog text-[16px]',
+    name: 'Cấu hình',
+    route: 'setting',
+    subMenu: []
+  },
+  {
     id: 'user_sidebar',
     icon: 'fas fa-users-medical',
     name: 'Thành viên',
@@ -65,20 +80,6 @@ const sidebar = [
         route: 'product.catalogue.index'
       }
     ]
-  },
-  {
-    id: 'widget_sidebar',
-    icon: 'fas fa-shapes text-[16px]',
-    name: 'Widget',
-    route: 'widget.index',
-    subMenu: []
-  },
-  {
-    id: 'setting_sidebar',
-    icon: 'fas fa-cog text-[16px]',
-    name: 'Cấu hình',
-    route: 'setting',
-    subMenu: []
   }
 ];
 export default sidebar;

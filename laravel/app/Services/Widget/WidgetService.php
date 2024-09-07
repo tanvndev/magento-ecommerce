@@ -2,20 +2,20 @@
 
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
-namespace App\Services\Brand;
+namespace App\Services\Widget;
 
-use App\Repositories\Interfaces\Brand\BrandRepositoryInterface;
+use App\Repositories\Interfaces\Widget\WidgetRepositoryInterface;
 use App\Services\BaseService;
-use App\Services\Interfaces\Brand\BrandServiceInterface;
+use App\Services\Interfaces\Widget\WidgetServiceInterface;
 
-class BrandService extends BaseService implements BrandServiceInterface
+class WidgetService extends BaseService implements WidgetServiceInterface
 {
-    protected $brandRepository;
+    protected $widgetRepository;
 
     public function __construct(
-        BrandRepositoryInterface $brandRepository,
+        WidgetRepositoryInterface $widgetRepository,
     ) {
-        $this->brandRepository = $brandRepository;
+        $this->widgetRepository = $widgetRepository;
     }
 
     public function paginate()
@@ -23,14 +23,13 @@ class BrandService extends BaseService implements BrandServiceInterface
         $condition = [
             'search' => addslashes(request('search')),
             'publish' => request('publish'),
-
         ];
-        $select = ['id', 'name', 'publish', 'description', 'canonical', 'image'];
+        $select = ['id', 'name', 'publish', 'description', 'code', 'advertisement_banners', 'type', 'model', 'order', 'model_ids'];
         $pageSize = request('pageSize');
 
         $data = $pageSize && request('page')
-            ? $this->brandRepository->pagination($select, $condition, $pageSize)
-            : $this->brandRepository->findByWhere(['publish' => 1], $select, [], true);
+            ? $this->widgetRepository->pagination($select, $condition, $pageSize)
+            : $this->widgetRepository->findByWhere(['publish' => 1], $select, [], true);
 
         return $data;
     }
@@ -40,7 +39,7 @@ class BrandService extends BaseService implements BrandServiceInterface
         return $this->executeInTransaction(function () {
 
             $payload = $this->preparePayload();
-            $this->brandRepository->create($payload);
+            $this->widgetRepository->create($payload);
 
             return successResponse(__('messages.create.success'));
         }, __('messages.create.error'));
@@ -51,7 +50,7 @@ class BrandService extends BaseService implements BrandServiceInterface
         return $this->executeInTransaction(function () use ($id) {
 
             $payload = $this->preparePayload();
-            $this->brandRepository->update($id, $payload);
+            $this->widgetRepository->update($id, $payload);
 
             return successResponse(__('messages.update.success'));
         }, __('messages.update.error'));
@@ -60,15 +59,24 @@ class BrandService extends BaseService implements BrandServiceInterface
     private function preparePayload(): array
     {
         $payload = request()->except('_token', '_method');
-        $payload = $this->createSEO($payload);
 
+        $payload['model_ids'] = array_map('intval', $payload['model_ids'] ?? []);
+
+        if ($payload['type'] == 'advertisement') {
+            $payload['advertisement_banners'] = array_map(fn($image, $key) => [
+                'image' => $image,
+                'alt' => $payload['alt'][$key] ?? '',
+                'content' => $payload['content'][$key] ?? '',
+                'url' => $payload['url'][$key] ?? '',
+            ], $payload['image'], array_keys($payload['image']));
+        }
         return $payload;
     }
 
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
-            $this->brandRepository->delete($id);
+            $this->widgetRepository->delete($id);
 
             return successResponse(__('messages.delete.success'));
         }, __('messages.delete.error'));
