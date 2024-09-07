@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\PaymentMethod;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdatePaymentMethodRequest extends FormRequest
 {
@@ -26,7 +23,7 @@ class UpdatePaymentMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|unique,payment_methods,code,' . $this->payment_method,
+            'code' => 'string|unique,payment_methods,code,'.$this->payment_method,
             'image' => 'string',
         ];
     }

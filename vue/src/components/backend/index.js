@@ -14,6 +14,7 @@ export { default as SwitchComponent } from './includes/input/SwitchComponent.vue
 export { default as InputDateComponent } from './includes/input/InputDateComponent.vue';
 export { default as TooltipComponent } from './includes/TooltipComponent.vue';
 export { default as SEOComponent } from './includes/SEOComponent.vue';
+export { default as EditOrderComponent } from './includes/EditOrderComponent.vue';
 
 export { default as HeaderComponent } from './layouts/HeaderComponent.vue';
 export { default as MasterLayout } from './layouts/MasterLayout.vue';

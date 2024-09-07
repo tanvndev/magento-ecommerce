@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateProductAttributeRequest extends FormRequest
 {

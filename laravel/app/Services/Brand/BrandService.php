@@ -30,7 +30,7 @@ class BrandService extends BaseService implements BrandServiceInterface
 
         $data = $pageSize && request('page')
             ? $this->brandRepository->pagination($select, $condition, $pageSize)
-            : $this->brandRepository->all($select);
+            : $this->brandRepository->findByWhere(['publish' => 1], $select, [], true);
 
         return $data;
     }

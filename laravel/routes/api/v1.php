@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use App\Http\Controllers\Api\V1\Upload\{UploadController};
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Controllers\Api\V1\Widget\WidgetController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,6 +59,7 @@ Route::middleware('log.request.response')->group(function () {
             Route::put('changeStatus', [DashboardController::class, 'changeStatus'])->name('changeStatus');
             Route::put('changeStatusMultiple', [DashboardController::class, 'changeStatusMultiple'])->name('changeStatusMultiple');
             Route::delete('deleteMultiple', [DashboardController::class, 'deleteMultiple'])->name('deleteMultiple');
+            Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
 
         // USER ROUTE
@@ -102,5 +104,8 @@ Route::middleware('log.request.response')->group(function () {
         // SYSTEM CONFIG ROUTE
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
+
+        // WIDGET ROUTE
+        Route::apiResource('widgets', WidgetController::class);
     });
 });

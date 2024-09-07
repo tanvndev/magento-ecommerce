@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Attribute;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateAttributeRequest extends FormRequest
 {
@@ -26,7 +23,7 @@ class UpdateAttributeRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required|unique:attributes,code,' . $this->attribute,
+            'code' => 'required|unique:attributes,code,'.$this->attribute,
         ];
     }
 

@@ -36,7 +36,9 @@ if (! function_exists('generateStrongPassword')) {
 if (! function_exists('getRepositoryInstance')) {
     function getRepositoryInstance(string $modelName)
     {
-        $repositoryInterfaceNameSpace = 'App\Repositories\Interfaces\\'.ucfirst($modelName).'RepositoryInterface';
+        $folderName = str_replace('Catalogue', '', $modelName);
+
+        $repositoryInterfaceNameSpace = 'App\Repositories\Interfaces\\'.ucfirst($folderName).'\\'.ucfirst($modelName).'RepositoryInterface';
         if (interface_exists($repositoryInterfaceNameSpace)) {
             // hàm app() giúp truy cập các đối tượng đã đăng ký trong container
             return app($repositoryInterfaceNameSpace);
@@ -322,7 +324,7 @@ if (! function_exists('successResponse')) {
 if (! function_exists('handleResponse')) {
     function handleResponse($response, $successCode = 200)
     {
-        $statusCode = $response['status'] === 'success' ? $successCode : 500;
+        $statusCode = $response['status'] ?? '' === 'success' ? $successCode : 500;
 
         return response()->json($response, $statusCode);
     }

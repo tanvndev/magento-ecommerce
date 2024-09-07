@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Brand;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateBrandRequest extends FormRequest
 {
@@ -26,7 +23,7 @@ class UpdateBrandRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique:brands,canonical,' . $this->brand,
+            'canonical' => 'unique:brands,canonical,'.$this->brand,
         ];
     }
 

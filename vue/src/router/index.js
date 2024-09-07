@@ -3,7 +3,14 @@ import store from '@/store';
 
 import DashboardView from '@/views/backend/DashboardView.vue';
 
-import { userRoutes, authRoutes, productRoutes, brandRoutes, attributeRoutes } from './backend';
+import {
+  userRoutes,
+  authRoutes,
+  productRoutes,
+  brandRoutes,
+  attributeRoutes,
+  widgetRoutes
+} from './backend';
 
 import { isLoggedIn } from '@/middlewares/authenticate';
 // import { isAdmin } from '@/middlewares/authorization';
@@ -35,7 +42,8 @@ const routes = [
   ...productRoutes,
   ...brandRoutes,
   ...productRoutes,
-  ...attributeRoutes
+  ...attributeRoutes,
+  ...widgetRoutes
 ];
 
 const router = createRouter({

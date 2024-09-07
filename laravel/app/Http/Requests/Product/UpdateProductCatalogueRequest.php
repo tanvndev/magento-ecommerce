@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateProductCatalogueRequest extends FormRequest
 {
@@ -26,7 +23,7 @@ class UpdateProductCatalogueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique|product_catalogues,canonical,' . $this->catalogue,
+            'canonical' => 'unique|product_catalogues,canonical,'.$this->catalogue,
         ];
     }
 

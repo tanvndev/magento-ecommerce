@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreProductRequest extends FormRequest
 {
@@ -42,7 +39,7 @@ class StoreProductRequest extends FormRequest
                 $price = $item['price'] ?? null;
                 $sale_price = $item['sale_price'] ?? null;
                 if ($price && $sale_price) {
-                    $rules['variable.' . $key . '.sale_price'] = 'numeric|lt:variable.' . $key . '.price';
+                    $rules['variable.'.$key.'.sale_price'] = 'numeric|lt:variable.'.$key.'.price';
                 }
             }
         }

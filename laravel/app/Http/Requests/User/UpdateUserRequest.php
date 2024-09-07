@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\User;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -25,8 +22,8 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string|email|unique:users,email,' . $this->user,
-            'phone' => 'required|unique:users,phone,' . $this->user,
+            'email' => 'required|string|email|unique:users,email,'.$this->user,
+            'phone' => 'required|unique:users,phone,'.$this->user,
             'fullname' => 'required|string',
             'user_catalogue_id' => 'required|integer|gt:0',
 

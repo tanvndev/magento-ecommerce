@@ -39,20 +39,16 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             );
 
             return [
-                'status' => 'success',
-                'messages' => '',
-                'data' => [
-                    'data' => $this->formatDataToTable($data),
-                    'total' => $data->total(),
-                    'current_page' => $data->currentPage(),
-                    'per_page' => $data->perPage(),
-                ],
+                'data' => $this->formatDataToTable($data),
+                'total' => $data->total(),
+                'current_page' => $data->currentPage(),
+                'per_page' => $data->perPage(),
             ];
         }
 
-        $data = $this->productCatalogueRepository->all($select, ['childrens'], $orderBy);
+        $data = $this->productCatalogueRepository->findByWhere(['publish' => 1], $select, ['childrens'], true, $orderBy);
 
-        return successResponse('', $data);
+        return $data;
     }
 
     private function formatDataToTable($data, $parentId = 0)

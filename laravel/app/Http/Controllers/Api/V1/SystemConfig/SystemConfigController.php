@@ -4,11 +4,6 @@ namespace App\Http\Controllers\Api\V1\SystemConfig;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SystemConfig\{
-    UpdateSystemConfigRequest
-};
-use App\Http\Resources\SystemConfig\SystemConfigCollection;
-use App\Http\Resources\SystemConfig\SystemConfigResource;
 use App\Repositories\Interfaces\SystemConfig\SystemConfigRepositoryInterface;
 use App\Services\Interfaces\SystemConfig\SystemConfigServiceInterface;
 
@@ -29,6 +24,7 @@ class SystemConfigController extends Controller
     public function index()
     {
         $data = $this->systemConfigService->all();
+
         return successResponse('', $data);
     }
 

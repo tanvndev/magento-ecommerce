@@ -87,7 +87,7 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->select($column);
         $query->whereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $value) {
-                $query->where($alias . '.' . $key, $value);
+                $query->where($alias.'.'.$key, $value);
             }
         });
 
@@ -116,8 +116,7 @@ class BaseRepository implements BaseRepositoryInterface
             ->customGroupBy($groupBy ?? null)
             ->customOrderBy($orderBy ?? null);
 
-
-        if (!empty($withWhereHas)) {
+        if (! empty($withWhereHas)) {
             // Apply constraints to eager-loaded relationships
             foreach ($withWhereHas as $relation => $callback) {
                 $query->whereHas($relation, $callback);

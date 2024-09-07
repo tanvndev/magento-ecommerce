@@ -31,7 +31,7 @@ class ProductCatalogueController extends Controller
     {
         $response = $this->productCatalogueService->paginate();
 
-        return handleResponse($response);
+        return successResponse('', $response);
     }
 
     /**
