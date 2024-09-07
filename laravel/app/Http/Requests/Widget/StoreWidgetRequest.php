@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Attribute;
-
+namespace App\Http\Requests\Widget;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-
-class StoreAttributeValueRequest extends FormRequest
+class StoreWidgetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,29 +23,20 @@ class StoreAttributeValueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'attribute_id' => 'required',
+            'canonical' => 'unique:brands',
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên giá trị thuộc tính',
-            'attribute_id' => 'Thuộc tính',
+            'name' => 'Tên thương hiệu',
+            'canonical' => 'Đường dẫn',
         ];
     }
 
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(
-            response()->json([
-                'messages' => $validator->errors(),
-            ], ResponseEnum::UNPROCESSABLE_ENTITY)
-        );
     }
 }

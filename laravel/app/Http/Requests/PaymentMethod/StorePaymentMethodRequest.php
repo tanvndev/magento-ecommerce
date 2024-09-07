@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\PaymentMethod;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
+
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+
 
 class StorePaymentMethodRequest extends FormRequest
 {
