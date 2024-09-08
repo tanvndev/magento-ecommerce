@@ -39,7 +39,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'publish' => request('publish'),
         ];
 
-        $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'upsell_ids'];
+        $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'upsell_ids', 'canonical', 'meta_title', 'meta_description', 'shipping_ids'];
         $orderBy = ['id' => 'desc'];
         $relations = ['variants', 'catalogues', 'brand'];
 
@@ -78,6 +78,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $payload = request()->except('_token', '_method');
         $payload = $this->createSEO($payload, 'name', 'excerpt');
+        $payload['shipping_ids'] = array_map('intval', $payload['shipping_ids'] ?? []);
 
         return $payload;
     }
@@ -282,7 +283,13 @@ class ProductService extends BaseService implements ProductServiceInterface
                 request('pageSize', 20),
                 ['id' => 'desc'],
                 [],
-                ['attribute_values']
+                ['attribute_values'],
+                [],
+                [
+                    'product' => function ($q) {
+                        $q->where('publish', 1);
+                    },
+                ]
             );
 
         return $data;

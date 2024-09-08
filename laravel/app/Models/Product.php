@@ -19,6 +19,7 @@ class Product extends Model
         'excerpt',
         'description',
         'upsell_ids',
+        'shipping_ids',
         'canonical',
         'meta_title',
         'meta_description',
@@ -28,6 +29,7 @@ class Product extends Model
     protected $casts = [
         'upsell_ids' => 'json',
         'album' => 'json',
+        'shipping_ids' => 'json',
     ];
 
     protected static function boot()

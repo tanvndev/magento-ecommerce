@@ -102,6 +102,7 @@ class BaseRepository implements BaseRepositoryInterface
         $join = [],
         $relations = [],
         $groupBy = [],
+        $withWhereHas = [],
         $rawQuery = [],
     ) {
         $query = $this->model->select($column);
@@ -114,6 +115,13 @@ class BaseRepository implements BaseRepositoryInterface
             ->customJoin($join ?? null)
             ->customGroupBy($groupBy ?? null)
             ->customOrderBy($orderBy ?? null);
+
+        if (! empty($withWhereHas)) {
+            // Apply constraints to eager-loaded relationships
+            foreach ($withWhereHas as $relation => $callback) {
+                $query->whereHas($relation, $callback);
+            }
+        }
 
         //Phương thức withQueryString() trong Laravel được sử dụng để giữ nguyên các tham số truy vấn
         return $query->paginate($perPage)->withQueryString();

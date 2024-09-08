@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\SystemConfig;
+namespace App\Http\Resources\Widget;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class SystemConfigCollection extends ResourceCollection
+class WidgetCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -20,7 +20,7 @@ class SystemConfigCollection extends ResourceCollection
         ) {
             return [
                 'data' => $this->collection->map(function ($brand) {
-                    return new SystemConfigResource($brand);
+                    return new WidgetResource($brand);
                 }),
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),

@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\PaymentMethod;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdatePaymentMethodRequest extends FormRequest
 {
@@ -25,8 +22,8 @@ class UpdatePaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|unique',
-            'code' => 'string|required|unique,payment_methods,code,'.$this->payment_method,
+            'name' => 'string|required',
+            'code' => 'string|unique,payment_methods,code,'.$this->payment_method,
             'image' => 'string',
         ];
     }
@@ -43,12 +40,5 @@ class UpdatePaymentMethodRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

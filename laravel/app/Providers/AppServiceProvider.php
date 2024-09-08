@@ -45,6 +45,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\PaymentMethod\PaymentMethodServiceInterface' => 'App\Services\PaymentMethod\PaymentMethodService',
         // Cart
         'App\Services\Interfaces\Cart\CartServiceInterface' => 'App\Services\Cart\CartService',
+        // Widget
+        'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
     ];
 
     public function register(): void

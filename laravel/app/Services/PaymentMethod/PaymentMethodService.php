@@ -20,16 +20,10 @@ class PaymentMethodService extends BaseService implements PaymentMethodServiceIn
 
     public function paginate()
     {
-        $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
-
-        ];
         $select = ['id', 'name', 'publish', 'description', 'code', 'image'];
-        $pageSize = request('pageSize');
 
-        $data = $pageSize && request('page')
-            ? $this->paymentMethodRepository->pagination($select, $condition, $pageSize)
+        $data = request('list')
+            ? $this->paymentMethodRepository->findByWhere(['publish' => 1], $select)
             : $this->paymentMethodRepository->all($select);
 
         return $data;

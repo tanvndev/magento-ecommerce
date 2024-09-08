@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateProductVariantRequest extends FormRequest
 {
@@ -63,12 +60,5 @@ class UpdateProductVariantRequest extends FormRequest
         return __('request.messages') + [
             'variable_is_used.in' => 'Sản phẩm đã bị khóa vui lòng chọn khác.',
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

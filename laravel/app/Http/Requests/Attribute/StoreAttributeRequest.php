@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Attribute;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreAttributeRequest extends FormRequest
 {
@@ -41,12 +38,5 @@ class StoreAttributeRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

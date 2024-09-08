@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\ShippingMethod;
 
-use App\Enums\ResponseEnum;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateShippingMethodRequest extends FormRequest
 {
@@ -26,7 +23,7 @@ class UpdateShippingMethodRequest extends FormRequest
     {
         return [
             'name' => 'string|required',
-            'code' => 'string|required|unique:shipping_methods,code,'.$this->shipping_method,
+            'code' => 'string|unique:shipping_methods,code,'.$this->shipping_method,
             'base_cost' => 'required|numeric',
             'image' => 'string',
         ];
@@ -45,12 +42,5 @@ class UpdateShippingMethodRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

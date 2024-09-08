@@ -42,6 +42,9 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface' => 'App\Repositories\PaymentMethod\PaymentMethodRepository',
         // Cart
         'App\Repositories\Interfaces\Cart\CartRepositoryInterface' => 'App\Repositories\Cart\CartRepository',
+        // Widget
+        'App\Repositories\Interfaces\Widget\WidgetRepositoryInterface' => 'App\Repositories\Widget\WidgetRepository',
+
     ];
 
     public function register(): void

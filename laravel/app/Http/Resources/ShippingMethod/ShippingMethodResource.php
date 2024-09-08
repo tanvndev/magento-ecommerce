@@ -20,6 +20,8 @@ class ShippingMethodResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'description' => $this->description,
+            'status' => $this->publish == 1 ? 'Đang sử dụng' : 'Hủy sử dụng',
+            'color' => $this->publish == 1 ? 'green' : 'red',
             'publish' => $this->publish,
             'image' => $this->image,
             'base_cost' => $this->base_cost,
