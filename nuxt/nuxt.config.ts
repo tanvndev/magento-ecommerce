@@ -23,6 +23,14 @@ export default defineNuxtConfig({
     '~/assets/css/custom.css',
     '~/assets/css/helpers.css',
   ],
+  pinia: {
+    storesDirs: ['./stores/**'],
+  },
 
-  modules: ['@nuxt/scripts', 'nuxt-swiper', 'nuxt-easy-lightbox'],
+  modules: [
+    '@nuxt/scripts',
+    '@pinia/nuxt',
+    'nuxt-swiper',
+    'nuxt-easy-lightbox',
+  ],
 })

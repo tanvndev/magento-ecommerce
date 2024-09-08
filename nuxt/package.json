@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@nuxt/scripts": "^0.7.1",
+        "@pinia/nuxt": "^0.5.4",
         "axios": "^1.7.2",
         "defu": "^6.1.4",
         "js-cookie": "^3.0.5",
@@ -21,12 +22,14 @@
         "nuxt": "^3.13.0",
         "nuxt-easy-lightbox": "^1.0.2",
         "nuxt-swiper": "^1.2.2",
-        "vue": "latest",
-        "vuex": "^4.1.0"
+        "vue": "latest"
     },
     "devDependencies": {
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^5.2.1",
         "prettier": "^3.3.3"
+    },
+    "overrides": {
+        "vue": "latest"
     }
 }
