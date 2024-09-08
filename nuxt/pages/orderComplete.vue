@@ -5,9 +5,15 @@
     <nav class="breadcrumb-nav">
       <div class="container">
         <ul class="breadcrumb shop-breadcrumb bb-no">
-          <li class="passed"><a href="cart.html">Shopping Cart</a></li>
-          <li class="passed"><a href="checkout.html">Checkout</a></li>
-          <li class="active"><a href="order.html">Order Complete</a></li>
+          <li class="passed">
+            <NuxtLink to="cart">Giỏ hàng</NuxtLink>
+          </li>
+          <li class="passed">
+            <NuxtLink to="checkout">Thanh toán</NuxtLink>
+          </li>
+          <li class="active">
+            <NuxtLink to="orderComplete">Hoàn tất đơn hàng</NuxtLink>
+          </li>
         </ul>
       </div>
     </nav>

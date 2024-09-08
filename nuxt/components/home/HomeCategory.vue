@@ -8,9 +8,9 @@
           </span>
           <div class="icon-box-content">
             <h4 class="icon-box-title font-weight-bold mb-1">
-              Free Shipping & Returns
+              Miễn phí vận chuyển và trả hàng
             </h4>
-            <p class="text-default">For all orders over $99</p>
+            <p class="text-default">Cho tất cả các đơn hàng trên 99 đô la</p>
           </div>
         </div>
         <div class="icon-box icon-box-side icon-box-primary">
@@ -18,8 +18,10 @@
             <i class="w-icon-bag"></i>
           </span>
           <div class="icon-box-content">
-            <h4 class="icon-box-title font-weight-bold mb-1">Secure Payment</h4>
-            <p class="text-default">We ensure secure payment</p>
+            <h4 class="icon-box-title font-weight-bold mb-1">
+              Thanh toán an toàn
+            </h4>
+            <p class="text-default">Chúng tôi đảm bảo thanh toán an toàn</p>
           </div>
         </div>
         <div class="icon-box icon-box-side icon-box-primary icon-box-money">
@@ -28,9 +30,11 @@
           </span>
           <div class="icon-box-content">
             <h4 class="icon-box-title font-weight-bold mb-1">
-              Money Back Guarantee
+              Đảm bảo hoàn tiền
             </h4>
-            <p class="text-default">Any back within 30 days</p>
+            <p class="text-default">
+              Bất kỳ khoản hoàn tiền nào trong vòng 30 ngày
+            </p>
           </div>
         </div>
         <div class="icon-box icon-box-side icon-box-primary icon-box-chat">
@@ -39,9 +43,11 @@
           </span>
           <div class="icon-box-content">
             <h4 class="icon-box-title font-weight-bold mb-1">
-              Customer Support
+              Hỗ trợ khách hàng
             </h4>
-            <p class="text-default">Call or email us 24/7</p>
+            <p class="text-default">
+              Gọi điện hoặc gửi email cho chúng tôi 24/7
+            </p>
           </div>
         </div>
       </div>
@@ -51,7 +57,7 @@
   <section class="category-section top-category bg-grey pt-10 pb-10">
     <div class="container pb-2">
       <h2 class="title justify-content-center pt-1 ls-normal mb-5">
-        Top Categories Of The Month
+        Danh mục sản phẩm
       </h2>
       <div class="category-wrapper">
         <div class="swiper-theme pg-show">
@@ -70,18 +76,20 @@
               <div
                 class="category category-classic category-absolute overlay-zoom br-xs mx-2"
               >
-                <a href="#" class="category-media">
+                <NuxtLink href="category" class="category-media">
                   <img
                     src="~/assets/images/demos/demo1/categories/2-6.jpg"
                     alt="Category"
                     width="130"
                     height="130"
                   />
-                </a>
+                </NuxtLink>
                 <div class="category-content">
-                  <h4 class="category-name">Computers</h4>
-                  <a href="#" class="btn btn-primary btn-link btn-underline"
-                    >Shop Now</a
+                  <h4 class="category-name">Máy tính</h4>
+                  <NuxtLink
+                    to="category"
+                    class="btn btn-primary btn-link btn-underline"
+                    >Xem ngay</NuxtLink
                   >
                 </div>
               </div>
@@ -96,7 +104,22 @@
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
 import 'swiper/css'
-
+import { useIFetch } from '~/composables/useIFetch'
 const modules = [Navigation, Autoplay]
-</script>
 
+const fetchData = async () => {
+  try {
+    const { data, error } = await useIFetch('/products/catalogues', {
+      method: 'GET',
+      // Thêm các tùy chọn khác nếu cần
+    })
+    console.log(data)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// Watch for changes in store state
+
+fetchData()
+</script>

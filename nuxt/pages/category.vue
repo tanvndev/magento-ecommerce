@@ -269,15 +269,15 @@
             <!-- Start of Sticky Sidebar -->
             <div class="sticky-sidebar">
               <div class="filter-actions">
-                <label>Filter :</label>
+                <label>Lọc sản phẩm:</label>
                 <a href="#" class="btn btn-dark btn-link filter-clean"
-                  >Clean All</a
+                  >Xóa tất cả</a
                 >
               </div>
               <!-- Start of Collapsible widget -->
               <div class="widget widget-collapsible">
                 <h3 class="widget-title">
-                  <label>All Categories</label>
+                  <label>Danh mục</label>
                   <span class="toggle-btn"></span>
                 </h3>
                 <ul class="widget-body filter-items search-ul">
@@ -299,7 +299,7 @@
 
               <!-- Start of Collapsible Widget -->
               <div class="widget widget-collapsible">
-                <h3 class="widget-title"><label>Price</label></h3>
+                <h3 class="widget-title"><label>Giá cả</label></h3>
                 <div class="widget-body">
                   <ul class="filter-items search-ul">
                     <li><a href="#">$0.00 - $100.00</a></li>
@@ -313,14 +313,14 @@
                       type="number"
                       name="min_price"
                       class="min_price text-center"
-                      placeholder="$min"
+                      placeholder="Tối thiểu"
                     /><span class="delimiter">-</span
                     ><input
                       type="number"
                       name="max_price"
                       class="max_price text-center"
-                      placeholder="$max"
-                    /><a href="#" class="btn btn-primary btn-rounded">Go</a>
+                      placeholder="Tối đa"
+                    /><a href="#" class="btn btn-primary btn-rounded">Đi</a>
                   </form>
                 </div>
               </div>
@@ -328,7 +328,7 @@
 
               <!-- Start of Collapsible Widget -->
               <div class="widget widget-collapsible">
-                <h3 class="widget-title"><label>Size</label></h3>
+                <h3 class="widget-title"><label>Kích cỡ</label></h3>
                 <ul class="widget-body filter-items item-check mt-1">
                   <li><a href="#">Extra Large</a></li>
                   <li><a href="#">Large</a></li>
@@ -340,7 +340,7 @@
 
               <!-- Start of Collapsible Widget -->
               <div class="widget widget-collapsible">
-                <h3 class="widget-title"><label>Brand</label></h3>
+                <h3 class="widget-title"><label>Thương hiệu</label></h3>
                 <ul class="widget-body filter-items item-check mt-1">
                   <li><a href="#">Elegant Auto Group</a></li>
                   <li><a href="#">Green Grass</a></li>
@@ -356,7 +356,7 @@
               <!-- Start of Collapsible Widget -->
               <div class="widget widget-collapsible">
                 <h3 class="widget-title">
-                  <label>Color</label>
+                  <label>Màu sắc</label>
                 </h3>
                 <ul class="widget-body filter-items item-check mt-1">
                   <li><a href="#">Black</a></li>
@@ -383,10 +383,10 @@
               <a
                 href="#"
                 class="btn btn-primary btn-outline btn-rounded left-sidebar-toggle btn-icon-left d-block d-lg-none"
-                ><i class="w-icon-category"></i><span>Filters</span></a
+                ><i class="w-icon-category"></i><span>Lọc sản phẩm</span></a
               >
               <div class="toolbox-item toolbox-sort select-box text-dark">
-                <label>Sort By :</label>
+                <label>Sắp xếp theo :</label>
                 <select name="orderby" class="form-control">
                   <option value="default" selected>Default sorting</option>
                   <option value="popularity">Sort by popularity</option>
@@ -399,163 +399,18 @@
             </div>
           </nav>
           <div class="product-wrapper row cols-lg-4 cols-md-3 cols-sm-2 cols-2">
-            <div class="product-wrap">
+            <!--  -->
+            <div class="product-wrap" v-for="n in 12">
               <div class="product text-center">
                 <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/1.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Electronics</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">3D Television</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 100%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(3 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$220.00 - $230.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/2-1.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                    <img
-                      src="assets/images/shop/2-2.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-countdown-container">
-                    <div
-                      class="product-countdown countdown-compact is-countdown"
-                      data-until="2021, 9, 9"
-                      data-format="DHMS"
-                      data-compact="false"
-                      data-labels-short="Days, Hours, Mins, Secs"
-                    >
-                      <span class="countdown-row countdown-show4"
-                        ><span class="countdown-section"
-                          ><span class="countdown-amount">00</span
-                          ><span class="countdown-period">Days</span></span
-                        ><span class="countdown-section"
-                          ><span class="countdown-amount">00</span
-                          ><span class="countdown-period">Hrs</span></span
-                        ><span class="countdown-section"
-                          ><span class="countdown-amount">00</span
-                          ><span class="countdown-period">Mins</span></span
-                        ><span class="countdown-section"
-                          ><span class="countdown-amount">00</span
-                          ><span class="countdown-period">Secs</span></span
-                        ></span
-                      >
-                    </div>
-                  </div>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Electronics</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Alarm Clock With Lamp</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 100%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(10 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">
-                      <ins class="new-price">$30.00</ins
-                      ><del class="old-price">$60.00</del>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
+                  <NuxtLink to="detail">
                     <img
                       src="assets/images/shop/3.jpg"
                       alt="Product"
                       width="300"
                       height="338"
                     />
-                  </a>
+                  </NuxtLink>
                   <div class="product-action-horizontal">
                     <a
                       href="#"
@@ -567,558 +422,27 @@
                       class="btn-product-icon btn-wishlist w-icon-heart"
                       title="Wishlist"
                     ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
                   </div>
                 </figure>
                 <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Electronics</a>
-                  </div>
                   <h3 class="product-name">
-                    <a href="product-default.html">Apple Laptop</a>
+                    <NuxtLink to="detail">Macbook Air M1 18inch </NuxtLink>
                   </h3>
                   <div class="ratings-container">
                     <div class="ratings-full">
                       <span class="ratings" style="width: 80%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
+                      <span class="tooltiptext tooltip-top">4</span>
                     </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(5 reviews)</a
-                    >
+                    <a href="#" class="rating-reviews">(5 đánh giá)</a>
                   </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$1,000.00</div>
+                  <div class="product-price">
+                    <ins class="new-price">22.0000.000 đ</ins>
+                    <del class="old-price">34.0000.000 đ</del>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/4.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Electronics</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Attachable Charge Alarm</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 60%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(7 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$15.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/5.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Fashion</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Best Travel Bag</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 80%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(4 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$83.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/6.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Sports</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Black Stunt Motor</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 100%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(12 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$374.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/7-1.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                    <img
-                      src="assets/images/shop/7-2.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Fashion</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Blue Sky Trunk</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 100%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(9 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$85.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/8.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Beauty</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Bodycare Smooth Powder</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 60%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(4 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$25.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/9.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Electronics</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Bright Green IPhone</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 80%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(4 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$950.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/10.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Fashion</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html"
-                      >Cavin Fashion Suede Handbag</a
-                    >
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 80%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(4 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$163.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/11-1.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                    <img
-                      src="assets/images/shop/11-2.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Electronics</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Charming Design Watch</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 100%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(10 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$30.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="product-wrap">
-              <div class="product text-center">
-                <figure class="product-media">
-                  <a href="product-default.html">
-                    <img
-                      src="assets/images/shop/12.jpg"
-                      alt="Product"
-                      width="300"
-                      height="338"
-                    />
-                  </a>
-                  <div class="product-action-horizontal">
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-cart w-icon-cart"
-                      title="Add to cart"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-wishlist w-icon-heart"
-                      title="Wishlist"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-compare w-icon-compare"
-                      title="Compare"
-                    ></a>
-                    <a
-                      href="#"
-                      class="btn-product-icon btn-quickview w-icon-search"
-                      title="Quick View"
-                    ></a>
-                  </div>
-                </figure>
-                <div class="product-details">
-                  <div class="product-cat">
-                    <a href="shop-banner-sidebar.html">Fashion</a>
-                  </div>
-                  <h3 class="product-name">
-                    <a href="product-default.html">Classic Simple Backpack</a>
-                  </h3>
-                  <div class="ratings-container">
-                    <div class="ratings-full">
-                      <span class="ratings" style="width: 100%"></span>
-                      <span class="tooltiptext tooltip-top"></span>
-                    </div>
-                    <a href="product-default.html" class="rating-reviews"
-                      >(9 reviews)</a
-                    >
-                  </div>
-                  <div class="product-pa-wrapper">
-                    <div class="product-price">$85.00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <!--  -->
           </div>
 
           <div class="toolbox toolbox-pagination justify-content-between">
@@ -1130,7 +454,7 @@
                   tabindex="-1"
                   aria-disabled="true"
                 >
-                  <i class="w-icon-long-arrow-left"></i>Prev
+                  <i class="w-icon-long-arrow-left"></i>Quay lại
                 </a>
               </li>
               <li class="page-item active">
@@ -1141,7 +465,7 @@
               </li>
               <li class="next">
                 <a href="#" aria-label="Next">
-                  Next<i class="w-icon-long-arrow-right"></i>
+                  Tiếp theo<i class="w-icon-long-arrow-right"></i>
                 </a>
               </li>
             </ul>

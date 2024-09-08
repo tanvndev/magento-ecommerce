@@ -42,6 +42,23 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import AppFooter from '~/components/includes/AppFooter.vue'
 import AppHeader from '~/components/includes/AppHeader.vue'
+import Cookies from 'js-cookie'
+import { useIFetch } from '~/composables/useIFetch'
+const authStore = useAuthStore()
+const token = ref(Cookies.get('token') || null)
+
+const setTokenAndSetCurrentUser = async () => {
+  if (token.value) {
+    if (!authStore.getToken) {
+      authStore.setToken(token.value)
+    }
+    const user = await useIFetch('/auth/me', {
+      method: 'GET',
+    })
+
+    authStore.setUser = user.data
+  }
+}
 
 const showScrollTop = ref(false)
 const progressIndicator = ref(null)
@@ -74,6 +91,7 @@ const scrollToTop = (event) => {
 
 onMounted(() => {
   window.addEventListener('scroll', checkScroll)
+  setTokenAndSetCurrentUser()
 })
 
 onUnmounted(() => {
