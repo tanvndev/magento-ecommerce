@@ -104,19 +104,22 @@
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
 import 'swiper/css'
-const config = useRuntimeConfig()
-const apiBaseUrl = config.public.apiBaseUrl
-
+import { useIFetch } from '~/composables/useIFetch'
 const modules = [Navigation, Autoplay]
 
-const {
-  data: productCatalogues,
-  pending,
-  error,
-} = useFetch(apiBaseUrl + '/products/catalogues/list')
-console.log(productCatalogues)
+const fetchData = async () => {
+  try {
+    const { data, error } = await useIFetch('/products/catalogues', {
+      method: 'GET',
+      // Thêm các tùy chọn khác nếu cần
+    })
+    console.log(data)
+  } catch (err) {
+    console.log(err)
+  }
+}
 
-// if (error.value) {
-//   console.error('Failed to fetch data:', error.value)
-// }
+// Watch for changes in store state
+
+fetchData()
 </script>
