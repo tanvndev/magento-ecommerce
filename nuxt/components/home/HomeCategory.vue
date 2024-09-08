@@ -96,7 +96,19 @@
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
 import 'swiper/css'
+const config = useRuntimeConfig()
+const apiBaseUrl = config.public.apiBaseUrl
 
 const modules = [Navigation, Autoplay]
-</script>
 
+const {
+  data: productCatalogues,
+  pending,
+  error,
+} = useFetch(apiBaseUrl + '/products/catalogues/list')
+console.log(productCatalogues)
+
+// if (error.value) {
+//   console.error('Failed to fetch data:', error.value)
+// }
+</script>
