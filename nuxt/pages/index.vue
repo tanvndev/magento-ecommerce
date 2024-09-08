@@ -139,7 +139,9 @@
     <!-- End of Category Banner Wrapper -->
 
     <div class="brand-container-wrap">
-      <h2 class="title title-underline mb-4 ls-normal">Our Clients</h2>
+      <h2 class="title title-underline mb-4 ls-normal">
+        Danh sách thương hiệu
+      </h2>
       <div class="swiper-theme brands-wrapper mb-9">
         <div
           class="row gutter-no cols-xl-6 cols-lg-5 cols-md-4 cols-sm-3 cols-2"

@@ -5,9 +5,15 @@
     <nav class="breadcrumb-nav">
       <div class="container">
         <ul class="breadcrumb shop-breadcrumb bb-no">
-          <li class="active"><a href="cart.html">Shopping Cart</a></li>
-          <li><a href="checkout.html">Checkout</a></li>
-          <li><a href="order.html">Order Complete</a></li>
+          <li class="active">
+            <NuxtLink to="cart">Giỏ hàng</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="checkout">Thanh toán</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink to="orderComplete">Hoàn tất đơn hàng</NuxtLink>
+          </li>
         </ul>
       </div>
     </nav>
@@ -21,15 +27,43 @@
             <table class="shop-table cart-table">
               <thead>
                 <tr>
-                  <th class="product-name"><span>Product</span></th>
+                  <th>
+                    <div class="custom-radio">
+                      <input
+                        type="radio"
+                        id="free-shipping"
+                        class="custom-control-input"
+                        name="shipping"
+                      />
+                      <label
+                        for="free-shipping"
+                        class="custom-control-label color-dark"
+                      ></label>
+                    </div>
+                  </th>
+                  <th class="product-name"><span>Sản phẩm</span></th>
                   <th></th>
-                  <th class="product-price"><span>Price</span></th>
-                  <th class="product-quantity"><span>Quantity</span></th>
-                  <th class="product-subtotal"><span>Subtotal</span></th>
+                  <th class="product-price"><span>Giá cả</span></th>
+                  <th class="product-quantity"><span>Số lượng</span></th>
+                  <th class="product-subtotal"><span>Tạm tính</span></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
+                  <td>
+                    <div class="custom-radio">
+                      <input
+                        type="radio"
+                        id="free-shipping"
+                        class="custom-control-input"
+                        name="shipping"
+                      />
+                      <label
+                        for="free-shipping"
+                        class="custom-control-label color-dark"
+                      ></label>
+                    </div>
+                  </td>
                   <td class="product-thumbnail">
                     <div class="p-relative">
                       <a href="product-default.html">
@@ -48,7 +82,7 @@
                     </div>
                   </td>
                   <td class="product-name">
-                    <a href="product-default.html"> Classic Simple Backpack </a>
+                    <a href="product-default.html"> iPhone 15 promax </a>
                   </td>
                   <td class="product-price">
                     <span class="amount">$40.00</span>
@@ -70,6 +104,20 @@
                   </td>
                 </tr>
                 <tr>
+                  <td>
+                    <div class="custom-radio">
+                      <input
+                        type="radio"
+                        id="free-shipping"
+                        class="custom-control-input"
+                        name="shipping"
+                      />
+                      <label
+                        for="free-shipping"
+                        class="custom-control-label color-dark"
+                      ></label>
+                    </div>
+                  </td>
                   <td class="product-thumbnail">
                     <div class="p-relative">
                       <a href="product-default.html">
@@ -116,7 +164,7 @@
               <a
                 href="#"
                 class="btn btn-dark btn-rounded btn-icon-left btn-shopping mr-auto"
-                ><i class="w-icon-long-arrow-left"></i>Continue Shopping</a
+                ><i class="w-icon-long-arrow-left"></i>Tiếp tục mua sắm</a
               >
               <button
                 type="submit"
@@ -126,39 +174,16 @@
               >
                 Clear Cart
               </button>
-              <button
-                type="submit"
-                class="btn btn-rounded btn-update disabled"
-                name="update_cart"
-                value="Update Cart"
-              >
-                Update Cart
-              </button>
             </div>
-
-            <form class="coupon">
-              <h5 class="title coupon-title font-weight-bold text-uppercase">
-                Coupon Discount
-              </h5>
-              <input
-                type="text"
-                class="form-control mb-4"
-                placeholder="Enter coupon code here..."
-                required
-              />
-              <button class="btn btn-dark btn-outline btn-rounded">
-                Apply Coupon
-              </button>
-            </form>
           </div>
           <div class="col-lg-4 sticky-sidebar-wrapper">
             <div class="sticky-sidebar">
               <div class="cart-summary mb-4">
-                <h3 class="cart-title text-uppercase">Cart Totals</h3>
+                <h3 class="cart-title text-uppercase">Tổng số giỏ hàng</h3>
                 <div
                   class="cart-subtotal d-flex align-items-center justify-content-between"
                 >
-                  <label class="ls-25">Subtotal</label>
+                  <label class="ls-25">Tạm tính</label>
                   <span>$100.00</span>
                 </div>
 
@@ -216,64 +241,6 @@
                     </div>
                   </li>
                 </ul>
-
-                <div class="shipping-calculator">
-                  <p class="shipping-destination lh-1">
-                    Shipping to <strong>CA</strong>.
-                  </p>
-
-                  <form class="shipping-calculator-form">
-                    <div class="form-group">
-                      <div class="select-box">
-                        <select
-                          name="country"
-                          class="form-control form-control-md"
-                        >
-                          <option value="default" selected>
-                            United States (US)
-                          </option>
-                          <option value="us">United States</option>
-                          <option value="uk">United Kingdom</option>
-                          <option value="fr">France</option>
-                          <option value="aus">Australia</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="select-box">
-                        <select
-                          name="state"
-                          class="form-control form-control-md"
-                        >
-                          <option value="default">California</option>
-                          <option value="ohaio">Ohaio</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <input
-                        class="form-control form-control-md"
-                        type="text"
-                        name="town-city"
-                        placeholder="Town / City"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <input
-                        class="form-control form-control-md"
-                        type="text"
-                        name="zipcode"
-                        placeholder="ZIP"
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      class="btn btn-dark btn-outline btn-rounded"
-                    >
-                      Update Totals
-                    </button>
-                  </form>
-                </div>
 
                 <hr class="divider mb-6" />
                 <div
