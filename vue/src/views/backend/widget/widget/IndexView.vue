@@ -39,7 +39,7 @@
               </template>
 
               <template v-if="column.dataIndex === 'publish'">
-                <PublishSwitchComponent
+                <StatusSwitchComponent
                   :record="record"
                   :modelName="state.modelName"
                   :field="column.dataIndex"
@@ -83,7 +83,7 @@ import {
   BreadcrumbComponent,
   MasterLayout,
   FilterComponent,
-  PublishSwitchComponent,
+  StatusSwitchComponent,
   ToolboxComponent,
   EditOrderComponent
 } from '@/components/backend';

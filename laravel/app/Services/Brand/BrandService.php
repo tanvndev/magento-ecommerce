@@ -25,7 +25,7 @@ class BrandService extends BaseService implements BrandServiceInterface
             'publish' => request('publish'),
 
         ];
-        $select = ['id', 'name', 'publish', 'description', 'canonical', 'image'];
+        $select = ['id', 'name', 'publish', 'description', 'canonical', 'image', 'is_featured'];
         $pageSize = request('pageSize');
 
         $data = $pageSize && request('page')

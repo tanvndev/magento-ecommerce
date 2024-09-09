@@ -21,6 +21,7 @@ class ProductCatalogueResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'publish' => $this->publish,
+            'is_featured' => $this->is_featured,
             'order' => $this->order,
             'parent_id' => $this->parent_id,
             'image' => $this->image,

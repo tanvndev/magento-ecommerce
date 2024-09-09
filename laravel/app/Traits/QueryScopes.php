@@ -10,10 +10,10 @@ trait QueryScopes
 
             if (! empty($fieldSearch)) {
                 foreach ($fieldSearch as $field) {
-                    $query->orWhere($field, 'LIKE', '%'.$keyword.'%');
+                    $query->orWhere($field, 'LIKE', '%' . $keyword . '%');
                 }
             } else {
-                $query->where('name', 'LIKE', '%'.$keyword.'%');
+                $query->where('name', 'LIKE', '%' . $keyword . '%');
             }
         }
 
@@ -24,7 +24,7 @@ trait QueryScopes
             // ];
             $field = $whereHas['field'];
             $query->orWhereHas($whereHas['relation'], function ($q) use ($field, $keyword) {
-                $q->where($field, 'LIKE', '%'.$keyword.'%');
+                $q->where($field, 'LIKE', '%' . $keyword . '%');
             });
         }
 
@@ -46,7 +46,7 @@ trait QueryScopes
         // where với toán tử: ['price' => ['>', 100]]
         // whereIn: ['category_id' => ['in', [1, 2, 3]]]
 
-        if (! empty($where) && is_array($where)) {
+        if (!empty($conditions) && is_array($conditions)) {
             foreach ($conditions as $column => $value) {
                 if (is_array($value)) {
                     if ($value[0] === 'in') {

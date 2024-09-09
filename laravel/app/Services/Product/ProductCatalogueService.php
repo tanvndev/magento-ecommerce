@@ -26,7 +26,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             'search' => addslashes(request('search')),
             'publish' => request('publish'),
         ];
-        $select = ['id', 'name', 'canonical', 'publish', 'parent_id', 'order', 'image'];
+        $select = ['id', 'name', 'canonical', 'publish', 'parent_id', 'order', 'image', 'is_featured'];
         $pageSize = request('pageSize');
         $orderBy = ['order' => 'desc'];
 
@@ -69,6 +69,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
                     'name' => $item->name,
                     'canonical' => $item->canonical,
                     'publish' => $item->publish,
+                    'is_featured' => $item->is_featured,
                     'parent_id' => $item->parent_id,
                     'order' => $item->order,
                     'image' => $item->image,
@@ -127,10 +128,11 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     {
         $condition = [
             'where' => [
-                'publish' => 1
+                'publish' => 1,
+                'is_featured' => 1,
             ],
         ];
-        $select = ['id', 'name', 'canonical', 'publish', 'parent_id', 'order', 'image'];
+        $select = ['id', 'name', 'canonical', 'publish', 'parent_id', 'order', 'image', 'is_featured'];
         $orderBy = ['order' => 'desc'];
 
         $data = $this->productCatalogueRepository->pagination(
