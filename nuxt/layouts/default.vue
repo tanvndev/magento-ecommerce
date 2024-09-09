@@ -43,20 +43,19 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import AppFooter from '~/components/includes/AppFooter.vue'
 import AppHeader from '~/components/includes/AppHeader.vue'
 import Cookies from 'js-cookie'
-import { useIFetch } from '~/composables/useIFetch'
+
 const authStore = useAuthStore()
 const token = ref(Cookies.get('token') || null)
+const { $authService } = useNuxtApp()
 
 const setTokenAndSetCurrentUser = async () => {
   if (token.value) {
     if (!authStore.getToken) {
       authStore.setToken(token.value)
     }
-    const user = await useIFetch('/auth/me', {
-      method: 'GET',
-    })
+    const user = await $authService.me()
 
-    authStore.setUser = user.data
+    authStore.setUser(user)
   }
 }
 

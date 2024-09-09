@@ -6,6 +6,7 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductCatalogueRequest;
 use App\Http\Requests\Product\UpdateProductCatalogueRequest;
+use App\Http\Resources\Product\ProductCatalogueCollection;
 use App\Http\Resources\Product\ProductCatalogueResource;
 use App\Repositories\Interfaces\Product\ProductCatalogueRepositoryInterface;
 use App\Services\Interfaces\Product\ProductCatalogueServiceInterface;
@@ -72,5 +73,15 @@ class ProductCatalogueController extends Controller
         $response = $this->productCatalogueService->destroy($id);
 
         return handleResponse($response);
+    }
+
+    // Client API
+
+    public function list()
+    {
+        $paginator = $this->productCatalogueService->list();
+        $data = new ProductCatalogueCollection($paginator);
+
+        return successResponse('', $data);
     }
 }

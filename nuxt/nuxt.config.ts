@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   components: true,
-  plugins: [],
+  plugins: ['~/plugins/axios.js', '~/plugins/authService.js'],
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.API_BASE_URL,

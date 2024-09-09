@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import { useRouter } from '#app' // Nuxt 3 router
+import AuthService from '~/services/AuthService'
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -28,14 +29,6 @@ export const useAuthStore = defineStore('auth', {
       Cookies.remove('token')
       const router = useRouter()
       router.push('/login')
-    },
-    async refreshToken() {
-      const response = await AuthService.refreshToken()
-      if (!response.success) {
-        this.removeToken()
-      } else {
-        this.setToken(response.data)
-      }
     },
     setToken(token) {
       this.status.loggedIn = true

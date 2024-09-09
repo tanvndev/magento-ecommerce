@@ -32,6 +32,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('log.request.response')->group(function () {
 
+    // CLIENT ROUTE
+    Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
+
+
+
+
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);

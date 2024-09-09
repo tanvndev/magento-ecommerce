@@ -120,4 +120,28 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             return successResponse(__('messages.delete.success'));
         }, __('messages.delete.error'));
     }
+
+    // Client Api
+
+    public function list()
+    {
+        $condition = [
+            'where' => [
+                'publish' => 1
+            ],
+        ];
+        $select = ['id', 'name', 'canonical', 'publish', 'parent_id', 'order', 'image'];
+        $orderBy = ['order' => 'desc'];
+
+        $data = $this->productCatalogueRepository->pagination(
+            $select,
+            $condition,
+            20,
+            $orderBy,
+            [],
+            ['childrens']
+        );
+
+        return $data;
+    }
 }

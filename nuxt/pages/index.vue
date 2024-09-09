@@ -319,6 +319,7 @@
 
 <script setup>
 import '~/assets/css/main.min.css'
+// import { useFetchData } from '~/composables/useFetchData'
 
 useSeoMeta({
   title: 'Trang chủ',

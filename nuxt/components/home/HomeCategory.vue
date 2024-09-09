@@ -72,20 +72,23 @@
               pauseOnMouseEnter: true,
             }"
           >
-            <swiper-slide v-for="item in 24" :key="item">
+            <swiper-slide
+              v-for="productCatalogue in productCatalogues"
+              :key="productCatalogue?.id"
+            >
               <div
                 class="category category-classic category-absolute overlay-zoom br-xs mx-2"
               >
                 <NuxtLink href="category" class="category-media">
                   <img
-                    src="~/assets/images/demos/demo1/categories/2-6.jpg"
+                    :src="productCatalogue.image"
                     alt="Category"
                     width="130"
                     height="130"
                   />
                 </NuxtLink>
                 <div class="category-content">
-                  <h4 class="category-name">Máy tính</h4>
+                  <h4 class="category-name">{{ productCatalogue.name }}</h4>
                   <NuxtLink
                     to="category"
                     class="btn btn-primary btn-link btn-underline"
@@ -100,26 +103,24 @@
     </div>
   </section>
 </template>
+
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
 import 'swiper/css'
-import { useIFetch } from '~/composables/useIFetch'
-const modules = [Navigation, Autoplay]
 
-const fetchData = async () => {
-  try {
-    const { data, error } = await useIFetch('/products/catalogues', {
-      method: 'GET',
-      // Thêm các tùy chọn khác nếu cần
-    })
-    console.log(data)
-  } catch (err) {
-    console.log(err)
-  }
+const { $axios } = useNuxtApp()
+const modules = [Navigation, Autoplay]
+const productCatalogues = ref([])
+
+const getProductCatalogues = async () => {
+  const response = await $axios.get('/products/catalogues/list')
+
+  productCatalogues.value = response.data.data
+  console.log(productCatalogues.value)
 }
 
-// Watch for changes in store state
-
-fetchData()
+onMounted(() => {
+  getProductCatalogues()
+})
 </script>
