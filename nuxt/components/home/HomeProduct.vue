@@ -34,7 +34,7 @@
                       <img
                         :src="item.image"
                         :alt="item.name"
-                        style="width: 300px; height: 280px; border-radius: 2px"
+                        style="width: 300px; height: 280px; border-radius: 4px"
                       />
                     </NuxtLink>
                     <div class="product-action-vertical">
