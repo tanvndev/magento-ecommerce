@@ -76,7 +76,6 @@ class WidgetController extends Controller
         return handleResponse($response);
     }
 
-
     // CLIENT API //
 
     public function getWidget()
@@ -84,6 +83,7 @@ class WidgetController extends Controller
         $response = $this->widgetService->getWidget();
 
         $data = new WidgetCollection($response);
+
         return successResponse('', $data);
     }
 }

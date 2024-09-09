@@ -36,9 +36,6 @@ Route::middleware('log.request.response')->group(function () {
     Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
     Route::get('getWidget', [WidgetController::class, 'getWidget']);
 
-
-
-
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);

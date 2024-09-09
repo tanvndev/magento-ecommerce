@@ -62,8 +62,8 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
         $payload['model_ids'] = array_map('intval', $payload['model_ids'] ?? []);
 
-        if ($payload['type'] == 'advertisement' && isset($payload['image']) && !empty($payload['image'])) {
-            $payload['advertisement_banners'] = array_map(fn($image, $key) => [
+        if ($payload['type'] == 'advertisement' && isset($payload['image']) && ! empty($payload['image'])) {
+            $payload['advertisement_banners'] = array_map(fn ($image, $key) => [
                 'image' => $image,
                 'alt' => $payload['alt'][$key] ?? '',
                 'content' => $payload['content'][$key] ?? '',
@@ -84,7 +84,6 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     }
 
     // CLIENT API //
-
 
     public function getWidget()
     {
@@ -116,7 +115,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     {
         $repositoryInstance = getRepositoryInstance($item->model === 'Product' ? 'ProductVariant' : $item->model);
 
-        if (!$repositoryInstance) {
+        if (! $repositoryInstance) {
             return [];
         }
 
@@ -128,21 +127,21 @@ class WidgetService extends BaseService implements WidgetServiceInterface
                 [], // -> relation
                 [
                     'product' => [
-                        ['publish', '1']
-                    ]
+                        ['publish', '1'],
+                    ],
                 ] // -> whereHas
             ) ?? [];
         }
 
         return $repositoryInstance->findByWhereIn($item->model_ids)
-            ->flatMap(fn($modelItem) => (
+            ->flatMap(fn ($modelItem) => (
                 $repositoryInstance->findById($modelItem->id)
-                ->with('products.variants')
-                ->where('publish', 1)
-                ->first()
-                ?->products
-                ->filter(fn($product) => $product->publish === 1)
-                ->flatMap(fn($product) => $product->variants)
+                    ->with('products.variants')
+                    ->where('publish', 1)
+                    ->first()
+                    ?->products
+                    ->filter(fn ($product) => $product->publish === 1)
+                    ->flatMap(fn ($product) => $product->variants)
             ))
             ->unique('id')
             ->filter();
