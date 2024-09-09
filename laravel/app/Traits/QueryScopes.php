@@ -174,4 +174,28 @@ trait QueryScopes
 
         return $query;
     }
+
+    public function scopeWhereHasRelations($query, array $relationConditions)
+    {
+        // 'relation_name' => [
+        //     ['field', 'operator', 'value'],
+        // ]
+        foreach ($relationConditions as $relation => $conditions) {
+            $query->whereHas($relation, function ($q) use ($conditions) {
+                foreach ($conditions as $condition) {
+                    if (count($condition) === 3) {
+                        // ['field', 'operator', 'value']
+                        $q->where($condition[0], $condition[1], $condition[2]);
+                    } elseif (count($condition) === 2) {
+                        // ['field', 'value'] '='
+                        $q->where($condition[0], '=', $condition[1]);
+                    } else {
+                        throw new \Exception("Error at whereHasRelations", 1);
+                    }
+                }
+            });
+        }
+
+        return $query;
+    }
 }
