@@ -75,7 +75,7 @@ class ProductCatalogueController extends Controller
         return handleResponse($response);
     }
 
-    // Client API
+    // CLIENT API //
 
     public function list()
     {

@@ -122,8 +122,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         }, __('messages.delete.error'));
     }
 
-    // Client Api
-
+    // CLIENT API //
     public function list()
     {
         $condition = [
