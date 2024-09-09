@@ -117,162 +117,12 @@
           <div class="inner-wrap">
             <div class="header-left">
               <nav class="main-nav">
-                <ul class="menu active-underline">
-                  <li>
-                    <a href="demo1.html">Điện thoại</a>
-                  </li>
-                  <li>
-                    <a href="shop-banner-sidebar.html">Máy tính</a>
-                    <!-- Start of Megamenu -->
-                    <ul class="megamenu">
-                      <li>
-                        <h4 class="menu-title">Shop Pages</h4>
-                        <ul>
-                          <li>
-                            <a href="shop-banner-sidebar.html"
-                              >Banner With Sidebar</a
-                            >
-                          </li>
-                          <li>
-                            <a href="shop-boxed-banner.html">Boxed Banner</a>
-                          </li>
-                          <li>
-                            <a href="shop-fullwidth-banner.html"
-                              >Full Width Banner</a
-                            >
-                          </li>
-                          <li>
-                            <a href="shop-horizontal-filter.html"
-                              >Horizontal Filter<span class="tip tip-hot"
-                                >Hot</span
-                              ></a
-                            >
-                          </li>
-                          <li>
-                            <a href="shop-off-canvas.html"
-                              >Off Canvas Sidebar<span class="tip tip-new"
-                                >New</span
-                              ></a
-                            >
-                          </li>
-                          <li>
-                            <a href="shop-infinite-scroll.html"
-                              >Infinite Ajax Scroll</a
-                            >
-                          </li>
-                          <li>
-                            <a href="shop-right-sidebar.html">Right Sidebar</a>
-                          </li>
-                          <li>
-                            <a href="shop-both-sidebar.html">Both Sidebar</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <h4 class="menu-title">Shop Layouts</h4>
-                        <ul>
-                          <li>
-                            <a href="shop-grid-3cols.html">3 Columns Mode</a>
-                          </li>
-                          <li>
-                            <a href="shop-grid-4cols.html">4 Columns Mode</a>
-                          </li>
-                          <li>
-                            <a href="shop-grid-5cols.html">5 Columns Mode</a>
-                          </li>
-                          <li>
-                            <a href="shop-grid-6cols.html">6 Columns Mode</a>
-                          </li>
-                          <li>
-                            <a href="shop-grid-7cols.html">7 Columns Mode</a>
-                          </li>
-                          <li>
-                            <a href="shop-grid-8cols.html">8 Columns Mode</a>
-                          </li>
-                          <li><a href="shop-list.html">List Mode</a></li>
-                          <li>
-                            <a href="shop-list-sidebar.html"
-                              >List Mode With Sidebar</a
-                            >
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <h4 class="menu-title">Product Pages</h4>
-                        <ul>
-                          <li>
-                            <a href="product-variable.html">Variable Product</a>
-                          </li>
-                          <li>
-                            <a href="product-featured.html"
-                              >Featured &amp; Sale</a
-                            >
-                          </li>
-                          <li>
-                            <a href="product-accordion.html"
-                              >Data In Accordion</a
-                            >
-                          </li>
-                          <li>
-                            <a href="product-section.html">Data In Sections</a>
-                          </li>
-                          <li>
-                            <a href="product-swatch.html">Image Swatch</a>
-                          </li>
-                          <li>
-                            <a href="product-extended.html">Extended Info</a>
-                          </li>
-                          <li>
-                            <a href="product-without-sidebar.html"
-                              >Without Sidebar</a
-                            >
-                          </li>
-                          <li>
-                            <a href="product-video.html"
-                              >360<sup>o</sup> &amp; Video<span
-                                class="tip tip-new"
-                                >New</span
-                              ></a
-                            >
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <h4 class="menu-title">Product Layouts</h4>
-                        <ul>
-                          <li>
-                            <a href="product-default.html"
-                              >Default<span class="tip tip-hot">Hot</span></a
-                            >
-                          </li>
-                          <li>
-                            <a href="product-vertical.html">Vertical Thumbs</a>
-                          </li>
-                          <li><a href="product-grid.html">Grid Images</a></li>
-                          <li><a href="product-masonry.html">Masonry</a></li>
-                          <li><a href="product-gallery.html">Gallery</a></li>
-                          <li>
-                            <a href="product-sticky-info.html">Sticky Info</a>
-                          </li>
-                          <li>
-                            <a href="product-sticky-thumb.html"
-                              >Sticky Thumbs</a
-                            >
-                          </li>
-                          <li>
-                            <a href="product-sticky-both.html">Sticky Both</a>
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                    <!-- End of Megamenu -->
-                  </li>
-                  <li>
-                    <a href="vendor-dokan-store.html">iPhone</a>
-                  </li>
-                  <li>
-                    <a href="blog.html">Samsung</a>
-                  </li>
+                <ul class="menu-custom">
+                  <MenuItem
+                    v-for="productCatalogue in productCatalogues"
+                    :key="productCatalogue.id"
+                    :item="productCatalogue"
+                  />
                 </ul>
               </nav>
             </div>
@@ -291,9 +141,12 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import MenuItem from '../MenuItem.vue'
 
+const { $axios } = useNuxtApp()
 const headerMain = ref(null)
 let lastScrollPosition = 0
+const productCatalogues = ref([])
 
 const handleScroll = () => {
   if (!headerMain.value) return
@@ -322,11 +175,36 @@ const handleScroll = () => {
   lastScrollPosition = currentScrollPosition
 }
 
-onMounted(() => window.addEventListener('scroll', handleScroll))
+const getProductCatalogues = async () => {
+  const response = await $axios.get('/products/catalogues/list')
+  productCatalogues.value = response.data.data.filter(
+    (item) => item.parent_id === null
+  )
+}
+
+onMounted(() => {
+  getProductCatalogues()
+  window.addEventListener('scroll', handleScroll)
+})
 onBeforeUnmount(() => window.removeEventListener('scroll', handleScroll))
 </script>
 
 <style scoped>
+.menu-custom {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-custom > .menu-item {
+  margin-right: 20px;
+}
+
+.menu-custom > .menu-item:last-child {
+  margin-right: 0;
+}
+
 .header-top {
   position: relative;
   z-index: 1001;

@@ -10,7 +10,7 @@
             <h4 class="icon-box-title font-weight-bold mb-1">
               Miễn phí vận chuyển và trả hàng
             </h4>
-            <p class="text-default">Cho tất cả các đơn hàng trên 99 đô la</p>
+            <p class="text-default">Cho tất cả các đơn hàng đặc biệt</p>
           </div>
         </div>
         <div class="icon-box icon-box-side icon-box-primary">
@@ -32,9 +32,7 @@
             <h4 class="icon-box-title font-weight-bold mb-1">
               Đảm bảo hoàn tiền
             </h4>
-            <p class="text-default">
-              Bất kỳ khoản hoàn tiền nào trong vòng 30 ngày
-            </p>
+            <p class="text-default">Hoàn tiền nào trong vòng 30 ngày</p>
           </div>
         </div>
         <div class="icon-box icon-box-side icon-box-primary icon-box-chat">
@@ -45,19 +43,20 @@
             <h4 class="icon-box-title font-weight-bold mb-1">
               Hỗ trợ khách hàng
             </h4>
-            <p class="text-default">
-              Gọi điện hoặc gửi email cho chúng tôi 24/7
-            </p>
+            <p class="text-default">Hỗ trợ khách hàng 24/7</p>
           </div>
         </div>
       </div>
     </div>
   </div>
   <!-- Categories -->
-  <section class="category-section top-category bg-grey pt-10 pb-10">
+  <section
+    class="category-section top-category bg-grey pt-10 pb-10"
+    v-if="productCatalogues.length"
+  >
     <div class="container pb-2">
       <h2 class="title justify-content-center pt-1 ls-normal mb-5">
-        Danh mục sản phẩm
+        Danh Mục Sản Phẩm
       </h2>
       <div class="category-wrapper">
         <div class="swiper-theme pg-show">
@@ -65,6 +64,8 @@
             :modules="modules"
             :slides-per-view="6"
             :loop="true"
+            :infinite="true"
+            @swiper="onSwiper"
             :navigation="false"
             :autoplay="{
               delay: 3000,
@@ -72,20 +73,42 @@
               pauseOnMouseEnter: true,
             }"
           >
-            <swiper-slide v-for="item in 24" :key="item">
+            <swiper-slide
+              v-for="productCatalogue in productCatalogues"
+              :key="productCatalogue?.id"
+            >
               <div
                 class="category category-classic category-absolute overlay-zoom br-xs mx-2"
               >
                 <NuxtLink href="category" class="category-media">
                   <img
-                    src="~/assets/images/demos/demo1/categories/2-6.jpg"
-                    alt="Category"
-                    width="130"
-                    height="130"
+                    :src="productCatalogue.image"
+                    :alt="productCatalogue.name"
                   />
                 </NuxtLink>
                 <div class="category-content">
-                  <h4 class="category-name">Máy tính</h4>
+                  <h4 class="category-name">{{ productCatalogue.name }}</h4>
+                  <NuxtLink
+                    to="category"
+                    class="btn btn-primary btn-link btn-underline"
+                    >Xem ngay</NuxtLink
+                  >
+                </div>
+              </div>
+            </swiper-slide>
+
+            <swiper-slide>
+              <div
+                class="category category-classic category-absolute overlay-zoom br-xs mx-2"
+              >
+                <NuxtLink href="category" class="category-media rounded">
+                  <img
+                    src="assets/images/demos/demo1/categories/2-6.jpg"
+                    alt="Category"
+                  />
+                </NuxtLink>
+                <div class="category-content">
+                  <h4 class="category-name">Laptop</h4>
                   <NuxtLink
                     to="category"
                     class="btn btn-primary btn-link btn-underline"
@@ -95,31 +118,52 @@
               </div>
             </swiper-slide>
           </swiper>
+          <div>
+            <button class="button-slide prev" @click.stop="slider.slidePrev()">
+              <i class="w-icon-angle-left"></i>
+            </button>
+            <button class="button-slide next" @click.stop="slider.slideNext()">
+              <i class="w-icon-angle-right"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </section>
 </template>
+
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
 import 'swiper/css'
-import { useIFetch } from '~/composables/useIFetch'
-const modules = [Navigation, Autoplay]
 
-const fetchData = async () => {
-  try {
-    const { data, error } = await useIFetch('/products/catalogues', {
-      method: 'GET',
-      // Thêm các tùy chọn khác nếu cần
-    })
-    console.log(data)
-  } catch (err) {
-    console.log(err)
-  }
+const { $axios } = useNuxtApp()
+const modules = [Navigation, Autoplay]
+const productCatalogues = ref([])
+const slider = ref(null)
+
+const getProductCatalogues = async () => {
+  const response = await $axios.get('/products/catalogues/list')
+  productCatalogues.value = response.data.data
 }
 
-// Watch for changes in store state
+const onSwiper = (swiper) => {
+  slider.value = swiper
+}
 
-fetchData()
+onMounted(() => {
+  getProductCatalogues()
+})
 </script>
+<style scoped>
+.category-media {
+  background-color: #fff;
+}
+.category-media img {
+  height: 186px;
+  width: 186px;
+  object-fit: cover;
+  background-color: #fff;
+  border-radius: 6px;
+}
+</style>

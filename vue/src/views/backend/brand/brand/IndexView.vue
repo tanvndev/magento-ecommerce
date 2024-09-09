@@ -39,7 +39,15 @@
               </template>
 
               <template v-if="column.dataIndex === 'publish'">
-                <PublishSwitchComponent
+                <StatusSwitchComponent
+                  :record="record"
+                  :modelName="state.modelName"
+                  :field="column.dataIndex"
+                />
+              </template>
+
+              <template v-if="column.dataIndex === 'is_featured'">
+                <StatusSwitchComponent
                   :record="record"
                   :modelName="state.modelName"
                   :field="column.dataIndex"
@@ -69,7 +77,7 @@ import {
   BreadcrumbComponent,
   MasterLayout,
   FilterComponent,
-  PublishSwitchComponent,
+  StatusSwitchComponent,
   ToolboxComponent,
   ActionComponent
 } from '@/components/backend';
@@ -107,6 +115,12 @@ const columns = [
     dataIndex: 'canonical',
     key: 'canonical',
     sorter: (a, b) => a.canonical.localeCompare(b.canonical)
+  },
+  {
+    title: 'Nổi bật',
+    dataIndex: 'is_featured',
+    key: 'is_featured',
+    width: '5%'
   },
   {
     title: 'Tình trạng',

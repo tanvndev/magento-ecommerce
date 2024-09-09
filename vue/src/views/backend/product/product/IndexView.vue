@@ -51,7 +51,7 @@
                 <div v-html="renderCatalogues(record.catalogues)"></div>
               </template>
               <template v-if="column.dataIndex === 'publish'">
-                <PublishSwitchComponent
+                <StatusSwitchComponent
                   :record="record"
                   :modelName="state.modelName"
                   :field="column.dataIndex"
@@ -130,7 +130,7 @@ import {
   BreadcrumbComponent,
   MasterLayout,
   FilterComponent,
-  PublishSwitchComponent,
+  StatusSwitchComponent,
   ToolboxComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';

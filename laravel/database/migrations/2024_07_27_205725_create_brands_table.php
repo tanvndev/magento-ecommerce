@@ -20,6 +20,8 @@ return new class extends Migration
             $table->tinyInteger('publish')->default(1)->comment('1: Active, 2: Inactive');
             $table->string('meta_title', 255)->nullable();
             $table->string('meta_description', 255)->nullable();
+            $table->tinyInteger('is_featured')->default(1)->comment('1: true, 2: false');
+
             $table->softDeletes();
             $table->timestamps();
         });

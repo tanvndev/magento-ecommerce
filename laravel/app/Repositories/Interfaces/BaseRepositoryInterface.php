@@ -8,11 +8,25 @@ interface BaseRepositoryInterface
 
     public function findById($modelId, $column = ['*'], $relation = []);
 
-    public function findByWhere($conditions = [], $column = ['*'], $relation = [], $all = false, $orderBy = null, $whereInParams = [], $withCount = []);
+    public function findByWhere(
+        $conditions = [],
+        $column = ['*'],
+        $relation = [],
+        $all = false,
+        $orderBy = null,
+        $whereInParams = [],
+        $withCount = []
+    );
 
     public function findByWhereHas($condition = [], $column = ['*'], $relation = [], $alias = '', $all = false);
 
-    public function findByWhereIn(array $value, string $field = 'id', array $column = ['*'], array $relation = []);
+    public function findByWhereIn(
+        array $values,
+        string $field = 'id',
+        array $columns = ['*'],
+        array $relations = [],
+        array $relationConditions = []
+    );
 
     public function create($payload = []);
 
