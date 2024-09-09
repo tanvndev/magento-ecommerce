@@ -23,7 +23,7 @@ class UpdateProductCatalogueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'canonical' => 'unique|product_catalogues,canonical,'.$this->catalogue,
+            'canonical' => 'unique:product_catalogues,canonical,' . $this->catalogue,
         ];
     }
 

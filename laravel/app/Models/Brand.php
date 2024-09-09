@@ -19,6 +19,7 @@ class Brand extends Model
         'image',
         'canonical',
         'meta_title',
+        'is_featured',
         'meta_description',
     ];
 

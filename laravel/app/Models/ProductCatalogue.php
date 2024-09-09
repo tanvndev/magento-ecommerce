@@ -22,6 +22,7 @@ class ProductCatalogue extends Model
         'meta_description',
         'canonical',
         'parent_id',
+        'is_featured'
     ];
 
     protected static function boot()
@@ -47,7 +48,7 @@ class ProductCatalogue extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $canonical = "{$originalCanonical}-".$count++;
+            $canonical = "{$originalCanonical}-" . $count++;
         }
 
         return $canonical;
