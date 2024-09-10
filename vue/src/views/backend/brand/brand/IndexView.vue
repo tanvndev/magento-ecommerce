@@ -33,7 +33,7 @@
               <template v-if="column.dataIndex === 'image'">
                 <img
                   class="w-20 object-contain"
-                  :src="resizeImage(record.image)"
+                  :src="resizeImage(record.image, 100)"
                   :alt="record.name"
                 />
               </template>

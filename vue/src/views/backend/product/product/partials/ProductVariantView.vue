@@ -43,7 +43,7 @@
                 <div class="rounded border">
                   <img
                     class="w-[50px] object-cover"
-                    :src="resizeImage(variant.image)"
+                    :src="resizeImage(variant.image, 100)"
                     alt="Chưa có ảnh"
                   />
                 </div>

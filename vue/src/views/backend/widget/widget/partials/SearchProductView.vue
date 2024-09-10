@@ -24,7 +24,7 @@
           <div class="flex items-center">
             <span class="mr-2 font-bold">#{{ index + 1 }}</span>
             <div class="rounded border p-1">
-              <img class="h-[50px] w-[50px] object-cover" :src="resizeImage(item.image)" />
+              <img class="h-[50px] w-[50px] object-cover" :src="resizeImage(item.image, 100)" />
             </div>
             <span class="ml-2">{{ item.name }}</span>
           </div>
@@ -66,7 +66,7 @@
                 <div class="rounded border p-1">
                   <img
                     class="h-[50px] w-[50px] object-cover"
-                    :src="resizeImage(record.image)"
+                    :src="resizeImage(record.image, 100)"
                     :alt="record.name"
                   />
                 </div>

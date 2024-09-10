@@ -82,7 +82,7 @@
               >
                 <NuxtLink href="category" class="category-media">
                   <img
-                    :src="productCatalogue.image"
+                    :src="resizeImage(productCatalogue.image, 300, 300)"
                     :alt="productCatalogue.name"
                   />
                 </NuxtLink>
@@ -133,6 +133,7 @@
 </template>
 
 <script setup>
+import { resizeImage } from '#imports'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
 import 'swiper/css'
