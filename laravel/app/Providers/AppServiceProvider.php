@@ -100,7 +100,6 @@ class AppServiceProvider extends ServiceProvider
                 $sqlWithBindings
             );
 
-            // Ghi log vào file
             File::append($logPath, $logContent);
         });
     }

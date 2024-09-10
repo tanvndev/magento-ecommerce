@@ -4,7 +4,7 @@
       <div class="banner banner-fixed br-xs">
         <figure>
           <img
-            :src="item.image"
+            :src="resizeImage(item.image, 800, 400)"
             :alt="item.alt"
             width="610"
             height="160"
@@ -32,6 +32,7 @@
 </template>
 
 <script setup>
+import { resizeImage } from '#imports'
 const props = defineProps({
   items: {
     type: [Array, Object],

@@ -67,7 +67,7 @@
                       <div class="rounded border p-1">
                         <img
                           class="h-[50px] w-[50px] object-cover"
-                          :src="resizeImage(record.image)"
+                          :src="resizeImage(record.image, 100)"
                         />
                       </div>
                       <RouterLink

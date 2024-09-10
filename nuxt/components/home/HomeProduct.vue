@@ -32,7 +32,7 @@
                   <figure class="product-media">
                     <NuxtLink to="detail">
                       <img
-                        :src="item.image"
+                        :src="resizeImage(item.image, 500, 400)"
                         :alt="item.name"
                         style="width: 300px; height: 280px; border-radius: 4px"
                       />
@@ -85,6 +85,7 @@
   </div>
 </template>
 <script setup>
+import { resizeImage } from '#imports'
 import { ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay, Grid } from 'swiper/modules'
