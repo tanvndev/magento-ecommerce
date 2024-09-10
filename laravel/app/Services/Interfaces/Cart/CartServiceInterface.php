@@ -10,5 +10,8 @@ interface CartServiceInterface
 
     public function deleteOneItem($request);
 
-    public function clearCart();
+    public function cleanCart();
+
+    public function handleSelected($request);
+
 }
