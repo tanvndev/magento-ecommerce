@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use League\Glide\Responses\LaravelResponseFactory;
 use League\Glide\ServerFactory;
@@ -69,10 +72,45 @@ class AppServiceProvider extends ServiceProvider
                 'cache_path_prefix' => '.cache',
             ]);
         });
+
+        $this->printLogSql();
     }
 
     /**
      * Bootstrap any application services.
      */
     public function boot(): void {}
+
+    private function printLogSql()
+    {
+        DB::listen(function ($query) {
+            $logPath = storage_path('logs/sql/' . Carbon::now()->format('Y-m-d') . '-slow-log.sql');
+
+            $sqlWithBindings = $this->interpolateQuery($query->sql, $query->bindings);
+
+            $logContent = sprintf(
+                "/*==================================================================*/\n" .
+                    "/* Origin (request): %s\n" .
+                    "   Query %d - %s [%sms] */\n\n" .
+                    "%s\n\n",
+                request()->fullUrl() ?? 'N/A',
+                $query->time, // Số thứ tự truy vấn
+                Carbon::now()->toDateTimeString(),
+                number_format($query->time, 2), // Thời gian thực thi
+                $sqlWithBindings
+            );
+
+            // Ghi log vào file
+            File::append($logPath, $logContent);
+        });
+    }
+
+    private function interpolateQuery($sql, $bindings)
+    {
+        foreach ($bindings as $binding) {
+            $value = is_numeric($binding) ? $binding : "'$binding'";
+            $sql = preg_replace('/\?/', $value, $sql, 1);
+        }
+        return $sql;
+    }
 }
