@@ -22,6 +22,7 @@ class ProductCatalogue extends Model
         'meta_description',
         'canonical',
         'parent_id',
+        'is_featured',
     ];
 
     protected static function boot()

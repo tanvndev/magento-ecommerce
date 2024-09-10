@@ -9395,7 +9395,7 @@ body .product-popup {
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
   bottom: 0;
-  width: 166px;
+  width: 90px;
   max-width: 80%;
   border-radius: 3px;
   padding: 5px;
@@ -13777,13 +13777,14 @@ aside .sp-sidebar-banner span {
   position: relative;
   width: 100%;
   max-width: 38rem;
+  border-left: 2px solid #336699;
 }
 .header-search input.form-control {
   -webkit-box-flex: 1;
   -ms-flex: 1;
   flex: 1;
   min-width: 40px;
-  padding: 0.9rem;
+  padding: 1rem;
   border: 2px solid #336699;
   border-right: 0;
   font-size: 1.2rem;

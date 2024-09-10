@@ -66,7 +66,8 @@ class BaseRepository implements BaseRepositoryInterface
         array $values,
         string $field = 'id',
         array $columns = ['*'],
-        array $relations = []
+        array $relations = [],
+        array $relationConditions = []
     ) {
         $query = $this->model->newQuery()->whereIn($field, $values);
 
@@ -76,6 +77,13 @@ class BaseRepository implements BaseRepositoryInterface
 
         if (! empty($relations)) {
             $query->with($relations);
+        }
+
+        if (! empty($relationConditions)) {
+            // 'relation_name' => [
+            //     ['field', 'operator', 'value'],
+            // ]
+            $query->whereHasRelations($relationConditions);
         }
 
         return $query->get();

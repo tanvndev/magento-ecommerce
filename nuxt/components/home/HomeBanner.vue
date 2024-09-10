@@ -6,6 +6,7 @@
         :slides-per-view="1"
         :autoplay="true"
         :loop="true"
+        :infinite="true"
         :pagination="{ clickable: true }"
         :navigation="true"
       >

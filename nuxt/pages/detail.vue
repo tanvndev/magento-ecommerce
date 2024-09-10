@@ -764,7 +764,6 @@
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
-import { MoreInfomation, ProductAside } from '~/components'
 import 'swiper/css'
 
 const modules = [Navigation, Autoplay]

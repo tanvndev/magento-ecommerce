@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description', 255)->nullable();
             $table->integer('order')->default(0);
             $table->tinyInteger('publish')->default(1);
+            $table->tinyInteger('is_featured')->default(1)->comment('1: true, 2: false');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('product_catalogues')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('meta_title', 255)->nullable();

@@ -5,7 +5,8 @@ use Carbon\Carbon;
 if (! function_exists('getServiceInstance')) {
     function getServiceInstance($modelName)
     {
-        $folderName = str_replace('Catalogue', '', $modelName);
+        $folderName = str_replace(['Catalogue', 'Variant'], '', $modelName);
+
         $serviceInterfaceNameSpace = 'App\Services\Interfaces\\'.ucfirst($folderName).'\\'.ucfirst($modelName).'ServiceInterface';
         if (interface_exists($serviceInterfaceNameSpace)) {
             // hàm app() giúp truy cập các đối tượng đã đăng ký trong container
@@ -36,7 +37,7 @@ if (! function_exists('generateStrongPassword')) {
 if (! function_exists('getRepositoryInstance')) {
     function getRepositoryInstance(string $modelName)
     {
-        $folderName = str_replace('Catalogue', '', $modelName);
+        $folderName = str_replace(['Catalogue', 'Variant'], '', $modelName);
 
         $repositoryInterfaceNameSpace = 'App\Repositories\Interfaces\\'.ucfirst($folderName).'\\'.ucfirst($modelName).'RepositoryInterface';
         if (interface_exists($repositoryInterfaceNameSpace)) {

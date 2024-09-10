@@ -41,8 +41,11 @@
 .button-slide:hover {
   transform: scale(1.15);
 }
+.swiper-theme{
+    position: relative;
+}
 
-.slider-wrapper:hover .button-slide {
+.swiper-theme:hover .button-slide {
   visibility: visible;
   opacity: 1;
 }
