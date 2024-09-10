@@ -46,8 +46,16 @@
                 />
               </template>
 
+              <template v-if="column.dataIndex === 'is_featured'">
+                <StatusSwitchComponent
+                  :record="record"
+                  :modelName="state.modelName"
+                  :field="column.dataIndex"
+                />
+              </template>
+
               <template v-if="column.dataIndex === 'publish'">
-                <PublishSwitchComponent
+                <StatusSwitchComponent
                   :record="record"
                   :modelName="state.modelName"
                   :field="column.dataIndex"
@@ -68,7 +76,7 @@ import {
   BreadcrumbComponent,
   MasterLayout,
   FilterComponent,
-  PublishSwitchComponent,
+  StatusSwitchComponent,
   ToolboxComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
@@ -109,6 +117,12 @@ const columns = [
     title: 'Vị trí',
     dataIndex: 'order',
     key: 'order'
+  },
+  {
+    title: 'Nổi bật',
+    dataIndex: 'is_featured',
+    key: 'is_featured',
+    width: '5%'
   },
   {
     title: 'Tình trạng',

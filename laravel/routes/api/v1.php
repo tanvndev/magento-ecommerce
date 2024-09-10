@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Brand\BrandController;
+use App\Http\Controllers\Api\V1\Widget\WidgetController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\Upload\{UploadController};
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
@@ -31,6 +32,10 @@ use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 */
 
 Route::middleware('log.request.response')->group(function () {
+
+    // CLIENT ROUTE
+    Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
+    Route::get('getWidget', [WidgetController::class, 'getWidget']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
@@ -109,7 +114,8 @@ Route::middleware('log.request.response')->group(function () {
             Route::get('carts', 'index')->name('index');
             Route::post('carts', 'createOrUpdate')->name('store-or-update');
             Route::delete('carts/{id}/destroy', 'destroy')->name('destroy');
-            Route::delete('carts/clear', 'forceDestroy')->name('force-destroy');
+            Route::delete('carts/clean', 'forceDestroy')->name('force-destroy');
+            Route::put('carts/handleSelected', 'handleSelected')->name('handle-selected');
         });
     });
 });

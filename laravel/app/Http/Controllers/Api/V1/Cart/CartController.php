@@ -65,4 +65,11 @@ class CartController extends Controller
 
         return handleResponse($response);
     }
+
+    public function handleSelected(Request $request)
+    {
+        $response = $this->cartService->handleSelected($request);
+
+        return handleResponse($response);
+    }
 }

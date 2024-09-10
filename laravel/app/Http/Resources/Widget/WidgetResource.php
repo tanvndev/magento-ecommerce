@@ -26,6 +26,7 @@ class WidgetResource extends JsonResource
             'publish' => $this->publish,
             'order' => $this->order,
             'advertisement_banners' => $this->advertisement_banners ?? [],
+            'items' => $this->items ?? [],
         ];
     }
 }

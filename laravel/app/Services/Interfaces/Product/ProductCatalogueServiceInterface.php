@@ -18,4 +18,6 @@ interface ProductCatalogueServiceInterface
     public function updateStatus();
 
     public function updateStatusMultiple();
+
+    public function list();
 }

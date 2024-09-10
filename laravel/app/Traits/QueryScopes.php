@@ -46,7 +46,7 @@ trait QueryScopes
         // where với toán tử: ['price' => ['>', 100]]
         // whereIn: ['category_id' => ['in', [1, 2, 3]]]
 
-        if (! empty($where) && is_array($where)) {
+        if (! empty($conditions) && is_array($conditions)) {
             foreach ($conditions as $column => $value) {
                 if (is_array($value)) {
                     if ($value[0] === 'in') {
@@ -170,6 +170,30 @@ trait QueryScopes
             $startAt = convertDateTime($date[0], 'Y-m-d H:i:s');
             $endAt = convertDateTime($date[1], 'Y-m-d H:i:s');
             $query->whereBetween('created_at', [$startAt, $endAt]);
+        }
+
+        return $query;
+    }
+
+    public function scopeWhereHasRelations($query, array $relationConditions)
+    {
+        // 'relation_name' => [
+        //     ['field', 'operator', 'value'],
+        // ]
+        foreach ($relationConditions as $relation => $conditions) {
+            $query->whereHas($relation, function ($q) use ($conditions) {
+                foreach ($conditions as $condition) {
+                    if (count($condition) === 3) {
+                        // ['field', 'operator', 'value']
+                        $q->where($condition[0], $condition[1], $condition[2]);
+                    } elseif (count($condition) === 2) {
+                        // ['field', 'value'] '='
+                        $q->where($condition[0], '=', $condition[1]);
+                    } else {
+                        throw new \Exception('Error at whereHasRelations', 1);
+                    }
+                }
+            });
         }
 
         return $query;

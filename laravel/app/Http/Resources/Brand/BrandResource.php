@@ -21,6 +21,7 @@ class BrandResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'publish' => $this->publish,
+            'is_featured' => $this->is_featured,
             'image' => $this->image,
         ];
     }

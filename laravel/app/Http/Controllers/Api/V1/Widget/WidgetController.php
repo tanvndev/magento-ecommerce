@@ -75,4 +75,15 @@ class WidgetController extends Controller
 
         return handleResponse($response);
     }
+
+    // CLIENT API //
+
+    public function getWidget()
+    {
+        $response = $this->widgetService->getWidget();
+
+        $data = new WidgetCollection($response);
+
+        return successResponse('', $data);
+    }
 }

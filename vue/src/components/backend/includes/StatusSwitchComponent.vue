@@ -3,8 +3,8 @@
     <label class="switch">
       <input
         type="checkbox"
-        @change="handleChangePublish($event)"
-        :checked="props.record?.publish == 1 ? true : false"
+        @change="handleChangeStatus($event)"
+        :checked="props.record[props.field] == 1 ? true : false"
       />
       <span class="slider"></span>
     </label>
@@ -21,7 +21,7 @@ const props = defineProps({
   modelName: String
 });
 
-const handleChangePublish = async (event) => {
+const handleChangeStatus = async (event) => {
   const payload = {
     modelName: props.modelName,
     modelId: props.record?.id,

@@ -495,4 +495,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         return $result;
     }
+
+    // CLIENT API //
+
 }

@@ -22,7 +22,7 @@ class CartResource extends JsonResource
             'sale_price' => $this->product_variant->sale_price,
             'attributes' => implode(' - ', $this->product_variant->attribute_values->pluck('name')->toArray()),
             'is_selected' => $this->is_selected,
-            'total' => $this->quantity * $this->product_variant->price,
+            'total' => $this->quantity * ($this->product_variant->sale_price ??  $this->product_variant->price),
         ];
     }
 }
