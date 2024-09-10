@@ -132,40 +132,19 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::apiResource('payment-methods', PaymentMethodController::class);
 
         // SYSTEM CONFIG ROUTE
+        Route::apiResource('system-configs', SystemConfigController::class);
+
+        // CART ROUTE
+        Route::controller(CartController::class)->name('cart.')->group(function () {
+            Route::get('carts', 'index')->name('index');
+            Route::post('carts', 'createOrUpdate')->name('store-or-update');
+            Route::delete('carts/{id}/destroy', 'destroy')->name('destroy');
+            Route::delete('carts/clear', 'forceDestroy')->name('force-destroy');
+        });
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
 
         // WIDGET ROUTE
         Route::apiResource('widgets', WidgetController::class);
-
-        // VOUCHER ROUTE
-        Route::apiResource('vouchers', VoucherController::class);
-
-        // SLIDER ROUTE
-        Route::apiResource('sliders', SliderController::class);
-
-        // ORDER ROUTE
-        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
-        Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
-        Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
-
-        // Product Review Route
-        Route::controller(ProductReviewController::class)->name('productReviews.')->group(function () {
-            // Route::get('reviews', 'index')->name('index');
-            Route::post('product-reviews', 'store')->name('store');
-            Route::post('product-reviews/{parentId}/reply', 'update')->name('reply');
-            Route::put('product-reviews/reply/{replyId}', 'destroy')->name('updateReply');
-        });
-    });
-
-    // CART ROUTE
-    Route::controller(CartController::class)->name('cart.')->group(function () {
-        Route::get('carts', 'index')->name('index');
-        Route::post('carts', 'createOrUpdate')->name('store-or-update');
-        Route::delete('carts/clean', 'forceDestroy')->name('force-destroy');
-        Route::delete('carts/{id}', 'destroy')->name('destroy');
-        Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
-        Route::delete('carts/deleteCartSelected', 'deleteCartSelected')->name('deleteCartSelected');
-        Route::get('carts/addPaidProducts', 'addPaidProductsToCart')->name('addPaidProducts');
     });
 });
