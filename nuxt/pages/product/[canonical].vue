@@ -224,24 +224,7 @@
                 >More Products<i class="w-icon-long-arrow-right"></i
               ></a>
             </div>
-            <div
-              class="swiper-theme"
-              data-swiper-options="{
-                                    'spaceBetween': 20,
-                                    'slidesPerView': 2,
-                                    'breakpoints': {
-                                        '576': {
-                                            'slidesPerView': 3
-                                        },
-                                        '768': {
-                                            'slidesPerView': 4
-                                        },
-                                        '992': {
-                                            'slidesPerView': 3
-                                        }
-                                    }
-                                }"
-            >
+            <div class="swiper-theme">
               <div class="row cols-lg-3 cols-md-4 cols-sm-3 cols-2">
                 <div class="swiper-slide product">
                   <figure class="product-media">
