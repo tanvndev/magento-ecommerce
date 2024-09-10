@@ -61,7 +61,15 @@ class CartController extends Controller
     public function forceDestroy()
     {
 
-        $response = $this->cartService->clearCart();
+        $response = $this->cartService->cleanCart();
+
+        return handleResponse($response);
+    }
+
+    public function handleSelected(Request $request)
+    {
+
+        $response = $this->cartService->handleSelected($request);
 
         return handleResponse($response);
     }
