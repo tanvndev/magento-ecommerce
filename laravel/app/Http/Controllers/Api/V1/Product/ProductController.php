@@ -8,6 +8,7 @@ use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductAttributeRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Requests\Product\UpdateProductVariantRequest;
+use App\Http\Resources\Product\Client\ClientProductResource;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductVariantCollection;
@@ -109,5 +110,17 @@ class ProductController extends Controller
         $response = $this->productService->updateAttribute($productId);
 
         return handleResponse($response);
+    }
+
+
+    // CLIENT API //
+
+    public function getProduct(string $slug)
+    {
+        $response = new ClientProductResource(
+            $this->productService->getProduct($slug)
+        );
+
+        return successResponse('', $response);
     }
 }

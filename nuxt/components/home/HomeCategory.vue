@@ -61,14 +61,14 @@
       <div class="category-wrapper">
         <div class="swiper-theme pg-show">
           <swiper
+            @swiper="onSwiper"
             :modules="modules"
             :slides-per-view="6"
             :loop="true"
             :infinite="true"
-            @swiper="onSwiper"
             :navigation="false"
             :autoplay="{
-              delay: 3000,
+              delay: 5000,
               disableOnInteraction: false,
               pauseOnMouseEnter: true,
             }"
@@ -80,7 +80,11 @@
               <div
                 class="category category-classic category-absolute overlay-zoom br-xs mx-2"
               >
-                <NuxtLink href="category" class="category-media">
+                <NuxtLink
+                  href="category"
+                  class="category-media"
+                  :title="productCatalogue.name"
+                >
                   <img
                     :src="resizeImage(productCatalogue.image, 300, 300)"
                     :alt="productCatalogue.name"
@@ -89,6 +93,7 @@
                 <div class="category-content">
                   <h4 class="category-name">{{ productCatalogue.name }}</h4>
                   <NuxtLink
+                    :title="productCatalogue.name"
                     to="category"
                     class="btn btn-primary btn-link btn-underline"
                     >Xem ngay</NuxtLink

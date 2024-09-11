@@ -36,6 +36,7 @@ Route::middleware('log.request.response')->group(function () {
     // CLIENT ROUTE
     Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
     Route::get('getWidget', [WidgetController::class, 'getWidget']);
+    Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {

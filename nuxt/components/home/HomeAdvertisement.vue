@@ -12,14 +12,15 @@
           />
         </figure>
         <div class="banner-content y-50 pt-1">
-          <h5 class="banner-subtitle font-weight-bold text-uppercase">
+          <!-- <h5 class="banner-subtitle font-weight-bold text-uppercase">
             Natural Process
           </h5>
           <h3
             class="banner-title font-weight-bolder text-capitalize text-white"
           >
             Cosmetic Makeup<br />Professional
-          </h3>
+          </h3> -->
+          <div v-html="item.content"></div>
           <a
             href="shop-banner-sidebar.html"
             class="btn btn-white btn-link btn-underline btn-icon-right"

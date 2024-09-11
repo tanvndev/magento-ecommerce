@@ -6,6 +6,7 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Widget\StoreWidgetRequest;
 use App\Http\Requests\Widget\UpdateWidgetRequest;
+use App\Http\Resources\Widget\Client\ClientWidgetCollection;
 use App\Http\Resources\Widget\WidgetCollection;
 use App\Http\Resources\Widget\WidgetResource;
 use App\Repositories\Interfaces\Widget\WidgetRepositoryInterface;
@@ -82,7 +83,7 @@ class WidgetController extends Controller
     {
         $response = $this->widgetService->getWidget();
 
-        $data = new WidgetCollection($response);
+        $data = new ClientWidgetCollection($response);
 
         return successResponse('', $data);
     }

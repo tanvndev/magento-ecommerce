@@ -227,3 +227,9 @@
     transform: scale(1, 1);
   }
 }
+
+/* Quill */
+.ql-editor {
+  min-height: 200px;
+  max-height: 1000px !important;
+}
