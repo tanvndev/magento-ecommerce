@@ -33,9 +33,11 @@ class CartController extends Controller
     {
         $cartItems = $this->cartService->getCart();
 
-        $response = new CartCollection($cartItems);
+        return $cartItems;
 
-        return successResponse('', $response);
+        // $response = new CartCollection($cartItems);
+
+        // return successResponse('', $response);
     }
 
     /**

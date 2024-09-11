@@ -116,7 +116,14 @@ Route::middleware('log.request.response')->group(function () {
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
 
-        // CART ROUTE
+      
+
+
+        // WIDGET ROUTE
+        Route::apiResource('widgets', WidgetController::class);
+    });
+  
+    // CART ROUTE
         Route::controller(CartController::class)->name('cart.')->group(function () {
             Route::get('carts', 'index')->name('index');
             Route::post('carts', 'createOrUpdate')->name('store-or-update');
@@ -126,7 +133,5 @@ Route::middleware('log.request.response')->group(function () {
         });
 
 
-        // WIDGET ROUTE
-        Route::apiResource('widgets', WidgetController::class);
-    });
+ 
 });
