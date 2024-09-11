@@ -6,7 +6,7 @@
       <div class="container">
         <ul class="breadcrumb shop-breadcrumb bb-no">
           <li class="active">
-            <NuxtLink to="cart">Giỏ hàng</NuxtLink>
+            <NuxtLink to="/cart">Giỏ hàng</NuxtLink>
           </li>
           <li>
             <NuxtLink to="checkout">Thanh toán</NuxtLink>
@@ -23,15 +23,19 @@
     <div class="page-content">
       <div class="container">
         <div class="row gutter-lg mb-10">
-          <div class="col-lg-8 pr-lg-4 mb-6">
+          <div class="col-lg-12 pr-lg-12 mb-6">
             <table class="shop-table cart-table">
               <thead>
                 <tr>
                   <th>
-                    <v-checkbox style="font-size: 18px"></v-checkbox>
+                    <v-checkbox
+                      v-model="allChecked"
+                      style="font-size: 18px"
+                      @change="handleAllCheckboxChange"
+                    ></v-checkbox>
                   </th>
                   <th class="product-name"><span>Sản phẩm</span></th>
-                  <th></th>
+                  <th width="300"></th>
                   <th class="product-price"><span>Giá cả</span></th>
                   <th class="product-quantity"><span>Số lượng</span></th>
                   <th class="product-subtotal"><span>Tạm tính</span></th>
@@ -40,7 +44,12 @@
               <tbody>
                 <tr v-for="cart in carts" :key="cart.id">
                   <td>
-                    <v-checkbox style="font-size: 18px"></v-checkbox>
+                    <v-checkbox
+                      v-model="checkedItems[cart.cart_item_id]"
+                      :value="cart.cart_item_id"
+                      @change="handleCheckboxChange"
+                      style="font-size: 18px"
+                    ></v-checkbox>
                   </td>
                   <td class="product-thumbnail">
                     <div class="p-relative">
@@ -60,9 +69,9 @@
                     </div>
                   </td>
                   <td class="product-name">
-                    <a href="product-default.html"> Smart Watch </a>
+                    <nuxtLink to="#"> {{ cart.name }} </nuxtLink>
                   </td>
-                  <td class="product-price">
+                  <td class="text-right">
                     <div class="product-price">
                       <ins class="new-price">{{
                         formatCurrency(cart.sale_price || cart.price)
@@ -72,7 +81,7 @@
                       }}</del>
                     </div>
                   </td>
-                  <td class="product-quantity">
+                  <td class="product-quantity text-right">
                     <div class="input-group">
                       <input
                         class="quantity form-control"
@@ -107,88 +116,6 @@
               </button>
             </div>
           </div>
-          <div class="col-lg-4 sticky-sidebar-wrapper">
-            <div class="sticky-sidebar">
-              <div class="cart-summary mb-4">
-                <h3 class="cart-title text-uppercase">Tổng số giỏ hàng</h3>
-                <div
-                  class="cart-subtotal d-flex align-items-center justify-content-between"
-                >
-                  <label class="ls-25">Tạm tính</label>
-                  <span>$100.00</span>
-                </div>
-
-                <hr class="divider" />
-
-                <ul class="shipping-methods mb-2">
-                  <li>
-                    <label class="shipping-title text-dark font-weight-bold"
-                      >Shipping</label
-                    >
-                  </li>
-                  <li>
-                    <div class="custom-radio">
-                      <input
-                        type="radio"
-                        id="free-shipping"
-                        class="custom-control-input"
-                        name="shipping"
-                      />
-                      <label
-                        for="free-shipping"
-                        class="custom-control-label color-dark"
-                        >Free Shipping</label
-                      >
-                    </div>
-                  </li>
-                  <li>
-                    <div class="custom-radio">
-                      <input
-                        type="radio"
-                        id="local-pickup"
-                        class="custom-control-input"
-                        name="shipping"
-                      />
-                      <label
-                        for="local-pickup"
-                        class="custom-control-label color-dark"
-                        >Local Pickup</label
-                      >
-                    </div>
-                  </li>
-                  <li>
-                    <div class="custom-radio">
-                      <input
-                        type="radio"
-                        id="flat-rate"
-                        class="custom-control-input"
-                        name="shipping"
-                      />
-                      <label
-                        for="flat-rate"
-                        class="custom-control-label color-dark"
-                        >Flat rate: $5.00</label
-                      >
-                    </div>
-                  </li>
-                </ul>
-
-                <hr class="divider mb-6" />
-                <div
-                  class="order-total d-flex justify-content-between align-items-center"
-                >
-                  <label>Total</label>
-                  <span class="ls-50">$100.00</span>
-                </div>
-                <a
-                  href="#"
-                  class="btn btn-block btn-dark btn-icon-right btn-rounded btn-checkout"
-                >
-                  Proceed to checkout<i class="w-icon-long-arrow-right"></i
-                ></a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -198,11 +125,36 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import { formatCurrency } from '#imports'
 
 const { $axios } = useNuxtApp()
 
 const carts = ref([])
+const checkedItems = ref([])
+const allChecked = ref(false)
+
+const handleAllCheckboxChange = () => {
+  if (allChecked.value) {
+    carts.value.forEach((cart) => {
+      checkedItems.value[cart.cart_item_id] = cart.cart_item_id
+    })
+  } else {
+    checkedItems.value = []
+  }
+}
+
+const handleCheckboxChange = (event) => {
+  if (event.target.checked === false) {
+    delete checkedItems.value[event.target.value]
+  }
+
+  if (Object.keys(checkedItems.value)?.length === carts.value.length) {
+    allChecked.value = true
+  } else {
+    allChecked.value = false
+  }
+}
 
 const getCarts = async () => {
   const response = await $axios.get('/carts')
@@ -212,5 +164,32 @@ const getCarts = async () => {
 onMounted(() => {
   getCarts()
 })
+
+// Watch for changes in `checkedItems` to update `allChecked`
 </script>
-<style scoped></style>
+
+<style scoped>
+.shop-table.cart-table .product-price,
+.shop-table.cart-table .product-subtotal {
+  text-align: right;
+}
+.product-name a {
+  /* Giới hạn số dòng tối đa */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* Giới hạn số dòng */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Hiển thị '...' khi văn bản bị cắt bớt */
+  white-space: normal; /* Cho phép dòng mới */
+}
+.shop-table.cart-table .product-price {
+  width: auto;
+}
+.shop-table.cart-table .product-quantity {
+  width: auto;
+  text-align: right;
+}
+.shop-table.cart-table .product-quantity .input-group {
+  float: right;
+}
+</style>
