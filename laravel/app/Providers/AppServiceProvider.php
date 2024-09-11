@@ -73,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        $this->printLogSql();
+        // $this->printLogSql();
     }
 
     /**

@@ -33,6 +33,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/scripts',
     '@pinia/nuxt',
+    'nuxt-lodash',
     'nuxt-swiper',
     'nuxt-easy-lightbox',
     'vuetify-nuxt-module',

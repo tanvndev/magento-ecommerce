@@ -21,8 +21,9 @@
             :grid="{ rows: 2, fill: 'row' }"
             :space-between="20"
             :autoplay="{
-              delay: 3000,
+              delay: 5000,
               pauseOnMouseEnter: true,
+              disableOnInteraction: false,
             }"
           >
             <!-- <div class="row cols-xl-4 cols-lg-3 cols-2"> -->
@@ -30,7 +31,10 @@
               <div class="product-col">
                 <div class="product-wrap product text-center">
                   <figure class="product-media">
-                    <NuxtLink to="detail">
+                    <NuxtLink
+                      :title="item?.name"
+                      :to="`product/${item.slug}-${item.product_id}`"
+                    >
                       <img
                         :src="resizeImage(item.image, 500, 400)"
                         :alt="item.name"
@@ -49,10 +53,19 @@
                         title="Add to wishlist"
                       ></a>
                     </div>
+                    <div class="product-label-group" v-if="item?.discount">
+                      <label class="product-label label-discount"
+                        >Giảm {{ item?.discount }}%</label
+                      >
+                    </div>
                   </figure>
                   <div class="product-details">
                     <h4 class="product-name">
-                      <NuxtLink to="detail">{{ item.name }}</NuxtLink>
+                      <NuxtLink
+                        :title="item?.name"
+                        :to="`product/${item.slug}-${item.product_id}`"
+                        >{{ item.name }}</NuxtLink
+                      >
                     </h4>
                     <div class="ratings-container">
                       <div class="ratings-full">
@@ -61,10 +74,7 @@
                       </div>
                       <a href="#" class="rating-reviews">(3 đánh giá)</a>
                     </div>
-                    <div class="product-price">
-                      <ins class="new-price">2.0000.000 đ</ins>
-                      <del class="old-price">4.0000.000 đ</del>
-                    </div>
+                    <div v-html="handleRenderPrice(item)"></div>
                   </div>
                 </div>
               </div>
@@ -85,7 +95,7 @@
   </div>
 </template>
 <script setup>
-import { resizeImage } from '#imports'
+import { resizeImage, handleRenderPrice } from '#imports'
 import { ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay, Grid } from 'swiper/modules'

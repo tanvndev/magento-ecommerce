@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('uuid', 100)->unique();
             $table->string('name', 255)->comment('Ten san pham bien');
+            $table->string('slug', 255)->unique();
             $table->string('attribute_value_combine', 20)->nullable();
             $table->string('sku', 100)->nullable();
             $table->decimal('price', 15, 2)->comment('Gia ban');

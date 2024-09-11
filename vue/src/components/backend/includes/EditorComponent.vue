@@ -49,3 +49,10 @@ const props = defineProps({
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
 </script>
+
+<style scoped>
+.ql-editor {
+  min-height: 200px;
+  height: 500px;
+}
+</style>

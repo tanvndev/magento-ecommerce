@@ -12,8 +12,8 @@
               <i class="w-icon-truck"></i>
             </span>
             <div class="icon-box-content">
-              <h4 class="icon-box-title">Free Shipping & Returns</h4>
-              <p>For all orders over $99</p>
+              <h4 class="icon-box-title">Hoàn trả miễn phí</h4>
+              <p>Với tất cả đơn hàng</p>
             </div>
           </div>
           <div class="icon-box icon-box-side">
@@ -21,8 +21,8 @@
               <i class="w-icon-bag"></i>
             </span>
             <div class="icon-box-content">
-              <h4 class="icon-box-title">Secure Payment</h4>
-              <p>We ensure secure payment</p>
+              <h4 class="icon-box-title">Thanh toán an toàn</h4>
+              <p>Đảm bảo thanh toán an toàn</p>
             </div>
           </div>
           <div class="icon-box icon-box-side">
@@ -30,46 +30,20 @@
               <i class="w-icon-money"></i>
             </span>
             <div class="icon-box-content">
-              <h4 class="icon-box-title">Money Back Guarantee</h4>
-              <p>Any back within 30 days</p>
+              <h4 class="icon-box-title">Bảo đảm hoàn tiền</h4>
+              <p>Hoàn tiền trong vòng 30 ngày</p>
             </div>
           </div>
         </div>
         <!-- End of Widget Icon Box -->
 
-        <div class="widget widget-banner mb-9">
-          <div class="banner banner-fixed br-sm">
-            <figure>
-              <img
-                src="assets/images/shop/banner3.jpg"
-                alt="Banner"
-                width="266"
-                height="220"
-                style="background-color: #1d2d44"
-              />
-            </figure>
-            <div class="banner-content">
-              <div
-                class="banner-price-info font-weight-bolder text-white lh-1 ls-25"
-              >
-                40<sup class="font-weight-bold">%</sup
-                ><sub class="font-weight-bold text-uppercase ls-25">Off</sub>
-              </div>
-              <h4
-                class="banner-subtitle text-white font-weight-bolder text-uppercase mb-0"
-              >
-                Ultimate Sale
-              </h4>
-            </div>
-          </div>
-        </div>
-        <!-- End of Widget Banner -->
-
-        <div class="widget widget-products">
+        <div class="widget widget-products" v-if="product?.upsells?.length > 0">
           <div
             class="title-link-wrapper mb-2 d-flex justify-between items-center"
           >
-            <h4 class="title title-link font-weight-bold">More Products</h4>
+            <h4 class="title title-link font-weight-bold">
+              Có thể bạn sẽ thích
+            </h4>
             <div>
               <button
                 class="button-slide-2 prev"
@@ -92,26 +66,32 @@
                 @swiper="onSwiper"
                 :modules="modules"
                 :slides-per-view="1"
-                :space-between="10"
                 :navigation="false"
+                :grid="{ rows: 4, fill: 'row' }"
                 :loop="true"
               >
-                <SwiperSlide>
+                <SwiperSlide v-for="item in product?.upsells" :key="item.id">
                   <div class="widget-col">
                     <div class="product product-widget">
                       <figure class="product-media">
-                        <a href="#">
+                        <NuxtLink
+                          :to="`product/${item.slug}-${item.product_id}`"
+                          :title="item?.name"
+                        >
                           <img
-                            src="assets/images/shop/13.jpg"
-                            alt="Product"
-                            width="100"
-                            height="113"
+                            :src="resizeImage(item?.image, 200, 300)"
+                            :alt="item?.name"
+                            class="product-image"
                           />
-                        </a>
+                        </NuxtLink>
                       </figure>
                       <div class="product-details">
                         <h4 class="product-name">
-                          <a href="#">Smart Watch</a>
+                          <NuxtLink
+                            :title="item?.name"
+                            :to="`product/${item.slug}-${item.product_id}`"
+                            >{{ item.name }}</NuxtLink
+                          >
                         </h4>
                         <div class="ratings-container">
                           <div class="ratings-full">
@@ -119,131 +99,7 @@
                             <span class="tooltiptext tooltip-top"></span>
                           </div>
                         </div>
-                        <div class="product-price">$80.00 - $90.00</div>
-                      </div>
-                    </div>
-                    <div class="product product-widget">
-                      <figure class="product-media">
-                        <a href="#">
-                          <img
-                            src="assets/images/shop/14.jpg"
-                            alt="Product"
-                            width="100"
-                            height="113"
-                          />
-                        </a>
-                      </figure>
-                      <div class="product-details">
-                        <h4 class="product-name">
-                          <a href="#">Sky Medical Facility</a>
-                        </h4>
-                        <div class="ratings-container">
-                          <div class="ratings-full">
-                            <span class="ratings" style="width: 80%"></span>
-                            <span class="tooltiptext tooltip-top"></span>
-                          </div>
-                        </div>
-                        <div class="product-price">$58.00</div>
-                      </div>
-                    </div>
-                    <div class="product product-widget">
-                      <figure class="product-media">
-                        <a href="#">
-                          <img
-                            src="assets/images/shop/15.jpg"
-                            alt="Product"
-                            width="100"
-                            height="113"
-                          />
-                        </a>
-                      </figure>
-                      <div class="product-details">
-                        <h4 class="product-name">
-                          <a href="#">Black Stunt Motor</a>
-                        </h4>
-                        <div class="ratings-container">
-                          <div class="ratings-full">
-                            <span class="ratings" style="width: 60%"></span>
-                            <span class="tooltiptext tooltip-top"></span>
-                          </div>
-                        </div>
-                        <div class="product-price">$374.00</div>
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div class="widget-col">
-                    <div class="product product-widget">
-                      <figure class="product-media">
-                        <a href="#">
-                          <img
-                            src="assets/images/shop/16.jpg"
-                            alt="Product"
-                            width="100"
-                            height="113"
-                          />
-                        </a>
-                      </figure>
-                      <div class="product-details">
-                        <h4 class="product-name">
-                          <a href="#">Skate Pan</a>
-                        </h4>
-                        <div class="ratings-container">
-                          <div class="ratings-full">
-                            <span class="ratings" style="width: 100%"></span>
-                            <span class="tooltiptext tooltip-top"></span>
-                          </div>
-                        </div>
-                        <div class="product-price">$278.00</div>
-                      </div>
-                    </div>
-                    <div class="product product-widget">
-                      <figure class="product-media">
-                        <a href="#">
-                          <img
-                            src="assets/images/shop/17.jpg"
-                            alt="Product"
-                            width="100"
-                            height="113"
-                          />
-                        </a>
-                      </figure>
-                      <div class="product-details">
-                        <h4 class="product-name">
-                          <a href="#">Modern Cooker</a>
-                        </h4>
-                        <div class="ratings-container">
-                          <div class="ratings-full">
-                            <span class="ratings" style="width: 80%"></span>
-                            <span class="tooltiptext tooltip-top"></span>
-                          </div>
-                        </div>
-                        <div class="product-price">$324.00</div>
-                      </div>
-                    </div>
-                    <div class="product product-widget">
-                      <figure class="product-media">
-                        <a href="#">
-                          <img
-                            src="assets/images/shop/18.jpg"
-                            alt="Product"
-                            width="100"
-                            height="113"
-                          />
-                        </a>
-                      </figure>
-                      <div class="product-details">
-                        <h4 class="product-name">
-                          <a href="#">CT Machine</a>
-                        </h4>
-                        <div class="ratings-container">
-                          <div class="ratings-full">
-                            <span class="ratings" style="width: 100%"></span>
-                            <span class="tooltiptext tooltip-top"></span>
-                          </div>
-                        </div>
-                        <div class="product-price">$236.00</div>
+                        <div v-html="handleRenderPrice(item)"></div>
                       </div>
                     </div>
                   </div>
@@ -258,13 +114,32 @@
 </template>
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation, Autoplay } from 'swiper/modules'
+import { Navigation, Autoplay, Grid } from 'swiper/modules'
 import 'swiper/css'
-const modules = [Navigation, Autoplay]
+import { resizeImage, handleRenderPrice } from '#imports'
+const modules = [Navigation, Autoplay, Grid]
 const slider = ref(null)
+
+const props = defineProps({
+  product: {
+    type: [Object, Array],
+    default: () => [],
+  },
+})
 
 const onSwiper = (swiper) => {
   slider.value = swiper
 }
 </script>
-<style scoped></style>
+<style scoped>
+.product-image {
+  width: 100px;
+  height: 112px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #f5f6f7;
+}
+.product-widget .product-price {
+  font-size: 1.4rem;
+}
+</style>

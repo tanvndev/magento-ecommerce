@@ -11518,10 +11518,10 @@ body .product-popup {
 }
 .product-single .product-form label {
   display: block;
-  max-width: 7.5rem;
+  max-width: 9.5rem;
   -webkit-box-flex: 0;
-  -ms-flex: 0 0 7.5rem;
-  flex: 0 0 7.5rem;
+  -ms-flex: 0 0 9.5rem;
+  flex: 0 0 9.5rem;
   padding: 0.6rem 0;
   font-size: 1.4rem;
   color: #333;

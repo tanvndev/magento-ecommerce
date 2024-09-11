@@ -41,8 +41,8 @@
 .button-slide:hover {
   transform: scale(1.15);
 }
-.swiper-theme{
-    position: relative;
+.swiper-theme {
+  position: relative;
 }
 
 .swiper-theme:hover .button-slide {
@@ -76,4 +76,82 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #797979;
+}
+
+/* Product detail */
+.product-single .product-form label {
+  max-width: 9.5rem !important;
+  flex: 0 0 9.5rem !important;
+}
+
+/* Tags */
+
+.w3-tags {
+  list-style: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.w3-tags li {
+  float: left;
+}
+
+.w3-tag {
+  background: #eee;
+  border-radius: 3px 0 0 3px;
+  color: #999;
+  display: inline-block;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 20px 0 23px;
+  position: relative;
+  margin: 0 10px 10px 0;
+  text-decoration: none;
+  -webkit-transition: color 0.2s;
+}
+
+.w3-tag::before {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
+  content: '';
+  height: 6px;
+  left: 10px;
+  position: absolute;
+  width: 6px;
+  top: 10px;
+}
+
+.w3-tag::after {
+  background: #fff;
+  border-bottom: 13px solid transparent;
+  border-left: 10px solid #eee;
+  border-top: 13px solid transparent;
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.w3-tag:hover {
+  background-color: crimson;
+  color: white !important;
+}
+
+.w3-tag:hover::after {
+  border-left-color: crimson;
+}
+
+.banner-content h1,
+.banner-content h2,
+.banner-content h3,
+.banner-content h4,
+.banner-content h5,
+.banner-content h6 {
+  margin-bottom: 4px !important;
+}
+
+.shop-table.cart-table .v-input__details {
+  display: none;
 }
