@@ -99,7 +99,9 @@
                 </div>
 
                 <div class="product-price">
-                  <ins class="new-price">{{ prices.sale_price || prices.price }}</ins>
+                  <ins class="new-price">{{
+                    prices.sale_price || prices.price
+                  }}</ins>
                   <del class="old-price" v-if="prices.sale_price">{{
                     prices.price
                   }}</del>
@@ -333,7 +335,12 @@ const addToCart = async () => {
     return
   }
 
-  console.log(quantity.value, variant.value.id)
+  const data = {
+    product_variant_id: variant.value.id,
+    quantity: quantity.value,
+  }
+
+  const response = await $axios.post('/carts', data)
 }
 
 watch(

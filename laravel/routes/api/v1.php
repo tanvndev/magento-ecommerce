@@ -108,7 +108,8 @@ Route::middleware('log.request.response')->group(function () {
         Route::apiResource('payment-methods', PaymentMethodController::class);
 
         // SYSTEM CONFIG ROUTE
-        Route::apiResource('system-configs', SystemConfigController::class);
+        Route::get('system-configs', [SystemConfigController::class, 'index']);
+        Route::put('system-configs', [SystemConfigController::class, 'update']);
 
         // CART ROUTE
         Route::controller(CartController::class)->name('cart.')->group(function () {
@@ -118,8 +119,7 @@ Route::middleware('log.request.response')->group(function () {
             Route::delete('carts/clear', 'forceDestroy')->name('force-destroy');
             Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
         });
-        Route::get('system-configs', [SystemConfigController::class, 'index']);
-        Route::put('system-configs', [SystemConfigController::class, 'update']);
+
 
         // WIDGET ROUTE
         Route::apiResource('widgets', WidgetController::class);

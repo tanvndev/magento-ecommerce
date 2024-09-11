@@ -28,18 +28,7 @@
               <thead>
                 <tr>
                   <th>
-                    <div class="custom-radio">
-                      <input
-                        type="radio"
-                        id="free-shipping"
-                        class="custom-control-input"
-                        name="shipping"
-                      />
-                      <label
-                        for="free-shipping"
-                        class="custom-control-label color-dark"
-                      ></label>
-                    </div>
+                    <v-checkbox style="font-size: 18px"></v-checkbox>
                   </th>
                   <th class="product-name"><span>Sản phẩm</span></th>
                   <th></th>
@@ -49,74 +38,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr v-for="cart in carts" :key="cart.id">
                   <td>
-                    <div class="custom-radio">
-                      <input
-                        type="radio"
-                        id="free-shipping"
-                        class="custom-control-input"
-                        name="shipping"
-                      />
-                      <label
-                        for="free-shipping"
-                        class="custom-control-label color-dark"
-                      ></label>
-                    </div>
-                  </td>
-                  <td class="product-thumbnail">
-                    <div class="p-relative">
-                      <a href="product-default.html">
-                        <figure>
-                          <img
-                            src="assets/images/shop/12.jpg"
-                            alt="product"
-                            width="300"
-                            height="338"
-                          />
-                        </figure>
-                      </a>
-                      <button type="submit" class="btn btn-close">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td class="product-name">
-                    <a href="product-default.html"> iPhone 15 promax </a>
-                  </td>
-                  <td class="product-price">
-                    <span class="amount">$40.00</span>
-                  </td>
-                  <td class="product-quantity">
-                    <div class="input-group">
-                      <input
-                        class="quantity form-control"
-                        type="number"
-                        min="1"
-                        max="100000"
-                      />
-                      <button class="quantity-plus w-icon-plus"></button>
-                      <button class="quantity-minus w-icon-minus"></button>
-                    </div>
-                  </td>
-                  <td class="product-subtotal">
-                    <span class="amount">$40.00</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="custom-radio">
-                      <input
-                        type="radio"
-                        id="free-shipping"
-                        class="custom-control-input"
-                        name="shipping"
-                      />
-                      <label
-                        for="free-shipping"
-                        class="custom-control-label color-dark"
-                      ></label>
-                    </div>
+                    <v-checkbox style="font-size: 18px"></v-checkbox>
                   </td>
                   <td class="product-thumbnail">
                     <div class="p-relative">
@@ -139,7 +63,14 @@
                     <a href="product-default.html"> Smart Watch </a>
                   </td>
                   <td class="product-price">
-                    <span class="amount">$60.00</span>
+                    <div class="product-price">
+                      <ins class="new-price">{{
+                        formatCurrency(cart.sale_price || cart.price)
+                      }}</ins>
+                      <del class="old-price" v-if="cart.sale_price">{{
+                        formatCurrency(cart.price)
+                      }}</del>
+                    </div>
                   </td>
                   <td class="product-quantity">
                     <div class="input-group">
@@ -265,3 +196,21 @@
   </main>
   <!-- End of Main -->
 </template>
+
+<script setup>
+import { formatCurrency } from '#imports'
+
+const { $axios } = useNuxtApp()
+
+const carts = ref([])
+
+const getCarts = async () => {
+  const response = await $axios.get('/carts')
+  carts.value = response.data
+}
+
+onMounted(() => {
+  getCarts()
+})
+</script>
+<style scoped></style>
