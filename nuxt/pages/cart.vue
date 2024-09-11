@@ -31,7 +31,7 @@
                     <v-checkbox
                       v-model="allChecked"
                       style="font-size: 18px"
-                      @change="handleAllCheckboxChange"
+                      @change="handleAllCheckboxChange()"
                     ></v-checkbox>
                   </th>
                   <th class="product-name"><span>Sản phẩm</span></th>
@@ -42,12 +42,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="cart in carts" :key="cart.id">
+                <tr v-for="(cart, index) in carts" :key="cart.id">
                   <td>
                     <v-checkbox
-                      v-model="checkedItems[cart.cart_item_id]"
+                      v-model="checkedItems[index]"
                       :value="cart.cart_item_id"
-                      @change="handleCheckboxChange"
+                      @change="
+                        handleCheckboxChange($event, cart.product_variant_id)
+                      "
                       style="font-size: 18px"
                     ></v-checkbox>
                   </td>
@@ -82,19 +84,12 @@
                     </div>
                   </td>
                   <td class="product-quantity text-right">
-                    <div class="input-group">
-                      <input
-                        class="quantity form-control"
-                        type="number"
-                        min="1"
-                        max="100000"
-                      />
-                      <button class="quantity-plus w-icon-plus"></button>
-                      <button class="quantity-minus w-icon-minus"></button>
-                    </div>
+                    <QuantityComponent :old-quantity="cart.quantity" />
                   </td>
                   <td class="product-subtotal">
-                    <span class="amount">$60.00</span>
+                    <span class="amount">{{
+                      formatCurrency(cart.sub_total)
+                    }}</span>
                   </td>
                 </tr>
               </tbody>
@@ -107,13 +102,20 @@
                 ><i class="w-icon-long-arrow-left"></i>Tiếp tục mua sắm</a
               >
               <button
-                type="submit"
+                @click="handleClearCart"
+                type="button"
                 class="btn btn-rounded btn-default btn-clear"
-                name="clear_cart"
-                value="Clear Cart"
               >
-                Clear Cart
+                Xóa giỏ hàng
               </button>
+            </div>
+
+            <div>
+              <v-empty-state
+                icon="mdi-magnify"
+                text="Try adjusting your search terms or filters. Sometimes less specific terms or broader queries can help you find what you're looking for."
+                title="We couldn't find a match."
+              ></v-empty-state>
             </div>
           </div>
         </div>
@@ -125,8 +127,9 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, watch } from 'vue'
 import { formatCurrency } from '#imports'
+import QuantityComponent from '~/components/includes/QuantityComponent.vue'
 
 const { $axios } = useNuxtApp()
 
@@ -136,19 +139,33 @@ const allChecked = ref(false)
 
 const handleAllCheckboxChange = () => {
   if (allChecked.value) {
-    carts.value.forEach((cart) => {
-      checkedItems.value[cart.cart_item_id] = cart.cart_item_id
+    carts.value.forEach((cart, index) => {
+      checkedItems.value[index] = cart.cart_item_id
     })
   } else {
     checkedItems.value = []
   }
 }
 
-const handleCheckboxChange = (event) => {
+const handleCheckboxChange = (event, variantId) => {
   if (event.target.checked === false) {
     delete checkedItems.value[event.target.value]
   }
+  updateOneSelectedCarts(variantId)
+}
 
+const getCarts = async () => {
+  const response = await $axios.get('/carts')
+  carts.value = response.data
+
+  carts.value.forEach((cart, index) => {
+    if (cart.is_selected) {
+      checkedItems.value[index] = cart.cart_item_id
+    }
+  })
+}
+
+const checkSelectedAll = () => {
   if (Object.keys(checkedItems.value)?.length === carts.value.length) {
     allChecked.value = true
   } else {
@@ -156,16 +173,31 @@ const handleCheckboxChange = (event) => {
   }
 }
 
-const getCarts = async () => {
-  const response = await $axios.get('/carts')
-  carts.value = response.data
+const updateAllSelectedCarts = async () => {
+  const response = await $axios.put('/carts/handle-selected', {
+    select_all: allChecked.value,
+  })
+  if (response.data) {
+    getCarts()
+  }
+}
+
+const updateOneSelectedCarts = async (variantId) => {
+  const response = await $axios.put('/carts/handle-selected', {
+    product_variant_id: variantId,
+  })
+}
+
+const handleClearCart = async () => {
+  const response = await $axios.delete('/carts')
 }
 
 onMounted(() => {
   getCarts()
 })
 
-// Watch for changes in `checkedItems` to update `allChecked`
+watch(checkedItems, checkSelectedAll, { deep: true })
+watch(allChecked, updateAllSelectedCarts)
 </script>
 
 <style scoped>
