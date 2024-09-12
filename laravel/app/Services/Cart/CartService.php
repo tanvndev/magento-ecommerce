@@ -34,7 +34,44 @@ class CartService extends BaseService implements CartServiceInterface
             return $cart->cart_items ?? collect();
         }
 
-        return Cart::instance('shopping')->content();
+        return $this->formatResponseCartSession();
+    }
+
+    private function formatResponseCartSession()
+    {
+        $carts = Cart::instance('shopping')->content()->toArray();
+        $totalAmount = $this->caculateTotalAmountSession($carts);
+
+        $cartItems = [];
+        foreach ($carts as $item) {
+            $cartItems[] = [
+                'id' => $item['id'],
+                'image' => $item['options']['image'] ?? null,
+                'name' => $item['name'],
+                'price' => $item['price'],
+                'quantity' => $item['qty'],
+                'sale_price' => $item['options']['sale_price'] ?? null,
+                'is_selected' => $item['options']['is_selected'] ?? false,
+                'sub_total' => $item['options']['sub_total'] ?? 0,
+            ];
+        }
+
+        return [
+            'carts' => $cartItems,
+            'total_amount' => $totalAmount,
+        ];;
+    }
+
+    private function caculateTotalAmountSession($cartItems)
+    {
+        $total = 0;
+        foreach ($cartItems as $item) {
+            $total += $item['options']['sub_total'];
+        }
+
+        return [
+            'total_amount' => $total
+        ];
     }
 
     public function createOrUpdate($request)
@@ -72,23 +109,54 @@ class CartService extends BaseService implements CartServiceInterface
                 return successResponse(__('messages.cart.success.update'));
             } else {
 
-                // Cart::add([
-                //     'id'                        => $productVariant->id,
-                //     'name'                      => $productVariant->name,
-                //     'qty'                       => $request->quantity,
-                //     'price'                     => $productVariant->price_sale ?? $productVariant->price,
-                // ]);
+                $data = [
+                    'id'       => $productVariant->id,
+                    'name'     => $productVariant->name,
+                    'qty'      => $request->quantity,
+                    'price'    => $productVariant->price,
+                    'options'  => [
+                        'image'       => $productVariant->image,
+                        'is_selected' => true,
+                        'sale_price'  => $this->getSalePrice($productVariant),
+                        'sub_total' => $this->getSubTotal($productVariant),
+                    ]
+                ];
 
-                Cart::instance('shopping')->add([
-                    'id'                        => $productVariant->id,
-                    'name'                      => $productVariant->name,
-                    'qty'                       => $request->quantity,
-                    'price'                     => $productVariant->price_sale ?? $productVariant->price,
-                ]);
+                $cart = Cart::instance('shopping')->add($data);
 
-                return successResponse(__('messages.cart.success.create'),  Cart::content());
+                return successResponse(__('messages.cart.success.create'),  $cart);
             }
         }, __('messages.cart.error.not_found'));
+    }
+
+
+
+    private function getSalePrice($productVariant)
+    {
+        if (!$productVariant->sale_price || !$productVariant->price) {
+            return null;
+        }
+
+        if ($productVariant->is_discount_time && $productVariant->sale_price_time) {
+            $now = new \DateTime();
+            $start = new \DateTime($productVariant->sale_price_start_at);
+            $end = new \DateTime($productVariant->sale_price_end_at);
+
+            if ($now < $start || $now > $end) {
+                return null;
+            }
+        }
+
+        return $productVariant->sale_price;
+    }
+
+    private function getSubTotal($productVariant)
+    {
+
+        $salePrice = $this->getSalePrice($productVariant);
+
+        $subTotal = ($salePrice ?? $productVariant->price) * request()->quantity;
+        return $subTotal;
     }
 
     public function deleteOneItem($id)

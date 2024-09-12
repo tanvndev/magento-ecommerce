@@ -15,15 +15,14 @@ class CartResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'image' => $this->product_variant->image,
             'name' => $this->product_variant->name,
             'price' => $this->product_variant->price,
             'quantity' => $this->quantity,
             'sale_price' => $this->handleSalePrice(),
-            'attributes' => implode(' - ', $this->product_variant->attribute_values->pluck('name')->toArray()),
             'is_selected' => $this->is_selected,
             'sub_total' => $this->getSubTotal(),
-            'total_amount' => (float) $this->cart->total_amount,
         ];
     }
 
@@ -47,10 +46,9 @@ class CartResource extends JsonResource
         return $productVariant->sale_price;
     }
 
-    private function getSubTotal()
+    public function getSubTotal()
     {
         $salePrice = $this->handleSalePrice();
-
         $subTotal = ($salePrice ?? $this->product_variant->price) * $this->quantity;
         return $subTotal;
     }
