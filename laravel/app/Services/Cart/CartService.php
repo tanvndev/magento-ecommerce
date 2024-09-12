@@ -45,9 +45,11 @@ class CartService extends BaseService implements CartServiceInterface
         $cartItems = [];
         foreach ($carts as $item) {
             $cartItems[] = [
-                'id' => $item['id'],
+                'product_id' => $item['options']['product_id'],
+                'product_variant_id' => $item['id'],
                 'image' => $item['options']['image'] ?? null,
                 'name' => $item['name'],
+                'slug' => $item['options']['slug'] ?? null,
                 'price' => $item['price'],
                 'quantity' => $item['qty'],
                 'sale_price' => $item['options']['sale_price'] ?? null,
@@ -110,21 +112,23 @@ class CartService extends BaseService implements CartServiceInterface
             } else {
 
                 $data = [
-                    'id'       => $productVariant->id,
-                    'name'     => $productVariant->name,
-                    'qty'      => $request->quantity,
-                    'price'    => $productVariant->price,
-                    'options'  => [
-                        'image'       => $productVariant->image,
-                        'is_selected' => true,
-                        'sale_price'  => $this->getSalePrice($productVariant),
-                        'sub_total' => $this->getSubTotal($productVariant),
+                    'id'                        => $productVariant->id,
+                    'name'                      => $productVariant->name,
+                    'qty'                       => $request->quantity,
+                    'price'                     => $productVariant->price,
+                    'options'       => [
+                        'slug'                   => $productVariant->slug,
+                        'product_id'             => $productVariant->product_id,
+                        'image'                 => $productVariant->image,
+                        'is_selected'           => true,
+                        'sale_price'            => $this->getSalePrice($productVariant),
+                        'sub_total'             => $this->getSubTotal($productVariant),
                     ]
                 ];
 
-                $cart = Cart::instance('shopping')->add($data);
+              Cart::instance('shopping')->add($data);
 
-                return successResponse(__('messages.cart.success.create'),  $cart);
+                return successResponse(__('messages.cart.success.create'),  $this->formatResponseCartSession());
             }
         }, __('messages.cart.error.not_found'));
     }
