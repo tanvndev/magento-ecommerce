@@ -9,10 +9,10 @@
             <NuxtLink to="/cart">Giỏ hàng</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="checkout">Thanh toán</NuxtLink>
+            <NuxtLink to="/checkout">Thanh toán</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="orderComplete">Hoàn tất đơn hàng</NuxtLink>
+            <NuxtLink to="/orderComplete">Hoàn tất đơn hàng</NuxtLink>
           </li>
         </ul>
       </div>
@@ -23,8 +23,8 @@
     <div class="page-content">
       <div class="container">
         <div class="row gutter-lg mb-10">
-          <div class="col-lg-12 pr-lg-12 mb-6">
-            <table class="shop-table cart-table">
+          <div class="col-lg-12 pr-lg-12 mb-6 cart-wrapper">
+            <table class="shop-table cart-table" v-if="carts.length > 0">
               <thead>
                 <tr>
                   <th>
@@ -95,7 +95,7 @@
               </tbody>
             </table>
 
-            <div class="cart-action mb-6">
+            <div class="cart-action mb-6" v-if="carts.length > 0">
               <a
                 href="#"
                 class="btn btn-dark btn-rounded btn-icon-left btn-shopping mr-auto"
@@ -110,11 +110,11 @@
               </button>
             </div>
 
-            <div>
+            <div v-if="!carts.length">
               <v-empty-state
                 icon="mdi-magnify"
-                text="Try adjusting your search terms or filters. Sometimes less specific terms or broader queries can help you find what you're looking for."
-                title="We couldn't find a match."
+                text="Giỏ hàng đang trống vui lòng chọn quay lại mua những sản phẩm mới nhất của chúng tôi."
+                title="Chưa có sản phẩm nào trong giỏ hàng."
               ></v-empty-state>
             </div>
           </div>
@@ -122,6 +122,49 @@
       </div>
     </div>
     <!-- End of PageContent -->
+
+    <div class="cart-footer" v-if="carts.length > 0">
+      <div class="container">
+        <div class="footer-wrap">
+          <v-row no-gutters align="center">
+            <v-col cols="4">
+              <v-checkbox
+                v-model="allChecked"
+                style="font-size: 18px"
+                @change="handleAllCheckboxChange()"
+                label="Chọn tất cả sản phẩm"
+              ></v-checkbox>
+            </v-col>
+            <v-col cols="8">
+              <div class="d-flex flex-end items-center">
+                <div class="d-flex items-center w-100">
+                  <div class="w-100 d-flex justify-between items-center">
+                    <span class="total-cart-count fs-16">
+                      Tổng thanh toán (1 Sản phẩm):
+                    </span>
+
+                    <span
+                      class="total-cart-price mr-4 total-amout-cart text-black"
+                    >
+                      1.737.000 ₫
+                    </span>
+                  </div>
+
+                  <div class="ml-4" style="width: 500px">
+                    <a
+                      href="#"
+                      class="btn btn-block btn-dark btn-icon-right btn-rounded btn-checkout"
+                    >
+                      Mua hàng<i class="w-icon-long-arrow-right"></i
+                    ></a>
+                  </div>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+      </div>
+    </div>
   </main>
   <!-- End of Main -->
 </template>
