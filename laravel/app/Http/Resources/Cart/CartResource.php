@@ -22,10 +22,8 @@ class CartResource extends JsonResource
             'price' => $this->product_variant->price,
             'quantity' => $this->quantity,
             'sale_price' => $this->handleSalePrice(),
-            'attributes' => implode(' - ', $this->product_variant->attribute_values->pluck('name')->toArray()),
             'is_selected' => $this->is_selected,
             'sub_total' => $this->getSubTotal(),
-            'total_amount' => (float) $this->cart->total_amount,
         ];
     }
 
@@ -49,10 +47,9 @@ class CartResource extends JsonResource
         return $productVariant->sale_price;
     }
 
-    private function getSubTotal()
+    public function getSubTotal()
     {
         $salePrice = $this->handleSalePrice();
-
         $subTotal = ($salePrice ?? $this->product_variant->price) * $this->quantity;
         return $subTotal;
     }
