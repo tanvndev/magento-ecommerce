@@ -44,6 +44,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Cart\CartRepositoryInterface' => 'App\Repositories\Cart\CartRepository',
         // Widget
         'App\Repositories\Interfaces\Widget\WidgetRepositoryInterface' => 'App\Repositories\Widget\WidgetRepository',
+        // Voucher
+        'App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface' => 'App\Repositories\Voucher\VoucherRepository',
 
     ];
 

@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
 use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
+use App\Http\Controllers\Api\V1\Voucher\VoucherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,5 +124,9 @@ Route::middleware('log.request.response')->group(function () {
 
         // WIDGET ROUTE
         Route::apiResource('widgets', WidgetController::class);
+
+        // VOUCHER ROUTE
+        Route::post('/apply-coupon', [VoucherController::class, 'applyCoupon'])->name('apply-coupon');
+        Route::apiResource('vouchers', VoucherController::class);
     });
 });
