@@ -52,14 +52,16 @@
                       </NuxtLink>
                       <div class="product-action-vertical">
                         <a
-                          href="#"
+                          @click.prevent="addToCart(item?.id)"
+                          :href="item.slug"
                           class="btn-product-icon btn-cart w-icon-cart"
-                          title="Add to cart"
+                          title="Thêm vào giỏ hàng"
                         ></a>
                         <a
-                          href="#"
+                          @click.prevent="'Hello'"
+                          :href="item.slug"
                           class="btn-product-icon btn-wishlist w-icon-heart"
-                          title="Add to wishlist"
+                          title="Thêm vào ưa thích"
                         ></a>
                       </div>
                       <div class="product-label-group" v-if="item?.discount">
@@ -111,11 +113,12 @@
   </v-lazy>
 </template>
 <script setup>
-import { resizeImage, handleRenderPrice } from '#imports'
+import { resizeImage, handleRenderPrice, toast } from '#imports'
 import { ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay, Grid } from 'swiper/modules'
 import 'swiper/css'
+import { useCartStore } from '#imports'
 
 const props = defineProps({
   items: {
@@ -128,10 +131,28 @@ const props = defineProps({
   },
 })
 
+const { $axios } = useNuxtApp()
+const cartStore = useCartStore()
 const modules = [Navigation, Grid, Autoplay]
 const slider = ref(null)
 const onSwiper = (swiper) => {
   slider.value = swiper
+}
+
+const addToCart = async (variantId) => {
+  if (!variantId) {
+    return toast('Có lỗi vui lòng thử lại.', 'error')
+  }
+
+  const payload = {
+    product_variant_id: variantId,
+    quantity: 1,
+  }
+
+  const response = await $axios.post('/carts', payload)
+
+  cartStore.setCartCount(response.data?.items.length)
+  toast(response.messages, response.status)
 }
 </script>
 <style scoped></style>

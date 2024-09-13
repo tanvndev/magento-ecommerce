@@ -46,7 +46,7 @@ class CartController extends Controller
 
         $data = new CartCollection($response);
 
-        return successResponse(__('messages.cart.success.update'), $data);
+        return successResponse(__('messages.cart.success.create'), $data);
     }
 
     /**

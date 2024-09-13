@@ -271,9 +271,9 @@ const updateOneSelectedCarts = async (variantId) => {
 const handleClearCart = async () => {
   const response = await $axios.delete('/carts/clear')
   openClearCart.value = false
-  if (response.status == 'success') {
-    toast(response.message, 'success')
-  }
+
+  cartStore.setCarts(response.data || [])
+  toast(response.messages, response.status)
 }
 
 const handleRemove = async (variantId) => {
