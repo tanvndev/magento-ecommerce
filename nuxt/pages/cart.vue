@@ -61,7 +61,10 @@
                           />
                         </figure>
                       </a>
-                      <button class="btn btn-close" @click="handleRemove(cart)">
+                      <button
+                        class="btn btn-close"
+                        @click="handleRemove(cart.product_variant_id)"
+                      >
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
@@ -107,13 +110,32 @@
                 <i class="w-icon-long-arrow-left"></i>
                 Tiếp tục mua sắm</NuxtLink
               >
-              <button
-                @click="handleClearCart"
-                type="button"
-                class="btn btn-rounded btn-default btn-clear"
-              >
-                Xóa giỏ hàng
-              </button>
+              <div class="modal-cart-clear">
+                <v-dialog v-model="openClearCart" max-width="400" persistent>
+                  <template v-slot:activator="{ props: activatorProps }">
+                    <button
+                      v-bind="activatorProps"
+                      type="button"
+                      class="btn btn-rounded btn-default btn-clear"
+                    >
+                      Xóa giỏ hàng
+                    </button>
+                  </template>
+
+                  <v-card
+                    text="Nếu bạn chấp nhập xóa giỏ hàng các sản phẩm sẽ vĩnh viễn không thể khôi phục lại."
+                    title="Bạn có chắc chắn muốn xóa?"
+                  >
+                    <template v-slot:actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn @click="openClearCart = false"> Hủy bỏ </v-btn>
+
+                      <v-btn @click="handleClearCart"> Đồng ý </v-btn>
+                    </template>
+                  </v-card>
+                </v-dialog>
+              </div>
             </div>
 
             <div v-if="!carts.length">
@@ -128,7 +150,6 @@
       </div>
     </div>
     <!-- End of PageContent -->
-
     <div class="cart-footer" v-if="carts.length > 0">
       <div class="container">
         <div class="footer-wrap">
@@ -186,6 +207,7 @@ import { formatCurrency } from '#imports'
 import QuantityComponent from '~/components/includes/QuantityComponent.vue'
 import { debounce, resizeImage } from '#imports'
 import { useCartStore } from '~/stores/cart'
+import { toast } from '#imports'
 
 const { $axios } = useNuxtApp()
 const cartStore = useCartStore()
@@ -193,6 +215,7 @@ const cartStore = useCartStore()
 const carts = computed(() => cartStore.getCart)
 const checkedItems = ref([])
 const allChecked = ref(false)
+const openClearCart = ref(false)
 const totalAmout = computed(() => cartStore.getTotalAmount)
 
 const handleAllCheckboxChange = () => {
@@ -214,7 +237,8 @@ const handleCheckboxChange = (event, index) => {
 }
 
 const getCarts = async () => {
-  cartStore.getAllCarts()
+  await cartStore.getAllCarts()
+
   carts.value.forEach((cart, index) => {
     if (cart.is_selected) {
       checkedItems.value[index] = cart.product_variant_id
@@ -245,14 +269,18 @@ const updateOneSelectedCarts = async (variantId) => {
 }
 
 const handleClearCart = async () => {
-  //   const response = await $axios.delete('/carts')
+  const response = await $axios.delete('/carts/clear')
+  openClearCart.value = false
+  if (response.status == 'success') {
+    toast(response.message, 'success')
+  }
 }
 
-const handleRemove = async (cart) => {
-  //   const response = await $axios.delete(`/carts/${cart.id}`)
-  //   if (response.status == 'success') {
-  //     getCarts()
-  //   }
+const handleRemove = async (variantId) => {
+  const response = await $axios.delete(`/carts/${variantId}`)
+  if (response.status == 'success') {
+    getCarts()
+  }
 }
 
 const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
@@ -262,7 +290,8 @@ const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
   })
 
   if (response.status == 'success') {
-    cartStore.getAllCarts()
+    cartStore.setCarts(response.data?.items)
+    cartStore.setTotalAmount(response.data?.total_amount)
   }
 }, 1300)
 

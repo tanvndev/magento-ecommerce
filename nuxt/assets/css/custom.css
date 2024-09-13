@@ -203,3 +203,23 @@
 .cart-wrapper .v-empty-state__title {
   font-size: 18px;
 }
+
+/* Vuetify custom */
+
+.v-btn--size-default {
+  font-size: 13px !important;
+  min-width: 64px;
+  padding: 0 16px;
+}
+
+.v-card-title {
+  font-size: 1.9rem !important;
+}
+
+.v-card .v-card-text {
+  font-size: 15px !important;
+}
+
+.Toastify__toast-container .Toastify__close-button {
+  display: none;
+}

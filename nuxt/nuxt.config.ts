@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   components: true,
-  plugins: ['~/plugins/axios.js', '~/plugins/authService.js'],
+  plugins: ['~/plugins/axios.js', '~/plugins/authService.js', '~/plugins/vue-toastify.js'],
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.API_BASE_URL,
@@ -22,6 +22,7 @@ export default defineNuxtConfig({
     '~/assets/icons/fontawesome-5-pro/css/all.css',
     '~/assets/css/style.min.css',
     // '~/assets/css/main.min.css',
+    // 'vue3-toastify/dist/index.css',
     '~/assets/css/custom.css',
     '~/assets/css/helpers.css',
   ],
