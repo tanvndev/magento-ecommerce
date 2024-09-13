@@ -54,6 +54,7 @@ class CartService extends BaseService implements CartServiceInterface
                 'price' => $item['price'],
                 'quantity' => $item['qty'],
                 'sale_price' => $item['options']['sale_price'] ?? null,
+                'stock' => $item['options']['stock'] ?? null,
                 'is_selected' => $item['options']['is_selected'] ?? false,
                 'sub_total' => $item['options']['sub_total'] ?? 0,
             ];
@@ -121,6 +122,7 @@ class CartService extends BaseService implements CartServiceInterface
                 'options' => [
                     'slug' => $productVariant->slug,
                     'product_id' => $productVariant->product_id,
+                    'stock' => $productVariant->stock,
                     'image' => $productVariant->image,
                     'is_selected' => true,
                     'sale_price' => $this->getSalePrice($productVariant),
