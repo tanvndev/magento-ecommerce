@@ -39,5 +39,3 @@ Route::post('carts', [TestController::class, 'createOrUpdateCart']);
 // Route::get('images/{path}', function (Server $server, Request $request, $path) {
 //     $server->outputImage($path, $request->all());
 // })->where('path', '.*')->name('glide');
-
-

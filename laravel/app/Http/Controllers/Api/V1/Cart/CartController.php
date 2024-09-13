@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1\Cart;
 
-use Attribute;
 use App\Enums\ResponseEnum;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Cart\CartResource;
-use Gloudemans\Shoppingcart\Facades\Cart;
-use App\Http\Resources\Cart\CartCollection;
 use App\Http\Requests\Cart\CreateAndUpdateRequest;
-use App\Http\Resources\Cart\CartSessionResource;
-use App\Services\Interfaces\Cart\CartServiceInterface;
+use App\Http\Resources\Cart\CartCollection;
+use App\Http\Resources\Cart\CartResource;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
+use App\Services\Interfaces\Cart\CartServiceInterface;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -37,7 +34,7 @@ class CartController extends Controller
 
         $response = new CartCollection(CartResource::collection($cartItems));
 
-        return successResponse('',  auth()->check() ? $response : $cartItems);
+        return successResponse('', auth()->check() ? $response : $cartItems);
     }
 
     /**

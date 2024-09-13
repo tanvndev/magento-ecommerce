@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Cart;
 
 use Illuminate\Http\Request;
-use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CartSessionResource extends JsonResource
@@ -23,7 +22,7 @@ class CartSessionResource extends JsonResource
             'sale_price' => $this['options']['sale_price'],
             'is_selected' => $this['options']['is_selected'],
             'sub_total' => $this['options']['sub_total'],
-            'total_amout' =>  $this->total_amount,
+            'total_amout' => $this->total_amount,
         ];
     }
 }
