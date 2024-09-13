@@ -112,7 +112,6 @@ class ProductController extends Controller
         return handleResponse($response);
     }
 
-
     // CLIENT API //
 
     public function getProduct(string $slug)

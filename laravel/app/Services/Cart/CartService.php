@@ -2,23 +2,24 @@
 
 namespace App\Services\Cart;
 
-use App\Services\BaseService;
-use App\Services\Interfaces\Cart\CartServiceInterface;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
+use App\Services\BaseService;
+use App\Services\Interfaces\Cart\CartServiceInterface;
 use Gloudemans\Shoppingcart\Facades\Cart;
 
 class CartService extends BaseService implements CartServiceInterface
 {
     protected $cartRepository;
+
     protected $productVariantRepository;
 
     public function __construct(
         CartRepositoryInterface $cartRepository,
         ProductVariantRepositoryInterface $productVariantRepository
     ) {
-        $this->cartRepository               = $cartRepository;
-        $this->productVariantRepository     = $productVariantRepository;
+        $this->cartRepository = $cartRepository;
+        $this->productVariantRepository = $productVariantRepository;
     }
 
     public function getCart()
@@ -26,9 +27,9 @@ class CartService extends BaseService implements CartServiceInterface
         if (auth()->check()) {
             $userId = auth()->user()->id;
             $cart = $this->cartRepository->findByWhere(
-                ["user_id" => $userId],
+                ['user_id' => $userId],
                 ['*'],
-                ["cart_items.product_variant.attribute_values"]
+                ['cart_items.product_variant.attribute_values']
             );
 
             return $cart->cart_items ?? collect();
@@ -61,7 +62,7 @@ class CartService extends BaseService implements CartServiceInterface
         return [
             'carts' => $cartItems,
             'total_amount' => $totalAmount,
-        ];;
+        ];
     }
 
     private function caculateTotalAmountSession($cartItems)
@@ -72,7 +73,7 @@ class CartService extends BaseService implements CartServiceInterface
         }
 
         return [
-            'total_amount' => $total
+            'total_amount' => $total,
         ];
     }
 
@@ -91,9 +92,9 @@ class CartService extends BaseService implements CartServiceInterface
 
             if (auth()->check()) {
                 $userId = auth()->user()->id;
-                $cart = $this->cartRepository->findByWhere(["user_id" => $userId]);
+                $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-                if (!$cart) {
+                if (! $cart) {
                     $cart = $this->cartRepository->create(['user_id' => $userId]);
                 }
 
@@ -103,8 +104,8 @@ class CartService extends BaseService implements CartServiceInterface
                     $existingCartItem->update(['quantity' => $request->quantity]);
                 } else {
                     $cart->cart_items()->create([
-                        'product_variant_id'    => $request->product_variant_id,
-                        'quantity'              => $request->quantity ?? 1,
+                        'product_variant_id' => $request->product_variant_id,
+                        'quantity' => $request->quantity ?? 1,
                     ]);
                 }
 
@@ -112,37 +113,35 @@ class CartService extends BaseService implements CartServiceInterface
             } else {
 
                 $data = [
-                    'id'                        => $productVariant->id,
-                    'name'                      => $productVariant->name,
-                    'qty'                       => $request->quantity,
-                    'price'                     => $productVariant->price,
-                    'options'       => [
-                        'slug'                   => $productVariant->slug,
-                        'product_id'             => $productVariant->product_id,
-                        'image'                 => $productVariant->image,
-                        'is_selected'           => true,
-                        'sale_price'            => $this->getSalePrice($productVariant),
-                        'sub_total'             => $this->getSubTotal($productVariant),
-                    ]
+                    'id' => $productVariant->id,
+                    'name' => $productVariant->name,
+                    'qty' => $request->quantity,
+                    'price' => $productVariant->price,
+                    'options' => [
+                        'slug' => $productVariant->slug,
+                        'product_id' => $productVariant->product_id,
+                        'image' => $productVariant->image,
+                        'is_selected' => true,
+                        'sale_price' => $this->getSalePrice($productVariant),
+                        'sub_total' => $this->getSubTotal($productVariant),
+                    ],
                 ];
 
-              Cart::instance('shopping')->add($data);
+                Cart::instance('shopping')->add($data);
 
-                return successResponse(__('messages.cart.success.create'),  $this->formatResponseCartSession());
+                return successResponse(__('messages.cart.success.create'), $this->formatResponseCartSession());
             }
         }, __('messages.cart.error.not_found'));
     }
 
-
-
     private function getSalePrice($productVariant)
     {
-        if (!$productVariant->sale_price || !$productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return null;
         }
 
         if ($productVariant->is_discount_time && $productVariant->sale_price_time) {
-            $now = new \DateTime();
+            $now = new \DateTime;
             $start = new \DateTime($productVariant->sale_price_start_at);
             $end = new \DateTime($productVariant->sale_price_end_at);
 
@@ -160,6 +159,7 @@ class CartService extends BaseService implements CartServiceInterface
         $salePrice = $this->getSalePrice($productVariant);
 
         $subTotal = ($salePrice ?? $productVariant->price) * request()->quantity;
+
         return $subTotal;
     }
 
@@ -168,16 +168,17 @@ class CartService extends BaseService implements CartServiceInterface
         return $this->executeInTransaction(function () use ($id) {
             if (auth()->check()) {
                 $userId = auth()->user()->id;
-                $cart = $this->cartRepository->findByWhere(["user_id" => $userId]);
+                $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-                if (!$cart) {
+                if (! $cart) {
                     return errorResponse(__('messages.cart.error.not_found'));
                 }
 
-                $cartItem = $cart->cart_items()->where('id', $id)->first();
+                $cartItem = $cart->cart_items()->where('product_variant_id', $id)->first();
 
                 if ($cartItem) {
                     $cartItem->delete();
+
                     return successResponse(__('messages.cart.success.delete'));
                 } else {
                     return errorResponse(__('messages.cart.error.item_not_found'));
@@ -185,6 +186,7 @@ class CartService extends BaseService implements CartServiceInterface
             } else {
 
                 Cart::remove($id);
+
                 return successResponse(__('messages.cart.success.delete'));
             }
         }, __('messages.cart.error.item_not_found'));
@@ -196,7 +198,7 @@ class CartService extends BaseService implements CartServiceInterface
             if (auth()->check()) {
                 $user = auth()->user();
 
-                if (!$user->cart) {
+                if (! $user->cart) {
                     return errorResponse(__('messages.cart.error.cart_not_found'));
                 }
 
@@ -214,18 +216,18 @@ class CartService extends BaseService implements CartServiceInterface
     {
         return $this->executeInTransaction(function () use ($request) {
             if (auth()->check()) {
-                $userId                                 = auth()->user()->id;
-                $cart                                   = $this->cartRepository->findByWhere(["user_id" => $userId]);
+                $userId = auth()->user()->id;
+                $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-                if (!$cart) {
+                if (! $cart) {
                     return errorResponse(__('messages.cart.error.not_found'));
                 }
 
                 if (isset($request->product_variant_id)) {
-                    $cartItem                           = $cart->cart_items()->where('product_variant_id', $request->product_variant_id)->first();
+                    $cartItem = $cart->cart_items()->where('product_variant_id', $request->product_variant_id)->first();
 
                     if ($cartItem) {
-                        $cartItem->is_selected          = !$cartItem->is_selected;
+                        $cartItem->is_selected = ! $cartItem->is_selected;
                         $cartItem->save();
                     }
                 }
@@ -238,7 +240,7 @@ class CartService extends BaseService implements CartServiceInterface
                 $totalAmount = $this->calculateTotalAmount($cart);
 
                 return successResponse(__('messages.cart.success.update'), [
-                    'total_amount' => $totalAmount
+                    'total_amount' => $totalAmount,
                 ]);
             } else {
 
@@ -247,7 +249,7 @@ class CartService extends BaseService implements CartServiceInterface
 
                     if ($cartItem) {
 
-                        $cartItem->is_selected = !$cartItem->is_selected;
+                        $cartItem->is_selected = ! $cartItem->is_selected;
                     }
                 }
 
@@ -258,11 +260,10 @@ class CartService extends BaseService implements CartServiceInterface
                     }
                 }
 
-
                 $totalAmount = $this->calculateTotalAmountFromSession();
 
                 return successResponse(__('messages.cart.success.update'), [
-                    'total_amount' => $totalAmount
+                    'total_amount' => $totalAmount,
                 ]);
             }
         }, __('messages.cart.error.not_found'));

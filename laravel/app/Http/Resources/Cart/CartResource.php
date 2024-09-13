@@ -31,12 +31,12 @@ class CartResource extends JsonResource
     private function handleSalePrice()
     {
         $productVariant = $this->product_variant;
-        if (!$productVariant->sale_price || !$productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return null;
         }
 
         if ($productVariant->is_discount_time && $productVariant->sale_price_time) {
-            $now = new \DateTime();
+            $now = new \DateTime;
             $start = new \DateTime($productVariant->sale_price_start_at);
             $end = new \DateTime($productVariant->sale_price_end_at);
 
@@ -52,6 +52,7 @@ class CartResource extends JsonResource
     {
         $salePrice = $this->handleSalePrice();
         $subTotal = ($salePrice ?? $this->product_variant->price) * $this->quantity;
+
         return $subTotal;
     }
 }

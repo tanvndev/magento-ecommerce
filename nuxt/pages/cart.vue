@@ -46,10 +46,8 @@
                   <td>
                     <v-checkbox
                       v-model="checkedItems[index]"
-                      :value="cart.cart_item_id"
-                      @change="
-                        handleCheckboxChange($event, cart.product_variant_id)
-                      "
+                      :value="cart.product_variant_id"
+                      @change="handleCheckboxChange($event, index)"
                       style="font-size: 18px"
                     ></v-checkbox>
                   </td>
@@ -58,20 +56,20 @@
                       <a href="product-default.html">
                         <figure>
                           <img
-                            src="assets/images/shop/13.jpg"
-                            alt="product"
-                            width="300"
-                            height="338"
+                            :src="resizeImage(cart.image, 300)"
+                            :alt="cart.name"
                           />
                         </figure>
                       </a>
-                      <button class="btn btn-close">
+                      <button class="btn btn-close" @click="handleRemove(cart)">
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
                   </td>
                   <td class="product-name">
-                    <nuxtLink to="#"> {{ cart.name }} </nuxtLink>
+                    <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
+                      {{ cart.name }}
+                    </NuxtLink>
                   </td>
                   <td class="text-right">
                     <div class="product-price">
@@ -84,7 +82,12 @@
                     </div>
                   </td>
                   <td class="product-quantity text-right">
-                    <QuantityComponent :old-quantity="cart.quantity" />
+                    <QuantityComponent
+                      :old-quantity="cart.quantity"
+                      @update:quantity="
+                        handleQuantityChange(cart.product_variant_id, $event)
+                      "
+                    />
                   </td>
                   <td class="product-subtotal">
                     <span class="amount">{{
@@ -96,10 +99,12 @@
             </table>
 
             <div class="cart-action mb-6" v-if="carts.length > 0">
-              <a
-                href="#"
+              <NuxtLink
+                to="/"
                 class="btn btn-dark btn-rounded btn-icon-left btn-shopping mr-auto"
-                ><i class="w-icon-long-arrow-left"></i>Tiếp tục mua sắm</a
+              >
+                <i class="w-icon-long-arrow-left"></i>
+                Tiếp tục mua sắm</NuxtLink
               >
               <button
                 @click="handleClearCart"
@@ -140,13 +145,17 @@
                 <div class="d-flex items-center w-100">
                   <div class="w-100 d-flex justify-between items-center">
                     <span class="total-cart-count fs-16">
-                      Tổng thanh toán (1 Sản phẩm):
+                      Tổng thanh toán ({{ Object.keys(checkedItems)?.length }} Sản phẩm):
                     </span>
 
                     <span
                       class="total-cart-price mr-4 total-amout-cart text-black"
                     >
-                      1.737.000 ₫
+                      {{
+                        formatCurrency(totalAmout) == '-'
+                          ? 0
+                          : formatCurrency(totalAmout)
+                      }}
                     </span>
                   </div>
 
@@ -173,37 +182,41 @@
 import { onMounted, watch } from 'vue'
 import { formatCurrency } from '#imports'
 import QuantityComponent from '~/components/includes/QuantityComponent.vue'
+import { debounce, resizeImage } from '#imports'
 
 const { $axios } = useNuxtApp()
 
 const carts = ref([])
 const checkedItems = ref([])
 const allChecked = ref(false)
+const totalAmout = ref(0)
 
 const handleAllCheckboxChange = () => {
   if (allChecked.value) {
     carts.value.forEach((cart, index) => {
-      checkedItems.value[index] = cart.cart_item_id
+      checkedItems.value[index] = cart.product_variant_id
     })
   } else {
     checkedItems.value = []
   }
+  updateAllSelectedCarts(allChecked.value)
 }
 
-const handleCheckboxChange = (event, variantId) => {
+const handleCheckboxChange = (event, index) => {
   if (event.target.checked === false) {
-    delete checkedItems.value[event.target.value]
+    delete checkedItems.value[index]
   }
-  updateOneSelectedCarts(variantId)
+  updateOneSelectedCarts(event.target.value)
 }
 
 const getCarts = async () => {
   const response = await $axios.get('/carts')
-  carts.value = response.data
+  carts.value = response.data?.items
+  totalAmout.value = response.data?.total_amount
 
   carts.value.forEach((cart, index) => {
     if (cart.is_selected) {
-      checkedItems.value[index] = cart.cart_item_id
+      checkedItems.value[index] = cart.product_variant_id
     }
   })
 }
@@ -220,19 +233,40 @@ const updateAllSelectedCarts = async () => {
   const response = await $axios.put('/carts/handle-selected', {
     select_all: allChecked.value,
   })
-  if (response.data) {
-    getCarts()
-  }
+  totalAmout.value = response.data?.total_amount
 }
 
 const updateOneSelectedCarts = async (variantId) => {
   const response = await $axios.put('/carts/handle-selected', {
     product_variant_id: variantId,
   })
+  totalAmout.value = response.data?.total_amount
 }
 
 const handleClearCart = async () => {
-  const response = await $axios.delete('/carts')
+  //   const response = await $axios.delete('/carts')
+}
+
+const handleRemove = async (cart) => {
+  //   const response = await $axios.delete(`/carts/${cart.id}`)
+  //   if (response.status == 'success') {
+  //     getCarts()
+  //   }
+}
+
+const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
+  const response = await $axios.post('/carts', {
+    product_variant_id: variantId,
+    quantity: quantity,
+  })
+
+  if (response.status == 'success') {
+    getCarts()
+  }
+}, 1300)
+
+const handleQuantityChange = (variantId, quantity) => {
+  debouncedHandleQuantityChange(variantId, quantity)
 }
 
 onMounted(() => {
@@ -240,10 +274,17 @@ onMounted(() => {
 })
 
 watch(checkedItems, checkSelectedAll, { deep: true })
-watch(allChecked, updateAllSelectedCarts)
+// watch(allChecked, updateAllSelectedCarts)
 </script>
 
 <style scoped>
+.product-thumbnail img {
+  width: 100px;
+  height: 112px;
+  object-fit: cover;
+  border-radius: 4px;
+  background-color: #f5f6f7;
+}
 .shop-table.cart-table .product-price,
 .shop-table.cart-table .product-subtotal {
   text-align: right;
