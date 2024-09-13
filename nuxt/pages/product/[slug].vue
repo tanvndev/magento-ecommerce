@@ -243,11 +243,14 @@ import {
   removeLastSegment,
   handleSocialIconClick,
   handlePrice,
+  toast,
 } from '#imports'
 import QuantityComponent from '~/components/includes/QuantityComponent.vue'
+import { useCartStore } from '~/stores/cart'
 
 const modules = [Navigation, Autoplay]
 
+const cartStore = useCartStore()
 const { $axios } = useNuxtApp()
 const route = useRoute()
 const visibleRef = ref(false)
@@ -341,6 +344,11 @@ const addToCart = async () => {
   }
 
   const response = await $axios.post('/carts', data)
+
+  if (response.status == 'success') {
+    cartStore.setCartCount(response.data?.items.length)
+    toast(response.messages, 'success')
+  }
 }
 
 watch(

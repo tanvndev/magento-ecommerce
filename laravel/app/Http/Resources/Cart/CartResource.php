@@ -21,6 +21,7 @@ class CartResource extends JsonResource
             'name' => $this->product_variant->name,
             'slug' => $this->product_variant->slug,
             'price' => $this->product_variant->price,
+            'stock' => $this->product_variant->stock,
             'quantity' => $this->quantity,
             'sale_price' => $this->handleSalePrice(),
             'is_selected' => $this->is_selected,

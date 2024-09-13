@@ -101,7 +101,7 @@
               <div class="cart-overlay"></div>
               <NuxtLink to="/cart" class="cart-toggle label-down link">
                 <i class="w-icon-cart">
-                  <span class="cart-count">2</span>
+                  <span class="cart-count">{{ cartCount }}</span>
                 </i>
                 <span class="cart-label">Giỏ hàng</span>
               </NuxtLink>
@@ -142,11 +142,17 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import MenuItem from '../MenuItem.vue'
+import { useCartStore } from '~/stores/cart'
+import { useProductCatalogueStore } from '~/stores/productCatalogue'
 
 const { $axios } = useNuxtApp()
+const cartStore = useCartStore()
+const productCatalogueStore = useProductCatalogueStore()
 const headerMain = ref(null)
-let lastScrollPosition = 0
 const productCatalogues = ref([])
+const cartCount = computed(() => cartStore.getCartCount)
+
+let lastScrollPosition = 0
 
 const handleScroll = () => {
   if (!headerMain.value) return
@@ -177,6 +183,7 @@ const handleScroll = () => {
 
 const getProductCatalogues = async () => {
   const response = await $axios.get('/products/catalogues/list')
+  productCatalogueStore.setProductCatalogues(response.data.data)
   productCatalogues.value = response.data.data.filter(
     (item) => item.parent_id === null
   )
@@ -184,6 +191,7 @@ const getProductCatalogues = async () => {
 
 onMounted(() => {
   getProductCatalogues()
+  cartStore.getAllCarts()
   window.addEventListener('scroll', handleScroll)
 })
 onBeforeUnmount(() => window.removeEventListener('scroll', handleScroll))
