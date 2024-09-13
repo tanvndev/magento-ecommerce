@@ -12,10 +12,7 @@ interface VoucherServiceInterface
 
     public function destroy($id);
 
-
     public function updateStatus();
 
-    public function updateStatusMultiple();
-
-    public function applyCoupon($request);
+    public function applyVoucher($request);
 }

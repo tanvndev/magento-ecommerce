@@ -47,6 +47,16 @@ return [
             'cart_not_found'    => "Người dùng chưa có giỏ hàng!"
         ],
     ],
+    'voucher' => [
+        'error' => [
+            'create'            => 'Mã giảm giá chỉ nhận một trong hai giá trị min_order_value và min_quantity',
+            'invalid'           => 'Mã giảm giá không tồn tại',
+            'over'              => 'Mã giảm giá đã hết hạn',
+            'expired'           => 'Mã giảm giá đã quá hạn thời',
+            'min'               => 'Đơn hàng của bạn chưa đủ điều kiện để áp dụng mã giảm giá này',
+        ],
+        'success'   => 'Ma giam gia da duoc ap dung thanh cong',
+    ],
     'auth' => [
         'register' => [
             'success' => 'Người dùng đã đăng ký thành công. Vui lòng kiểm tra email của bạn để xác nhận đăng ký.',

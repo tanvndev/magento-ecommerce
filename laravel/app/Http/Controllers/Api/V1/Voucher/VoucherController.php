@@ -10,7 +10,7 @@ use App\Http\Resources\Voucher\VoucherCollection;
 use App\Http\Resources\Voucher\VoucherResource;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\Interfaces\Voucher\VoucherServiceInterface;
-use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Request;
 
 class VoucherController extends Controller
 {
@@ -77,14 +77,14 @@ class VoucherController extends Controller
         return handleResponse($response);
     }
 
-    public function applyCoupon(Request $request)
+    public function applyVoucher(Request $request)
     {
         /*
             $request nhận dữ liệu: ['code' => 'ABC', 'subtotal' => '700']
             'code': Dữ liệu người dùng nhập vào form
             'subtotal': Tổng tiền trong giỏ hàng
         */
-        $response = $this->voucherService->applyCoupon($request);
+        $response = $this->voucherService->applyVoucher($request);
 
         return handleResponse($response);
     }

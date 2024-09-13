@@ -10,7 +10,10 @@ class Voucher extends Model
 {
     use HasFactory, QueryScopes;
     protected $fillable = [
+        'name',
         'code',
+        'image',
+        'description',
         'discount_type',
         'discount_value',
         'quantity',
