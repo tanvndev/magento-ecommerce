@@ -84,6 +84,7 @@
                   <td class="product-quantity text-right">
                     <QuantityComponent
                       :old-quantity="cart.quantity"
+                      :max="cart.stock - 2"
                       @update:quantity="
                         handleQuantityChange(cart.product_variant_id, $event)
                       "
@@ -145,7 +146,8 @@
                 <div class="d-flex items-center w-100">
                   <div class="w-100 d-flex justify-between items-center">
                     <span class="total-cart-count fs-16">
-                      Tổng thanh toán ({{ Object.keys(checkedItems)?.length }} Sản phẩm):
+                      Tổng thanh toán ({{ Object.keys(checkedItems)?.length }}
+                      Sản phẩm):
                     </span>
 
                     <span
@@ -183,13 +185,15 @@ import { onMounted, watch } from 'vue'
 import { formatCurrency } from '#imports'
 import QuantityComponent from '~/components/includes/QuantityComponent.vue'
 import { debounce, resizeImage } from '#imports'
+import { useCartStore } from '~/stores/cart'
 
 const { $axios } = useNuxtApp()
+const cartStore = useCartStore()
 
-const carts = ref([])
+const carts = computed(() => cartStore.getCart)
 const checkedItems = ref([])
 const allChecked = ref(false)
-const totalAmout = ref(0)
+const totalAmout = computed(() => cartStore.getTotalAmount)
 
 const handleAllCheckboxChange = () => {
   if (allChecked.value) {
@@ -210,10 +214,7 @@ const handleCheckboxChange = (event, index) => {
 }
 
 const getCarts = async () => {
-  const response = await $axios.get('/carts')
-  carts.value = response.data?.items
-  totalAmout.value = response.data?.total_amount
-
+  cartStore.getAllCarts()
   carts.value.forEach((cart, index) => {
     if (cart.is_selected) {
       checkedItems.value[index] = cart.product_variant_id
@@ -233,14 +234,14 @@ const updateAllSelectedCarts = async () => {
   const response = await $axios.put('/carts/handle-selected', {
     select_all: allChecked.value,
   })
-  totalAmout.value = response.data?.total_amount
+  cartStore.setTotalAmount(response.data?.total_amount)
 }
 
 const updateOneSelectedCarts = async (variantId) => {
   const response = await $axios.put('/carts/handle-selected', {
     product_variant_id: variantId,
   })
-  totalAmout.value = response.data?.total_amount
+  cartStore.setTotalAmount(response.data?.total_amount)
 }
 
 const handleClearCart = async () => {
@@ -261,7 +262,7 @@ const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
   })
 
   if (response.status == 'success') {
-    getCarts()
+    cartStore.getAllCarts()
   }
 }, 1300)
 
@@ -274,7 +275,6 @@ onMounted(() => {
 })
 
 watch(checkedItems, checkSelectedAll, { deep: true })
-// watch(allChecked, updateAllSelectedCarts)
 </script>
 
 <style scoped>

@@ -142,24 +142,18 @@ import { resizeImage } from '#imports'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
 import 'swiper/css'
+import { useProductCatalogueStore } from '~/stores/productCatalogue'
 
-const { $axios } = useNuxtApp()
+const productCatalogueStore = useProductCatalogueStore()
 const modules = [Navigation, Autoplay]
-const productCatalogues = ref([])
+const productCatalogues = computed(
+  () => productCatalogueStore.getProductCatalogues
+)
 const slider = ref(null)
-
-const getProductCatalogues = async () => {
-  const response = await $axios.get('/products/catalogues/list')
-  productCatalogues.value = response.data.data
-}
 
 const onSwiper = (swiper) => {
   slider.value = swiper
 }
-
-onMounted(() => {
-  getProductCatalogues()
-})
 </script>
 <style scoped>
 .category-media {
