@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\TestApiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
@@ -34,10 +35,14 @@ use App\Http\Controllers\Api\V1\Voucher\VoucherController;
 
 Route::middleware('log.request.response')->group(function () {
 
+    // ROUTE TEST
+    Route::get('test/index', [TestApiController::class, 'index']);
+
     // CLIENT ROUTE
     Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
     Route::get('getWidget', [WidgetController::class, 'getWidget']);
     Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
+
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
@@ -112,14 +117,7 @@ Route::middleware('log.request.response')->group(function () {
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
 
-        // CART ROUTE
-        Route::controller(CartController::class)->name('cart.')->group(function () {
-            Route::get('carts', 'index')->name('index');
-            Route::post('carts', 'createOrUpdate')->name('store-or-update');
-            Route::delete('carts/{id}/destroy', 'destroy')->name('destroy');
-            Route::delete('carts/clear', 'forceDestroy')->name('force-destroy');
-            Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
-        });
+      
 
 
         // WIDGET ROUTE
@@ -129,4 +127,16 @@ Route::middleware('log.request.response')->group(function () {
         Route::post('/apply-coupon', [VoucherController::class, 'applyCoupon'])->name('apply-coupon');
         Route::apiResource('vouchers', VoucherController::class);
     });
+  
+    // CART ROUTE
+        Route::controller(CartController::class)->name('cart.')->group(function () {
+            Route::get('carts', 'index')->name('index');
+            Route::post('carts', 'createOrUpdate')->name('store-or-update');
+            Route::delete('carts/clear', 'forceDestroy')->name('force-destroy');
+            Route::delete('carts/{id}', 'destroy')->name('destroy');
+            Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
+        });
+
+
+ 
 });

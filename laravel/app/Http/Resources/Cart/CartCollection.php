@@ -10,10 +10,24 @@ class CartCollection extends ResourceCollection
     /**
      * Transform the resource collection into an array.
      *
-     * @return array<int|string, mixed>
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $totalAmount = $this->calculateTotalAmount();
+
+        return [
+            'carts' => CartResource::collection($this->collection),
+            'total_amount' => [
+                'total_amount' => $totalAmount,
+            ],
+        ];
+    }
+
+    private function calculateTotalAmount()
+    {
+        return $this->collection->sum(function ($cartItem) {
+            return $cartItem->getSubTotal();
+        });
     }
 }

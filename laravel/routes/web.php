@@ -16,22 +16,28 @@ use League\Glide\Server;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('carts', [TestController::class, 'getAllCart']);
 
-Route::get('/test', [TestController::class, 'index']);
-Route::get('/emails', function () {
-    return view('emails.forgot-email');
-});
+Route::post('carts', [TestController::class, 'createOrUpdateCart']);
 
-Route::get('/notification/{boolean}/{messages}', function ($boolean, $messages) {
-    return view('auth.notification', compact(
-        'boolean',
-        'messages'
-    ));
-})->name('notifications');
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('images/{path}', function (Server $server, Request $request, $path) {
-    $server->outputImage($path, $request->all());
-})->where('path', '.*')->name('glide');
+// Route::get('/test', [TestController::class, 'index']);
+// Route::get('/emails', function () {
+//     return view('emails.forgot-email');
+// });
+
+// Route::get('/notification/{boolean}/{messages}', function ($boolean, $messages) {
+//     return view('auth.notification', compact(
+//         'boolean',
+//         'messages'
+//     ));
+// })->name('notifications');
+
+// Route::get('images/{path}', function (Server $server, Request $request, $path) {
+//     $server->outputImage($path, $request->all());
+// })->where('path', '.*')->name('glide');
+
+

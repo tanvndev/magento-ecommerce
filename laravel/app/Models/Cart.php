@@ -10,7 +10,7 @@ class Cart extends Model
 {
     use HasFactory, QueryScopes;
 
-    protected $fillable = ['user_id', 'total_amount'];
+    protected $fillable = ['user_id'];
 
     public function user()
     {
