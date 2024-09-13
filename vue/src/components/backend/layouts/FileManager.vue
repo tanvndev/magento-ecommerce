@@ -356,6 +356,7 @@ const fetchData = async (payload = null) => {
 .card-image img {
   user-select: none;
   pointer-events: none;
+  object-fit: contain;
 }
 .card-image::before {
   position: absolute;

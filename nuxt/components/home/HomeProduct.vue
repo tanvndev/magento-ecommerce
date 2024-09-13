@@ -43,11 +43,6 @@
                         <img
                           :src="resizeImage(item.image, 500, 400)"
                           :alt="item.name"
-                          style="
-                            width: 300px;
-                            height: 280px;
-                            border-radius: 4px;
-                          "
                         />
                       </NuxtLink>
                       <div class="product-action-vertical">
@@ -155,4 +150,23 @@ const addToCart = async (variantId) => {
   toast(response.messages, response.status)
 }
 </script>
-<style scoped></style>
+<style scoped>
+.product-media {
+  background-color: #f5f6f7;
+  border-radius: 10px !important;
+  transform: translateY(0);
+  transition: all 0.3s linear;
+}
+.product-media img {
+  object-fit: contain !important;
+  width: 300px;
+  height: 330px;
+  border-radius: 10px !important;
+  mix-blend-mode: darken;
+  transition: all 0.2s ease-in-out;
+}
+
+.product-media:hover img {
+  transform: translateY(-12px);
+}
+</style>

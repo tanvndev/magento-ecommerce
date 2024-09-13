@@ -346,7 +346,7 @@ const addToCart = async () => {
   const response = await $axios.post('/carts', payload)
 
   cartStore.setCartCount(response.data?.items.length)
-  toast(response.message, response.status)
+  toast(response.messages, response.status)
 }
 
 watch(
@@ -370,11 +370,15 @@ const onHide = () => (visibleRef.value = false)
   cursor: pointer;
   user-select: none;
 }
+.product-image {
+  background-color: #f5f6f7;
+}
 .product-images {
   background-color: #f5f6f7;
   width: 100%;
   height: 512px;
   border-radius: 4px;
-  object-fit: cover;
+  object-fit: contain;
+  mix-blend-mode: darken;
 }
 </style>
