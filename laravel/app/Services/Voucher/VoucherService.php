@@ -70,6 +70,9 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
             $payload = $this->preparePayload();
 
+            if ($payload['min_order_value'] && $payload['min_quantity']) {
+                return errorResponse(__('messages.voucher.error.create'));
+            }
             if ($payload['min_order_value'])  $payload['min_quantity'] = null;
             if ($payload['min_quantity'])  $payload['min_order_value'] = null;
 
@@ -93,78 +96,5 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         $payload = request()->except('_token', '_method');
 
         return $payload;
-    }
-
-    public function applyVoucher($request)
-    {
-        return $this->executeInTransaction(function () use ($request) {
-
-            /*
-                $request nhận dữ liệu: ['code' => 'ABC', 'subtotal' => '700', 'cart_quantity' => 5]
-                'code': Dữ liệu người dùng nhập vào form
-                'subtotal': Tổng tiền trong giỏ hàng
-                'cart_quantity': Số lượng sản phẩm trong giỏ hàng
-            */
-
-            $subtotal = $request->subtotal;
-            $voucher = $this->voucherRepository->findByWhere(['code' => $request->code, 'publish' => 1]);
-
-
-            if (!$voucher) {
-                return errorResponse(__('messages.voucher.error.invalid'));
-            }
-
-            // Kiểm tra số lượng mã giảm giá
-            if ($voucher->quantity <= 0) {
-                return errorResponse(__('messages.voucher.error.over'));
-
-                // Nếu quantity đã bằng không thì xóa
-            }
-
-            // Kiểm tra thời gian mã giảm giá
-            if ($voucher->end_at < now() || now() < $voucher->start_at) {
-                return errorResponse(__('messages.voucher.error.expired'));
-
-                // Nếu thời gian đã quá hạn thì xóa
-            }
-
-            if ($voucher->end_at < now() || now() < $voucher->start_at) {
-                return errorResponse(__('messages.voucher.error.expired'));
-
-                // Nếu thời gian đã quá hạn thì xóa
-            }
-
-
-            if ($voucher->min_order_value && $voucher->min_quantity == null) {
-                // Kiểm tra tổng giá trị đơn hàng
-                if ($request->subtotal < $voucher->min_order_value) {
-                    return errorResponse(__('messages.voucher.error.min'));
-                }
-            } else {
-                // Kiểm tra tổng giá trị đơn hàng
-                if ($request->cart_quantity < $voucher->min_quantity) {
-                    return errorResponse(__('messages.voucher.error.min'));
-                }
-            }
-
-
-            // Tính tiền được khuyến mại và tiền phải trả sau khuyến mại
-            if ($voucher->discount_type === "percent") {
-                $discount = $subtotal * ($voucher->discount_value / 100);
-            } else if ($voucher->discount_type === "amount") {
-                $discount = $voucher->discount_value;
-            }
-            $finaleTotal = $subtotal - $discount;
-
-            // Khi thành công update lại số lượng voucher-
-            $newQuantity = $voucher->quantity  - 1;
-            $voucher->update(['quantity' => $newQuantity]);
-
-
-            return  successResponse(__('messages.voucher.success'), [
-                'dismount'      => $discount,
-                'finaleTotal'   => $finaleTotal,
-            ]);
-        }, __('messages.voucher.error.invalid'));
     }
 }

@@ -49,11 +49,7 @@ return [
     ],
     'voucher' => [
         'error' => [
-            'create'            => 'Mã giảm giá chỉ nhận một trong hai giá trị min_order_value và min_quantity',
-            'invalid'           => 'Mã giảm giá không tồn tại',
-            'over'              => 'Mã giảm giá đã hết hạn',
-            'expired'           => 'Mã giảm giá đã quá hạn thời',
-            'min'               => 'Đơn hàng của bạn chưa đủ điều kiện để áp dụng mã giảm giá này',
+            'create'            => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
         ],
         'success'   => 'Ma giam gia da duoc ap dung thanh cong',
     ],

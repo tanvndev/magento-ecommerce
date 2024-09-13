@@ -11,8 +11,4 @@ interface VoucherServiceInterface
     public function update($id);
 
     public function destroy($id);
-
-    public function updateStatus();
-
-    public function applyVoucher($request);
 }

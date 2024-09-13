@@ -21,19 +21,25 @@ class UpdateVoucherRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name'              => 'required|max:255',
-            'code'              => 'required|max:50',
+            'code'              => 'required|max:50|unique:vouchers,code,' . $this->voucher,
             'description'       => 'required|max:255',
             'image'             => 'nullable',
             'discount_type'     => 'required',
-            'discount_value'    => 'required',
+            'discount_value'    => 'required|numeric',
             'quantity'          => 'required|integer|min:1',
             'min_order_value'   => 'nullable|integer',
             'min_quantity'      => 'nullable|integer',
             'start_at'          => 'required|date',
             'end_at'            => 'required|date',
         ];
+
+        if ($this->min_order_value == null  && $this->min_quantity == null) {
+            $rules['min_order_value'] = 'required';
+            $rules['min_quantity'] = 'required';
+        }
+        return $rules;
     }
 
     public function attributes()

@@ -126,7 +126,6 @@ Route::middleware('log.request.response')->group(function () {
         // VOUCHER ROUTE
 
         Route::apiResource('vouchers', VoucherController::class);
-        Route::post('apply-voucher', [VoucherController::class, 'applyVoucher'])->name('apply-voucher');
     });
 
     // CART ROUTE
