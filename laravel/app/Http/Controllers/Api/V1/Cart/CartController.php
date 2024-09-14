@@ -30,11 +30,13 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cartItems = $this->cartService->getCart();
+        $response = $this->cartService->getCart();
+        $data = new CartCollection($response);
 
-        $response = new CartCollection($cartItems);
+        $result = auth()->check() ? $data : $response;
 
-        return successResponse('', auth()->check() ? $response : $cartItems);
+
+        return successResponse('', $result);
     }
 
     /**
@@ -43,12 +45,12 @@ class CartController extends Controller
     public function createOrUpdate(CreateAndUpdateRequest $request)
     {
         $response = $this->cartService->createOrUpdate($request);
-
         $data = new CartCollection($response);
 
-        return successResponse(__('messages.cart.success.update'), $data);
-    }
+        $result = auth()->check() ? $data : $response;
 
+        return successResponse(__('messages.cart.success.create'), $result);
+    }
     /**
      * Remove the specified resource from storage.
      */

@@ -1,12 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
+  ssr: false,
   components: true,
-  plugins: ['~/plugins/axios.js', '~/plugins/authService.js', '~/plugins/vue-toastify.js'],
+  plugins: [
+    '~/plugins/axios.js',
+    '~/plugins/authService.js',
+    '~/plugins/vue-toastify.js',
+  ],
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.API_BASE_URL,
+      vueUrl: process.env.VUE_APP_URL,
+      laravelUrl: process.env.LARAVEL_APP_URL,
     },
   },
 

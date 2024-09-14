@@ -338,17 +338,15 @@ const addToCart = async () => {
     return
   }
 
-  const data = {
+  const payload = {
     product_variant_id: variant.value.id,
     quantity: quantity.value,
   }
 
-  const response = await $axios.post('/carts', data)
+  const response = await $axios.post('/carts', payload)
 
-  if (response.status == 'success') {
-    cartStore.setCartCount(response.data?.items.length)
-    toast(response.messages, 'success')
-  }
+  cartStore.setCartCount(response.data?.items.length)
+  toast(response.messages, response.status)
 }
 
 watch(
@@ -372,11 +370,15 @@ const onHide = () => (visibleRef.value = false)
   cursor: pointer;
   user-select: none;
 }
+.product-image {
+  background-color: #f5f6f7;
+}
 .product-images {
   background-color: #f5f6f7;
   width: 100%;
   height: 512px;
   border-radius: 4px;
-  object-fit: cover;
+  object-fit: contain;
+  mix-blend-mode: darken;
 }
 </style>

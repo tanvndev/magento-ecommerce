@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto pb-[100px] min-h-screen">
+      <div class="container mx-auto min-h-screen pb-[100px]">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
@@ -182,6 +182,7 @@ const setOldValueForAdvertisementBanner = () => {
       setFieldValue(`image[][${index}]`, advertisementBanner.image || '');
       setFieldValue(`url[][${index}]`, advertisementBanner.url || '');
       setFieldValue(`content[][${index}]`, advertisementBanner.content || '');
+      setFieldValue(`button[][${index}]`, advertisementBanner.button || '');
     });
   }
 };

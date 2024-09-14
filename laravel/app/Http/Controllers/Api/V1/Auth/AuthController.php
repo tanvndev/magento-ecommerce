@@ -34,7 +34,6 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        // Kiểm tra xác thực email
         $user = User::where('email', $credentials['email'])->first();
 
         if (! $user) {
@@ -45,9 +44,8 @@ class AuthController extends Controller
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.');
         }
 
-        // Đăng nhập bằng JWTAuth
         if ($token = JWTAuth::attempt($credentials)) {
-            return $this->respondWithToken($token, 'Đăng nhập thành công.');
+            return $this->respondWithToken($token, 'Đăng nhập thành công.', $user);
         }
 
         return errorResponse('Email hoặc mật khẩu không chính xác.');
@@ -72,7 +70,7 @@ class AuthController extends Controller
         return $this->respondWithToken(auth()->refresh(), 'Token đã được thay đổi');
     }
 
-    private function respondWithToken($token, $message)
+    private function respondWithToken($token, $message, $user = null)
     {
         return response()->json([
             'status' => ResponseEnum::OK,
@@ -80,6 +78,7 @@ class AuthController extends Controller
             'data' => [
                 'access_token' => $token,
                 'token_type' => 'bearer',
+                'catalogue' => $user->user_catalogue->code ?? null,
                 'expires_in' => auth()->factory()->getTTL() * 60,
             ],
         ], ResponseEnum::OK)->cookie(

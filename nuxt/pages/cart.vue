@@ -24,7 +24,7 @@
       <div class="container">
         <div class="row gutter-lg mb-10">
           <div class="col-lg-12 pr-lg-12 mb-6 cart-wrapper">
-            <table class="shop-table cart-table" v-if="carts.length > 0">
+            <table class="shop-table cart-table" v-if="carts?.length > 0">
               <thead>
                 <tr>
                   <th>
@@ -53,14 +53,14 @@
                   </td>
                   <td class="product-thumbnail">
                     <div class="p-relative">
-                      <a href="product-default.html">
+                      <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
                         <figure>
                           <img
                             :src="resizeImage(cart.image, 300)"
                             :alt="cart.name"
                           />
                         </figure>
-                      </a>
+                      </NuxtLink>
                       <button
                         class="btn btn-close"
                         @click="handleRemove(cart.product_variant_id)"
@@ -102,7 +102,7 @@
               </tbody>
             </table>
 
-            <div class="cart-action mb-6" v-if="carts.length > 0">
+            <div class="cart-action mb-6" v-if="carts?.length > 0">
               <NuxtLink
                 to="/"
                 class="btn btn-dark btn-rounded btn-icon-left btn-shopping mr-auto"
@@ -138,7 +138,7 @@
               </div>
             </div>
 
-            <div v-if="!carts.length">
+            <div v-if="!carts?.length">
               <v-empty-state
                 icon="mdi-magnify"
                 text="Giỏ hàng đang trống vui lòng chọn quay lại mua những sản phẩm mới nhất của chúng tôi."
@@ -150,7 +150,7 @@
       </div>
     </div>
     <!-- End of PageContent -->
-    <div class="cart-footer" v-if="carts.length > 0">
+    <div class="cart-footer" v-if="carts?.length > 0">
       <div class="container">
         <div class="footer-wrap">
           <v-row no-gutters align="center">
@@ -239,7 +239,7 @@ const handleCheckboxChange = (event, index) => {
 const getCarts = async () => {
   await cartStore.getAllCarts()
 
-  carts.value.forEach((cart, index) => {
+  carts.value?.forEach((cart, index) => {
     if (cart.is_selected) {
       checkedItems.value[index] = cart.product_variant_id
     }
@@ -271,9 +271,9 @@ const updateOneSelectedCarts = async (variantId) => {
 const handleClearCart = async () => {
   const response = await $axios.delete('/carts/clear')
   openClearCart.value = false
-  if (response.status == 'success') {
-    toast(response.message, 'success')
-  }
+
+  cartStore.setCarts(response.data || [])
+  toast(response.messages, response.status)
 }
 
 const handleRemove = async (variantId) => {
@@ -307,12 +307,17 @@ watch(checkedItems, checkSelectedAll, { deep: true })
 </script>
 
 <style scoped>
+.product-thumbnail figure {
+  background-color: #f5f6f7;
+  border-radius: 8px;
+}
 .product-thumbnail img {
   width: 100px;
   height: 112px;
-  object-fit: cover;
-  border-radius: 4px;
+  object-fit: contain;
+  border-radius: 8px;
   background-color: #f5f6f7;
+  mix-blend-mode: darken;
 }
 .shop-table.cart-table .product-price,
 .shop-table.cart-table .product-subtotal {

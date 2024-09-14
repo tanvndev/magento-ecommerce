@@ -4,11 +4,7 @@
       <div
         class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]"
       >
-        <img
-          :src="`${LARAVEL_URL}/images/2024/07/loginpng_669bb542d3a1d.webp`"
-          alt=""
-          class="imig-fluid"
-        />
+        <img :src="'src/assets/images/loginpng.webp'" alt="" class="imig-fluid" />
       </div>
     </a-col>
     <a-col span="14">
@@ -32,10 +28,20 @@
           <form @submit.prevent="onSubmit">
             <AleartError :errors="errors" />
             <div class="mb-5">
-              <InputComponent label="Địa chỉ email" name="email" type="text" />
+              <InputComponent
+                label="Địa chỉ email"
+                name="email"
+                type="text"
+                placeholder="Nhập địa chỉ email của bạn"
+              />
             </div>
             <div>
-              <InputComponent label="Mật khẩu" name="password" type="password" />
+              <InputComponent
+                label="Mật khẩu"
+                name="password"
+                type="password"
+                placeholder="*************"
+              />
             </div>
             <button
               type="submit"
@@ -64,11 +70,11 @@ import { RouterLink } from 'vue-router';
 import router from '@/router';
 import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
-import { LARAVEL_URL } from '@/static/constants';
+import { message } from 'ant-design-vue';
+import { NUXT_URL } from '@/static/constants';
 
 const store = useStore();
 const errors = ref({});
-
 
 // VALIDATION
 const { handleSubmit } = useForm({
@@ -93,7 +99,10 @@ const onSubmit = handleSubmit(async (values) => {
     return (errors.value = formatMessages(authState.messages));
   }
 
-  store.dispatch('antStore/showMessage', { type: 'success', message: 'Đăng nhập thành công.' });
-  router.push({ name: 'dashboard' });
+  message.success('Đăng nhập thành công.');
+  if (authState.user?.user_catalogue === 'admin') {
+    return router.push({ name: 'dashboard' });
+  }
+  window.location.href = NUXT_URL;
 });
 </script>

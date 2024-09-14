@@ -96,7 +96,7 @@
                     :title="productCatalogue.name"
                   >
                     <img
-                      :src="resizeImage(productCatalogue.image, 300, 300)"
+                      :src="resizeImage(productCatalogue.image, 500)"
                       :alt="productCatalogue.name"
                     />
                   </NuxtLink>
@@ -179,8 +179,9 @@ const onSwiper = (swiper) => {
 .category-media img {
   height: 186px;
   width: 186px;
-  object-fit: cover;
+  object-fit: contain;
   background-color: #fff;
   border-radius: 6px;
+  mix-blend-mode: darken
 }
 </style>
