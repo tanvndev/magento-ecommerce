@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import { useRouter } from '#app' // Nuxt 3 router
+import { useCartStore } from '#imports'
 
 export const useAuthStore = defineStore('auth', {
   state: () => {
@@ -22,10 +23,12 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     async logout() {
+      const cartStore = useCartStore()
       this.status.loggedIn = false
       this.accessToken = null
       this.messages = ''
       Cookies.remove('token')
+      cartStore.removeAllCarts()
       const router = useRouter()
       router.push('/')
     },

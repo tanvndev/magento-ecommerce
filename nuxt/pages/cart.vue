@@ -53,14 +53,14 @@
                   </td>
                   <td class="product-thumbnail">
                     <div class="p-relative">
-                      <a href="product-default.html">
+                      <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
                         <figure>
                           <img
                             :src="resizeImage(cart.image, 300)"
                             :alt="cart.name"
                           />
                         </figure>
-                      </a>
+                      </NuxtLink>
                       <button
                         class="btn btn-close"
                         @click="handleRemove(cart.product_variant_id)"
@@ -307,12 +307,17 @@ watch(checkedItems, checkSelectedAll, { deep: true })
 </script>
 
 <style scoped>
+.product-thumbnail figure {
+  background-color: #f5f6f7;
+  border-radius: 8px;
+}
 .product-thumbnail img {
   width: 100px;
   height: 112px;
-  object-fit: cover;
-  border-radius: 4px;
+  object-fit: contain;
+  border-radius: 8px;
   background-color: #f5f6f7;
+  mix-blend-mode: darken;
 }
 .shop-table.cart-table .product-price,
 .shop-table.cart-table .product-subtotal {

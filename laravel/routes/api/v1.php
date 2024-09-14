@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('log.request.response')->group(function () {
+Route::middleware('log.request.response', 'api')->group(function () {
 
     // ROUTE TEST
     Route::get('test/index', [TestApiController::class, 'index']);

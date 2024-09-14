@@ -38,5 +38,10 @@ export const useCartStore = defineStore('cart', {
         loadingStore.setLoading(false)
       }
     },
+    removeAllCarts() {
+      this.carts = []
+      this.cartCount = 0
+      this.totalAmount = 0
+    },
   },
 })

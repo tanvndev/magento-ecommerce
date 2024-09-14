@@ -8,6 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const instance = axios.create({
     baseURL: config.public.apiBaseUrl,
+    withCredentials: true,
   })
 
   // Add a request interceptor
@@ -38,7 +39,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       const token = authStore.getToken
 
       if (token && error.response?.status === 401 && !originalRequest._retry) {
-
         originalRequest._retry = true
         try {
           const response = await nuxtApp.$authService.refreshToken()

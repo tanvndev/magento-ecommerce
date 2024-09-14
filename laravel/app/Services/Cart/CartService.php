@@ -61,7 +61,7 @@ class CartService extends BaseService implements CartServiceInterface
         }
 
         return [
-            'carts' => $cartItems,
+            'items' => $cartItems,
             'total_amount' => $totalAmount,
         ];
     }
@@ -73,9 +73,7 @@ class CartService extends BaseService implements CartServiceInterface
             $total += $item['options']['sub_total'];
         }
 
-        return [
-            'total_amount' => $total,
-        ];
+        return $total;
     }
 
     public function createOrUpdate($request)
@@ -132,7 +130,9 @@ class CartService extends BaseService implements CartServiceInterface
 
             Cart::instance('shopping')->add($data);
 
-            return successResponse(__('messages.cart.success.create'), $this->formatResponseCartSession());
+            $carts = $this->formatResponseCartSession();
+
+            return $carts;
         }, __('messages.cart.error.not_found'));
     }
 
