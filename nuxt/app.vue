@@ -1,10 +1,13 @@
 <template>
+  <Spinner />
   <div class="page-wrapper">
+    <!-- <NuxtLoadingBar :duration="1000" /> -->
+
     <h1 class="d-none">Wolmart - Responsive Marketplace HTML Template</h1>
     <AppHeader />
 
     <main class="main" style="min-height: 100vh">
-      <slot />
+      <NuxtPage />
     </main>
 
     <AppFooter />
@@ -39,23 +42,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import AppFooter from '~/components/includes/AppFooter.vue'
 import AppHeader from '~/components/includes/AppHeader.vue'
-import Cookies from 'js-cookie'
+import Spinner from './components/includes/Spinner.vue'
 
 const authStore = useAuthStore()
-const token = ref(Cookies.get('token') || null)
+const token = computed(() => authStore.getToken ?? null)
+const route = useRoute()
 const { $authService } = useNuxtApp()
 
 const setTokenAndSetCurrentUser = async () => {
   if (token.value) {
-    if (!authStore.getToken) {
-      authStore.setToken(token.value)
-    }
     const user = await $authService.me()
-
-    authStore.setUser(user)
+    authStore.setUser(user.data)
   }
 }
 
@@ -90,10 +90,27 @@ const scrollToTop = (event) => {
 
 onMounted(() => {
   window.addEventListener('scroll', checkScroll)
-  setTokenAndSetCurrentUser()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', checkScroll)
 })
+
+watch(
+  () => route.path,
+  () => {
+    setTokenAndSetCurrentUser()
+  }
+)
 </script>
+
+<style>
+.layout-enter-active,
+.layout-leave-active {
+  transition: all 0.4s;
+}
+.layout-enter-from,
+.layout-leave-to {
+  filter: grayscale(1);
+}
+</style>

@@ -1,4 +1,5 @@
 const LARAVEL_URL = import.meta.env.VITE_LARAVEL_URL;
+const NUXT_URL = import.meta.env.VITE_NUXT_URL;
 
 const PUBLISH = [
   {
@@ -100,5 +101,6 @@ export {
   STOCK_STATUS,
   LARAVEL_URL,
   WIDGET_MODEL,
-  WIDGET_TYPE
+  WIDGET_TYPE,
+  NUXT_URL
 };

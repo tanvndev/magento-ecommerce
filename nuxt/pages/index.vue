@@ -150,6 +150,7 @@
 
 <script setup>
 import '~/assets/css/main.min.css'
+import { useLoadingStore } from '#imports'
 
 useSeoMeta({
   title: 'Trang chủ',
@@ -162,10 +163,17 @@ useSeoMeta({
 
 const widgets = ref([])
 const { $axios } = useNuxtApp()
+const loadingStore = useLoadingStore()
 
 const getWidgets = async () => {
-  const response = await $axios.get('/getWidget')
-  widgets.value = response.data
+  loadingStore.setLoading(true)
+  try {
+    const response = await $axios.get('/getWidget')
+    widgets.value = response.data
+  } catch (error) {
+  } finally {
+    loadingStore.setLoading(false)
+  }
 }
 
 onMounted(() => {

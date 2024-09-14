@@ -20,7 +20,7 @@ class AuthService {
       });
       return {
         success: true,
-        data: token,
+        data: {token, catalogue: response.data.catalogue},
         messages: response.messages
       };
     } catch (error) {

@@ -35,7 +35,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     },
     async function (error) {
       const originalRequest = error.config
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      const token = authStore.getToken
+
+      if (token && error.response?.status === 401 && !originalRequest._retry) {
+
         originalRequest._retry = true
         try {
           const response = await nuxtApp.$authService.refreshToken()

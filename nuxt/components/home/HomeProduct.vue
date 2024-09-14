@@ -1,6 +1,6 @@
 <template>
   <v-lazy
-    :min-height="200"
+    :min-height="600"
     :options="{ threshold: 0.5 }"
     transition="fade-transition"
   >
@@ -43,6 +43,7 @@
                         <img
                           :src="resizeImage(item.image, 500, 400)"
                           :alt="item.name"
+                          loading="lazy"
                         />
                       </NuxtLink>
                       <div class="product-action-vertical">

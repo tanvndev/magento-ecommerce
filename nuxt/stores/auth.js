@@ -7,7 +7,7 @@ export const useAuthStore = defineStore('auth', {
     const token = Cookies.get('token') ?? null
 
     return {
-      status: { loggedIn: false },
+      status: token ? { loggedIn: true } : { loggedIn: false },
       accessToken: token ? token : null,
       user: null,
       messages: [],
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore('auth', {
       this.messages = ''
       Cookies.remove('token')
       const router = useRouter()
-      router.push('/login')
+      router.push('/')
     },
     setToken(token) {
       this.status.loggedIn = true

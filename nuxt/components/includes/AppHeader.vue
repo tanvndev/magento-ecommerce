@@ -12,12 +12,29 @@
           <!-- End of Dropdown Menu -->
           <span class="d-lg-show"></span>
           <NuxtLink to="contact" class="d-lg-show">Liên hệ</NuxtLink>
-          <NuxtLink href="#" class="d-lg-show">Tài khoản</NuxtLink>
-          <a href="#" class="d-lg-show login sign-in"
-            ><i class="w-icon-account"></i>Đăng nhập</a
+          <NuxtLink to="#" class="d-lg-show">Tài khoản</NuxtLink>
+          <a
+            v-if="!authStore.isSignedIn"
+            :href="`${config.public.vueUrl}/login`"
+            class="d-lg-show login sign-in"
           >
-          <span class="delimiter d-lg-show">/</span>
-          <a href="#" class="ml-0 d-lg-show login register">Đăng ký</a>
+            <i class="w-icon-account"></i>Đăng nhập</a
+          >
+          <span class="delimiter d-lg-show" v-if="!authStore.isSignedIn"
+            >/</span
+          >
+          <a
+            v-if="!authStore.isSignedIn"
+            :href="`${config.public.vueUrl}/register`"
+            class="ml-0 d-lg-show login register"
+            >Đăng ký</a
+          >
+          <a
+            href="logout"
+            @click.prevent="authStore.logout()"
+            v-if="authStore.isSignedIn"
+            >Đăng xuất</a
+          >
         </div>
       </div>
     </div>
@@ -27,12 +44,12 @@
       <div class="header-middle">
         <div class="container">
           <div class="header-left mr-md-4">
-            <a
-              href="#"
+            <NuxtLink
+              to="login"
               class="mobile-menu-toggle w-icon-hamburger"
               aria-label="menu-toggle"
             >
-            </a>
+            </NuxtLink>
             <NuxtLink to="/" class="logo ml-lg-0">
               <img
                 src="assets/images/logo.png"
@@ -101,7 +118,9 @@
               <div class="cart-overlay"></div>
               <NuxtLink to="/cart" class="cart-toggle label-down link">
                 <i class="w-icon-cart">
-                  <span class="cart-count">{{ cartCount }}</span>
+                  <span class="cart-count" v-if="cartCount">{{
+                    cartCount
+                  }}</span>
                 </i>
                 <span class="cart-label">Giỏ hàng</span>
               </NuxtLink>
@@ -109,7 +128,9 @@
           </div>
         </div>
       </div>
+    </div>
 
+    <div class="header-menu">
       <div
         class="header-bottom sticky-content fix-top sticky-header has-dropdown"
       >
@@ -140,17 +161,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted } from 'vue'
 import MenuItem from '../MenuItem.vue'
-import { useCartStore } from '~/stores/cart'
+import { useCartStore, useAuthStore, debounce } from '#imports'
 import { useProductCatalogueStore } from '~/stores/productCatalogue'
 
 const { $axios } = useNuxtApp()
+const authStore = useAuthStore()
 const cartStore = useCartStore()
 const productCatalogueStore = useProductCatalogueStore()
 const headerMain = ref(null)
 const productCatalogues = ref([])
 const cartCount = computed(() => cartStore.getCartCount)
+const config = useRuntimeConfig()
 
 let lastScrollPosition = 0
 
@@ -165,21 +188,10 @@ const handleScroll = () => {
   const isFixed = currentScrollPosition > threshold
   headerMain.value.classList.toggle('is-fixed', isFixed)
 
-  if (!isFixed) {
-    headerMain.value.classList.remove(
-      'is-fixed-transition-up',
-      'is-fixed-transition-down'
-    )
-    lastScrollPosition = currentScrollPosition
-    return
-  }
-
-  const isScrollingDown = currentScrollPosition > lastScrollPosition
-  headerMain.value.classList.toggle('is-fixed-transition-down', isScrollingDown)
-  headerMain.value.classList.toggle('is-fixed-transition-up', !isScrollingDown)
-
   lastScrollPosition = currentScrollPosition
 }
+
+const debouncedHandleScroll = debounce(handleScroll, 10)
 
 const getProductCatalogues = async () => {
   const response = await $axios.get('/products/catalogues/list')
@@ -192,9 +204,8 @@ const getProductCatalogues = async () => {
 onMounted(() => {
   getProductCatalogues()
   cartStore.getAllCarts()
-  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('scroll', debouncedHandleScroll)
 })
-onBeforeUnmount(() => window.removeEventListener('scroll', handleScroll))
 </script>
 
 <style scoped>
@@ -216,6 +227,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', handleScroll))
 .header-top {
   position: relative;
   z-index: 1001;
+  transition: all 0.3s ease-in-out;
 }
 
 .header-main {
@@ -227,22 +239,10 @@ onBeforeUnmount(() => window.removeEventListener('scroll', handleScroll))
 
 .header-main.is-fixed {
   position: fixed;
+  top: 0;
   left: 0;
   right: 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.header-main.is-fixed-transition-down {
-  top: -100%;
   transition: top 0.3s ease-in-out;
-}
-
-.header-main.is-fixed-transition-up {
-  top: 0;
-  transition: top 0.3s ease-in-out;
-}
-
-body {
-  padding-top: 0;
 }
 </style>
