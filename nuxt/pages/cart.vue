@@ -9,10 +9,10 @@
             <NuxtLink to="/cart">Giỏ hàng</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="checkout">Thanh toán</NuxtLink>
+            <NuxtLink to="/checkout">Thanh toán</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="orderComplete">Hoàn tất đơn hàng</NuxtLink>
+            <NuxtLink to="/orderComplete">Hoàn tất đơn hàng</NuxtLink>
           </li>
         </ul>
       </div>
@@ -23,8 +23,8 @@
     <div class="page-content">
       <div class="container">
         <div class="row gutter-lg mb-10">
-          <div class="col-lg-12 pr-lg-12 mb-6">
-            <table class="shop-table cart-table">
+          <div class="col-lg-12 pr-lg-12 mb-6 cart-wrapper">
+            <table class="shop-table cart-table" v-if="carts?.length > 0">
               <thead>
                 <tr>
                   <th>
@@ -46,32 +46,33 @@
                   <td>
                     <v-checkbox
                       v-model="checkedItems[index]"
-                      :value="cart.cart_item_id"
-                      @change="
-                        handleCheckboxChange($event, cart.product_variant_id)
-                      "
+                      :value="cart.product_variant_id"
+                      @change="handleCheckboxChange($event, index)"
                       style="font-size: 18px"
                     ></v-checkbox>
                   </td>
                   <td class="product-thumbnail">
                     <div class="p-relative">
-                      <a href="product-default.html">
+                      <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
                         <figure>
                           <img
-                            src="assets/images/shop/13.jpg"
-                            alt="product"
-                            width="300"
-                            height="338"
+                            :src="resizeImage(cart.image, 300)"
+                            :alt="cart.name"
                           />
                         </figure>
-                      </a>
-                      <button class="btn btn-close">
+                      </NuxtLink>
+                      <button
+                        class="btn btn-close"
+                        @click="handleRemove(cart.product_variant_id)"
+                      >
                         <i class="fas fa-times"></i>
                       </button>
                     </div>
                   </td>
                   <td class="product-name">
-                    <nuxtLink to="#"> {{ cart.name }} </nuxtLink>
+                    <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
+                      {{ cart.name }}
+                    </NuxtLink>
                   </td>
                   <td class="text-right">
                     <div class="product-price">
@@ -84,7 +85,13 @@
                     </div>
                   </td>
                   <td class="product-quantity text-right">
-                    <QuantityComponent :old-quantity="cart.quantity" />
+                    <QuantityComponent
+                      :old-quantity="cart.quantity"
+                      :max="cart.stock - 2"
+                      @update:quantity="
+                        handleQuantityChange(cart.product_variant_id, $event)
+                      "
+                    />
                   </td>
                   <td class="product-subtotal">
                     <span class="amount">{{
@@ -95,26 +102,47 @@
               </tbody>
             </table>
 
-            <div class="cart-action mb-6">
-              <a
-                href="#"
+            <div class="cart-action mb-6" v-if="carts?.length > 0">
+              <NuxtLink
+                to="/"
                 class="btn btn-dark btn-rounded btn-icon-left btn-shopping mr-auto"
-                ><i class="w-icon-long-arrow-left"></i>Tiếp tục mua sắm</a
               >
-              <button
-                @click="handleClearCart"
-                type="button"
-                class="btn btn-rounded btn-default btn-clear"
+                <i class="w-icon-long-arrow-left"></i>
+                Tiếp tục mua sắm</NuxtLink
               >
-                Xóa giỏ hàng
-              </button>
+              <div class="modal-cart-clear">
+                <v-dialog v-model="openClearCart" max-width="400" persistent>
+                  <template v-slot:activator="{ props: activatorProps }">
+                    <button
+                      v-bind="activatorProps"
+                      type="button"
+                      class="btn btn-rounded btn-default btn-clear"
+                    >
+                      Xóa giỏ hàng
+                    </button>
+                  </template>
+
+                  <v-card
+                    text="Nếu bạn chấp nhập xóa giỏ hàng các sản phẩm sẽ vĩnh viễn không thể khôi phục lại."
+                    title="Bạn có chắc chắn muốn xóa?"
+                  >
+                    <template v-slot:actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn @click="openClearCart = false"> Hủy bỏ </v-btn>
+
+                      <v-btn @click="handleClearCart"> Đồng ý </v-btn>
+                    </template>
+                  </v-card>
+                </v-dialog>
+              </div>
             </div>
 
-            <div>
+            <div v-if="!carts?.length">
               <v-empty-state
                 icon="mdi-magnify"
-                text="Try adjusting your search terms or filters. Sometimes less specific terms or broader queries can help you find what you're looking for."
-                title="We couldn't find a match."
+                text="Giỏ hàng đang trống vui lòng chọn quay lại mua những sản phẩm mới nhất của chúng tôi."
+                title="Chưa có sản phẩm nào trong giỏ hàng."
               ></v-empty-state>
             </div>
           </div>
@@ -122,6 +150,53 @@
       </div>
     </div>
     <!-- End of PageContent -->
+    <div class="cart-footer" v-if="carts?.length > 0">
+      <div class="container">
+        <div class="footer-wrap">
+          <v-row no-gutters align="center">
+            <v-col cols="4">
+              <v-checkbox
+                v-model="allChecked"
+                style="font-size: 18px"
+                @change="handleAllCheckboxChange()"
+                label="Chọn tất cả sản phẩm"
+              ></v-checkbox>
+            </v-col>
+            <v-col cols="8">
+              <div class="d-flex flex-end items-center">
+                <div class="d-flex items-center w-100">
+                  <div class="w-100 d-flex justify-between items-center">
+                    <span class="total-cart-count fs-16">
+                      Tổng thanh toán ({{ Object.keys(checkedItems)?.length }}
+                      Sản phẩm):
+                    </span>
+
+                    <span
+                      class="total-cart-price mr-4 total-amout-cart text-black"
+                    >
+                      {{
+                        formatCurrency(totalAmout) == '-'
+                          ? 0
+                          : formatCurrency(totalAmout)
+                      }}
+                    </span>
+                  </div>
+
+                  <div class="ml-4" style="width: 500px">
+                    <a
+                      href="#"
+                      class="btn btn-block btn-dark btn-icon-right btn-rounded btn-checkout"
+                    >
+                      Mua hàng<i class="w-icon-long-arrow-right"></i
+                    ></a>
+                  </div>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </div>
+      </div>
+    </div>
   </main>
   <!-- End of Main -->
 </template>
@@ -130,37 +205,43 @@
 import { onMounted, watch } from 'vue'
 import { formatCurrency } from '#imports'
 import QuantityComponent from '~/components/includes/QuantityComponent.vue'
+import { debounce, resizeImage } from '#imports'
+import { useCartStore } from '~/stores/cart'
+import { toast } from '#imports'
 
 const { $axios } = useNuxtApp()
+const cartStore = useCartStore()
 
-const carts = ref([])
+const carts = computed(() => cartStore.getCart)
 const checkedItems = ref([])
 const allChecked = ref(false)
+const openClearCart = ref(false)
+const totalAmout = computed(() => cartStore.getTotalAmount)
 
 const handleAllCheckboxChange = () => {
   if (allChecked.value) {
     carts.value.forEach((cart, index) => {
-      checkedItems.value[index] = cart.cart_item_id
+      checkedItems.value[index] = cart.product_variant_id
     })
   } else {
     checkedItems.value = []
   }
+  updateAllSelectedCarts(allChecked.value)
 }
 
-const handleCheckboxChange = (event, variantId) => {
+const handleCheckboxChange = (event, index) => {
   if (event.target.checked === false) {
-    delete checkedItems.value[event.target.value]
+    delete checkedItems.value[index]
   }
-  updateOneSelectedCarts(variantId)
+  updateOneSelectedCarts(event.target.value)
 }
 
 const getCarts = async () => {
-  const response = await $axios.get('/carts')
-  carts.value = response.data
+  await cartStore.getAllCarts()
 
-  carts.value.forEach((cart, index) => {
+  carts.value?.forEach((cart, index) => {
     if (cart.is_selected) {
-      checkedItems.value[index] = cart.cart_item_id
+      checkedItems.value[index] = cart.product_variant_id
     }
   })
 }
@@ -177,19 +258,45 @@ const updateAllSelectedCarts = async () => {
   const response = await $axios.put('/carts/handle-selected', {
     select_all: allChecked.value,
   })
-  if (response.data) {
-    getCarts()
-  }
+  cartStore.setTotalAmount(response.data?.total_amount)
 }
 
 const updateOneSelectedCarts = async (variantId) => {
   const response = await $axios.put('/carts/handle-selected', {
     product_variant_id: variantId,
   })
+  cartStore.setTotalAmount(response.data?.total_amount)
 }
 
 const handleClearCart = async () => {
-  const response = await $axios.delete('/carts')
+  const response = await $axios.delete('/carts/clear')
+  openClearCart.value = false
+
+  cartStore.setCarts(response.data || [])
+  toast(response.messages, response.status)
+}
+
+const handleRemove = async (variantId) => {
+  const response = await $axios.delete(`/carts/${variantId}`)
+  if (response.status == 'success') {
+    getCarts()
+  }
+}
+
+const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
+  const response = await $axios.post('/carts', {
+    product_variant_id: variantId,
+    quantity: quantity,
+  })
+
+  if (response.status == 'success') {
+    cartStore.setCarts(response.data?.items)
+    cartStore.setTotalAmount(response.data?.total_amount)
+  }
+}, 1300)
+
+const handleQuantityChange = (variantId, quantity) => {
+  debouncedHandleQuantityChange(variantId, quantity)
 }
 
 onMounted(() => {
@@ -197,10 +304,21 @@ onMounted(() => {
 })
 
 watch(checkedItems, checkSelectedAll, { deep: true })
-watch(allChecked, updateAllSelectedCarts)
 </script>
 
 <style scoped>
+.product-thumbnail figure {
+  background-color: #f5f6f7;
+  border-radius: 8px;
+}
+.product-thumbnail img {
+  width: 100px;
+  height: 112px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f5f6f7;
+  mix-blend-mode: darken;
+}
 .shop-table.cart-table .product-price,
 .shop-table.cart-table .product-subtotal {
   text-align: right;

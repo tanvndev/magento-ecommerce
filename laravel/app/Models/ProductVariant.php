@@ -57,7 +57,6 @@ class ProductVariant extends Model
         });
     }
 
-
     public static function generateUniqueSlug($name, $excludeId = null)
     {
         $slug = Str::slug($name);
@@ -68,7 +67,7 @@ class ProductVariant extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $slug = "{$originalSlug}-" . $count++;
+            $slug = "{$originalSlug}-".$count++;
         }
 
         return $slug;

@@ -15,11 +15,13 @@ class CartResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'cart_item_id' => $this->id,
+            'product_id' => $this->product_variant->product_id,
             'product_variant_id' => $this->product_variant_id,
             'image' => $this->product_variant->image,
             'name' => $this->product_variant->name,
+            'slug' => $this->product_variant->slug,
             'price' => $this->product_variant->price,
+            'stock' => $this->product_variant->stock,
             'quantity' => $this->quantity,
             'sale_price' => $this->handleSalePrice(),
             'is_selected' => $this->is_selected,
@@ -30,12 +32,12 @@ class CartResource extends JsonResource
     private function handleSalePrice()
     {
         $productVariant = $this->product_variant;
-        if (!$productVariant->sale_price || !$productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return null;
         }
 
         if ($productVariant->is_discount_time && $productVariant->sale_price_time) {
-            $now = new \DateTime();
+            $now = new \DateTime;
             $start = new \DateTime($productVariant->sale_price_start_at);
             $end = new \DateTime($productVariant->sale_price_end_at);
 
@@ -51,6 +53,7 @@ class CartResource extends JsonResource
     {
         $salePrice = $this->handleSalePrice();
         $subTotal = ($salePrice ?? $this->product_variant->price) * $this->quantity;
+
         return $subTotal;
     }
 }

@@ -3,29 +3,24 @@
     <div class="col-md-6 mb-4" v-for="item in items" :key="item.url">
       <div class="banner banner-fixed br-xs">
         <figure>
-          <img
-            :src="resizeImage(item.image, 800, 400)"
-            :alt="item.alt"
-            width="610"
-            height="160"
-            style="background-color: #ecedec; height: 200px"
-          />
+          <NuxtLink :to="item.url">
+            <img
+              :src="resizeImage(item.image, 1300)"
+              :alt="item.alt"
+              width="610"
+              height="160"
+              style="background-color: #ecedec; height: 200px"
+            />
+          </NuxtLink>
         </figure>
         <div class="banner-content y-50 pt-1">
-          <!-- <h5 class="banner-subtitle font-weight-bold text-uppercase">
-            Natural Process
-          </h5>
-          <h3
-            class="banner-title font-weight-bolder text-capitalize text-white"
-          >
-            Cosmetic Makeup<br />Professional
-          </h3> -->
-          <div v-html="item.content"></div>
-          <a
-            href="shop-banner-sidebar.html"
+          <div v-if="item?.content" v-html="item.content"></div>
+          <NuxtLink
+            v-if="item?.button"
+            :to="item.url"
             class="btn btn-white btn-link btn-underline btn-icon-right"
-            >Shop Now<i class="w-icon-long-arrow-right"></i
-          ></a>
+            >Shop Now <i class="w-icon-long-arrow-right"></i
+          ></NuxtLink>
         </div>
       </div>
     </div>
@@ -41,3 +36,15 @@ const props = defineProps({
   },
 })
 </script>
+
+<style scoped>
+.banner.banner-fixed {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  border-radius: 15px !important;
+  overflow: hidden;
+}
+.banner.banner-fixed img{
+  border-radius: 15px !important;
+
+}
+</style>

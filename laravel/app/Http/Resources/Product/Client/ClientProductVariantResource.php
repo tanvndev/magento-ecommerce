@@ -42,12 +42,12 @@ class ClientProductVariantResource extends JsonResource
 
     private function handleDiscountValue()
     {
-        if (!$this->sale_price || !$this->price) {
+        if (! $this->sale_price || ! $this->price) {
             return null;
         }
 
         if ($this->is_discount_time && $this->sale_price_time) {
-            $now = new \DateTime();
+            $now = new \DateTime;
             $start = new \DateTime($this->sale_price_start_at);
             $end = new \DateTime($this->sale_price_end_at);
 

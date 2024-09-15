@@ -2,23 +2,24 @@
 
 namespace App\Services\Cart;
 
-use App\Services\BaseService;
-use App\Services\Interfaces\Cart\CartServiceInterface;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
+use App\Services\BaseService;
+use App\Services\Interfaces\Cart\CartServiceInterface;
 use Gloudemans\Shoppingcart\Facades\Cart;
 
 class CartService extends BaseService implements CartServiceInterface
 {
     protected $cartRepository;
+
     protected $productVariantRepository;
 
     public function __construct(
         CartRepositoryInterface $cartRepository,
         ProductVariantRepositoryInterface $productVariantRepository
     ) {
-        $this->cartRepository               = $cartRepository;
-        $this->productVariantRepository     = $productVariantRepository;
+        $this->cartRepository = $cartRepository;
+        $this->productVariantRepository = $productVariantRepository;
     }
 
     public function getCart()
@@ -26,9 +27,9 @@ class CartService extends BaseService implements CartServiceInterface
         if (auth()->check()) {
             $userId = auth()->user()->id;
             $cart = $this->cartRepository->findByWhere(
-                ["user_id" => $userId],
+                ['user_id' => $userId],
                 ['*'],
-                ["cart_items.product_variant.attribute_values"]
+                ['cart_items.product_variant']
             );
 
             return $cart->cart_items ?? collect();
@@ -45,21 +46,24 @@ class CartService extends BaseService implements CartServiceInterface
         $cartItems = [];
         foreach ($carts as $item) {
             $cartItems[] = [
-                'id' => $item['id'],
+                'product_id' => $item['options']['product_id'],
+                'product_variant_id' => $item['id'],
                 'image' => $item['options']['image'] ?? null,
                 'name' => $item['name'],
+                'slug' => $item['options']['slug'] ?? null,
                 'price' => $item['price'],
                 'quantity' => $item['qty'],
                 'sale_price' => $item['options']['sale_price'] ?? null,
+                'stock' => $item['options']['stock'] ?? null,
                 'is_selected' => $item['options']['is_selected'] ?? false,
                 'sub_total' => $item['options']['sub_total'] ?? 0,
             ];
         }
 
         return [
-            'carts' => $cartItems,
+            'items' => $cartItems,
             'total_amount' => $totalAmount,
-        ];;
+        ];
     }
 
     private function caculateTotalAmountSession($cartItems)
@@ -69,9 +73,7 @@ class CartService extends BaseService implements CartServiceInterface
             $total += $item['options']['sub_total'];
         }
 
-        return [
-            'total_amount' => $total
-        ];
+        return $total;
     }
 
     public function createOrUpdate($request)
@@ -89,9 +91,9 @@ class CartService extends BaseService implements CartServiceInterface
 
             if (auth()->check()) {
                 $userId = auth()->user()->id;
-                $cart = $this->cartRepository->findByWhere(["user_id" => $userId]);
+                $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-                if (!$cart) {
+                if (! $cart) {
                     $cart = $this->cartRepository->create(['user_id' => $userId]);
                 }
 
@@ -101,44 +103,47 @@ class CartService extends BaseService implements CartServiceInterface
                     $existingCartItem->update(['quantity' => $request->quantity]);
                 } else {
                     $cart->cart_items()->create([
-                        'product_variant_id'    => $request->product_variant_id,
-                        'quantity'              => $request->quantity ?? 1,
+                        'product_variant_id' => $request->product_variant_id,
+                        'quantity' => $request->quantity ?? 1,
                     ]);
                 }
 
-                return successResponse(__('messages.cart.success.update'));
-            } else {
-
-                $data = [
-                    'id'       => $productVariant->id,
-                    'name'     => $productVariant->name,
-                    'qty'      => $request->quantity,
-                    'price'    => $productVariant->price,
-                    'options'  => [
-                        'image'       => $productVariant->image,
-                        'is_selected' => true,
-                        'sale_price'  => $this->getSalePrice($productVariant),
-                        'sub_total' => $this->getSubTotal($productVariant),
-                    ]
-                ];
-
-                $cart = Cart::instance('shopping')->add($data);
-
-                return successResponse(__('messages.cart.success.create'),  $cart);
+                $carts = $this->getCart();
+                return $carts;
             }
+
+            $data = [
+                'id' => $productVariant->id,
+                'name' => $productVariant->name,
+                'qty' => $request->quantity,
+                'price' => $productVariant->price,
+                'options' => [
+                    'slug' => $productVariant->slug,
+                    'product_id' => $productVariant->product_id,
+                    'stock' => $productVariant->stock,
+                    'image' => $productVariant->image,
+                    'is_selected' => true,
+                    'sale_price' => $this->getSalePrice($productVariant),
+                    'sub_total' => $this->getSubTotal($productVariant),
+                ],
+            ];
+
+            Cart::instance('shopping')->add($data);
+
+            $carts = $this->formatResponseCartSession();
+
+            return $carts;
         }, __('messages.cart.error.not_found'));
     }
 
-
-
     private function getSalePrice($productVariant)
     {
-        if (!$productVariant->sale_price || !$productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return null;
         }
 
         if ($productVariant->is_discount_time && $productVariant->sale_price_time) {
-            $now = new \DateTime();
+            $now = new \DateTime;
             $start = new \DateTime($productVariant->sale_price_start_at);
             $end = new \DateTime($productVariant->sale_price_end_at);
 
@@ -156,6 +161,7 @@ class CartService extends BaseService implements CartServiceInterface
         $salePrice = $this->getSalePrice($productVariant);
 
         $subTotal = ($salePrice ?? $productVariant->price) * request()->quantity;
+
         return $subTotal;
     }
 
@@ -164,25 +170,23 @@ class CartService extends BaseService implements CartServiceInterface
         return $this->executeInTransaction(function () use ($id) {
             if (auth()->check()) {
                 $userId = auth()->user()->id;
-                $cart = $this->cartRepository->findByWhere(["user_id" => $userId]);
+                $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-                if (!$cart) {
+                if (! $cart) {
                     return errorResponse(__('messages.cart.error.not_found'));
                 }
 
-                $cartItem = $cart->cart_items()->where('id', $id)->first();
+                $cartItem = $cart->cart_items()->where('product_variant_id', $id)->first();
 
                 if ($cartItem) {
                     $cartItem->delete();
                     return successResponse(__('messages.cart.success.delete'));
-                } else {
-                    return errorResponse(__('messages.cart.error.item_not_found'));
                 }
-            } else {
-
-                Cart::remove($id);
-                return successResponse(__('messages.cart.success.delete'));
             }
+
+            Cart::remove($id);
+
+            return successResponse(__('messages.cart.success.delete'));
         }, __('messages.cart.error.item_not_found'));
     }
 
@@ -192,15 +196,14 @@ class CartService extends BaseService implements CartServiceInterface
             if (auth()->check()) {
                 $user = auth()->user();
 
-                if (!$user->cart) {
+                if (! $user->cart) {
                     return errorResponse(__('messages.cart.error.cart_not_found'));
                 }
 
                 $user->cart->delete();
-            } else {
-
-                Cart::destroy();
             }
+
+            Cart::destroy();
 
             return successResponse(__('messages.cart.success.clear'));
         }, __('messages.cart.error.delete'));
@@ -210,18 +213,18 @@ class CartService extends BaseService implements CartServiceInterface
     {
         return $this->executeInTransaction(function () use ($request) {
             if (auth()->check()) {
-                $userId                                 = auth()->user()->id;
-                $cart                                   = $this->cartRepository->findByWhere(["user_id" => $userId]);
+                $userId = auth()->user()->id;
+                $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-                if (!$cart) {
+                if (! $cart) {
                     return errorResponse(__('messages.cart.error.not_found'));
                 }
 
                 if (isset($request->product_variant_id)) {
-                    $cartItem                           = $cart->cart_items()->where('product_variant_id', $request->product_variant_id)->first();
+                    $cartItem = $cart->cart_items()->where('product_variant_id', $request->product_variant_id)->first();
 
                     if ($cartItem) {
-                        $cartItem->is_selected          = !$cartItem->is_selected;
+                        $cartItem->is_selected = ! $cartItem->is_selected;
                         $cartItem->save();
                     }
                 }
@@ -234,33 +237,31 @@ class CartService extends BaseService implements CartServiceInterface
                 $totalAmount = $this->calculateTotalAmount($cart);
 
                 return successResponse(__('messages.cart.success.update'), [
-                    'total_amount' => $totalAmount
-                ]);
-            } else {
-
-                if (isset($request->product_variant_id)) {
-                    $cartItem = Cart::content()->where('id', $request->product_variant_id)->first();
-
-                    if ($cartItem) {
-
-                        $cartItem->is_selected = !$cartItem->is_selected;
-                    }
-                }
-
-                if (isset($request->select_all)) {
-
-                    foreach (Cart::content() as $item) {
-                        $item->is_selected = $request->select_all == 1;
-                    }
-                }
-
-
-                $totalAmount = $this->calculateTotalAmountFromSession();
-
-                return successResponse(__('messages.cart.success.update'), [
-                    'total_amount' => $totalAmount
+                    'total_amount' => $totalAmount,
                 ]);
             }
+
+            if (isset($request->product_variant_id)) {
+                $cartItem = Cart::content()->where('id', $request->product_variant_id)->first();
+
+                if ($cartItem) {
+
+                    $cartItem->is_selected = ! $cartItem->is_selected;
+                }
+            }
+
+            if (isset($request->select_all)) {
+
+                foreach (Cart::content() as $item) {
+                    $item->is_selected = $request->select_all == 1;
+                }
+            }
+
+            $totalAmount = $this->calculateTotalAmountFromSession();
+
+            return successResponse(__('messages.cart.success.update'), [
+                'total_amount' => $totalAmount,
+            ]);
         }, __('messages.cart.error.not_found'));
     }
 

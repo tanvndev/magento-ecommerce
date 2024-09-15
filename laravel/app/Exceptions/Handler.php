@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
         parent::report($exception);
     }
 
-    public function render($request, Throwable $exception): JsonResponse
+    public function render($request, Throwable $exception)
     {
         if ($request->is('api/*')) {
             if ($exception instanceof ModelNotFoundException) {

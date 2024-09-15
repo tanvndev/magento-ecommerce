@@ -142,4 +142,12 @@ const onSwiper = (swiper) => {
 .product-widget .product-price {
   font-size: 1.4rem;
 }
+.product-widget .product-media {
+  background-color: #f5f6f7;
+}
+.product-widget .product-media img {
+  object-fit: contain;
+  mix-blend-mode: darken;
+  background-color: #f5f6f7;
+}
 </style>

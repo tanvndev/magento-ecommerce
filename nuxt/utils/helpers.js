@@ -1,5 +1,17 @@
 import dayjs from 'dayjs'
 
+const toast = (message = '', type = 'success', duration = 3000) => {
+  const { $toast } = useNuxtApp()
+
+  $toast(message, {
+    theme: 'auto',
+    type: type,
+    position: 'top-center',
+    autoClose: duration,
+    hideProgressBar: false,
+    dangerouslyHTMLString: true,
+  })
+}
 const debounce = (func, delay) => {
   let timerId
   return (...args) => {
@@ -363,4 +375,5 @@ export {
   handleSocialIconClick,
   handlePrice,
   handleRenderPrice,
+  toast,
 }
