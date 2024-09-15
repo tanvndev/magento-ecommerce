@@ -36,7 +36,8 @@ return [
             'create'            => 'Thêm giỏ hàng thành công.',
             'update'            => 'Cập nhật giỏ hàng thành công.',
             'delete'            => 'Xóa thành công.',
-            'clear'             => 'Xóa thành công giỏ hàng.',
+            'clean'             => 'Xóa thành công giỏ hàng.',
+            'publish'           => 'Cập nhật trạng thái thành công.',
         ],
         'error'     => [
             'not_found'         => 'Sản phẩm không tồn tại trên hệ thống!',

@@ -33,11 +33,12 @@ class CartController extends Controller
      */
     public function index()
     {
+
         $cartItems = $this->cartService->getCart();
 
         $response = new CartCollection(CartResource::collection($cartItems));
 
-        return successResponse('',  auth()->check() ? $response : $cartItems);
+        return successResponse('',  $response);
     }
 
     /**
@@ -45,9 +46,15 @@ class CartController extends Controller
      */
     public function createOrUpdate(CreateAndUpdateRequest $request)
     {
-        $response = $this->cartService->createOrUpdate($request);
+        $response   = $this->cartService->createOrUpdate($request);
 
-        return handleResponse($response, ResponseEnum::CREATED);
+        if (is_array($response)) {
+            return $response;
+        }
+
+        $data       = new CartCollection($response);
+
+        return successResponse('', $data);
     }
 
     /**
@@ -62,7 +69,6 @@ class CartController extends Controller
 
     public function forceDestroy()
     {
-
         $response = $this->cartService->cleanCart();
 
         return handleResponse($response);
