@@ -16,15 +16,16 @@ return new class extends Migration
             $table->string('name');
             $table->string('code', 50)->unique();
             $table->string('image')->nullable();
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('discount_type', 20);
             $table->decimal('discount_value', 15, 2);
-            $table->integer('quantity');
+            $table->unsignedInteger('quantity');
             $table->decimal('min_order_value', 15, 2)->nullable();
-            $table->integer('min_quantity')->nullable();
-            $table->date('start_at');
-            $table->date('end_at');
+            $table->unsignedInteger('min_quantity')->nullable();
+            $table->dateTime('start_at');
+            $table->dateTime('end_at');
             $table->tinyInteger('publish')->default(1)->comment('1:Active, 2: Inactive');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
