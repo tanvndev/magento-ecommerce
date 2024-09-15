@@ -118,10 +118,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
 
-
-
-
-
         // WIDGET ROUTE
         Route::apiResource('widgets', WidgetController::class);
 

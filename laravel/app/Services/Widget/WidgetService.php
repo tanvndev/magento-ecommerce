@@ -69,7 +69,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $payload['model_ids'] = array_map('intval', $payload['model_ids'] ?? []);
 
         if ($payload['type'] == 'advertisement' && isset($payload['image']) && ! empty($payload['image'])) {
-            $payload['advertisement_banners'] = array_map(fn($image, $key) => [
+            $payload['advertisement_banners'] = array_map(fn ($image, $key) => [
                 'image' => $image,
                 'alt' => $payload['alt'][$key] ?? '',
                 'content' => $payload['content'][$key] ?? '',
@@ -96,7 +96,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $widgets = $this->widgetRepository->findByWhere(
             [
                 'code' => $code,
-                'publish' => 1
+                'publish' => 1,
             ],
             ['id', 'name', 'code', 'order', 'model_ids', 'advertisement_banners', 'type'],
             [],
@@ -139,7 +139,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     {
         return $this->widgetRepository->findByWhere(
             [
-                'publish' => 1
+                'publish' => 1,
             ],
             ['id', 'code', 'order'],
             [],

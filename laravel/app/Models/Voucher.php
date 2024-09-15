@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Voucher extends Model
 {
     use HasFactory, QueryScopes, SoftDeletes;
+
     protected $fillable = [
         'name',
         'code',

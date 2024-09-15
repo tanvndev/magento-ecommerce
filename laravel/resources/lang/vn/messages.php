@@ -36,13 +36,12 @@ return [
         ],
     ],
     'cart' => [
-
-        'success'   => [
-            'create'            => 'Thêm giỏ hàng thành công.',
-            'update'            => 'Cập nhật giỏ hàng thành công.',
-            'delete'            => 'Xóa thành công.',
-            'clean'             => 'Xóa thành công giỏ hàng.',
-            'publish'           => 'Cập nhật trạng thái thành công.',
+        'success' => [
+            'create' => 'Thêm giỏ hàng thành công.',
+            'update' => 'Cập nhật giỏ hàng thành công.',
+            'delete' => 'Xóa thành công.',
+            'clean' => 'Xóa thành công giỏ hàng.',
+            'publish' => 'Cập nhật trạng thái thành công.',
 
         ],
         'error' => [
@@ -56,9 +55,9 @@ return [
     ],
     'voucher' => [
         'error' => [
-            'create'            => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
+            'create' => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
         ],
-        'success'   => 'Ma giam gia da duoc ap dung thanh cong',
+        'success' => 'Ma giam gia da duoc ap dung thanh cong',
     ],
     'auth' => [
         'register' => [
