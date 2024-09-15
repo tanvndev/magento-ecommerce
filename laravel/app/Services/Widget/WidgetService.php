@@ -23,8 +23,9 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $condition = [
             'search' => addslashes(request('search')),
             'publish' => request('publish'),
+            'archive' =>  request()->boolean('archive'),
         ];
-        $select = ['id', 'name', 'publish', 'description', 'code', 'advertisement_banners', 'type', 'model', 'order', 'model_ids'];
+        $select = ['id', 'name', 'publish', 'description', 'code', 'advertisement_banners', 'type', 'order', 'model_ids'];
         $pageSize = request('pageSize');
 
         $data = $pageSize && request('page')

@@ -23,8 +23,9 @@ class BrandService extends BaseService implements BrandServiceInterface
         $condition = [
             'search' => addslashes(request('search')),
             'publish' => request('publish'),
-
+            'archive' =>  request()->boolean('archive'),
         ];
+
         $select = ['id', 'name', 'publish', 'description', 'canonical', 'image', 'is_featured'];
         $pageSize = request('pageSize');
 

@@ -12,7 +12,4 @@ interface BrandServiceInterface
 
     public function destroy($id);
 
-    public function updateStatus();
-
-    public function updateStatusMultiple();
 }

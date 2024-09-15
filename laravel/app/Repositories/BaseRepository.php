@@ -95,7 +95,7 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->select($column);
         $query->whereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $value) {
-                $query->where($alias.'.'.$key, $value);
+                $query->where($alias . '.' . $key, $value);
             }
         });
 
@@ -129,6 +129,10 @@ class BaseRepository implements BaseRepositoryInterface
             foreach ($withWhereHas as $relation => $callback) {
                 $query->whereHas($relation, $callback);
             }
+        }
+
+        if (! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
+            $query->onlyTrashed();
         }
 
         //Phương thức withQueryString() trong Laravel được sử dụng để giữ nguyên các tham số truy vấn
@@ -221,6 +225,7 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->whereIn($whereInField, $whereIn)->delete();
     }
 
+
     // Xoá cứng
     public function forceDelete($modelId)
     {
@@ -234,5 +239,15 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->newQuery();
 
         return $query->customWhere($conditions)->forceDelete();
+    }
+
+    public function forceDeleteByWhereIn($whereInField = '', $whereIn = [])
+    {
+        return $this->model->whereIn($whereInField, $whereIn)->forceDelete();
+    }
+
+    public function restoreByWhereIn($whereInField = '', $whereIn = [])
+    {
+        return $this->model->whereIn($whereInField, $whereIn)->restore();
     }
 }

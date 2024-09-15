@@ -17,7 +17,7 @@ class UserCatalogueResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'key' => $this->key,
+            'key' => $this->id,
             'code' => $this->code,
             'name' => $this->name,
             'description' => $this->description,

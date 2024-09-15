@@ -16,6 +16,9 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, MustVerifyEmail, Notifiable, QueryScopes;
 
+
+    const ROLE_ADMIN = 1;
+    const ROLE_CUSTOMER = 2;
     /**
      * The attributes that are mass assignable.
      *

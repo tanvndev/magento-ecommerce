@@ -70,6 +70,8 @@ import {
   ActionComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
+import { debounce } from '@/utils/helpers';
+import { useRoute } from 'vue-router';
 
 // STATE
 const state = reactive({
@@ -125,6 +127,8 @@ const columns = [
 
 const { getAll, loading } = useCRUD();
 
+const route = useRoute();
+
 // Pagination
 const {
   pagination,
@@ -149,12 +153,23 @@ const fetchData = async () => {
   pagination.pageSize = response.per_page;
 };
 
+const deboucedFetchData = debounce(fetchData, 500);
+
 // Watchers
 watch(onChangePagination, () => fetchData());
 watch(selectedRows, () => {
   state.isShowToolbox = selectedRows.value.length > 0;
   state.modelIds = selectedRowKeys.value;
 });
+watch(
+  () => route.query.archive,
+  (newValue) => {
+    state.filterOptions.archive = newValue === 'true' ? true : false;
+    state.pageTitle =
+      newValue === 'true' ? 'Danh sách lưu trữ thương hiệu' : 'Danh sách thương hiệu';
+    deboucedFetchData();
+  }
+);
 
 const onFilterOptions = (filterValue) => {
   state.filterOptions = filterValue;

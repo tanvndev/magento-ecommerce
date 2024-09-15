@@ -91,7 +91,7 @@ const handleDeleteRow = () => {
 watch(
   () => props.advertisementBanners,
   (newValue) => {
-    itemCount.value = newValue.length;
+    itemCount.value = newValue.length || 2;
   },
   { immediate: true }
 );

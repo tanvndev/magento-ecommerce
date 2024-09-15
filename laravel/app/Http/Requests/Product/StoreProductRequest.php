@@ -44,6 +44,10 @@ class StoreProductRequest extends FormRequest
             }
         }
 
+        if ($this->has('upsell_ids') && count($this->upsell_ids)) {
+            $rules['upsell_ids'] = 'array|min:4|max:50';
+        }
+
         return $rules;
     }
 
@@ -60,6 +64,7 @@ class StoreProductRequest extends FormRequest
             'sale_price' => 'Giá khuyến mãi',
             'variable.*.sale_price' => 'Giá khuyến mãi biến thể',
             'variable.*.price' => 'Giá gốc biến thể',
+            'upsell_ids' => 'Sản phẩm liên kết',
         ];
     }
 

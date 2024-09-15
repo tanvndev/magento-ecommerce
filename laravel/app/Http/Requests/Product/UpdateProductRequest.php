@@ -33,6 +33,10 @@ class UpdateProductRequest extends FormRequest
             $rules['product_type'] = 'required|in:variable';
         }
 
+        if ($this->has('upsell_ids') && count($this->upsell_ids)) {
+            $rules['upsell_ids'] = 'array|min:4|max:50';
+        }
+
         return $rules;
     }
 
@@ -42,6 +46,7 @@ class UpdateProductRequest extends FormRequest
             'name' => 'Tiêu đề sản phẩm',
             'product_type' => 'Loại sản phẩm',
             'product_catalogue_id' => 'Nhóm sản phẩm',
+            'upsell_ids' => 'Sản phẩm liên kết',
         ];
     }
 

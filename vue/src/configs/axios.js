@@ -2,7 +2,8 @@ import axios from 'axios';
 import store from '@/store';
 
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true
 });
 
 // Add a request interceptor
