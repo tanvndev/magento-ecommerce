@@ -24,6 +24,7 @@ class CartCollection extends ResourceCollection
 
     private function calculateTotalAmount()
     {
+
         return $this->collection
             ->filter(function ($cartItem) {
                 return $cartItem->is_selected == true;
@@ -31,5 +32,6 @@ class CartCollection extends ResourceCollection
             ->sum(function ($cartItem) {
                 return $cartItem->getSubTotal();
             });
+
     }
 }

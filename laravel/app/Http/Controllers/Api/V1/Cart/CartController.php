@@ -29,11 +29,11 @@ class CartController extends Controller
     public function index()
     {
         $response = $this->cartService->getCart();
+
         $data = new CartCollection($response);
 
-        $result = auth()->check() ? $data : $response;
+        return successResponse('', $data);
 
-        return successResponse('', $result);
     }
 
     /**
@@ -41,10 +41,18 @@ class CartController extends Controller
      */
     public function createOrUpdate(CreateAndUpdateRequest $request)
     {
-        $response = $this->cartService->createOrUpdate($request);
-        $data = new CartCollection($response);
 
-        $result = auth()->check() ? $data : $response;
+        $response   = $this->cartService->createOrUpdate($request);
+
+        if (is_array($response)) {
+            return $response;
+        }
+
+        $data       = new CartCollection($response);
+
+        return successResponse('', $data);
+    }
+
 
         return successResponse(__('messages.cart.success.create'), $result);
     }

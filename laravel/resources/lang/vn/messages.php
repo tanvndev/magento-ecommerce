@@ -36,11 +36,14 @@ return [
         ],
     ],
     'cart' => [
-        'success' => [
-            'create' => 'Thêm giỏ hàng thành công.',
-            'update' => 'Cập nhật giỏ hàng thành công.',
-            'delete' => 'Xóa thành công.',
-            'clear' => 'Giỏ hàng đã xóa thành công.',
+
+        'success'   => [
+            'create'            => 'Thêm giỏ hàng thành công.',
+            'update'            => 'Cập nhật giỏ hàng thành công.',
+            'delete'            => 'Xóa thành công.',
+            'clean'             => 'Xóa thành công giỏ hàng.',
+            'publish'           => 'Cập nhật trạng thái thành công.',
+
         ],
         'error' => [
             'not_found' => 'Sản phẩm không tồn tại trên hệ thống.',

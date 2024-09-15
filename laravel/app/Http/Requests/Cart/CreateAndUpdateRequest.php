@@ -24,9 +24,12 @@ class CreateAndUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'quantity' => 'required|integer|min:1',
-        ];
+        $rules = [];
+
+        if (request()->quantity) {
+            $rules['quantity'] = 'integer|min:1';
+        }
+        return $rules;
     }
 
     public function attributes(): array

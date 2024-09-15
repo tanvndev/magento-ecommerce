@@ -117,6 +117,10 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
 
+
+
+
+
         // WIDGET ROUTE
         Route::apiResource('widgets', WidgetController::class);
 
@@ -126,11 +130,15 @@ Route::middleware('log.request.response', 'api')->group(function () {
     });
 
     // CART ROUTE
-    Route::controller(CartController::class)->name('cart.')->group(function () {
-        Route::get('carts', 'index')->name('index');
-        Route::post('carts', 'createOrUpdate')->name('store-or-update');
-        Route::delete('carts/clear', 'forceDestroy')->name('force-destroy');
-        Route::delete('carts/{id}', 'destroy')->name('destroy');
-        Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
-    });
+        Route::controller(CartController::class)->name('cart.')->group(function () {
+            Route::get('carts', 'index')->name('index');
+            Route::post('carts', 'createOrUpdate')->name('store-or-update');
+            Route::delete('carts/clean', 'forceDestroy')->name('force-destroy');
+            Route::delete('carts/{id}', 'destroy')->name('destroy');
+            Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
+        });
+
+
+
+
 });
