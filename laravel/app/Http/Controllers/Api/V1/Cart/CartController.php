@@ -33,7 +33,6 @@ class CartController extends Controller
         $data = new CartCollection($response);
 
         return successResponse('', $data);
-
     }
 
     /**
@@ -51,10 +50,6 @@ class CartController extends Controller
         $data       = new CartCollection($response);
 
         return successResponse('', $data);
-    }
-
-
-        return successResponse(__('messages.cart.success.create'), $result);
     }
 
     /**

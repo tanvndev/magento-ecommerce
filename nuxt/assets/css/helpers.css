@@ -248,3 +248,6 @@
 .text-black {
   color: #000 !important;
 }
+.justify-center {
+  justify-content: center;
+}

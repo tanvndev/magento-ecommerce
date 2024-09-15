@@ -20,6 +20,11 @@
       />
       <!-- End of Category Banner Wrapper -->
     </div>
+
+    <div class="mx-auto d-flex justify-center mb-5 mt-5" v-if="isLoading">
+      <span class="loader"></span>
+    </div>
+
     <v-lazy
       :min-height="200"
       :options="{ threshold: 0.5 }"
@@ -161,22 +166,114 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
+const widgetCodes = ref([])
 const widgets = ref([])
 const { $axios } = useNuxtApp()
 const loadingStore = useLoadingStore()
+const currentWidgetIndex = ref(0)
+const isLoading = ref(false)
 
-const getWidgets = async () => {
+const getAllWidgetCode = async () => {
   loadingStore.setLoading(true)
   try {
-    const response = await $axios.get('/getWidget')
-    widgets.value = response.data
+    const response = await $axios.get('/getAllWidgetCode')
+    widgetCodes.value = response.data
   } catch (error) {
+    console.error('Error fetching widget codes:', error)
   } finally {
     loadingStore.setLoading(false)
   }
 }
 
+const getWidgetByCode = async (code) => {
+  if (isLoading.value) return
+  isLoading.value = true
+  try {
+    const response = await $axios.get('/getWidget/' + code)
+    widgets.value = [...widgets.value, ...response.data]
+  } catch (error) {
+    console.error('Error fetching widget:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleScroll = () => {
+  const mainElement = document.querySelector('.main')
+  if (!mainElement) return
+
+  const mainElementHeight = mainElement.clientHeight
+  const mainElementTop =
+    mainElement.getBoundingClientRect().top + window.scrollY
+  const scrollPosition = window.innerHeight + window.scrollY
+
+  if (scrollPosition + 500 >= mainElementTop + mainElementHeight) {
+    if (
+      currentWidgetIndex.value < widgetCodes.value.length &&
+      widgets.value.length < widgetCodes.value.length &&
+      !isLoading.value
+    ) {
+      getWidgetByCode(widgetCodes.value[currentWidgetIndex.value].code)
+      currentWidgetIndex.value++
+    } else if (currentWidgetIndex.value >= widgetCodes.value.length) {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }
+}
+
 onMounted(() => {
-  getWidgets()
+  window.addEventListener('scroll', handleScroll)
+  getAllWidgetCode()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
+
+<style scoped>
+.loader {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  position: relative;
+  animation: rotate 1s linear infinite;
+}
+.loader::before,
+.loader::after {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  animation: prixClipFix 2s linear infinite;
+}
+.loader::after {
+  transform: rotate3d(90, 90, 0, 180deg);
+  border-color: #ff3d00;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes prixClipFix {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0);
+  }
+  50% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0);
+  }
+  75%,
+  100% {
+    clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%);
+  }
+}
+</style>

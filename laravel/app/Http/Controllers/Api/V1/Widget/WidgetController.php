@@ -80,12 +80,19 @@ class WidgetController extends Controller
 
     // CLIENT API //
 
-    public function getWidget()
+    public function getWidget($code)
     {
-        $response = $this->widgetService->getWidget();
+        $response = $this->widgetService->getWidgetByCode($code);
 
         $data = new ClientWidgetCollection($response);
 
         return successResponse('', $data);
+    }
+
+    public function getAllWidgetCode()
+    {
+        $response = $this->widgetService->getAllWidgetCode();
+
+        return successResponse('', $response);
     }
 }
