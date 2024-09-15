@@ -51,6 +51,12 @@ return [
             'cart_not_found' => 'Người dùng chưa có giỏ hàng.',
         ],
     ],
+    'voucher' => [
+        'error' => [
+            'create'            => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
+        ],
+        'success'   => 'Ma giam gia da duoc ap dung thanh cong',
+    ],
     'auth' => [
         'register' => [
             'success' => 'Người dùng đã đăng ký thành công. Vui lòng kiểm tra email của bạn để xác nhận đăng ký.',

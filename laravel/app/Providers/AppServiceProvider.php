@@ -50,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Cart\CartServiceInterface' => 'App\Services\Cart\CartService',
         // Widget
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
+        // Voucher
+        'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
     ];
 
     public function register(): void
