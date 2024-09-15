@@ -35,6 +35,7 @@ class StoreWidgetRequest extends FormRequest
             $rules['image.*'] = 'required';
             $rules['url.*'] = 'required';
         }
+
         return $rules;
     }
 

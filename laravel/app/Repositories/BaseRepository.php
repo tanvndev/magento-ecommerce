@@ -95,7 +95,7 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->select($column);
         $query->whereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $value) {
-                $query->where($alias . '.' . $key, $value);
+                $query->where($alias.'.'.$key, $value);
             }
         });
 
@@ -224,7 +224,6 @@ class BaseRepository implements BaseRepositoryInterface
     {
         return $this->model->whereIn($whereInField, $whereIn)->delete();
     }
-
 
     // Xoá cứng
     public function forceDelete($modelId)

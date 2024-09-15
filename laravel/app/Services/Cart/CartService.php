@@ -109,6 +109,7 @@ class CartService extends BaseService implements CartServiceInterface
                 }
 
                 $carts = $this->getCart();
+
                 return $carts;
             }
 
@@ -180,6 +181,7 @@ class CartService extends BaseService implements CartServiceInterface
 
                 if ($cartItem) {
                     $cartItem->delete();
+
                     return successResponse(__('messages.cart.success.delete'));
                 }
             }

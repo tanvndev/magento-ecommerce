@@ -13,6 +13,7 @@ class Product extends Model
     use HasFactory, QueryScopes, SoftDeletes;
 
     const TYPE_VARIABLE = 'variable';
+
     const TYPE_SIMPLE = 'simple';
 
     protected $fillable = [
@@ -58,7 +59,7 @@ class Product extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $canonical = "{$originalCanonical}-" . $count++;
+            $canonical = "{$originalCanonical}-".$count++;
         }
 
         return $canonical;

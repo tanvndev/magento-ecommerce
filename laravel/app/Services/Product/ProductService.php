@@ -38,7 +38,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $condition = [
             'search' => addslashes(request('search')),
             'publish' => request('publish'),
-            'archive' =>  request()->boolean('archive'),
+            'archive' => request()->boolean('archive'),
         ];
 
         $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'upsell_ids', 'canonical', 'meta_title', 'meta_description', 'shipping_ids'];
@@ -90,7 +90,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . 'default');
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.'default');
 
         $mainData = [
             'uuid' => $uuid,
@@ -139,10 +139,10 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->map(function ($variable, $key) use ($mainData, $variantTexts, $variantIds, $product) {
 
                 $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
+                $sku = generateSKU($mainData['name'], 3, $options).'-'.($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
                 $attribute_value_combine = sortString($variantIds[$key]);
-                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.$attribute_value_combine);
 
                 $variantData = [
                     'uuid' => $uuid,
@@ -276,7 +276,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $request = request();
         $condition = [
             'search' => addslashes($request->search),
-            'archive' =>  $request->boolean('archive'),
+            'archive' => $request->boolean('archive'),
         ];
 
         $withWhereHas = [
@@ -288,13 +288,13 @@ class ProductService extends BaseService implements ProductServiceInterface
                 }
 
                 if ($catalogues = json_decode($request->input('catalogues', '[]'), true)) {
-                    if (!empty($catalogues)) {
+                    if (! empty($catalogues)) {
                         $q->whereHas('catalogues', function ($q) use ($catalogues) {
                             $q->whereIn('product_catalogue_id', $catalogues);
                         });
                     }
                 }
-            }
+            },
         ];
 
         $select = ['id', 'name', 'product_id', 'price', 'cost_price', 'sale_price', 'image', 'attribute_value_combine'];
@@ -333,7 +333,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         // Transform keys by removing "variable_" prefix
         $payloadFormat = array_combine(
-            array_map(fn($key) => str_replace('variable_', '', $key), array_keys($payload)),
+            array_map(fn ($key) => str_replace('variable_', '', $key), array_keys($payload)),
             array_values($payload)
         );
 
@@ -365,11 +365,11 @@ class ProductService extends BaseService implements ProductServiceInterface
             }
 
             $remainingAttributes = ProductVariantAttributeValue::query()
-                ->whereHas('product_variant', fn($query) => $query->where('product_id', $variant->product_id))
+                ->whereHas('product_variant', fn ($query) => $query->where('product_id', $variant->product_id))
                 ->with('attribute_value:id,attribute_id')
                 ->get(['attribute_value_id'])
                 ->groupBy('attribute_value.attribute_id')
-                ->map(fn($group) => [
+                ->map(fn ($group) => [
                     'product_id' => $variant->product_id,
                     'attribute_id' => $group->first()->attribute_value->attribute_id,
                     'attribute_value_ids' => $group->pluck('attribute_value_id')->unique()->values()->toArray(),
@@ -457,10 +457,10 @@ class ProductService extends BaseService implements ProductServiceInterface
             if (! in_array($attributeValueCombine['attribute_value_combine'], $existingAttributeCombines)) {
                 $productName = $product->name;
                 $options = explode(' - ', $attributeValueCombine['attributeText'] ?? '');
-                $sku = generateSKU($productName, 3, $options) . '-' . ($key + 1);
+                $sku = generateSKU($productName, 3, $options).'-'.($key + 1);
                 $name = "{$productName} {$attributeValueCombine['attributeText']}";
                 $attribute_value_combine = $attributeValueCombine['attribute_value_combine'];
-                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.$attribute_value_combine);
 
                 return [
                     'uuid' => $uuid,

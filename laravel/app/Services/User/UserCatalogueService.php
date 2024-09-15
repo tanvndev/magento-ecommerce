@@ -161,7 +161,7 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             throw new \Exception(__('messages.delete.error'));
         }
 
-        if (User::ROLE_ADMIN == $id || User::ROLE_CUSTOMER == $id) {
+        if ($id == User::ROLE_ADMIN || $id == User::ROLE_CUSTOMER) {
             throw new \Exception(__('messages.delete.error'));
         }
     }
@@ -169,7 +169,6 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
     private function checkUserInCatalogues($ids)
     {
         $catalogues = $this->userCatalogueRepository->findByWhereIn($ids, 'id', ['users']);
-
 
         if ($catalogues->users->count() > 0) {
             throw new \Exception(__('messages.delete.error'));

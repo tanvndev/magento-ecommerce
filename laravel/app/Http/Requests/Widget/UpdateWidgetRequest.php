@@ -19,8 +19,6 @@ class UpdateWidgetRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-
-
     public function rules(): array
     {
         $rules = [
@@ -36,9 +34,9 @@ class UpdateWidgetRequest extends FormRequest
             $rules['image.*'] = 'required';
             $rules['url.*'] = 'required';
         }
+
         return $rules;
     }
-
 
     public function attributes()
     {
