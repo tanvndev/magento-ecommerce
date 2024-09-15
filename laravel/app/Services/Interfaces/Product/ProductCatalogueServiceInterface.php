@@ -15,9 +15,5 @@ interface ProductCatalogueServiceInterface
 
     public function destroy($id);
 
-    public function updateStatus();
-
-    public function updateStatusMultiple();
-
     public function list();
 }

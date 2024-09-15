@@ -67,6 +67,7 @@ class CartService extends BaseService implements CartServiceInterface
 
             if (!$cart) {
                 $cart = $this->cartRepository->create(['user_id' => $userId]);
+
             }
 
             if ($cart->cart_items()->where('product_variant_id', $request->product_variant_id)->exists()) {
@@ -130,6 +131,7 @@ class CartService extends BaseService implements CartServiceInterface
 
             if ($cartItem) {
                 $cartItem->delete();
+
             }
 
 

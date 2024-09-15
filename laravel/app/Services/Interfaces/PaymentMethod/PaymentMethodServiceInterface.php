@@ -9,8 +9,4 @@ interface PaymentMethodServiceInterface
     public function create();
 
     public function update($id);
-
-    public function updateStatus();
-
-    public function updateStatusMultiple();
 }

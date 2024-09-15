@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use App\Http\Controllers\Api\V1\Upload\UploadController;
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Controllers\Api\V1\Voucher\VoucherController;
 use App\Http\Controllers\Api\V1\Widget\WidgetController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::put('changeStatus', [DashboardController::class, 'changeStatus'])->name('changeStatus');
             Route::put('changeStatusMultiple', [DashboardController::class, 'changeStatusMultiple'])->name('changeStatusMultiple');
             Route::delete('deleteMultiple', [DashboardController::class, 'deleteMultiple'])->name('deleteMultiple');
+            Route::put('archiveMultiple', [DashboardController::class, 'archiveMultiple'])->name('archiveMultiple');
             Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
 
@@ -121,6 +123,10 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // WIDGET ROUTE
         Route::apiResource('widgets', WidgetController::class);
+
+        // VOUCHER ROUTE
+
+        Route::apiResource('vouchers', VoucherController::class);
     });
 
     // CART ROUTE

@@ -21,7 +21,6 @@ Route::get('images/{path}', function (Server $server, Request $request, $path) {
 })->where('path', '.*')->name('glide');
 //**** */ KHONG DUOC XOA HAY COMMENT ROUTE NAY ****//
 
-
 Route::get('carts', [TestController::class, 'getAllCart']);
 
 Route::post('carts', [TestController::class, 'createOrUpdateCart']);

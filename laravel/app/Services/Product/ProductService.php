@@ -4,6 +4,7 @@
 
 namespace App\Services\Product;
 
+use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductVariantAttributeValue;
 use App\Repositories\Interfaces\Attribute\AttributeValueRepositoryInterface;
@@ -37,6 +38,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $condition = [
             'search' => addslashes(request('search')),
             'publish' => request('publish'),
+            'archive' => request()->boolean('archive'),
         ];
 
         $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'upsell_ids', 'canonical', 'meta_title', 'meta_description', 'shipping_ids'];
@@ -110,18 +112,18 @@ class ProductService extends BaseService implements ProductServiceInterface
             'sale_price_end_at' => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
         ];
 
-        if ($payload['product_type'] === 'simple') {
+        if ($payload['product_type'] === Product::TYPE_SIMPLE) {
             return $product->variants()->create($mainData);
         }
 
-        if ($payload['product_type'] === 'variable') {
+        if ($payload['product_type'] === Product::TYPE_VARIABLE) {
             return $this->createProductVariants($product, $payload, $mainData);
         }
     }
 
     private function createProductVariants($product, array $payload, array $mainData)
     {
-        $variables = $payload['variable'] ?? [];
+        $variables = $payload[Product::TYPE_VARIABLE] ?? [];
         $variants = json_decode($payload['variants'] ?? '[]', true);
         $variantTexts = $variants['variantTexts'];
         $variantIds = $variants['variantIds'];
@@ -271,7 +273,29 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function getProductVariants()
     {
-        $condition = ['search' => addslashes(request('search'))];
+        $request = request();
+        $condition = [
+            'search' => addslashes($request->search),
+            'archive' => $request->boolean('archive'),
+        ];
+
+        $withWhereHas = [
+            'product' => function ($q) use ($request) {
+                $q->where('publish', 1);
+
+                if ($brandId = $request->input('brand_id')) {
+                    $q->where('brand_id', $brandId);
+                }
+
+                if ($catalogues = json_decode($request->input('catalogues', '[]'), true)) {
+                    if (! empty($catalogues)) {
+                        $q->whereHas('catalogues', function ($q) use ($catalogues) {
+                            $q->whereIn('product_catalogue_id', $catalogues);
+                        });
+                    }
+                }
+            },
+        ];
 
         $select = ['id', 'name', 'product_id', 'price', 'cost_price', 'sale_price', 'image', 'attribute_value_combine'];
 
@@ -285,11 +309,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                 [],
                 ['attribute_values'],
                 [],
-                [
-                    'product' => function ($q) {
-                        $q->where('publish', 1);
-                    },
-                ]
+                $withWhereHas
             );
 
         return $data;
@@ -389,9 +409,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                 throw new \Exception('PRODUCT_NOT_FOUND');
             }
 
-            if ($product->product_type == 'simple') {
+            if ($product->product_type == Product::TYPE_SIMPLE) {
                 $product->variants()->delete();
-                $product->product_type = 'variable';
+                $product->product_type = Product::TYPE_VARIABLE;
                 $product->publish = 2;
                 $product->save();
             }

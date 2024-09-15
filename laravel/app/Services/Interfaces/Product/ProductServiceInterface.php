@@ -12,10 +12,6 @@ interface ProductServiceInterface
 
     public function destroy($id);
 
-    public function updateStatus();
-
-    public function updateStatusMultiple();
-
     public function getProductVariants();
 
     public function updateVariant();

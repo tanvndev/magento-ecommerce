@@ -17,10 +17,9 @@
 </template>
 
 <script setup>
-import { useStore } from 'vuex';
 import { BaseService } from '@/services';
+import { message } from 'ant-design-vue';
 
-const store = useStore();
 const emits = defineEmits(['onDelete']);
 const props = defineProps({
   id: [Number, String],
@@ -38,7 +37,8 @@ const handleDelete = async (id) => {
   const response = await BaseService.deleteOne(props.endpoint, id);
 
   const type = response.success ? 'success' : 'error';
-  store.dispatch('antStore/showMessage', { type, message: response.messages });
+
+  message[type](response.messages);
   emits('onDelete', id);
 };
 </script>

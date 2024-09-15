@@ -58,6 +58,10 @@ interface BaseRepositoryInterface
 
     public function forceDeleteByWhere($conditions);
 
+    public function forceDeleteByWhereIn($whereInField = '', $whereIn = []);
+
+    public function restoreByWhereIn($whereInField = '', $whereIn = []);
+
     public function pagination(
         $column = ['*'],
         $condition = [],

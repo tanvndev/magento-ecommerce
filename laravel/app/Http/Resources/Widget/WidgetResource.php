@@ -20,7 +20,7 @@ class WidgetResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'type' => $this->type,
-            'model' => $this->model,
+            'productCount' => $this->model_ids ? count($this->model_ids) : 0,
             'model_ids' => $this->model_ids ?? [],
             'description' => $this->description,
             'publish' => $this->publish,

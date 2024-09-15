@@ -47,6 +47,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             }
         }
 
+        if (! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
+            $query->onlyTrashed();
+        }
+
         //Phương thức withQueryString() trong Laravel được sử dụng để giữ nguyên các tham số truy vấn
         return $query->paginate($perPage)->withQueryString();
     }

@@ -42,6 +42,7 @@ class WidgetController extends Controller
      */
     public function store(StoreWidgetRequest $request)
     {
+        // return response()->json($request->all());
         $response = $this->widgetService->create();
 
         return handleResponse($response, ResponseEnum::CREATED);

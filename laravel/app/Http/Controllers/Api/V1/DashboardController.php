@@ -9,10 +9,8 @@ class DashboardController extends Controller
 {
     public function changeStatus(Request $request)
     {
-        // Lấy ra service tương ứng
         $serviceInstance = getServiceInstance($request->modelName);
 
-        // Cập nhập trạng thái
         $response = $serviceInstance->updateStatus();
 
         return handleResponse($response);
@@ -20,11 +18,8 @@ class DashboardController extends Controller
 
     public function changeStatusMultiple(Request $request)
     {
-
-        // Lấy ra service tương ứng
         $serviceInstance = getServiceInstance($request->modelName);
 
-        // Cập nhập trạng thái
         $response = $serviceInstance->updateStatusMultiple();
 
         return handleResponse($response);
@@ -32,10 +27,8 @@ class DashboardController extends Controller
 
     public function deleteMultiple(Request $request)
     {
-        // Lấy ra service tương ứng
         $serviceInstance = getServiceInstance($request->modelName);
 
-        // Xoa nhieu
         $response = $serviceInstance->deleteMultiple();
 
         return handleResponse($response);
@@ -47,5 +40,13 @@ class DashboardController extends Controller
         $response = $serviceInstance->paginate();
 
         return successResponse('', $response);
+    }
+
+    public function archiveMultiple(Request $request)
+    {
+        $serviceInstance = getServiceInstance($request->modelName);
+        $response = $serviceInstance->handleArchiveMultiple();
+
+        return handleResponse($response);
     }
 }

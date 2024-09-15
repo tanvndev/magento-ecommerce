@@ -25,7 +25,9 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         $condition = [
             'search' => addslashes(request('search')),
             'publish' => request('publish'),
+            'archive' => request()->boolean('archive'),
         ];
+
         $select = ['id', 'name', 'canonical', 'publish', 'parent_id', 'order', 'image', 'is_featured'];
         $pageSize = request('pageSize');
         $orderBy = ['order' => 'desc'];

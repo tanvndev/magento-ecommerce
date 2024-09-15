@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Cart;
 
-use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cart\CreateAndUpdateRequest;
 use App\Http\Resources\Cart\CartCollection;
-use App\Http\Resources\Cart\CartResource;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Services\Interfaces\Cart\CartServiceInterface;
 use Illuminate\Http\Request;
@@ -35,6 +33,7 @@ class CartController extends Controller
         $data = new CartCollection($response);
 
         return successResponse('', $data);
+
     }
 
     /**
@@ -57,6 +56,7 @@ class CartController extends Controller
 
         return successResponse(__('messages.cart.success.create'), $result);
     }
+
     /**
      * Remove the specified resource from storage.
      */

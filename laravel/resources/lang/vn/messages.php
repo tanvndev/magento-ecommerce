@@ -21,6 +21,10 @@ return [
         'success' => 'Cập nhập trạng thái thành công.',
         'error' => 'Cập nhập trạng thái thất bại.',
     ],
+    'action' => [
+        'success' => 'Thao tác thành công.',
+        'error' => 'Thao tác thất bại.',
+    ],
     'upload' => [
         'create' => [
             'success' => 'Tải lên tệp mới thành công.',
@@ -49,6 +53,12 @@ return [
             'item_not_found' => 'Sản phẩm này không có trong giỏ hàng.',
             'cart_not_found' => 'Người dùng chưa có giỏ hàng.',
         ],
+    ],
+    'voucher' => [
+        'error' => [
+            'create'            => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
+        ],
+        'success'   => 'Ma giam gia da duoc ap dung thanh cong',
     ],
     'auth' => [
         'register' => [
