@@ -4,6 +4,7 @@
 
 namespace App\Services\Widget;
 
+use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Repositories\Interfaces\Widget\WidgetRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Widget\WidgetServiceInterface;
@@ -12,10 +13,14 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 {
     protected $widgetRepository;
 
+    protected $productVariantRepository;
+
     public function __construct(
         WidgetRepositoryInterface $widgetRepository,
+        ProductVariantRepositoryInterface $productVariantRepository
     ) {
         $this->widgetRepository = $widgetRepository;
+        $this->productVariantRepository = $productVariantRepository;
     }
 
     public function paginate()
@@ -86,11 +91,14 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
     // CLIENT API //
 
-    public function getWidget()
+    public function getWidgetByCode(string $code)
     {
         $widgets = $this->widgetRepository->findByWhere(
-            ['publish' => 1],
-            ['id', 'name', 'code', 'model', 'order', 'model_ids', 'advertisement_banners', 'type'],
+            [
+                'code' => $code,
+                'publish' => 1,
+            ],
+            ['id', 'name', 'code', 'order', 'model_ids', 'advertisement_banners', 'type'],
             [],
             true,
             ['order' => 'ASC']
@@ -114,38 +122,30 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
     private function getProductVariants($item)
     {
-        $repositoryInstance = getRepositoryInstance($item->model === 'Product' ? 'ProductVariant' : $item->model);
+        return $this->productVariantRepository->findByWhereIn(
+            $item->model_ids, // -> value
+            'id', // -> field
+            ['*'],
+            [], // -> relation
+            [
+                'product' => [
+                    ['publish', '1'],
+                ],
+            ] // -> whereHas
+        ) ?? [];
+    }
 
-        if (! $repositoryInstance) {
-            return [];
-        }
-
-        if ($item->model === 'Product') {
-            return $repositoryInstance->findByWhereIn(
-                $item->model_ids, // -> value
-                'id', // -> field
-                ['*'],
-                [], // -> relation
-                [
-                    'product' => [
-                        ['publish', '1'],
-                    ],
-                ] // -> whereHas
-            ) ?? [];
-        }
-
-        return $repositoryInstance->findByWhereIn($item->model_ids)
-            ->flatMap(fn ($modelItem) => (
-                $repositoryInstance->findById($modelItem->id)
-                    ->with('products.variants')
-                    ->where('publish', 1)
-                    ->first()
-                    ?->products
-                    ->filter(fn ($product) => $product->publish === 1)
-                    ->flatMap(fn ($product) => $product->variants)
-            ))
-            ->unique('id')
-            ->filter();
+    public function getAllWidgetCode()
+    {
+        return $this->widgetRepository->findByWhere(
+            [
+                'publish' => 1,
+            ],
+            ['id', 'code', 'order'],
+            [],
+            true,
+            ['order' => 'ASC']
+        );
     }
 }
 

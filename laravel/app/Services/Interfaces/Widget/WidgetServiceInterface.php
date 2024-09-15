@@ -12,5 +12,7 @@ interface WidgetServiceInterface
 
     public function destroy($id);
 
-    public function getWidget();
+    public function getWidgetByCode(string $code);
+
+    public function getAllWidgetCode();
 }

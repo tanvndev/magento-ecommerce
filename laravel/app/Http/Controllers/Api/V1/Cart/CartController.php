@@ -33,7 +33,6 @@ class CartController extends Controller
         $data = new CartCollection($response);
 
         return successResponse('', $data);
-
     }
 
     /**
@@ -42,19 +41,15 @@ class CartController extends Controller
     public function createOrUpdate(CreateAndUpdateRequest $request)
     {
 
-        $response   = $this->cartService->createOrUpdate($request);
+        $response = $this->cartService->createOrUpdate($request);
 
         if (is_array($response)) {
             return $response;
         }
 
-        $data       = new CartCollection($response);
+        $data = new CartCollection($response);
 
-        return successResponse('', $data);
-    }
-
-
-        return successResponse(__('messages.cart.success.create'), $result);
+        return successResponse(__('messages.cart.success.create'), $data);
     }
 
     /**

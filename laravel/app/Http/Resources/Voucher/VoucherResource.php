@@ -15,19 +15,19 @@ class VoucherResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'                => $this->id,
-            'name'              => $this->name,
-            'code'              => $this->code,
-            'image'             => $this->image,
-            'description'       => $this->description,
-            'discount_type'     => $this->discount_type,
-            'discount_value'    => $this->discount_value,
-            'quantity'          => $this->quantity,
-            'min_order_value'   => $this->min_order_value,
-            'min_quantity'      => $this->min_quantity,
-            'start_at'          => $this->start_at,
-            'end_at'            => $this->end_at,
-            'publish'           => $this->publish,
+            'id' => $this->id,
+            'name' => $this->name,
+            'code' => $this->code,
+            'image' => $this->image,
+            'description' => $this->description,
+            'discount_type' => $this->discount_type,
+            'discount_value' => $this->discount_value,
+            'quantity' => $this->quantity,
+            'min_order_value' => $this->min_order_value,
+            'min_quantity' => $this->min_quantity,
+            'start_at' => $this->start_at,
+            'end_at' => $this->end_at,
+            'publish' => $this->publish,
         ];
     }
 }

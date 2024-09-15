@@ -10,7 +10,6 @@ use App\Http\Resources\Voucher\VoucherCollection;
 use App\Http\Resources\Voucher\VoucherResource;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\Interfaces\Voucher\VoucherServiceInterface;
-use Illuminate\Http\Request;
 
 class VoucherController extends Controller
 {

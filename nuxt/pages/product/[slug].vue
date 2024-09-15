@@ -246,11 +246,12 @@ import {
   toast,
 } from '#imports'
 import QuantityComponent from '~/components/includes/QuantityComponent.vue'
-import { useCartStore } from '~/stores/cart'
+import { useLoadingStore, useCartStore } from '#imports'
 
 const modules = [Navigation, Autoplay]
 
 const cartStore = useCartStore()
+const loadingStore = useLoadingStore()
 const { $axios } = useNuxtApp()
 const route = useRoute()
 const visibleRef = ref(false)
@@ -275,20 +276,26 @@ const showImg = (index) => {
 }
 
 const getProduct = async () => {
-  const response = await $axios(`/getProduct/${route.params.slug}`)
+  try {
+    loadingStore.setLoading(true)
+    const response = await $axios(`/getProduct/${route.params.slug}`)
 
-  if (response.data) {
-    attributeEnables.value = response.data?.attribute_enabled
-    attributeNotEnables.value = response.data?.attribute_not_enabled
-    product.value = response.data
+    if (response.data) {
+      attributeEnables.value = response.data?.attribute_enabled
+      attributeNotEnables.value = response.data?.attribute_not_enabled
+      product.value = response.data
 
-    variant.value = product.value?.variants.find(
-      (variant) => variant.slug == removeLastSegment(route.params.slug)
-    )
+      variant.value = product.value?.variants.find(
+        (variant) => variant.slug == removeLastSegment(route.params.slug)
+      )
 
-    if (variant.value?.attributes.length > 0) {
-      triggerSelectedAttribute(variant.value?.attributes)
+      if (variant.value?.attributes.length > 0) {
+        triggerSelectedAttribute(variant.value?.attributes)
+      }
     }
+  } catch (error) {
+  } finally {
+    loadingStore.setLoading(false)
   }
 }
 

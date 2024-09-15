@@ -4,7 +4,6 @@
 
 namespace App\Services\Voucher;
 
-use App\Models\Voucher;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Voucher\VoucherServiceInterface;
@@ -34,13 +33,13 @@ class VoucherService extends BaseService implements VoucherServiceInterface
             'min_quantity',
             'start_at',
             'end_at',
-            'publish'
+            'publish',
         ];
-
 
         $data = request('list')
             ? $this->voucherRepository->findByWhere(['publish' => 1], $select)
             : $this->voucherRepository->all($select);
+
         return $data;
     }
 
@@ -53,10 +52,12 @@ class VoucherService extends BaseService implements VoucherServiceInterface
             if ($payload['min_order_value'] && $payload['min_quantity']) {
                 return errorResponse(__('messages.voucher.error.create'));
             }
-            if ($payload['min_order_value'])  $payload['min_quantity'] = null;
-            if ($payload['min_quantity'])  $payload['min_order_value'] = null;
-
-
+            if ($payload['min_order_value']) {
+                $payload['min_quantity'] = null;
+            }
+            if ($payload['min_quantity']) {
+                $payload['min_order_value'] = null;
+            }
 
             $this->voucherRepository->create($payload);
 
@@ -73,8 +74,12 @@ class VoucherService extends BaseService implements VoucherServiceInterface
             if ($payload['min_order_value'] && $payload['min_quantity']) {
                 return errorResponse(__('messages.voucher.error.create'));
             }
-            if ($payload['min_order_value'])  $payload['min_quantity'] = null;
-            if ($payload['min_quantity'])  $payload['min_order_value'] = null;
+            if ($payload['min_order_value']) {
+                $payload['min_quantity'] = null;
+            }
+            if ($payload['min_quantity']) {
+                $payload['min_order_value'] = null;
+            }
 
             $this->voucherRepository->update($id, $payload);
 
