@@ -46,6 +46,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         // dd($request->all());
+        // return response()->json($request->all());
         $response = $this->productService->create();
 
         return handleResponse($response, ResponseEnum::CREATED);
@@ -111,7 +112,6 @@ class ProductController extends Controller
 
         return handleResponse($response);
     }
-
 
     // CLIENT API //
 

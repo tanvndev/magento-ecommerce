@@ -13,5 +13,4 @@ interface CartServiceInterface
     public function cleanCart();
 
     public function handleSelected($request);
-
 }

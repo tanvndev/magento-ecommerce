@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
 use Gloudemans\Shoppingcart\Facades\Cart;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
@@ -48,7 +47,7 @@ class TestController extends Controller
     //     return view('test');
     // }
 
-    public function  getAllCart()
+    public function getAllCart()
     {
         if (auth()->check()) {
             // $userId = auth()->user()->id;

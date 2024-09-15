@@ -17,19 +17,21 @@ class CartCollection extends ResourceCollection
         $totalAmount = $this->calculateTotalAmount();
 
         return [
-            'carts' => CartResource::collection($this->collection),
-            'total_amount' => [
-                'total_amount' => $totalAmount,
-            ],
+            'items' => CartResource::collection($this->collection),
+            'total_amount' => $totalAmount ?? 0,
         ];
     }
 
     private function calculateTotalAmount()
     {
-        return $this->collection->sum(function ($cartItem) {
-            if ($cartItem->is_selected) {
+
+        return $this->collection
+            ->filter(function ($cartItem) {
+                return $cartItem->is_selected == true;
+            })
+            ->sum(function ($cartItem) {
                 return $cartItem->getSubTotal();
-            }
-        });
+            });
+
     }
 }

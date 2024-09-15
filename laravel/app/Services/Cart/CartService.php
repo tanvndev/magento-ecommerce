@@ -2,28 +2,33 @@
 
 namespace App\Services\Cart;
 
+
 use App\Models\Cart;
 use App\Services\BaseService;
 use App\Services\Interfaces\Cart\CartServiceInterface;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 
+
 class CartService extends BaseService implements CartServiceInterface
 {
     protected $cartRepository;
+
     protected $productVariantRepository;
 
     public function __construct(
         CartRepositoryInterface $cartRepository,
         ProductVariantRepositoryInterface $productVariantRepository
     ) {
-        $this->cartRepository               = $cartRepository;
-        $this->productVariantRepository     = $productVariantRepository;
+        $this->cartRepository = $cartRepository;
+        $this->productVariantRepository = $productVariantRepository;
     }
 
     public function getCart()
     {
+
         $userId = auth()->user()->id;
+
 
         $this->addToCartFromSession($userId);
 
@@ -33,8 +38,10 @@ class CartService extends BaseService implements CartServiceInterface
             ["cart_items.product_variant.attribute_values"]
         );
 
+
         return $cart->cart_items ?? collect();
     }
+
 
 
     public function createOrUpdate($request)
@@ -51,9 +58,12 @@ class CartService extends BaseService implements CartServiceInterface
                 return errorResponse(__('messages.cart.error.max'));
             }
 
+
             $userId = auth()->user()->id;
 
+
             $cart = $this->cartRepository->findByWhere(["user_id" => $userId]);
+
 
             if (!$cart) {
                 $cart = $this->cartRepository->create(['user_id' => $userId]);
@@ -89,6 +99,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         $cart                                   = $this->cartRepository->findByWhere($userId);
 
+
         if ($cart->cart_items()->count() > 0) {
             foreach ($cart->cart_items as $item) {
                 $productVariant                 = $this->productVariantRepository->findById($item->product_variant_id);
@@ -102,9 +113,11 @@ class CartService extends BaseService implements CartServiceInterface
 
 
 
+
     public function deleteOneItem($id)
     {
         return $this->executeInTransaction(function () use ($id) {
+
 
             $userId = auth()->user()->id;
             $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
@@ -119,6 +132,7 @@ class CartService extends BaseService implements CartServiceInterface
                 $cartItem->delete();
             }
 
+
             return successResponse(__('messages.cart.success.delete'));
         }, __('messages.cart.error.item_not_found'));
     }
@@ -126,6 +140,7 @@ class CartService extends BaseService implements CartServiceInterface
     public function cleanCart()
     {
         return $this->executeInTransaction(function () {
+
 
             $user = auth()->user();
 
@@ -136,12 +151,14 @@ class CartService extends BaseService implements CartServiceInterface
             $user->cart->delete();
 
             return successResponse(__('messages.cart.success.clean'));
+
         }, __('messages.cart.error.delete'));
     }
 
     public function handleSelected($request)
     {
         return $this->executeInTransaction(function () use ($request) {
+
             $userId                                 = auth()->user()->id;
             $cart                                   = $this->cartRepository->findByWhere(["user_id" => $userId]);
 
@@ -157,6 +174,7 @@ class CartService extends BaseService implements CartServiceInterface
                     $cartItem->save();
                 }
             }
+
 
             if (isset($request->select_all)) {
                 $result = $request->select_all == 1 ? true : false;

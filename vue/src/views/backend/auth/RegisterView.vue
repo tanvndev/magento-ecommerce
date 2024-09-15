@@ -5,7 +5,7 @@
         class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]"
       >
         <img
-          :src="`${LARAVEL_URL}/images/2024/07/registerpng_669bc58c82ee7.webp`"
+          :src="`src/assets/images/registerpng.webp`"
           alt=""
           class="imig-fluid"
         />
@@ -33,13 +33,13 @@
           <form @submit.prevent="onSubmit">
             <AleartError :errors="state.errors" />
             <div class="mb-5">
-              <InputComponent label="Họ và tên" name="fullname" type="text" />
+              <InputComponent label="Họ và tên" name="fullname" type="text" placeholder="Nhập họ và tên" />
             </div>
             <div class="mb-5">
-              <InputComponent label="Địa chỉ email" name="email" type="text" />
+              <InputComponent label="Địa chỉ email" name="email" type="text" placeholder="Nhập địa chỉ email" />
             </div>
             <div>
-              <InputComponent label="Mật khẩu" name="password" type="password" />
+              <InputComponent label="Mật khẩu" name="password" type="password" placeholder="************" />
             </div>
             <a-button
               :loading="state.loading"

@@ -28,7 +28,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $pageSize = request('pageSize');
 
         $data = $pageSize && request('page')
-            ? $this->widgetRepository->pagination($select, $condition, $pageSize)
+            ? $this->widgetRepository->pagination($select, $condition, $pageSize, ['order' => 'ASC'])
             : $this->widgetRepository->findByWhere(['publish' => 1], $select, [], true);
 
         return $data;
@@ -63,7 +63,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $payload['model_ids'] = array_map('intval', $payload['model_ids'] ?? []);
 
         if ($payload['type'] == 'advertisement' && isset($payload['image']) && ! empty($payload['image'])) {
-            $payload['advertisement_banners'] = array_map(fn ($image, $key) => [
+            $payload['advertisement_banners'] = array_map(fn($image, $key) => [
                 'image' => $image,
                 'alt' => $payload['alt'][$key] ?? '',
                 'content' => $payload['content'][$key] ?? '',
@@ -134,14 +134,14 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         }
 
         return $repositoryInstance->findByWhereIn($item->model_ids)
-            ->flatMap(fn ($modelItem) => (
+            ->flatMap(fn($modelItem) => (
                 $repositoryInstance->findById($modelItem->id)
-                    ->with('products.variants')
-                    ->where('publish', 1)
-                    ->first()
-                    ?->products
-                    ->filter(fn ($product) => $product->publish === 1)
-                    ->flatMap(fn ($product) => $product->variants)
+                ->with('products.variants')
+                ->where('publish', 1)
+                ->first()
+                ?->products
+                ->filter(fn($product) => $product->publish === 1)
+                ->flatMap(fn($product) => $product->variants)
             ))
             ->unique('id')
             ->filter();

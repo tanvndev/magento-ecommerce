@@ -10,7 +10,12 @@
       <form @submit.prevent="onSubmit">
         <AleartError :errors="state.errors" />
         <div class="mb-5">
-          <InputComponent label="Địa chỉ email" name="email" type="text" />
+          <InputComponent
+            label="Địa chỉ email"
+            name="email"
+            type="text"
+            placeholder="Nhập địa chỉ email"
+          />
         </div>
         <a-button
           :loading="state.loading"
