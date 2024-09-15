@@ -1,10 +1,21 @@
 <template>
-  <div class="flex">
-    <h1 class="text-[16px] capitalize">Danh sách sản phẩm</h1>
-    <TooltipComponent
-      title="Bán thêm là các sản phẩm mà bạn gợi ý khách hàng mua thay vì các sản phẩm họ đang xem, ví dụ, sản phẩm có lợi nhuận cao hơn hoặc tốt hơn hoặc đắt hơn."
-    />
+  <div class="flex items-center justify-between">
+    <h1 class="text-[16px] capitalize">
+      Danh sách sản phẩm
+      <TooltipComponent
+        title="Bán thêm là các sản phẩm mà bạn gợi ý khách hàng mua thay vì các sản phẩm họ đang xem, ví dụ, sản phẩm có lợi nhuận cao hơn hoặc tốt hơn hoặc đắt hơn."
+      />
+    </h1>
+    <h2
+      class="inline-block text-[14px] capitalize text-green-500"
+      :class="{
+        'text-red-500': state.productVariants?.length == 0 || state.productVariants?.length > 50
+      }"
+    >
+      Sản phẩm: {{ state.productVariants?.length }}
+    </h2>
   </div>
+
   <div class="mt-1">
     <a-input
       @click="state.open = true"
@@ -73,7 +84,10 @@
                     :alt="record.name"
                   />
                 </div>
-                <span class="ml-2">{{ record.name }}</span>
+                <div class="ml-3">
+                  <span>{{ record.name }}</span>
+                  <small class="block text-primary-500">{{ record.attribute_values }}</small>
+                </div>
               </div>
             </template>
             <template v-if="column.dataIndex === 'price'">

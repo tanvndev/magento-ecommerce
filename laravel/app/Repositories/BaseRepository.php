@@ -131,6 +131,10 @@ class BaseRepository implements BaseRepositoryInterface
             }
         }
 
+        if (! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
+            $query->onlyTrashed();
+        }
+
         //Phương thức withQueryString() trong Laravel được sử dụng để giữ nguyên các tham số truy vấn
         return $query->paginate($perPage)->withQueryString();
     }
@@ -234,5 +238,15 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->newQuery();
 
         return $query->customWhere($conditions)->forceDelete();
+    }
+
+    public function forceDeleteByWhereIn($whereInField = '', $whereIn = [])
+    {
+        return $this->model->whereIn($whereInField, $whereIn)->forceDelete();
+    }
+
+    public function restoreByWhereIn($whereInField = '', $whereIn = [])
+    {
+        return $this->model->whereIn($whereInField, $whereIn)->restore();
     }
 }

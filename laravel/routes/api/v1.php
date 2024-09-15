@@ -69,6 +69,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::put('changeStatus', [DashboardController::class, 'changeStatus'])->name('changeStatus');
             Route::put('changeStatusMultiple', [DashboardController::class, 'changeStatusMultiple'])->name('changeStatusMultiple');
             Route::delete('deleteMultiple', [DashboardController::class, 'deleteMultiple'])->name('deleteMultiple');
+            Route::put('archiveMultiple', [DashboardController::class, 'archiveMultiple'])->name('archiveMultiple');
             Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
 

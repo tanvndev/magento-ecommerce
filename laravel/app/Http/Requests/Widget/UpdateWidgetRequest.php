@@ -21,17 +21,32 @@ class UpdateWidgetRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => 'required',
-            'canonical' => 'unique:brands,canonical,'.$this->brand,
+            'type' => 'required',
         ];
+
+        if ($this->type == 'product') {
+            $rules['model_ids'] = 'required|array';
+        }
+
+        if ($this->type == 'advertisement') {
+            $rules['image.*'] = 'required';
+            $rules['url.*'] = 'required';
+        }
+
+        return $rules;
     }
 
     public function attributes()
     {
         return [
+            'image.*' => 'Hình ảnh',
+            'url.*' => 'Đường dẫn',
             'name' => 'Tên thương hiệu',
+            'type' => 'Loại widget',
             'canonical' => 'Đường dẫn',
+            'model_ids' => 'Danh sách sản phẩm',
         ];
     }
 

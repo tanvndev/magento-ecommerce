@@ -88,9 +88,10 @@ import {
   EditOrderComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
-import { resizeImage } from '@/utils/helpers';
+import { debounce, resizeImage } from '@/utils/helpers';
 import { RouterLink } from 'vue-router';
 import { WIDGET_TYPE, WIDGET_MODEL } from '@/static/constants';
+import { useRoute } from 'vue-router';
 
 // STATE
 const state = reactive({
@@ -117,9 +118,10 @@ const columns = [
     key: 'type'
   },
   {
-    title: 'Module',
-    dataIndex: 'model',
-    key: 'model'
+    title: 'Tổng sản phẩm',
+    dataIndex: 'productCount',
+    key: 'productCount',
+    sorter: (a, b) => a.productCount - b.productCount
   },
   {
     title: 'Vị trí',
@@ -136,7 +138,7 @@ const columns = [
 ];
 
 const { getAll, loading } = useCRUD();
-
+const route = useRoute();
 const typeName = (type) => WIDGET_TYPE.find((item) => item.value === type)?.label || '-';
 const modelName = (model) => WIDGET_MODEL.find((item) => item.value === model)?.label || '-';
 
@@ -164,12 +166,23 @@ const fetchData = async () => {
   pagination.pageSize = response.per_page;
 };
 
+const deboucedFetchData = debounce(fetchData, 500);
+
 // Watchers
 watch(onChangePagination, () => fetchData());
 watch(selectedRows, () => {
   state.isShowToolbox = selectedRows.value.length > 0;
   state.modelIds = selectedRowKeys.value;
 });
+watch(
+  () => route.query.archive,
+  (newValue) => {
+
+    state.filterOptions.archive = newValue === 'true' ? true : false;
+    state.pageTitle = newValue === 'true' ? 'Danh sách lưu trữ widget' : 'Danh sách widget';
+    deboucedFetchData();
+  }
+);
 
 const onFilterOptions = (filterValue) => {
   state.filterOptions = filterValue;

@@ -1,6 +1,14 @@
 <template>
-  <div class="flex">
-    <h1 class="text-[16px] capitalize">Danh sách sản phẩm</h1>
+  <div class="flex items-center justify-between">
+    <h1 class="text-[16px] capitalize">Danh sách sản phẩm (Tối đa 50)</h1>
+    <h2
+      class="text-green-500 text-[14px] capitalize"
+      :class="{
+        'text-red-500': state.productVariants?.length == 0 || state.productVariants?.length > 50
+      }"
+    >
+      Sản phẩm: {{ state.productVariants?.length }}
+    </h2>
   </div>
   <div class="mt-1">
     <a-input
@@ -26,7 +34,10 @@
             <div class="rounded border p-1">
               <img class="h-[50px] w-[50px] object-cover" :src="resizeImage(item.image, 100)" />
             </div>
-            <span class="ml-2">{{ item.name }}</span>
+            <div class="ml-3">
+              <span>{{ item.name }}</span>
+              <small class="block text-primary-500">{{ item.attribute_values }}</small>
+            </div>
           </div>
           <a-button @click="handleDeleteRow(item.id)" type="primary" danger class="ml-2">
             <i class="fas fa-trash-alt"></i>
@@ -36,7 +47,7 @@
     </a-row>
 
     <!-- Modal -->
-    <a-modal v-model:open="state.open" width="1000px" title="Nhập tìm kiếm sản phẩm" class="top-3">
+    <a-modal v-model:open="state.open" width="1500px" title="Nhập tìm kiếm sản phẩm" class="top-3">
       <div class="mt-5">
         <a-input
           v-model:value="state.search"
@@ -49,6 +60,27 @@
           </template>
         </a-input>
       </div>
+      <div class="mt-5">
+        <a-row :gutter="[16, 16]">
+          <a-col span="8">
+            <SelectComponent
+              name="brand_id"
+              :options="state.brands"
+              @onChange="handleGetBrandIds"
+              placeholder="Lựa chọn thương hiệu sản phẩm"
+            />
+          </a-col>
+
+          <a-col span="16">
+            <TreeSelectComponent
+              name="catalogue_ids"
+              :options="state.productCatalogues"
+              @onChange="handleGetCatalogueIds"
+              placeholder="Lựa chọn nhóm sản phẩm"
+            />
+          </a-col>
+        </a-row>
+      </div>
       <div class="my-5 border-t pt-5" v-if="state.dataSource.length > 0">
         <a-table
           bordered
@@ -56,7 +88,7 @@
           :data-source="state.dataSource"
           :row-selection="rowSelection"
           :pagination="pagination"
-          :scroll="{ y: '65vh' }"
+          :scroll="{ y: '57vh' }"
           :loading="loading"
           @change="handleTableChange"
         >
@@ -70,7 +102,10 @@
                     :alt="record.name"
                   />
                 </div>
-                <span class="ml-2">{{ record.name }}</span>
+                <div class="ml-3">
+                  <span>{{ record.name }}</span>
+                  <small class="block text-primary-500">{{ record.attribute_values }}</small>
+                </div>
               </div>
             </template>
             <template v-if="column.dataIndex === 'price'">
@@ -106,10 +141,11 @@
 </template>
 <script setup>
 import { useCRUD, usePagination } from '@/composables';
-import { formatCurrency } from '@/utils/format';
+import { formatCurrency, formatDataToSelect, formatDataToTreeSelect } from '@/utils/format';
 import { debounce, resizeImage } from '@/utils/helpers';
 import { useField } from 'vee-validate';
 import { reactive, watch, onMounted } from 'vue';
+import { SelectComponent, TreeSelectComponent } from '@/components/backend';
 
 // STATE
 const state = reactive({
@@ -120,7 +156,9 @@ const state = reactive({
   open: false,
   search: '',
   productVariantIds: [],
-  productVariants: []
+  productVariants: [],
+  productCatalogues: [],
+  brands: []
 });
 
 const columns = [
@@ -143,7 +181,7 @@ const columns = [
   }
 ];
 
-const { getAll, loading } = useCRUD();
+const { getAll, loading, data } = useCRUD();
 
 // Pagination
 const {
@@ -169,7 +207,6 @@ const fetchData = async () => {
     pageSize: pagination.pageSize,
     ...state.filterOptions
   };
-  console.log(payload);
   const response = await getAll(state.endpoint, payload);
   state.dataSource = response.data;
   pagination.current = response.current_page;
@@ -181,9 +218,7 @@ const fetchData = async () => {
 watch(onChangePagination, () => fetchData());
 
 const debounceHandleSearch = debounce(() => {
-  state.filterOptions = {
-    search: state.search
-  };
+  state.filterOptions.search = state.search;
   fetchData();
 }, 400);
 
@@ -222,6 +257,29 @@ const fetchProductVariants = async (ids) => {
   }
 };
 
+const debouncedFetchData = debounce(fetchData, 800);
+
+const handleGetBrandIds = (brandId) => {
+  state.filterOptions.brand_id = brandId;
+  debouncedFetchData();
+};
+
+const handleGetCatalogueIds = (catalogueIds) => {
+  const catalogueIdsJson = JSON.stringify(catalogueIds ?? []);
+  state.filterOptions.catalogues = catalogueIdsJson;
+  debouncedFetchData();
+};
+
+const getProductCatalogues = async () => {
+  await getAll('products/catalogues');
+  state.productCatalogues = formatDataToTreeSelect(data.value);
+};
+
+const getBrands = async () => {
+  await getAll('brands');
+  state.brands = formatDataToSelect(data.value);
+};
+
 // Modify the watch function
 watch(
   () => props.oldValue,
@@ -235,6 +293,8 @@ watch(
 
 // Add onMounted hook
 onMounted(() => {
+  getProductCatalogues();
+  getBrands();
   if (props.oldValue && props.oldValue.length > 0) {
     fetchProductVariants(props.oldValue);
   }

@@ -21,6 +21,10 @@ return [
         'success' => 'Cập nhập trạng thái thành công.',
         'error' => 'Cập nhập trạng thái thất bại.',
     ],
+    'action' => [
+        'success' => 'Thao tác thành công.',
+        'error' => 'Thao tác thất bại.',
+    ],
     'upload' => [
         'create' => [
             'success' => 'Tải lên tệp mới thành công.',

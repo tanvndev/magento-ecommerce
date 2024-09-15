@@ -80,8 +80,8 @@ import {
   ToolboxComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
-import { RouterLink } from 'vue-router';
-import { resizeImage } from '@/utils/helpers';
+import { RouterLink, useRoute } from 'vue-router';
+import { debounce, resizeImage } from '@/utils/helpers';
 
 // STATE
 const state = reactive({
@@ -133,6 +133,7 @@ const columns = [
 ];
 
 const { getAll, loading } = useCRUD();
+const route = useRoute();
 
 // Pagination
 const {
@@ -158,13 +159,23 @@ const fetchData = async () => {
   pagination.pageSize = response.per_page;
 };
 
+const deboucedFetchData = debounce(fetchData, 500);
+
 // Watchers
 watch(onChangePagination, () => fetchData());
 watch(selectedRows, () => {
   state.isShowToolbox = selectedRows.value.length > 0;
   state.modelIds = selectedRowKeys.value;
 });
-
+watch(
+  () => route.query.archive,
+  (newValue) => {
+    state.filterOptions.archive = newValue === 'true' ? true : false;
+    state.pageTitle =
+      newValue === 'true' ? 'Danh sách lưu trữ thương hiệu' : 'Danh sách thương hiệu';
+    deboucedFetchData();
+  }
+);
 const onFilterOptions = (filterValue) => {
   state.filterOptions = filterValue;
   fetchData();
@@ -172,10 +183,6 @@ const onFilterOptions = (filterValue) => {
 
 const onChangeToolbox = () => {
   fetchData();
-};
-
-const onDelete = (key) => {
-  state.dataSource = state.dataSource.filter((item) => item.key !== key);
 };
 
 // Lifecycle hook
