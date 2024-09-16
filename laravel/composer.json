@@ -61,7 +61,8 @@
         "pint": "pint",
         "dev": "php artisan serve",
         "clear": "php artisan optimize:clear",
-        "link": "php artisan storage:link"
+        "link": "php artisan storage:link",
+        "route": "php artisan route:list"
     },
     "extra": {
         "laravel": {

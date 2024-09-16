@@ -24,11 +24,13 @@ class AuthService extends BaseService implements AuthServiceInterface
     public function register()
     {
         return $this->executeInTransaction(function () {
+            $request = request();
+
             $user = null;
             // Kiem tra xem nguoi dung da dang ky truoc do chua
             $user = $this->userRepository->findByWhere(
                 [
-                    'email' => ['=', request()->email],
+                    'email' => ['=', $request->email],
                 ]
             );
 
@@ -40,12 +42,12 @@ class AuthService extends BaseService implements AuthServiceInterface
             }
 
             $user = $this->userRepository->create([
-                'fullname' => request()->fullname,
+                'fullname' => $request->fullname,
                 'user_catalogue_id' => 3,
-                'email' => request()->email,
-                'ip' => request()->ip(),
-                'user_agent' => request()->header('User-Agent'),
-                'password' => Hash::make(request()->password),
+                'email' => $request->email,
+                'ip' => $request->ip(),
+                'user_agent' => $request->header('User-Agent'),
+                'password' => Hash::make($request->password),
             ]);
 
             // Send email verification notification

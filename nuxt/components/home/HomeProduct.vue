@@ -142,7 +142,6 @@ const addToCart = async (variantId) => {
 
   const payload = {
     product_variant_id: variantId,
-    quantity: 1,
   }
 
   const response = await $axios.post('/carts', payload)

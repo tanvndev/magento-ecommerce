@@ -20,13 +20,15 @@ class AttributeService extends BaseService implements AttributeServiceInterface
 
     public function paginate()
     {
+        $request = request();
+
         $condition = [
-            'search' => addslashes(request('search')),
+            'search' => addslashes($request->search),
         ];
         $select = ['id', 'name', 'code', 'description'];
         $pageSize = request('pageSize');
 
-        $data = $pageSize && request('page')
+        $data = $pageSize && $request->page
             ? $this->attributeRepository->pagination($select, $condition, $pageSize)
             : $this->attributeRepository->all($select, ['attribute_values']);
 

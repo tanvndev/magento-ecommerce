@@ -35,10 +35,12 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     public function paginate()
     {
+        $request = request();
+
         $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
-            'archive' => request()->boolean('archive'),
+            'search' => addslashes($request->search),
+            'publish' => $request->publish,
+            'archive' => $request->boolean('archive'),
         ];
 
         $select = ['id', 'name', 'brand_id', 'publish', 'product_type', 'upsell_ids', 'canonical', 'meta_title', 'meta_description', 'shipping_ids'];
@@ -48,7 +50,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $data = $this->productRepository->pagination(
             $select,
             $condition,
-            request('pageSize'),
+            $request->pageSize,
             $orderBy,
             [],
             $relations

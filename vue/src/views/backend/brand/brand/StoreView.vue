@@ -24,7 +24,7 @@
                         </a-col>
 
                         <a-col :span="8">
-                            <a-card class="mt-3" title="Ảnh danh mục">
+                            <a-card class="mt-3" title="Ảnh thương hiệu">
                                 <InputFinderComponent name="image" />
                             </a-card>
                         </a-col>

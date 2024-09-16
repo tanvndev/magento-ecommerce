@@ -22,16 +22,18 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
 
     public function paginate()
     {
+        $request = request();
+
         $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
+            'search' => addslashes($request->search),
+            'publish' => $request->publish,
             'searchFields' => ['canonical'],
         ];
 
         $select = ['id', 'name', 'canonical'];
-        $pageSize = request('pageSize');
+        $pageSize = $request->pageSize;
 
-        $data = $pageSize && request('page')
+        $data = $pageSize && $request->page
             ? $this->permissionRepository->pagination($select, $condition, $pageSize)
             : $this->permissionRepository->all($select);
 
