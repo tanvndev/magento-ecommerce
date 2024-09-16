@@ -87,4 +87,10 @@ class ProductVariant extends Model
     {
         return $this->hasMany(CartItem::class);
     }
+
+    //relationship Wishlist
+    public function wishLists()
+    {
+        return $this->hasMany(WishList::class);
+    }
 }
