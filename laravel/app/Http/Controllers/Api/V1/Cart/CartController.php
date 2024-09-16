@@ -59,7 +59,9 @@ class CartController extends Controller
     {
         $response = $this->cartService->deleteOneItem($id);
 
-        return handleResponse($response);
+        $data = new CartCollection($response);
+
+        return successResponse('', $data);
     }
 
     public function forceDestroy()
@@ -71,9 +73,10 @@ class CartController extends Controller
 
     public function handleSelected(Request $request)
     {
-
         $response = $this->cartService->handleSelected($request);
 
-        return handleResponse($response);
+        $data = new CartCollection($response);
+
+        return successResponse('', $data);
     }
 }

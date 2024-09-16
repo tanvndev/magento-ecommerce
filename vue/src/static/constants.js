@@ -92,6 +92,32 @@ const WIDGET_TYPE = [
   }
 ];
 
+const DISCOUNT_TYPE = [
+  {
+    value: 'fixed',
+    label: 'Số tiền (₫)'
+  },
+  {
+    value: 'percentage',
+    label: 'Phần chăm (%)'
+  }
+];
+
+const DISCOUNT_CONDITION_APPLY = [
+  {
+    value: 'all',
+    label: 'Không có'
+  },
+  {
+    value: 'subtotal_price',
+    label: 'Tổng giá trị đơn hàng tối thiểu'
+  },
+  {
+    value: 'min_quantity',
+    label: 'Tổng số lượng sản phẩm được khuyến mại tối thiểu'
+  }
+];
+
 export {
   PUBLISH,
   PAGESIZE,
@@ -102,5 +128,7 @@ export {
   LARAVEL_URL,
   WIDGET_MODEL,
   WIDGET_TYPE,
-  NUXT_URL
+  NUXT_URL,
+  DISCOUNT_TYPE,
+  DISCOUNT_CONDITION_APPLY
 };

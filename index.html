@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General</title>
+</head>
+
+<body>
+    <div id="app"> </div>
+</body>
+<script>
+    for (let i = 17; i <= 100; i++) {
+        let text = `
+        .-pt-${i} {
+            padding-top: -${i}px;
+        }
+        .-pb-${i} {
+            padding-bottom: -${i}px;
+        }
+        .-pl-${i} {
+            padding-left: -${i}px;
+        }
+        .-pr-${i} {
+            padding-right: -${i}px;
+        }
+        `
+        document.getElementById('app').innerHTML += text
+
+    }
+
+</script>
+
+</html>

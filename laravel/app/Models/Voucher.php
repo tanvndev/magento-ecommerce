@@ -11,15 +11,23 @@ class Voucher extends Model
 {
     use HasFactory, QueryScopes, SoftDeletes;
 
+    const SUBTOTAL_PRICE = 'subtotal_price';
+    const MIN_QUANTITY = 'min_quantity';
+    const ALL = 'all';
+    const TYPE_FIXED = 'fixed';
+    const TYPE_PERCENT = 'percentage';
+
     protected $fillable = [
         'name',
         'code',
         'image',
         'description',
-        'discount_type',
-        'discount_value',
+        'value_type',
+        'value',
+        'value_limit_amount',
         'quantity',
-        'min_order_value',
+        'condition_apply',
+        'subtotal_price',
         'min_quantity',
         'start_at',
         'end_at',

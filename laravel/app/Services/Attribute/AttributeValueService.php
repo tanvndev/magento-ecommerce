@@ -20,26 +20,28 @@ class AttributeValueService extends BaseService implements AttributeValueService
 
     public function paginate()
     {
+        $request = request();
+
         $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
+            'search' => addslashes($request->search),
+            'publish' => $request->publish,
 
         ];
 
-        if (! empty(request('attribute_id'))) {
+        if (! empty($request->attribute_id)) {
             $condition['where'] = [
-                'attribute_id' => ['=', request('attribute_id')],
+                'attribute_id' => ['=', $request->attribute_id],
             ];
         }
 
         $select = ['id', 'name', 'attribute_id'];
 
-        $data = request('pageSize') && request('page')
+        $data = $request->pageSize && $request->page
             ?
             $this->attributeValueRepository->pagination(
                 $select,
                 $condition,
-                request('pageSize'),
+                $request->pageSize,
                 ['id' => 'desc'],
                 [],
                 ['attribute'],
