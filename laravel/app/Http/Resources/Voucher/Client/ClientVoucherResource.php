@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Voucher;
+namespace App\Http\Resources\Voucher\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Carbon\Carbon;
 
-class VoucherResource extends JsonResource
+class ClientVoucherResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,24 +17,14 @@ class VoucherResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'key' => $this->id,
             'name' => $this->name,
             'code' => $this->code,
             'image' => $this->image,
             'description' => $this->description,
             'value_type' => $this->value_type,
             'value' => $this->value,
-            'quantity' => $this->quantity,
-            'value_limit_amount' => $this->value_limit_amount,
-            'subtotal_price' => $this->subtotal_price,
-            'min_quantity' => $this->min_quantity,
-            'condition_apply' => $this->condition_apply,
             'status' => $this->getStatus(),
-            'voucher_time' => [
-                $this->start_at,
-                $this->end_at,
-            ],
-            'publish' => $this->publish,
+            'expired' => $this->end_at,
             'text_description' => $this->getTextDescription()
         ];
     }
@@ -47,28 +37,28 @@ class VoucherResource extends JsonResource
 
         if ($this->quantity <= 0) {
             return [
-                'color' => 'red',
+                'color' => 'inactive',
                 'text' => 'Đã hết lượt sử dụng',
             ];
         }
 
         if ($this->publish == 2) {
             return [
-                'color' => 'red',
+                'color' => 'inactive',
                 'text' => 'Chưa kích hoạt',
             ];
         }
 
         if ($start && $end && ($now->lt($start) || $now->gt($end))) {
             return [
-                'color' => 'red',
+                'color' => 'inactive',
                 'text' => 'Đã hết hạn',
             ];
         }
 
         return [
-            'color' => 'green',
-            'text' => 'Đang áp dụng',
+            'color' => 'active',
+            'text' => 'Sử dụng ngay',
         ];
     }
 

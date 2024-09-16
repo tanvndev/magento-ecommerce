@@ -23,9 +23,9 @@ class StoreVoucherRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => 'required|max:255',
+            'name' => 'required',
             'value_type' => 'required',
-            'code' => 'required|unique',
+            'code' => 'required|unique:vouchers',
             'value' => 'required',
             'quantity' => 'required|integer|min:1',
             'voucher_time' => 'required',
@@ -43,6 +43,7 @@ class StoreVoucherRequest extends FormRequest
         if ($this->value_type == Voucher::TYPE_PERCENT) {
             $rules['value'] = 'required|integer|min:1|max:100';
         }
+
 
         return $rules;
     }

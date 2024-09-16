@@ -73,7 +73,9 @@
                     <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
                       {{ cart.name }}
                     </NuxtLink>
-                    <span class="d-block mt-1 fs-13" style="color: #336699;">{{ cart.attributes }}</span>
+                    <span class="d-block mt-1 fs-13" style="color: #336699">{{
+                      cart.attributes
+                    }}</span>
                   </td>
                   <td class="text-right">
                     <div class="product-price">
@@ -239,7 +241,10 @@ const handleCheckboxChange = (event, index) => {
 
 const getCarts = async () => {
   await cartStore.getAllCarts()
+  handleSelectCart()
+}
 
+const handleSelectCart = () => {
   carts.value?.forEach((cart, index) => {
     if (cart.is_selected) {
       checkedItems.value[index] = cart.product_variant_id
@@ -281,6 +286,8 @@ const handleRemove = async (variantId) => {
   const response = await $axios.delete(`/carts/${variantId}`)
   cartStore.setTotalAmount(response.data?.total_amount)
   cartStore.setCarts(response.data?.items)
+  checkedItems.value = []
+  handleSelectCart()
 }
 
 const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
