@@ -70,4 +70,14 @@ return [
             'error' => 'Đặt lại mật khẩu thất bại.',
         ],
     ],
+    'wishList' => [
+        'create' => [
+            'error' => 'Sản phẩm đã tồn tại trong danh mục ưa thích.',
+            'success' => 'Thêm sản phẩm vào danh mục ưa thích thành công',
+        ],
+        'delete' => [
+            'success' => 'Xóa sản phẩm khỏi danh mục ưa thích thành công',
+        ]
+
+    ]
 ];

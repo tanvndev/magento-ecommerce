@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\WishList\WishListController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,3 +41,5 @@ Route::post('carts', [TestController::class, 'createOrUpdateCart']);
 //         'messages'
 //     ));
 // })->name('notifications');
+
+Route::get('test', [WishListController::class, 'index']);

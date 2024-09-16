@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use App\Http\Controllers\Api\V1\Voucher\VoucherController;
 use App\Http\Controllers\Api\V1\Widget\WidgetController;
+use App\Http\Controllers\Api\V1\WishList\WishListController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -124,6 +125,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
         // VOUCHER ROUTE
 
         Route::apiResource('vouchers', VoucherController::class);
+
+        // WISHLIST ROUTE
+        Route::apiResource('wish-list', WishListController::class);
     });
 
     // CART ROUTE

@@ -52,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
         // Voucher
         'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
+        // WishList
+        'App\Services\Interfaces\WishList\WishListServiceInterface' => 'App\Services\WishList\WishListService',
     ];
 
     public function register(): void
