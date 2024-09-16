@@ -43,6 +43,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('getAllWidgetCode', [WidgetController::class, 'getAllWidgetCode']);
     Route::get('getWidget/{code}', [WidgetController::class, 'getWidget']);
     Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
+    Route::get('getAllVouchers', [VoucherController::class, 'getAllVoucher']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {

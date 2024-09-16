@@ -176,6 +176,7 @@ const store = useStore();
 const { getOne, create, update, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 import { handleDateChangeToAnt } from '@/utils/helpers';
+import { message } from 'ant-design-vue';
 
 // STATE
 const state = reactive({
@@ -212,9 +213,9 @@ const onSubmit = handleSubmit(async (values) => {
     return (state.errors = formatMessages(messages.value));
   }
 
-  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  message.success(response.messages);
   state.errors = {};
-  router.push({ name: 'brand.index' });
+  router.push({ name: 'voucher.index' });
 });
 
 const fetchOne = async () => {

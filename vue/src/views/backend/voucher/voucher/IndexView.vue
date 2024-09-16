@@ -47,7 +47,7 @@
                   >{{ record.name }}
                 </RouterLink>
                 <p class="mb-0 mt-1">
-                  {{ getText(record) }}
+                  {{ record.text_description }}
                 </p>
               </template>
 
@@ -211,35 +211,6 @@ const onFilterOptions = (filterValue) => {
 
 const onChangeToolbox = () => {
   fetchData();
-};
-
-const getText = (record) => {
-  const { value_type, value, value_limit_amount, condition_apply, min_quantity, subtotal_price } =
-    record;
-
-  let texts = '';
-
-  if (value_type == 'percentage') {
-    texts += `Giảm ${value}% `;
-    if (value_limit_amount) {
-      const valueLimitAmount = formatCurrency(value_limit_amount);
-      texts += `tối đa ${valueLimitAmount} cho toàn bộ đơn hàng.`;
-    }
-  } else {
-    const formattedValue = formatCurrency(value);
-    texts += `Giảm ${formattedValue} cho toàn bộ đơn hàng.`;
-  }
-
-  if (condition_apply == 'min_quantity' && min_quantity) {
-    texts += ` • Số lượng sản phẩm ≥ ${min_quantity}.`;
-  }
-
-  if (condition_apply == 'subtotal_price' && subtotal_price) {
-    const formattedSubtotalPrice = formatCurrency(subtotal_price);
-    texts += ` • Tổng giá trị sản phẩm được khuyến mại ≥ ${formattedSubtotalPrice}.`;
-  }
-
-  return texts;
 };
 
 // Lifecycle hook

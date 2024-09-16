@@ -1,54 +1,56 @@
 <template>
-  <div v-if="isVisible" class="spinner-overlay">
-    <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
-      <circle
-        class="pl__ring pl__ring--a"
-        cx="120"
-        cy="120"
-        r="105"
-        fill="none"
-        stroke="#000"
-        stroke-width="20"
-        stroke-dasharray="0 660"
-        stroke-dashoffset="-330"
-        stroke-linecap="round"
-      ></circle>
-      <circle
-        class="pl__ring pl__ring--b"
-        cx="120"
-        cy="120"
-        r="35"
-        fill="none"
-        stroke="#000"
-        stroke-width="20"
-        stroke-dasharray="0 220"
-        stroke-dashoffset="-110"
-        stroke-linecap="round"
-      ></circle>
-      <circle
-        class="pl__ring pl__ring--c"
-        cx="85"
-        cy="120"
-        r="70"
-        fill="none"
-        stroke="#000"
-        stroke-width="20"
-        stroke-dasharray="0 440"
-        stroke-linecap="round"
-      ></circle>
-      <circle
-        class="pl__ring pl__ring--d"
-        cx="155"
-        cy="120"
-        r="70"
-        fill="none"
-        stroke="#000"
-        stroke-width="20"
-        stroke-dasharray="0 440"
-        stroke-linecap="round"
-      ></circle>
-    </svg>
-  </div>
+  <Transition name="fade">
+    <div v-if="isVisible" class="spinner-overlay">
+      <svg class="pl" width="240" height="240" viewBox="0 0 240 240">
+        <circle
+          class="pl__ring pl__ring--a"
+          cx="120"
+          cy="120"
+          r="105"
+          fill="none"
+          stroke="#000"
+          stroke-width="20"
+          stroke-dasharray="0 660"
+          stroke-dashoffset="-330"
+          stroke-linecap="round"
+        ></circle>
+        <circle
+          class="pl__ring pl__ring--b"
+          cx="120"
+          cy="120"
+          r="35"
+          fill="none"
+          stroke="#000"
+          stroke-width="20"
+          stroke-dasharray="0 220"
+          stroke-dashoffset="-110"
+          stroke-linecap="round"
+        ></circle>
+        <circle
+          class="pl__ring pl__ring--c"
+          cx="85"
+          cy="120"
+          r="70"
+          fill="none"
+          stroke="#000"
+          stroke-width="20"
+          stroke-dasharray="0 440"
+          stroke-linecap="round"
+        ></circle>
+        <circle
+          class="pl__ring pl__ring--d"
+          cx="155"
+          cy="120"
+          r="70"
+          fill="none"
+          stroke="#000"
+          stroke-width="20"
+          stroke-dasharray="0 440"
+          stroke-linecap="round"
+        ></circle>
+      </svg>
+    </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -82,6 +84,16 @@ watchEffect(() => {
   background-color: #e8e8e8; /* Màu nền tối */
   z-index: 9999999999; /* Đảm bảo overlay nằm trên tất cả các nội dung khác */
   pointer-events: all; /* Chặn các sự kiện tương tác với các phần tử phía dưới */
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .pl {

@@ -7,7 +7,6 @@ namespace App\Services\Voucher;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Voucher\VoucherServiceInterface;
-use Illuminate\Support\Str;
 
 class VoucherService extends BaseService implements VoucherServiceInterface
 {
@@ -93,5 +92,43 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         $payload['end_at'] = convertToYyyyMmDdHhMmSs($payload['voucher_time'][1] ?? null);
 
         return $payload;
+    }
+
+
+    // CLIENT API //
+
+    public function getAllVoucher()
+    {
+        $request = request();
+
+        $select = [
+            'id',
+            'name',
+            'code',
+            'image',
+            'description',
+            'value_type',
+            'value',
+            'value_limit_amount',
+            'quantity',
+            'condition_apply',
+            'subtotal_price',
+            'min_quantity',
+            'start_at',
+            'end_at',
+        ];
+
+        $condition = [
+            'where' => [
+                'publish' => 1,
+                'start_at' => ['<=', date('Y-m-d H:i:s')],
+            ],
+        ];
+
+        $pageSize = $request->pageSize;
+
+        $data = $this->voucherRepository->pagination($select, $condition, $pageSize);
+
+        return $data;
     }
 }
