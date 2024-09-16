@@ -26,7 +26,7 @@ class CartService extends BaseService implements CartServiceInterface
 
         $userId = auth()->user()->id;
 
-        // $this->addToCartFromSession($userId);
+        $this->checkStockProductAndUpdateCart($userId);
 
         $cart = $this->cartRepository->findByWhere(
             ['user_id' => $userId],
@@ -86,11 +86,11 @@ class CartService extends BaseService implements CartServiceInterface
         ]);
     }
 
-    public function addToCartFromSession($userId)
+    public function checkStockProductAndUpdateCart($userId)
     {
         $cart = $this->cartRepository->findByWhere($userId);
 
-        if ($cart->cart_items()->count() > 0) {
+        if ($cart->cart_items->count() > 0) {
             foreach ($cart->cart_items as $item) {
                 $productVariant = $this->productVariantRepository->findById($item->product_variant_id);
                 if ($productVariant->stock < $item->quantity) {
@@ -117,7 +117,7 @@ class CartService extends BaseService implements CartServiceInterface
                 $cartItem->delete();
             }
 
-            return successResponse(__('messages.cart.success.delete'));
+            return $this->getCart();
         }, __('messages.cart.error.item_not_found'));
     }
 
@@ -131,7 +131,7 @@ class CartService extends BaseService implements CartServiceInterface
                 return errorResponse(__('messages.cart.error.cart_not_found'));
             }
 
-            $user->cart->delete();
+            $user->cart->cart_items()->delete();
 
             return successResponse(__('messages.cart.success.clean'));
         }, __('messages.cart.error.delete'));
@@ -162,7 +162,7 @@ class CartService extends BaseService implements CartServiceInterface
                 $cart->cart_items()->update(['is_selected' => $result]);
             }
 
-            return successResponse(__('messages.cart.success.publish'));
+            return $this->getCart();
         }, __('messages.cart.error.not_found'));
     }
 }
