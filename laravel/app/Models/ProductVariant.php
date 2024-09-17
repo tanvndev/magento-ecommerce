@@ -67,7 +67,7 @@ class ProductVariant extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $slug = "{$originalSlug}-".$count++;
+            $slug = "{$originalSlug}-" . $count++;
         }
 
         return $slug;
@@ -86,5 +86,10 @@ class ProductVariant extends Model
     public function cart_items()
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    public function order_items()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }
