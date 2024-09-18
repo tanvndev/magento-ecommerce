@@ -86,7 +86,7 @@ class BaseService implements BaseServiceInterface
 
             return $result;
         } catch (\Exception $e) {
-            // getError($e);
+            getError($e);
 
             Log::error('>>Transaction failed<<', [
                 'message' => $e->getMessage(),

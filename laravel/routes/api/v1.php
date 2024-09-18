@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
+use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
@@ -44,6 +45,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('getWidget/{code}', [WidgetController::class, 'getWidget']);
     Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
     Route::get('getAllVouchers', [VoucherController::class, 'getAllVoucher']);
+
+    // Order
+    Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
@@ -123,7 +127,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::apiResource('widgets', WidgetController::class);
 
         // VOUCHER ROUTE
-
         Route::apiResource('vouchers', VoucherController::class);
     });
 

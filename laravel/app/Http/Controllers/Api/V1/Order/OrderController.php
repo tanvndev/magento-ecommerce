@@ -22,19 +22,19 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-        // Tra ve mot mang
-        $order = $this->orderService->order();
-        if (!empty($order)) {
-            $request->session()->put('orderSuccess', $order);
+        $order = $this->orderService->create();
+        dd($order);
+        // if (!empty($order)) {
+        //     $request->session()->put('orderSuccess', $order);
 
-            $response = $this->handlePaymentMethod($order);
-            if ($response['code'] == 00) {
-                return redirect()->away($response['url']);
-            }
+        //     $response = $this->handlePaymentMethod($order);
+        //     if ($response['code'] == 00) {
+        //         return redirect()->away($response['url']);
+        //     }
 
-            return redirect()->route('cart.success')->with('toast_success', 'Đặt hàng thành công.');
-        }
-        return redirect()->back()->with('toast_error', 'Đặt hàng thất bại, vui lòng đặt lại!');
+        //     return redirect()->route('cart.success')->with('toast_success', 'Đặt hàng thành công.');
+        // }
+        // return redirect()->back()->with('toast_error', 'Đặt hàng thất bại, vui lòng đặt lại!');
     }
 
     private function handlePaymentMethod($order = null)

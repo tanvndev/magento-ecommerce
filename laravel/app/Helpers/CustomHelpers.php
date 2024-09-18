@@ -105,6 +105,20 @@ if (! function_exists('convertPrice')) {
         return $price;
     }
 }
+
+if (! function_exists('generateOrderCode')) {
+
+    function generateOrderCode($prefix = 'ORD')
+    {
+        $prefix = strtoupper($prefix);
+        $date = date('Ymd');
+        $uniqueId = uniqid();
+        $uniqueHash = substr(md5($uniqueId), 0, 6);
+        $orderCode = $prefix  . $date  . strtoupper($uniqueHash);
+        return $orderCode;
+    }
+}
+
 if (! function_exists('formatCurrency')) {
 
     function formatCurrency($amount, string $currencyCode = 'vn')
@@ -326,7 +340,7 @@ if (! function_exists('handleResponse')) {
     function handleResponse($response, $successCode = 200)
     {
         $status = $response['status'] ?? '';
-        
+
         $statusCode =  $status === 'success' ? $successCode : 500;
 
         return response()->json($response, $statusCode);

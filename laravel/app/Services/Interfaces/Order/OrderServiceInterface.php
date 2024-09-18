@@ -4,7 +4,7 @@ namespace App\Services\Interfaces\Order;
 
 interface OrderServiceInterface
 {
-    public function paginate();
+    // public function paginate();
 
     public function create();
 
