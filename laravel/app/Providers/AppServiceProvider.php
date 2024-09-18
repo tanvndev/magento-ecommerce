@@ -52,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
         // Voucher
         'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
+        // Slider
+        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
     ];
 
     public function register(): void
@@ -86,14 +88,14 @@ class AppServiceProvider extends ServiceProvider
     private function printLogSql()
     {
         DB::listen(function ($query) {
-            $logPath = storage_path('logs/sql/'.Carbon::now()->format('Y-m-d').'-slow-log.sql');
+            $logPath = storage_path('logs/sql/' . Carbon::now()->format('Y-m-d') . '-slow-log.sql');
 
             $sqlWithBindings = $this->interpolateQuery($query->sql, $query->bindings);
 
             $logContent = sprintf(
-                "/*==================================================================*/\n".
-                    "/* Origin (request): %s\n".
-                    "   Query %d - %s [%sms] */\n\n".
+                "/*==================================================================*/\n" .
+                    "/* Origin (request): %s\n" .
+                    "   Query %d - %s [%sms] */\n\n" .
                     "%s\n\n",
                 request()->fullUrl() ?? 'N/A',
                 $query->time, // Số thứ tự truy vấn

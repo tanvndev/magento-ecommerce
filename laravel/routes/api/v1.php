@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
+use App\Http\Controllers\Api\V1\Slider\SliderController;
 use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use App\Http\Controllers\Api\V1\Upload\UploadController;
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
@@ -44,6 +45,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('getWidget/{code}', [WidgetController::class, 'getWidget']);
     Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
     Route::get('getAllVouchers', [VoucherController::class, 'getAllVoucher']);
+    Route::get('getAllSlider', [SliderController::class, 'getAllSlider']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
@@ -125,6 +127,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
         // VOUCHER ROUTE
 
         Route::apiResource('vouchers', VoucherController::class);
+
+        // SLIDER ROUTE
+        Route::apiResource('sliders', SliderController::class);
     });
 
     // CART ROUTE
