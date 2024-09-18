@@ -32,7 +32,11 @@ class WishListService extends BaseService implements WishListServiceInterface
 
         $withWhereHas = [
             'product_variant' => function ($q){
-                $q->where('stock','>',0);
+                $q->where('stock','>',0)
+                  ->whereHas('product',function($query){
+                        $query->where('publish',1);
+                    })
+                    ;
             },
         ];
 

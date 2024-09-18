@@ -22,7 +22,6 @@ class StoreWishListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required',
             'product_variant_id' => 'required'
         ];
     }
@@ -30,9 +29,7 @@ class StoreWishListRequest extends FormRequest
     public function attributes()
     {
         return [
-            'user_id' => 'Người dùng',
             'product_variant_id' => 'Sản phẩm'
-
         ];
     }
 
