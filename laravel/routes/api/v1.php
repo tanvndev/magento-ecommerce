@@ -127,9 +127,13 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::apiResource('vouchers', VoucherController::class);
 
         // WISHLIST ROUTE
-        Route::apiResource('wish-list', WishListController::class);
-    });
+        Route::get('wishlist', [WishListController::class, 'index']);
+        Route::post('wishlist', [WishListController::class, 'store']);
+        Route::delete('wishlist/clean', [WishListController::class, 'destroyAll']);
+        Route::delete('wishlist/{id}', [WishListController::class, 'destroy']);
 
+    });
+    
     // CART ROUTE
     Route::controller(CartController::class)->name('cart.')->group(function () {
         Route::get('carts', 'index')->name('index');
@@ -139,3 +143,4 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
     });
 });
+

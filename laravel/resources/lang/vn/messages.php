@@ -70,13 +70,24 @@ return [
             'error' => 'Đặt lại mật khẩu thất bại.',
         ],
     ],
-    'wishList' => [
-        'create' => [
-            'error' => 'Sản phẩm đã tồn tại trong danh mục ưa thích.',
-            'success' => 'Thêm sản phẩm vào danh mục ưa thích thành công',
+    'wishlist' => [
+        // 'create' => [
+        //     'error' => 'Sản phẩm đã tồn tại trong danh mục ưa thích.',
+        //     'success' => 'Thêm sản phẩm vào danh mục ưa thích thành công',
+        // ],
+        // 'delete' => [
+        //     'success' => 'Xóa sản phẩm khỏi danh mục ưa thích thành công',
+        // ]
+        'success' => [
+            'create' => 'Thêm sản phẩm ưa thích thành công',
+            'delete' => 'Xóa sản phẩm ưa thích thành công',
+            'clean'  => 'Xóa tất cả sản phẩm khỏi ưa thích thành công'
         ],
-        'delete' => [
-            'success' => 'Xóa sản phẩm khỏi danh mục ưa thích thành công',
+        'error' => [
+            'existed' => 'Sản phẩm đã tồn tại trong danh mục ưa thích.',
+            'create' => 'Thêm sản phẩm ưa thích không thành công',
+            'delete' => 'Xóa sản phẩm ưa thích thành công',
+            'wishlist_not_found' => 'Bạn chưa có sản phẩm ưa thích'
         ]
 
     ]

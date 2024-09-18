@@ -46,32 +46,19 @@ class WishListController extends Controller
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
-    // /**
-    //  * Display the specified resource.
-    //  */
-    // public function show(string $id)
-    // {
-    //     $wishList = new WishListResource($this->wishListRepository->findById($id));
-
-    //     return successResponse('', $wishList);
-    // }
-
-    // /**
-    //  * Update the specified resource in storage.
-    //  */
-    // public function update(UpdateWishListRequest $request, string $id)
-    // {
-    //     $response = $this->wishListService->update($id);
-
-    //     return handleResponse($response);
-    // }
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
         $response = $this->wishListService->destroy($id);
+
+        return handleResponse($response);
+    }
+
+    public function destroyAll()
+    {
+        $response = $this->wishListService->destroyAll();
 
         return handleResponse($response);
     }

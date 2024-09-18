@@ -20,7 +20,7 @@ class WishList extends Model
         return $this->belongsTo(User::class);
     }
     
-    public function productVariant(){
+    public function product_variant(){
         return $this->belongsTo(ProductVariant::class);
     }
 }

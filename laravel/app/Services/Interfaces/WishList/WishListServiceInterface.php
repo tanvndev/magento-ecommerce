@@ -8,7 +8,7 @@ interface WishListServiceInterface
 
     public function create();
 
-    // public function update($id);
-
     public function destroy($id);
+
+    public function destroyAll();
 }
