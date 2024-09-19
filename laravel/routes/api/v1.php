@@ -62,6 +62,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::prefix('location')->group(function () {
         Route::get('provinces', [LocationController::class, 'getProvinces']);
         Route::get('getLocation', [LocationController::class, 'getLocation']);
+        Route::get('getLocationByAddress', [LocationController::class, 'getLocationByAddress']);
     });
 
     // Routes with JWT Middleware

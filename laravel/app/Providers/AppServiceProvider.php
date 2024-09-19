@@ -54,6 +54,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
         // Order
         'App\Services\Interfaces\Order\OrderServiceInterface' => 'App\Services\Order\OrderService',
+        // Location
+        'App\Services\Interfaces\Location\LocationServiceInterface' => 'App\Services\Location\LocationService',
     ];
 
     public function register(): void

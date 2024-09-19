@@ -10,10 +10,10 @@ trait QueryScopes
 
             if (! empty($fieldSearch)) {
                 foreach ($fieldSearch as $field) {
-                    $query->orWhere($field, 'LIKE', '%'.$keyword.'%');
+                    $query->orWhere($field, 'LIKE', '%' . $keyword . '%');
                 }
             } else {
-                $query->where('name', 'LIKE', '%'.$keyword.'%');
+                $query->where('name', 'LIKE', '%' . $keyword . '%');
             }
         }
 
@@ -24,7 +24,7 @@ trait QueryScopes
             // ];
             $field = $whereHas['field'];
             $query->orWhereHas($whereHas['relation'], function ($q) use ($field, $keyword) {
-                $q->where($field, 'LIKE', '%'.$keyword.'%');
+                $q->where($field, 'LIKE', '%' . $keyword . '%');
             });
         }
 
@@ -179,11 +179,17 @@ trait QueryScopes
     {
         // 'relation_name' => [
         //     ['field', 'operator', 'value'],
+        //     'customFunction' => function($q) {
+        //         // Tùy chỉnh truy vấn
+        //     }
         // ]
         foreach ($relationConditions as $relation => $conditions) {
             $query->whereHas($relation, function ($q) use ($conditions) {
                 foreach ($conditions as $condition) {
-                    if (count($condition) === 3) {
+                    if (is_callable($condition)) {
+                        // Nếu là hàm, gọi hàm đó
+                        $condition($q);
+                    } elseif (count($condition) === 3) {
                         // ['field', 'operator', 'value']
                         $q->where($condition[0], $condition[1], $condition[2]);
                     } elseif (count($condition) === 2) {
