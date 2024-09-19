@@ -42,10 +42,18 @@ class LocationController extends Controller
         $response = [];
 
         if ($target == 'districts') {
-            $response = $this->provinceRepository->findByWhere(['code' => ['=', $locationId]], ['code', 'name'], ['districts']);
+            $response = $this->provinceRepository->findByWhere(
+                ['code' => ['=', $locationId]],
+                ['code', 'name'],
+                ['districts']
+            );
             $response->districts;
         } else {
-            $response = $this->districtRepository->findByWhere(['code' => ['=', $locationId]], ['code', 'name'], ['wards']);
+            $response = $this->districtRepository->findByWhere(
+                ['code' => ['=', $locationId]],
+                ['code', 'name'],
+                ['wards']
+            );
             $response->wards;
         }
 
@@ -54,23 +62,12 @@ class LocationController extends Controller
 
     public function getLocationByAddress(Request $request)
     {
-        // $address = $request->address;
-        // if (empty($address)) {
-        //     return errorResponse('Get location failed.');
-        // }
+        $addressData = $request->addressData;
+        if (empty($addressData)) {
+            return errorResponse('Get location failed.');
+        }
 
-        $address = [
-            'road' => 'Ngách 57 Ngõ 10 Láng Hạ',
-            'quarter' => 'Phường Thành Công',
-            'suburb' => 'Quận Ba Đình',
-            'city' => 'Hà Nội',
-            'ISO3166_2_lvl4' => 'VN-HN',
-            'postcode' => '10265',
-            'country' => 'Việt Nam',
-            'country_code' => 'vn',
-        ];
-
-        $response = $this->locationService->getLocationByAddress($address);
+        $response = $this->locationService->getLocationByAddress($addressData['address']);
         return successResponse('Get location successfully.', $response);
     }
 }
