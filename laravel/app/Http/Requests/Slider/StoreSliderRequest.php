@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Slider;
 
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSliderRequest extends FormRequest
@@ -27,14 +26,9 @@ class StoreSliderRequest extends FormRequest
             'code' => 'required|unique:sliders',
             'items.*' => 'required',
             'items.*.image' => 'required|string',
-            'items.*.description' => 'required|string',
+            'items.*.description' => 'string',
             'items.*.url' => 'required|string',
             'items.*.alt' => 'required|string',
-            'setting' => 'required',
-            'setting.width' => 'required|integer',
-            'setting.height' => 'required|integer',
-            'setting.navigate' => 'required',
-            'setting.animation' => 'required',
         ];
 
         return $rules;

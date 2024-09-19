@@ -48,7 +48,7 @@ class PaymentMethod extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $code = "{$originalCode}-" . $count++;
+            $code = "{$originalCode}-".$count++;
         }
 
         return $code;

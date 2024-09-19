@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Voucher;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Carbon\Carbon;
 
 class VoucherResource extends JsonResource
 {
@@ -35,7 +35,7 @@ class VoucherResource extends JsonResource
                 $this->end_at,
             ],
             'publish' => $this->publish,
-            'text_description' => $this->getTextDescription()
+            'text_description' => $this->getTextDescription(),
         ];
     }
 

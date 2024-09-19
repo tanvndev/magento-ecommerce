@@ -19,7 +19,6 @@ class ClientVoucherCollection extends ResourceCollection
             $this->resource instanceof \Illuminate\Pagination\Paginator
         ) {
 
-
             return [
                 'data' => $this->collection->map(function ($voucher) {
                     return new ClientVoucherResource($voucher);
