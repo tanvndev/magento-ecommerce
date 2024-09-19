@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('code');
             $table->json('items');
-            $table->json('setting');
+            $table->json('setting')->nullable();
             $table->tinyInteger('publish')->default(1)->comment('1:Active, 2: Inactive');
             $table->softDeletes();
             $table->timestamps();

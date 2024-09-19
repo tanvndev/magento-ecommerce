@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Slider extends Model
 {
     use HasFactory, QueryScopes, SoftDeletes;
+
     protected $fillable = [
         'name',
         'code',
@@ -19,7 +20,7 @@ class Slider extends Model
     ];
 
     protected $casts = [
-        'items'     => 'array',
-        'setting'   => 'array',
+        'items' => 'array',
+        'setting' => 'array',
     ];
 }

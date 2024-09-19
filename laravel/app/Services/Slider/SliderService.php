@@ -40,6 +40,7 @@ class SliderService extends BaseService implements SliderServiceInterface
         $pageSize = $request->pageSize;
 
         $data = $this->sliderRepository->pagination($select, $condition, $pageSize);
+
         return $data;
     }
 
@@ -83,7 +84,6 @@ class SliderService extends BaseService implements SliderServiceInterface
         return $payload;
     }
 
-
     // CLIENT API //
 
     public function getAllSlider()
@@ -99,15 +99,11 @@ class SliderService extends BaseService implements SliderServiceInterface
             'publish',
         ];
 
-        $condition = [
-            'where' => [
-                'publish' => 1,
-            ],
-        ];
+        $condition = ['publish' => 1];
 
-        $pageSize = $request->pageSize;
+        $orderBy = ['id' => 'DESC'];
 
-        $data = $this->sliderRepository->pagination($select, $condition, $pageSize);
+        $data = $this->sliderRepository->findByWhere($condition, $select, [], true, $orderBy);
 
         return $data;
     }
