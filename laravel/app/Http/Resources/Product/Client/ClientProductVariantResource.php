@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Resources\Product\Client;
 
@@ -45,7 +45,7 @@ class ClientProductVariantResource extends JsonResource
 
     private function handleDiscountValue()
     {
-        if ( ! $this->sale_price || ! $this->price) {
+        if (! $this->sale_price || ! $this->price) {
             return null;
         }
 

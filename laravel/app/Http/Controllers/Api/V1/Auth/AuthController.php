@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
@@ -38,11 +38,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if ( ! $user) {
+        if (! $user) {
             return errorResponse('Email hoặc mật khẩu không chính xác.');
         }
 
-        if ( ! $user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.');
         }
 

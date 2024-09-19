@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 // Trong Laravel, Repository Pattern thường được sử dụng để tạo các lớp repository, giúp tách biệt logic của ứng dụng khỏi cơ sở dữ liệu.
 
@@ -23,11 +23,11 @@ class BaseRepository implements BaseRepositoryInterface
     {
         $query = $this->model->select($column);
 
-        if ( ! is_null($orderBy)) {
+        if (! is_null($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if ( ! empty($relation)) {
+        if (! empty($relation)) {
             return $query->relation($relation)->get();
         }
 
@@ -43,25 +43,25 @@ class BaseRepository implements BaseRepositoryInterface
     {
         $query = $this->model->select($column);
 
-        if ( ! empty($relation)) {
+        if (! empty($relation)) {
             $query->relation($relation);
         }
 
         $query->customWhere($conditions);
 
-        if ( ! empty($whereInParams)) {
+        if (! empty($whereInParams)) {
             $query->whereIn($whereInParams['field'], $whereInParams['value']);
         }
 
-        if ( ! is_null($orderBy)) {
+        if (! is_null($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if ( ! empty($withCount)) {
+        if (! empty($withCount)) {
             $query->withCount($withCount);
         }
 
-        if ( ! empty($withWhereHas)) {
+        if (! empty($withWhereHas)) {
             // 'relation_name' => [
             //     ['field', 'operator', 'value'],
             // ]
@@ -80,15 +80,15 @@ class BaseRepository implements BaseRepositoryInterface
     ) {
         $query = $this->model->newQuery()->whereIn($field, $values);
 
-        if ( ! empty($columns)) {
+        if (! empty($columns)) {
             $query->select($columns);
         }
 
-        if ( ! empty($relations)) {
+        if (! empty($relations)) {
             $query->with($relations);
         }
 
-        if ( ! empty($relationConditions)) {
+        if (! empty($relationConditions)) {
             // 'relation_name' => [
             //     ['field', 'operator', 'value'],
             // ]
@@ -133,14 +133,14 @@ class BaseRepository implements BaseRepositoryInterface
             ->customGroupBy($groupBy ?? null)
             ->customOrderBy($orderBy ?? null);
 
-        if ( ! empty($withWhereHas)) {
+        if (! empty($withWhereHas)) {
             // Apply constraints to eager-loaded relationships
             foreach ($withWhereHas as $relation => $callback) {
                 $query->whereHas($relation, $callback);
             }
         }
 
-        if ( ! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
+        if (! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
             $query->onlyTrashed();
         }
 

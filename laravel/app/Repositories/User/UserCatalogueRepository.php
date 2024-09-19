@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 // Trong Laravel, Repository Pattern thường được sử dụng để tạo các lớp repository, giúp tách biệt logic của ứng dụng khỏi cơ sở dữ liệu.
 

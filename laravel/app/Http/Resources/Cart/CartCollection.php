@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Resources\Cart;
 
@@ -34,6 +34,5 @@ class CartCollection extends ResourceCollection
             ->sum(function ($cartItem) {
                 return $cartItem->getSubTotal();
             });
-
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+
 
 namespace App\Http\Resources\Cart;
 
@@ -36,7 +36,7 @@ class CartResource extends JsonResource
     private function handleSalePrice()
     {
         $productVariant = $this->product_variant;
-        if ( ! $productVariant->sale_price || ! $productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return null;
         }
 

@@ -26,7 +26,6 @@
                 "exit"
             ]
         },
-        "declare_strict_types": true,
         "doctrine_annotation_indentation": true,
         "doctrine_annotation_spaces": true,
         "function_typehint_space": true,
