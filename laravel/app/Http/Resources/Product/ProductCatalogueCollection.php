@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Product;
 
 use Illuminate\Http\Request;
@@ -22,10 +24,10 @@ class ProductCatalogueCollection extends ResourceCollection
                 'data' => $this->collection->map(function ($permission) {
                     return new ProductCatalogueResource($permission);
                 }),
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
+                'total'        => $this->total(),
+                'per_page'     => $this->perPage(),
                 'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
+                'last_page'    => $this->lastPage(),
             ];
         }
 

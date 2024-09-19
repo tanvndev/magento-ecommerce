@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Order;
 
 use App\Models\Voucher;
@@ -9,8 +11,9 @@ use App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
-use App\Services\Interfaces\Order\OrderServiceInterface;
 use App\Services\BaseService;
+use App\Services\Interfaces\Order\OrderServiceInterface;
+use Exception;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
@@ -25,8 +28,6 @@ class OrderService extends BaseService implements OrderServiceInterface
     protected $shippingMethodRepository;
 
     protected $voucherRepository;
-
-
 
     public function __construct(
         OrderRepositoryInterface $orderRepository,
@@ -48,7 +49,6 @@ class OrderService extends BaseService implements OrderServiceInterface
     // {
     //     return $this->orderRepository->paginate();
     // }
-
 
     public function create()
     {
@@ -84,14 +84,15 @@ class OrderService extends BaseService implements OrderServiceInterface
         $this->createOrderItems($order, $cartItems);
 
         dd(1);
+
         return $order;
     }
 
     private function prepareOrderPayload($request, $userId)
     {
         return array_merge($request->except('_token'), [
-            'user_id' => $userId,
-            'code' => generateOrderCode(),
+            'user_id'    => $userId,
+            'code'       => generateOrderCode(),
             'ordered_at' => now(),
         ]);
     }
@@ -99,12 +100,12 @@ class OrderService extends BaseService implements OrderServiceInterface
     private function getPaymentMethod($paymentMethodId)
     {
         $paymentMethod = $this->paymentMethodRepository->findByWhere([
-            'id' => $paymentMethodId,
+            'id'      => $paymentMethodId,
             'publish' => 1,
         ]);
 
-        if (!$paymentMethod) {
-            throw new \Exception('Payment method not found.');
+        if ( ! $paymentMethod) {
+            throw new Exception('Payment method not found.');
         }
 
         return $paymentMethod;
@@ -113,12 +114,12 @@ class OrderService extends BaseService implements OrderServiceInterface
     private function getShippingMethod($shippingMethodId)
     {
         $shippingMethod = $this->shippingMethodRepository->findByWhere([
-            'id' => $shippingMethodId,
+            'id'      => $shippingMethodId,
             'publish' => 1,
         ]);
 
-        if (!$shippingMethod) {
-            throw new \Exception('Shipping method not found.');
+        if ( ! $shippingMethod) {
+            throw new Exception('Shipping method not found.');
         }
 
         return $shippingMethod;
@@ -135,14 +136,14 @@ class OrderService extends BaseService implements OrderServiceInterface
                     $query->whereHas('product', function ($q) {
                         $q->where('publish', 1);
                     });
-                }
-            ]
+                },
+            ],
         ];
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if (!$cart) {
-            throw new \Exception('Cart not found.');
+        if ( ! $cart) {
+            throw new Exception('Cart not found.');
         }
 
         return $cart->cart_items;
@@ -152,12 +153,12 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return [
             'payment_method' => [
-                'id' => $paymentMethod->id,
+                'id'   => $paymentMethod->id,
                 'name' => $paymentMethod->name,
             ],
             'shipping_method' => [
-                'id' => $shippingMethod->id,
-                'name' => $shippingMethod->name,
+                'id'        => $shippingMethod->id,
+                'name'      => $shippingMethod->name,
                 'base_cost' => $shippingMethod->base_cost,
             ],
         ];
@@ -166,19 +167,19 @@ class OrderService extends BaseService implements OrderServiceInterface
     private function applyVoucher(&$payload)
     {
         $voucher = $this->voucherRepository->findByWhere([
-            'id' => $payload['voucher_id'],
+            'id'      => $payload['voucher_id'],
             'publish' => 1,
         ]);
 
-        if (!$voucher) {
-            throw new \Exception('Voucher not found.');
+        if ( ! $voucher) {
+            throw new Exception('Voucher not found.');
         }
 
         $payload['additional_details']['voucher'] = [
-            'id' => $voucher->id,
-            'name' => $voucher->name,
+            'id'         => $voucher->id,
+            'name'       => $voucher->name,
             'value_type' => $voucher->value_type,
-            'value' => $voucher->value,
+            'value'      => $voucher->value,
         ];
 
         if ($voucher->value_type === Voucher::TYPE_PERCENT) {
@@ -194,20 +195,19 @@ class OrderService extends BaseService implements OrderServiceInterface
         $order->order_items()->createMany($payloadOrderItem);
     }
 
-
     private function formatPayloadOrderItem($cartItem, $orderId)
     {
         $payload = $cartItem->map(function ($item) use ($orderId) {
             $salePrice = $this->getEffectivePrice($item->product_variant, false);
 
             return [
-                'order_id' => $orderId,
-                'uuid' => $item->product_variant->uuid,
-                'product_variant_id' => $item->product_variant_id,
+                'order_id'             => $orderId,
+                'uuid'                 => $item->product_variant->uuid,
+                'product_variant_id'   => $item->product_variant_id,
                 'product_variant_name' => $item->product_variant->name,
-                'quantity' => $item->quantity,
-                'price' => $item->product_variant->price,
-                'sale_price' => $salePrice != null ? floatval($salePrice) : null
+                'quantity'             => $item->quantity,
+                'price'                => $item->product_variant->price,
+                'sale_price'           => $salePrice != null ? floatval($salePrice) : null,
             ];
         })->toArray();
 
@@ -259,7 +259,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     private function isSalePriceValid($productVariant)
     {
-        if (!$productVariant->sale_price || !$productVariant->price) {
+        if ( ! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 
@@ -279,7 +279,6 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         return false;
     }
-
 
     public function update($id)
     {
@@ -319,8 +318,6 @@ class OrderService extends BaseService implements OrderServiceInterface
         Mail::to($to)->cc($cc)->send(new OrderMail($order));
     }
 
-
-
     private function createOrderProduct($payload, $order)
     {
         $data = [];
@@ -330,19 +327,18 @@ class OrderService extends BaseService implements OrderServiceInterface
 
             $data[] = [
                 'product_id' => $ids[0],
-                'uuid' => $ids[1] ?? 0,
-                'name' => $cartItem->name,
-                'quantity' => $cartItem->qty,
-                'price' => $cartItem->originalPrice,
+                'uuid'       => $ids[1] ?? 0,
+                'name'       => $cartItem->name,
+                'quantity'   => $cartItem->qty,
+                'price'      => $cartItem->originalPrice,
                 'price_sale' => $cartItem->price,
-                'promotion' => json_encode($payload['promotion']),
-                'option' => json_encode($cartItem->options)
+                'promotion'  => json_encode($payload['promotion']),
+                'option'     => json_encode($cartItem->options),
             ];
         }
 
         $order->products()->sync($data);
     }
-
 
     public function cartPromotion($cartTotal)
     {
@@ -388,7 +384,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         }
 
         return [
-            'discount' => $maxDiscount,
+            'discount'  => $maxDiscount,
             'promotion' => $selectedPromotion,
         ];
     }
@@ -406,18 +402,19 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $payload['cart'] = [
             'detail' => $carts,
-            'total' => $carts->total,
-            'count' => $carts->count
+            'total'  => $carts->total,
+            'count'  => $carts->count,
         ];
         $payload['promotion'] = [
             'discount' => $cartPromotion['discount'],
-            'name' => $cartPromotion['promotion']->name ?? '',
+            'name'     => $cartPromotion['promotion']->name ?? '',
             'start_at' => $cartPromotion['promotion']->start_at ?? '',
-            'end_at' => $cartPromotion['promotion']->end_at ?? '',
+            'end_at'   => $cartPromotion['promotion']->end_at ?? '',
         ];
         $payload['confirm'] = 'pending';
         $payload['delivery'] = 'pending';
         $payload['payment'] = 'unpaid';
+
         return $payload;
     }
 }

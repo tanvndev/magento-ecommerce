@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Auth;
@@ -34,7 +36,7 @@ class AuthService extends BaseService implements AuthServiceInterface
                 ]
             );
 
-            if (! empty($user)) {
+            if ( ! empty($user)) {
                 if ($user->hasVerifiedEmail()) {
                     return errorResponse(__('messages.auth.register.email_verified'));
                 }
@@ -42,12 +44,12 @@ class AuthService extends BaseService implements AuthServiceInterface
             }
 
             $user = $this->userRepository->create([
-                'fullname' => $request->fullname,
+                'fullname'          => $request->fullname,
                 'user_catalogue_id' => 3,
-                'email' => $request->email,
-                'ip' => $request->ip(),
-                'user_agent' => $request->header('User-Agent'),
-                'password' => Hash::make($request->password),
+                'email'             => $request->email,
+                'ip'                => $request->ip(),
+                'user_agent'        => $request->header('User-Agent'),
+                'password'          => Hash::make($request->password),
             ]);
 
             // Send email verification notification

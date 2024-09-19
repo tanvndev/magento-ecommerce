@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Attribute;
 
 use Illuminate\Http\Request;
@@ -22,10 +24,10 @@ class AttributeValueCollection extends ResourceCollection
                 'data' => $this->collection->map(function ($attributeValue) {
                     return new AttributeValueResource($attributeValue);
                 }),
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
+                'total'        => $this->total(),
+                'per_page'     => $this->perPage(),
                 'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
+                'last_page'    => $this->lastPage(),
             ];
         }
 

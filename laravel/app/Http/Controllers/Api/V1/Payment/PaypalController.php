@@ -1,7 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Payment;
-
-
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;
@@ -11,8 +12,8 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PaypalController extends Controller
 {
-
     private $orderRepository;
+
     private $orderService;
 
     public function __construct(
@@ -41,7 +42,6 @@ class PaypalController extends Controller
 
         $updatePayment = $this->orderService->updatePayment($request->order_id, $payload);
 
-
         if ($updatePayment) {
 
             $request->session()->put('paymentReturn',  $response);
@@ -52,12 +52,14 @@ class PaypalController extends Controller
 
         // Xoa orderSuccess
         $request->session()->forget('orderSuccess');
+
         return redirect()->route('checkout')->with('toast_error', 'Đặt hàng thất bại, vui lòng thử lại!');
     }
 
     public function cancel(Request $request)
     {
         $request->session()->forget('orderSuccess');
+
         return redirect()->route('checkout')->with('toast_error', 'Đặt hàng thất bại, vui lòng thử lại!');
     }
 }

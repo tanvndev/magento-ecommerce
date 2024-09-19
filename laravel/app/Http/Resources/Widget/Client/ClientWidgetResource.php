@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Widget\Client;
 
 use App\Http\Resources\Product\Client\ClientProductVariantResource;
@@ -16,18 +18,18 @@ class ClientWidgetResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'key' => $this->id,
-            'code' => $this->code,
-            'name' => $this->name,
-            'type' => $this->type,
-            'model' => $this->model,
-            'model_ids' => $this->model_ids ?? [],
-            'description' => $this->description,
-            'publish' => $this->publish,
-            'order' => $this->order,
+            'id'                    => $this->id,
+            'key'                   => $this->id,
+            'code'                  => $this->code,
+            'name'                  => $this->name,
+            'type'                  => $this->type,
+            'model'                 => $this->model,
+            'model_ids'             => $this->model_ids ?? [],
+            'description'           => $this->description,
+            'publish'               => $this->publish,
+            'order'                 => $this->order,
             'advertisement_banners' => $this->advertisement_banners ?? [],
-            'items' => $this->type === 'advertisement' ? $this->items : ClientProductVariantResource::collection($this->items) ?? [],
+            'items'                 => $this->type === 'advertisement' ? $this->items : ClientProductVariantResource::collection($this->items) ?? [],
         ];
     }
 }

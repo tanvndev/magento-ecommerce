@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Classes;
 
 class Momo
@@ -7,16 +9,16 @@ class Momo
     private static function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt(
             $ch,
             CURLOPT_HTTPHEADER,
-            array(
+            [
                 'Content-Type: application/json',
-                'Content-Length: ' . strlen($data)
-            )
+                'Content-Length: ' . strlen($data),
+            ]
         );
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
@@ -24,6 +26,7 @@ class Momo
         $result = curl_exec($ch);
         //close connection
         curl_close($ch);
+
         return $result;
     }
 
@@ -39,41 +42,41 @@ class Momo
         $orderAmount = $order['cart']['total'] - $order['promotion']['discount'];
 
         $orderInfo = $order['description'] ?? 'Thanh toan don hang ' . $order['code'] . ' qua MOMO.';
-        $amount = $orderAmount . "";
-        $orderId = $order['code'] . "";
+        $amount = $orderAmount . '';
+        $orderId = $order['code'] . '';
         $redirectUrl = $configMomo['redirectUrl'];
         $ipnUrl = $configMomo['ipnUrl'];
-        $requestId = time() . "";
-        $requestType = "payWithATM";
-        $extraData = "";
+        $requestId = time() . '';
+        $requestType = 'payWithATM';
+        $extraData = '';
 
         // echo $serectkey;die;
-        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $rawHash = 'accessKey=' . $accessKey . '&amount=' . $amount . '&extraData=' . $extraData . '&ipnUrl=' . $ipnUrl . '&orderId=' . $orderId . '&orderInfo=' . $orderInfo . '&partnerCode=' . $partnerCode . '&redirectUrl=' . $redirectUrl . '&requestId=' . $requestId . '&requestType=' . $requestType;
 
-        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+        $signature = hash_hmac('sha256', $rawHash, $secretKey);
 
-        $data = array(
+        $data = [
             'partnerCode' => $partnerCode,
-            'requestId' => $requestId,
-            'amount' => $amount,
-            'orderId' => $orderId,
-            'orderInfo' => $orderInfo,
+            'requestId'   => $requestId,
+            'amount'      => $amount,
+            'orderId'     => $orderId,
+            'orderInfo'   => $orderInfo,
             'redirectUrl' => $redirectUrl,
-            'ipnUrl' => $ipnUrl,
-            'lang' => 'vi',
-            'extraData' => $extraData,
+            'ipnUrl'      => $ipnUrl,
+            'lang'        => 'vi',
+            'extraData'   => $extraData,
             'requestType' => $requestType,
-            'signature' => $signature
-        );
+            'signature'   => $signature,
+        ];
         $result = self::execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true);  // decode json
 
         error_log(print_r($jsonResult, true));
 
         $returnData = [
-            'code' => '00',
+            'code'    => '00',
             'message' => $jsonResult['message'],
-            'url' => $jsonResult['payUrl'],
+            'url'     => $jsonResult['payUrl'],
         ];
 
         return $returnData;

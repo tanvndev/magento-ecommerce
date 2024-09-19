@@ -4,12 +4,10 @@
         "binary_operator_spaces": {
             "operators": {
                 "=>": "align"
-            },
-            "default": "ensure_single_space"
+            }
         },
         "align_multiline_comment": true,
         "no_blank_lines_after_class_opening": true,
-        "no_empty_lines_after_phpdoc": true,
         "combine_consecutive_issets": true,
         "combine_consecutive_unsets": true,
         "concat_space": {

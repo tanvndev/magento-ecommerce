@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\User;
@@ -24,8 +26,8 @@ class UserService extends BaseService implements UserServiceInterface
         $request = request();
 
         $condition = [
-            'search' => addslashes($request->search),
-            'publish' => $request->publish,
+            'search'       => addslashes($request->search),
+            'publish'      => $request->publish,
             'searchFields' => ['fullname', 'email', 'phone', 'address'],
         ];
 
@@ -55,9 +57,9 @@ class UserService extends BaseService implements UserServiceInterface
     {
         $request = request();
         $payload = [
-            'password' => Hash::make($payload['password']),
-            'user_agent' => $request->header('User-Agent'),
-            'ip' => $request->ip(),
+            'password'          => Hash::make($payload['password']),
+            'user_agent'        => $request->header('User-Agent'),
+            'ip'                => $request->ip(),
             'email_verified_at' => now()->toDateTimeString(),
         ];
 

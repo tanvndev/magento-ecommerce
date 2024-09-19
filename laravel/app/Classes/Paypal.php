@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Classes;
 
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
@@ -18,28 +20,26 @@ class Paypal
         $paypalValue = convertVndTo($orderAmount, $currencyCode);
 
         $data = [
-            "intent" => "CAPTURE",
-            "application_context" => [
-                "return_url" => route('paypal.success', ['order_id' => $order['id']]),
-                "cancel_url" => route('paypal.cancel'),
+            'intent'              => 'CAPTURE',
+            'application_context' => [
+                'return_url' => route('paypal.success', ['order_id' => $order['id']]),
+                'cancel_url' => route('paypal.cancel'),
             ],
 
-            "purchase_units" => [
+            'purchase_units' => [
                 [
-                    "amount" => [
-                        "currency_code" => $currencyCode,
-                        "value" => $paypalValue
-                    ]
-                ]
+                    'amount' => [
+                        'currency_code' => $currencyCode,
+                        'value'         => $paypalValue,
+                    ],
+                ],
             ],
-
-
 
         ];
 
         $response = $provider->createOrder($data);
         $returnData = [
-            'code' => '00',
+            'code'    => '00',
             'message' => 'success',
         ];
 

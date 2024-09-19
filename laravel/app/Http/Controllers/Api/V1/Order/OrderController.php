@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Order;
 
 use App\Classes\Momo;
@@ -11,7 +13,6 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-
     protected $orderService;
 
     public function __construct(
@@ -40,20 +41,22 @@ class OrderController extends Controller
     private function handlePaymentMethod($order = null)
     {
 
-
         switch ($order['payment_method']) {
             case 'vnp_payment':
                 $response = Vnpay::payment($order);
+
                 break;
             case 'momo_payment':
                 $response = Momo::payment($order);
+
                 break;
             case 'paypal_payment':
                 $response = Paypal::payment($order);
+
                 break;
 
             default:
-                # code...
+                // code...
                 break;
         }
 

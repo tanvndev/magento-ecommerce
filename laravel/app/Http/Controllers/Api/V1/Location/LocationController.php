@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Location;
 
 use App\Http\Controllers\Controller;
@@ -16,7 +18,6 @@ class LocationController extends Controller
     protected $districtRepository;
 
     protected $locationService;
-
 
     public function __construct(
         ProvinceRepositoryInterface $provinceRepository,
@@ -68,6 +69,7 @@ class LocationController extends Controller
         }
 
         $response = $this->locationService->getLocationByAddress($addressData['address']);
+
         return successResponse('Get location successfully.', $response);
     }
 }

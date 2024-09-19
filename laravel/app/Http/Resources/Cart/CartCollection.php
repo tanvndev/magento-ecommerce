@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Cart;
 
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ class CartCollection extends ResourceCollection
         $totalAmount = $this->calculateTotalAmount();
 
         return [
-            'items' => CartResource::collection($this->collection),
+            'items'        => CartResource::collection($this->collection),
             'total_amount' => $totalAmount ?? 0,
         ];
     }

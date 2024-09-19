@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,8 +24,8 @@ class StoreUserCatalogueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'code' => 'required',
+            'name'        => 'required',
+            'code'        => 'required',
             'description' => 'required',
         ];
     }
@@ -31,8 +33,8 @@ class StoreUserCatalogueRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên nhóm thành viên',
-            'code' => 'Mã nhóm này',
+            'name'        => 'Tên nhóm thành viên',
+            'code'        => 'Mã nhóm này',
             'description' => 'Mô tả nhóm thành viên',
         ];
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Traits\QueryScopes;
@@ -31,8 +33,8 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'upsell_ids' => 'json',
-        'album' => 'json',
+        'upsell_ids'   => 'json',
+        'album'        => 'json',
         'shipping_ids' => 'json',
     ];
 
@@ -59,7 +61,7 @@ class Product extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $canonical = "{$originalCanonical}-".$count++;
+            $canonical = "{$originalCanonical}-" . $count++;
         }
 
         return $canonical;

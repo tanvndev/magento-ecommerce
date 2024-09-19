@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Enums\ResponseEnum;
@@ -36,11 +38,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (! $user) {
+        if ( ! $user) {
             return errorResponse('Email hoặc mật khẩu không chính xác.');
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if ( ! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.');
         }
 
@@ -73,13 +75,13 @@ class AuthController extends Controller
     private function respondWithToken($token, $message, $user = null)
     {
         return response()->json([
-            'status' => ResponseEnum::OK,
+            'status'   => ResponseEnum::OK,
             'messages' => [$message],
-            'data' => [
+            'data'     => [
                 'access_token' => $token,
-                'token_type' => 'bearer',
-                'catalogue' => $user->user_catalogue->code ?? null,
-                'expires_in' => auth()->factory()->getTTL() * 60,
+                'token_type'   => 'bearer',
+                'catalogue'    => $user->user_catalogue->code ?? null,
+                'expires_in'   => auth()->factory()->getTTL() * 60,
             ],
         ], ResponseEnum::OK)->cookie(
             'access_token',

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Traits\QueryScopes;
@@ -9,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory, QueryScopes;
-
 
     protected $fillable = [
         'code',

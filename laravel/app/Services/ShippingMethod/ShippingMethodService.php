@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\ShippingMethod;

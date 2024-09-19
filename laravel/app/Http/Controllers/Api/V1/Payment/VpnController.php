@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Payment;
+declare(strict_types=1);
 
+namespace App\Http\Controllers\Api\V1\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;
 use App\Services\Interfaces\Order\OrderServiceInterface;
-
 
 use Exception;
 use Illuminate\Http\Request;
@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 class VnpController extends Controller
 {
     private $orderRepository;
+
     private $orderService;
+
     public function __construct(
         OrderRepositoryInterface $orderRepository,
         OrderServiceInterface $orderService
@@ -36,7 +38,7 @@ class VnpController extends Controller
         $filteredData = [];
 
         foreach ($inputData as $key => $value) {
-            if (substr($key, 0, 4) == "vnp_") {
+            if (substr($key, 0, 4) == 'vnp_') {
                 $filteredData[$key] = $value;
             }
         }
@@ -48,12 +50,12 @@ class VnpController extends Controller
         ksort($filteredData);
 
         $i = 0;
-        $hashData = "";
+        $hashData = '';
         foreach ($filteredData as $key => $value) {
             if ($i == 1) {
-                $hashData = $hashData . '&' . urlencode($key) . "=" . urlencode($value);
+                $hashData = $hashData . '&' . urlencode($key) . '=' . urlencode($value);
             } else {
-                $hashData = $hashData . urlencode($key) . "=" . urlencode($value);
+                $hashData = $hashData . urlencode($key) . '=' . urlencode($value);
                 $i = 1;
             }
         }
@@ -73,6 +75,7 @@ class VnpController extends Controller
         }
         // Xoa orderSuccess
         $request->session()->forget('orderSuccess');
+
         return redirect()->route('checkout')->with('toast_error', 'Đặt hàng thất bại, vui lòng thử lại!');
     }
 
@@ -95,11 +98,11 @@ class VnpController extends Controller
         $vnpConfig = config('apps.paymentConfig')['vnpay'];
         $vnp_HashSecret = $vnpConfig['vnp_HashSecret'];
 
-        $inputData = array();
-        $returnData = array();
+        $inputData = [];
+        $returnData = [];
 
         foreach ($get as $key => $value) {
-            if (substr($key, 0, 4) == "vnp_") {
+            if (substr($key, 0, 4) == 'vnp_') {
                 $inputData[$key] = $value;
             }
         }
@@ -108,12 +111,12 @@ class VnpController extends Controller
         unset($inputData['vnp_SecureHash']);
         ksort($inputData);
         $i = 0;
-        $hashData = "";
+        $hashData = '';
         foreach ($inputData as $key => $value) {
             if ($i == 1) {
-                $hashData = $hashData . '&' . urlencode($key) . "=" . urlencode($value);
+                $hashData = $hashData . '&' . urlencode($key) . '=' . urlencode($value);
             } else {
-                $hashData = $hashData . urlencode($key) . "=" . urlencode($value);
+                $hashData = $hashData . urlencode($key) . '=' . urlencode($value);
                 $i = 1;
             }
         }
@@ -137,10 +140,9 @@ class VnpController extends Controller
 
                 $order = $this->orderRepository->findByWhere(['code' => ['=', $orderCode]]);
                 $orderAmount = $order->cart['total'] - $order->promotion['discount'];
-                if ($order != NULL) {
-                    if ($orderAmount <= $vnp_Amount) //Kiểm tra số tiền thanh toán của giao dịch: giả sử số tiền kiểm tra là đúng.
-                    //$order["Amount"] == $vnp_Amount
-                    {
+                if ($order != null) {
+                    if ($orderAmount <= $vnp_Amount) { //Kiểm tra số tiền thanh toán của giao dịch: giả sử số tiền kiểm tra là đúng.
+                        //$order["Amount"] == $vnp_Amount
                         if ($order->payment != 'paid' && $order->payment == 'unpaid') {
                             if ($inputData['vnp_ResponseCode'] == '00' || $inputData['vnp_TransactionStatus'] == '00') {
                                 $payload['payment'] = 'paid'; // Trạng thái thanh toán thành công

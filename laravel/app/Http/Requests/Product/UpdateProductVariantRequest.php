@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -12,20 +14,20 @@ class UpdateProductVariantRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'variable_id' => 'required|integer|min:1',
-            'variable_name' => 'required|string|max:255',
-            'variable_sku' => 'required|string|max:255',
-            'variable_weight' => 'required|numeric|min:0',
-            'variable_length' => 'required|numeric|min:0',
-            'variable_width' => 'required|numeric|min:0',
-            'variable_height' => 'required|numeric|min:0',
-            'variable_stock' => 'required|integer|min:0',
+            'variable_id'         => 'required|integer|min:1',
+            'variable_name'       => 'required|string|max:255',
+            'variable_sku'        => 'required|string|max:255',
+            'variable_weight'     => 'required|numeric|min:0',
+            'variable_length'     => 'required|numeric|min:0',
+            'variable_width'      => 'required|numeric|min:0',
+            'variable_height'     => 'required|numeric|min:0',
+            'variable_stock'      => 'required|integer|min:0',
             'variable_cost_price' => 'required|numeric|min:0',
-            'variable_price' => 'required|numeric|min:0',
+            'variable_price'      => 'required|numeric|min:0',
             'variable_sale_price' => 'nullable|numeric|lt:variable_price',
-            'variable_image' => 'required',
-            'variable_album' => 'required',
-            'variable_is_used' => 'required',
+            'variable_image'      => 'required',
+            'variable_album'      => 'required',
+            'variable_is_used'    => 'required',
         ];
 
         if ($this->variable_is_used != false) {
@@ -38,20 +40,20 @@ class UpdateProductVariantRequest extends FormRequest
     public function attributes()
     {
         return [
-            'variable_id' => 'ID',
-            'variable_name' => 'Tên sản phẩm',
-            'variable_sku' => 'SKU',
-            'variable_weight' => 'Cân nặng',
-            'variable_length' => 'Chiều dài',
-            'variable_width' => 'Chiều rộng',
-            'variable_height' => 'Chiều cao',
-            'variable_stock' => 'Số lượng',
+            'variable_id'         => 'ID',
+            'variable_name'       => 'Tên sản phẩm',
+            'variable_sku'        => 'SKU',
+            'variable_weight'     => 'Cân nặng',
+            'variable_length'     => 'Chiều dài',
+            'variable_width'      => 'Chiều rộng',
+            'variable_height'     => 'Chiều cao',
+            'variable_stock'      => 'Số lượng',
             'variable_cost_price' => 'Giá nhập',
-            'variable_price' => 'Giá bán',
+            'variable_price'      => 'Giá bán',
             'variable_sale_price' => 'Giá ưu đãi',
-            'variable_image' => 'Ảnh sản phẩm',
-            'variable_album' => 'Thư viện ảnh',
-            'variable_is_used' => 'Sử dụng',
+            'variable_image'      => 'Ảnh sản phẩm',
+            'variable_album'      => 'Thư viện ảnh',
+            'variable_is_used'    => 'Sử dụng',
         ];
     }
 

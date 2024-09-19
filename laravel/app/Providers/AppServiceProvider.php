@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Carbon\Carbon;
@@ -71,11 +73,11 @@ class AppServiceProvider extends ServiceProvider
             $fileSystem = $app->make(Filesystem::class);
 
             return ServerFactory::create([
-                'response' => new LaravelResponseFactory(app('request')),
-                'source' => $fileSystem->getDriver(),
-                'cache' => $fileSystem->getDriver(),
+                'response'           => new LaravelResponseFactory(app('request')),
+                'source'             => $fileSystem->getDriver(),
+                'cache'              => $fileSystem->getDriver(),
                 'source_path_prefix' => env('IMAGE_SOURCE_PATH'),
-                'cache_path_prefix' => '.cache',
+                'cache_path_prefix'  => '.cache',
             ]);
         });
 
@@ -113,7 +115,7 @@ class AppServiceProvider extends ServiceProvider
     private function interpolateQuery($sql, $bindings)
     {
         foreach ($bindings as $binding) {
-            $value = is_numeric($binding) ? $binding : "'$binding'";
+            $value = is_numeric($binding) ? $binding : "'{$binding}'";
             $sql = preg_replace('/\?/', $value, $sql, 1);
         }
 

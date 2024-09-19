@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\User;
 
 use App\Http\Resources\Permission\PermissionResource;
@@ -16,12 +18,12 @@ class UserCatalogueResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'key' => $this->id,
-            'code' => $this->code,
-            'name' => $this->name,
+            'id'          => $this->id,
+            'key'         => $this->id,
+            'code'        => $this->code,
+            'name'        => $this->name,
             'description' => $this->description,
-            'publish' => $this->publish,
+            'publish'     => $this->publish,
             'users_count' => $this->users_count,
             'permissions' => PermissionResource::collection($this->permissions),
         ];

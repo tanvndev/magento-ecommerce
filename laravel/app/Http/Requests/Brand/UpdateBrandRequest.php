@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Brand;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,15 +24,15 @@ class UpdateBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'canonical' => 'unique:brands,canonical,'.$this->brand,
+            'name'      => 'required',
+            'canonical' => 'unique:brands,canonical,' . $this->brand,
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên thương hiệu',
+            'name'      => 'Tên thương hiệu',
             'canonical' => 'Đường dẫn',
         ];
     }

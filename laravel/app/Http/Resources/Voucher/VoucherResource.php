@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Voucher;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Carbon\Carbon;
 
 class VoucherResource extends JsonResource
 {
@@ -16,26 +18,26 @@ class VoucherResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'key' => $this->id,
-            'name' => $this->name,
-            'code' => $this->code,
-            'image' => $this->image,
-            'description' => $this->description,
-            'value_type' => $this->value_type,
-            'value' => $this->value,
-            'quantity' => $this->quantity,
+            'id'                 => $this->id,
+            'key'                => $this->id,
+            'name'               => $this->name,
+            'code'               => $this->code,
+            'image'              => $this->image,
+            'description'        => $this->description,
+            'value_type'         => $this->value_type,
+            'value'              => $this->value,
+            'quantity'           => $this->quantity,
             'value_limit_amount' => $this->value_limit_amount,
-            'subtotal_price' => $this->subtotal_price,
-            'min_quantity' => $this->min_quantity,
-            'condition_apply' => $this->condition_apply,
-            'status' => $this->getStatus(),
-            'voucher_time' => [
+            'subtotal_price'     => $this->subtotal_price,
+            'min_quantity'       => $this->min_quantity,
+            'condition_apply'    => $this->condition_apply,
+            'status'             => $this->getStatus(),
+            'voucher_time'       => [
                 $this->start_at,
                 $this->end_at,
             ],
-            'publish' => $this->publish,
-            'text_description' => $this->getTextDescription()
+            'publish'          => $this->publish,
+            'text_description' => $this->getTextDescription(),
         ];
     }
 
@@ -48,27 +50,27 @@ class VoucherResource extends JsonResource
         if ($this->quantity <= 0) {
             return [
                 'color' => 'red',
-                'text' => 'Đã hết lượt sử dụng',
+                'text'  => 'Đã hết lượt sử dụng',
             ];
         }
 
         if ($this->publish == 2) {
             return [
                 'color' => 'red',
-                'text' => 'Chưa kích hoạt',
+                'text'  => 'Chưa kích hoạt',
             ];
         }
 
         if ($start && $end && ($now->lt($start) || $now->gt($end))) {
             return [
                 'color' => 'red',
-                'text' => 'Đã hết hạn',
+                'text'  => 'Đã hết hạn',
             ];
         }
 
         return [
             'color' => 'green',
-            'text' => 'Đang áp dụng',
+            'text'  => 'Đang áp dụng',
         ];
     }
 

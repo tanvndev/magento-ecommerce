@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Cart;
 
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
@@ -41,7 +43,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         return $this->executeInTransaction(function () use ($request) {
 
-            if (! $request->product_variant_id) {
+            if ( ! $request->product_variant_id) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -55,7 +57,7 @@ class CartService extends BaseService implements CartServiceInterface
 
             $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-            if (! $cart) {
+            if ( ! $cart) {
                 $cart = $this->cartRepository->create(['user_id' => $userId]);
             }
 
@@ -73,7 +75,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         $cart->cart_items()->create([
             'product_variant_id' => $request->product_variant_id,
-            'quantity' => 1,
+            'quantity'           => 1,
         ]);
     }
 
@@ -107,7 +109,7 @@ class CartService extends BaseService implements CartServiceInterface
             $userId = auth()->user()->id;
             $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-            if (! $cart) {
+            if ( ! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -127,7 +129,7 @@ class CartService extends BaseService implements CartServiceInterface
 
             $user = auth()->user();
 
-            if (! $user->cart) {
+            if ( ! $user->cart) {
                 return errorResponse(__('messages.cart.error.cart_not_found'));
             }
 
@@ -144,7 +146,7 @@ class CartService extends BaseService implements CartServiceInterface
             $userId = auth()->user()->id;
             $cart = $this->cartRepository->findByWhere(['user_id' => $userId]);
 
-            if (! $cart) {
+            if ( ! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 

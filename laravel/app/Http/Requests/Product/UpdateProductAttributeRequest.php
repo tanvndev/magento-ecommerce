@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,7 +25,7 @@ class UpdateProductAttributeRequest extends FormRequest
     {
         return [
             'attribute_attribute_value_ids' => ['required', function ($attribute, $value, $fail) {
-                if (! is_array($value)) {
+                if ( ! is_array($value)) {
                     return $fail('Giá trị thuộc tính phải là mảng.');
                 }
 
@@ -32,7 +34,7 @@ class UpdateProductAttributeRequest extends FormRequest
                 }
 
                 foreach ($value as $key => $values) {
-                    if (! is_array($values) || empty($values)) {
+                    if ( ! is_array($values) || empty($values)) {
                         return $fail('Không được để trống giá trị.');
                     }
 

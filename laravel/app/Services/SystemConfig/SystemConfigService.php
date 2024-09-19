@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\SystemConfig;
 
 use App\Repositories\Interfaces\SystemConfig\SystemConfigRepositoryInterface;
@@ -35,7 +37,7 @@ class SystemConfigService extends BaseService implements SystemConfigServiceInte
 
             foreach ($payload as $key => $value) {
                 $payload = [
-                    'code' => $key,
+                    'code'    => $key,
                     'content' => $value,
                     'user_id' => auth()->user()->id,
                 ];
