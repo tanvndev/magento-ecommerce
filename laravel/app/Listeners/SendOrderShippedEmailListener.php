@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
-class SendOrderShippedEmailListener
+class SendOrderShippedEmailListener implements ShouldQueue
 {
     /**
      * Create the event listener.

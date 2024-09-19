@@ -180,14 +180,14 @@ trait QueryScopes
         // 'relation_name' => [
         //     ['field', 'operator', 'value'],
         //     'customFunction' => function($q) {
-        //         // Tùy chỉnh truy vấn
+        //
         //     }
         // ]
         foreach ($relationConditions as $relation => $conditions) {
             $query->whereHas($relation, function ($q) use ($conditions) {
                 foreach ($conditions as $condition) {
                     if (is_callable($condition)) {
-                        // Nếu là hàm, gọi hàm đó
+                        // call closure
                         $condition($q);
                     } elseif (count($condition) === 3) {
                         // ['field', 'operator', 'value']
@@ -204,4 +204,5 @@ trait QueryScopes
 
         return $query;
     }
+    
 }
