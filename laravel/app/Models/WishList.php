@@ -11,6 +11,8 @@ class WishList extends Model
 {
     use HasFactory,QueryScopes,SoftDeletes;
 
+    public $table = 'wishlists';
+    
     protected $fillable = [
         'user_id',
         'product_variant_id'

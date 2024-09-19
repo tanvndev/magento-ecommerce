@@ -42,4 +42,4 @@ Route::post('carts', [TestController::class, 'createOrUpdateCart']);
 //     ));
 // })->name('notifications');
 
-Route::get('test', [WishListController::class, 'index']);
+Route::post('test', [WishListController::class, 'store']);

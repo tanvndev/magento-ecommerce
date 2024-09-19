@@ -127,12 +127,12 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::apiResource('vouchers', VoucherController::class);
 
         // WISHLIST ROUTE
-        Route::get('wishlist', [WishListController::class, 'index']);
-        Route::post('wishlist', [WishListController::class, 'store']);
-        Route::delete('wishlist/clean', [WishListController::class, 'destroyAll']);
-        Route::delete('wishlist/{id}', [WishListController::class, 'destroy']);
-
+        Route::get('wishlists', [WishListController::class, 'index']);
+        Route::post('wishlists', [WishListController::class, 'store']);
+        Route::delete('wishlists/clean', [WishListController::class, 'destroyAll']);
+        Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
     });
+    
     
     // CART ROUTE
     Route::controller(CartController::class)->name('cart.')->group(function () {

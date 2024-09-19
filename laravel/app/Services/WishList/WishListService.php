@@ -4,22 +4,18 @@
 
 namespace App\Services\WishList;
 
-use App\Models\WishList;
-use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
 use App\Repositories\Interfaces\WishList\WishListRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\WishList\WishListServiceInterface;
 
 class WishListService extends BaseService implements WishListServiceInterface
 {
-    protected $productRepository;
+
     protected $wishListRepository;
 
     public function __construct(
-        ProductRepositoryInterface $productRepository,
         WishListRepositoryInterface $wishListRepository,
     ) {
-        $this->productRepository = $productRepository;
         $this->wishListRepository = $wishListRepository;
     }
 
@@ -27,20 +23,28 @@ class WishListService extends BaseService implements WishListServiceInterface
     {
 
         $select = ['id', 'user_id', 'product_variant_id',];
-        
+
         $pageSize = request('pageSize');
 
         $withWhereHas = [
-            'product_variant' => function ($q){
-                $q->where('stock','>',0)
-                  ->whereHas('product',function($query){
-                        $query->where('publish',1);
-                    })
-                    ;
+            'product_variant' => function ($q) {
+                $q->where('stock', '>', 0)
+                    ->whereHas('product', function ($query) {
+                        $query->where('publish', 1);
+                    });
             },
         ];
 
-        $data = $this->wishListRepository->pagination($select,[],$pageSize,[],[],['product_variant'],[],$withWhereHas);
+        $data = $this->wishListRepository->pagination(
+            $select,
+            [],
+            $pageSize,
+            [],
+            [],
+            ['product_variant'],
+            [],
+            $withWhereHas
+        );
 
         return $data;
     }
@@ -51,9 +55,11 @@ class WishListService extends BaseService implements WishListServiceInterface
 
             $payload = $this->preparePayload();
 
-            $userId = auth()->user()->id;
+            if (empty($payload)) {
+                return errorResponse(__('messages.wishlist.error.auth'));
+            }
 
-            $exists = $this->wishListRepository->findByWhere(['user_id' => $userId, 'product_variant_id' => $payload['product_variant_id']]);
+            $exists = $this->wishListRepository->findByWhere(['user_id' => $payload['user_id'], 'product_variant_id' => $payload['product_variant_id']]);
 
             if (!empty($exists)) {
                 return errorResponse(__('messages.wishlist.error.existed'));
@@ -68,6 +74,12 @@ class WishListService extends BaseService implements WishListServiceInterface
     {
         $payload = request()->except('_token', '_method');
 
+        if (auth()->check()) {
+            $payload['user_id'] = auth()->user()->id;
+        } else {
+            return [];
+        }
+
         return $payload;
     }
 
@@ -80,14 +92,15 @@ class WishListService extends BaseService implements WishListServiceInterface
         }, __('messages.wishlist.error.delete'));
     }
 
-    public function destroyAll(){
+    public function destroyAll()
+    {
         return $this->executeInTransaction(function () {
 
             $user = auth()->user();
 
             $user->wishList = $this->wishListRepository->findByWhere(['user_id' => $user->id]);
 
-            if (! $user->wishList) {
+            if (!$user->wishList) {
                 return errorResponse(__('messages.wishlist.error.wishlist_not_found'));
             }
 
