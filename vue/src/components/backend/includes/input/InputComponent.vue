@@ -1,9 +1,15 @@
 <template>
-  <label v-if="props.label" :for="props.name" :class="props.labelClass"
-    >{{ props.label }}
-    <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
-    <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" />
-  </label>
+  <div class="flex items-center justify-between">
+    <label v-if="props.label" :for="props.name" :class="props.labelClass"
+      >{{ props.label }}
+      <span v-if="props.required" class="font-semibold text-red-500">(*)</span>
+      <TooltipComponent v-if="props.tooltipText" :title="props.tooltipText" />
+    </label>
+
+    <div v-if="props.showGenerate">
+      <a href="#" class="text-blue-500" @click.prevent="handleGenerate">Tạo mã tự động</a>
+    </div>
+  </div>
   <div>
     <!-- INPUT TEXT -->
     <a-input
@@ -60,6 +66,7 @@
 import { useField } from 'vee-validate';
 import { watch } from 'vue';
 import { TooltipComponent } from '@/components/backend';
+import { generateRandomString } from '@/utils/helpers';
 
 const props = defineProps({
   typeInput: {
@@ -114,6 +121,10 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  showGenerate: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -130,4 +141,12 @@ watch(
   },
   { immediate: true }
 );
+
+const handleGenerate = () => {
+  let str = generateRandomString(12);
+  str = str.toUpperCase();
+  if (props.showGenerate) {
+    value.value = str;
+  }
+};
 </script>

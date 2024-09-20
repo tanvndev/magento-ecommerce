@@ -6,6 +6,7 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Voucher\StoreVoucherRequest;
 use App\Http\Requests\Voucher\UpdateVoucherRequest;
+use App\Http\Resources\Voucher\Client\ClientVoucherCollection;
 use App\Http\Resources\Voucher\VoucherCollection;
 use App\Http\Resources\Voucher\VoucherResource;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
@@ -74,5 +75,16 @@ class VoucherController extends Controller
         $response = $this->voucherService->destroy($id);
 
         return handleResponse($response);
+    }
+
+    // CLIENT API //
+
+    public function getAllVoucher()
+    {
+        $paginator = $this->voucherService->getAllVoucher();
+
+        $data = new ClientVoucherCollection($paginator);
+
+        return successResponse('', $data);
     }
 }

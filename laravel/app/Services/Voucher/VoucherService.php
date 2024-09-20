@@ -20,25 +20,35 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
     public function paginate()
     {
+        $request = request();
+
         $select = [
             'id',
             'name',
             'code',
             'image',
             'description',
-            'discount_type',
-            'discount_value',
+            'value_type',
+            'value',
+            'value_limit_amount',
             'quantity',
-            'min_order_value',
+            'condition_apply',
+            'subtotal_price',
             'min_quantity',
             'start_at',
             'end_at',
             'publish',
         ];
 
-        $data = request('list')
-            ? $this->voucherRepository->findByWhere(['publish' => 1], $select)
-            : $this->voucherRepository->all($select);
+        $condition = [
+            'search' => addslashes($request->search),
+            'publish' => $request->publish,
+            'archive' => $request->boolean('archive'),
+        ];
+
+        $pageSize = $request->pageSize;
+
+        $data = $this->voucherRepository->pagination($select, $condition, $pageSize);
 
         return $data;
     }
@@ -48,17 +58,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         return $this->executeInTransaction(function () {
 
             $payload = $this->preparePayload();
-
-            if ($payload['min_order_value'] && $payload['min_quantity']) {
-                return errorResponse(__('messages.voucher.error.create'));
-            }
-            if ($payload['min_order_value']) {
-                $payload['min_quantity'] = null;
-            }
-            if ($payload['min_quantity']) {
-                $payload['min_order_value'] = null;
-            }
-
             $this->voucherRepository->create($payload);
 
             return successResponse(__('messages.create.success'));
@@ -70,17 +69,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         return $this->executeInTransaction(function () use ($id) {
 
             $payload = $this->preparePayload();
-
-            if ($payload['min_order_value'] && $payload['min_quantity']) {
-                return errorResponse(__('messages.voucher.error.create'));
-            }
-            if ($payload['min_order_value']) {
-                $payload['min_quantity'] = null;
-            }
-            if ($payload['min_quantity']) {
-                $payload['min_order_value'] = null;
-            }
-
             $this->voucherRepository->update($id, $payload);
 
             return successResponse(__('messages.update.success'));
@@ -100,6 +88,47 @@ class VoucherService extends BaseService implements VoucherServiceInterface
     {
         $payload = request()->except('_token', '_method');
 
+        $payload['start_at'] = convertToYyyyMmDdHhMmSs($payload['voucher_time'][0] ?? null);
+        $payload['end_at'] = convertToYyyyMmDdHhMmSs($payload['voucher_time'][1] ?? null);
+
         return $payload;
+    }
+
+
+    // CLIENT API //
+
+    public function getAllVoucher()
+    {
+        $request = request();
+
+        $select = [
+            'id',
+            'name',
+            'code',
+            'image',
+            'description',
+            'value_type',
+            'value',
+            'value_limit_amount',
+            'quantity',
+            'condition_apply',
+            'subtotal_price',
+            'min_quantity',
+            'start_at',
+            'end_at',
+        ];
+
+        $condition = [
+            'where' => [
+                'publish' => 1,
+                'start_at' => ['<=', date('Y-m-d H:i:s')],
+            ],
+        ];
+
+        $pageSize = $request->pageSize;
+
+        $data = $this->voucherRepository->pagination($select, $condition, $pageSize);
+
+        return $data;
     }
 }

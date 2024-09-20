@@ -23,14 +23,17 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
 
     public function paginate()
     {
+        $request = request();
+
         $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
+            'search' => addslashes($request->search),
+            'publish' => $request->publish,
+            'archive' => $request->boolean('archive'),
         ];
         $select = ['id', 'name', 'description', 'publish', 'code'];
-        $pageSize = request('pageSize');
+        $pageSize = $request->pageSize;
 
-        $data = $pageSize && request('page')
+        $data = $pageSize && $request->page
             ? $this->userCatalogueRepository->pagination(
                 $select,
                 $condition,

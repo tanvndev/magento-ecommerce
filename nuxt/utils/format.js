@@ -25,6 +25,20 @@ const formatDataToSelect = (data, value = 'id', label = 'name') => {
   return formattedData;
 };
 
+const formatDataToRadio = (data, value = 'id', label = 'name') => {
+    const formattedData = [];
+
+    if (_.isEmpty(data)) {
+      return formattedData;
+    }
+
+    data.forEach((item) => {
+      formattedData.push({ label: item[label], value: item[value] });
+    });
+
+    return formattedData;
+  };
+
 const formatDataToTreeSelect = (data, value = 'id', label = 'name', parentId = 0) => {
   if (_.isEmpty(data)) {
     return [
@@ -115,5 +129,6 @@ export {
   formatTimestampToDate,
   formatBytesToKBMB,
   formatDataToTreeSelect,
-  formatCurrency
+  formatCurrency,
+  formatDataToRadio
 };

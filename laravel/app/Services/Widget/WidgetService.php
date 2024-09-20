@@ -25,15 +25,18 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
     public function paginate()
     {
-        $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
-            'archive' => request()->boolean('archive'),
-        ];
-        $select = ['id', 'name', 'publish', 'description', 'code', 'advertisement_banners', 'type', 'order', 'model_ids'];
-        $pageSize = request('pageSize');
+        $request = request();
 
-        $data = $pageSize && request('page')
+        $condition = [
+            'search' => addslashes($request->search),
+            'publish' => $request->publish,
+            'archive' => $request->boolean('archive'),
+        ];
+
+        $select = ['id', 'name', 'publish', 'description', 'code', 'advertisement_banners', 'type', 'order', 'model_ids'];
+        $pageSize = $request->pageSize;
+
+        $data = $pageSize && $request->page
             ? $this->widgetRepository->pagination($select, $condition, $pageSize, ['order' => 'ASC'])
             : $this->widgetRepository->findByWhere(['publish' => 1], $select, [], true);
 
@@ -69,7 +72,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $payload['model_ids'] = array_map('intval', $payload['model_ids'] ?? []);
 
         if ($payload['type'] == 'advertisement' && isset($payload['image']) && ! empty($payload['image'])) {
-            $payload['advertisement_banners'] = array_map(fn ($image, $key) => [
+            $payload['advertisement_banners'] = array_map(fn($image, $key) => [
                 'image' => $image,
                 'alt' => $payload['alt'][$key] ?? '',
                 'content' => $payload['content'][$key] ?? '',
@@ -148,13 +151,3 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         );
     }
 }
-
-// [
-//     code => 'code',
-//     name => 'name',
-//     type => 'type',
-//     items => [
-//         'product...' or ,
-//         'images'...
-//     ]
-// ]

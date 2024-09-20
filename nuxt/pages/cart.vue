@@ -73,6 +73,9 @@
                     <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
                       {{ cart.name }}
                     </NuxtLink>
+                    <span class="d-block mt-1 fs-13" style="color: #336699">{{
+                      cart.attributes
+                    }}</span>
                   </td>
                   <td class="text-right">
                     <div class="product-price">
@@ -238,7 +241,10 @@ const handleCheckboxChange = (event, index) => {
 
 const getCarts = async () => {
   await cartStore.getAllCarts()
+  handleSelectCart()
+}
 
+const handleSelectCart = () => {
   carts.value?.forEach((cart, index) => {
     if (cart.is_selected) {
       checkedItems.value[index] = cart.product_variant_id
@@ -269,18 +275,19 @@ const updateOneSelectedCarts = async (variantId) => {
 }
 
 const handleClearCart = async () => {
-  const response = await $axios.delete('/carts/clear')
+  const response = await $axios.delete('/carts/clean')
   openClearCart.value = false
 
-  cartStore.setCarts(response.data || [])
+  cartStore.removeAllCarts()
   toast(response.messages, response.status)
 }
 
 const handleRemove = async (variantId) => {
   const response = await $axios.delete(`/carts/${variantId}`)
-  if (response.status == 'success') {
-    getCarts()
-  }
+  cartStore.setTotalAmount(response.data?.total_amount)
+  cartStore.setCarts(response.data?.items)
+  checkedItems.value = []
+  handleSelectCart()
 }
 
 const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {

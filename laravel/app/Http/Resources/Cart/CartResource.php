@@ -22,6 +22,7 @@ class CartResource extends JsonResource
             'slug' => $this->product_variant->slug,
             'price' => $this->product_variant->price,
             'stock' => $this->product_variant->stock,
+            'attributes' => implode(', ', $this->product_variant->attribute_values->pluck('name')->toArray()) ?? 'Mặc định',
             'quantity' => $this->quantity,
             'sale_price' => $this->handleSalePrice(),
             'is_selected' => $this->is_selected,

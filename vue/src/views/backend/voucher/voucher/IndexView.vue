@@ -31,7 +31,7 @@
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.dataIndex === 'image'">
-                <div class="rounded border p-1 inline-block">
+                <div class="inline-block rounded border p-1">
                   <img
                     class="h-[50px] w-[50px] object-cover"
                     :src="resizeImage(record.image, 100)"
@@ -42,10 +42,13 @@
 
               <template v-if="column.dataIndex === 'name'">
                 <RouterLink
-                  :to="{ name: 'brand.update', params: { id: record.id } }"
+                  :to="{ name: 'voucher.update', params: { id: record.id } }"
                   class="text-blue-500"
                   >{{ record.name }}
                 </RouterLink>
+                <p class="mb-0 mt-1">
+                  {{ record.text_description }}
+                </p>
               </template>
 
               <template v-if="column.dataIndex === 'publish'">
@@ -56,12 +59,25 @@
                 />
               </template>
 
-              <template v-if="column.dataIndex === 'is_featured'">
-                <StatusSwitchComponent
-                  :record="record"
-                  :modelName="state.modelName"
-                  :field="column.dataIndex"
-                />
+              <template v-if="column.dataIndex === 'status'">
+                <a-tag :color="record?.status?.color">{{ record?.status?.text }}</a-tag>
+              </template>
+
+              <template v-if="column.dataIndex === 'voucher_time'">
+                <div class="flex flex-col gap-2">
+                  <span
+                    >Từ:
+                    <span class="font-medium">
+                      {{ record.voucher_time[0] }}
+                    </span>
+                  </span>
+                  <span
+                    >Đến:
+                    <span class="font-medium">
+                      {{ record.voucher_time[1] }}
+                    </span>
+                  </span>
+                </div>
               </template>
             </template>
           </a-table>
@@ -84,14 +100,15 @@ import {
 import { useCRUD, usePagination } from '@/composables';
 import { debounce, resizeImage } from '@/utils/helpers';
 import { useRoute } from 'vue-router';
+import { formatCurrency } from '@/utils/format';
 
 // STATE
 const state = reactive({
-  pageTitle: 'Danh sách thương hiệu',
-  modelName: 'Brand',
-  routeCreate: 'brand.store',
-  routeUpdate: 'brand.update',
-  endpoint: 'brands',
+  pageTitle: 'Danh sách mã giảm giá',
+  modelName: 'Voucher',
+  routeCreate: 'voucher.store',
+  routeUpdate: 'voucher.update',
+  endpoint: 'vouchers',
   isShowToolbox: false,
   modelIds: [],
   filterOptions: {},
@@ -106,22 +123,33 @@ const columns = [
     width: '7%'
   },
   {
-    title: 'Tên thương hiệu',
+    title: 'Khuyến mại',
     dataIndex: 'name',
     key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name)
+    width: '30%'
   },
   {
-    title: 'Đường dẫn',
-    dataIndex: 'canonical',
-    key: 'canonical',
-    sorter: (a, b) => a.canonical.localeCompare(b.canonical)
+    title: 'Trạng thái',
+    dataIndex: 'status',
+    key: 'status'
   },
   {
-    title: 'Nổi bật',
-    dataIndex: 'is_featured',
-    key: 'is_featured',
-    width: '5%'
+    title: 'Mã',
+    dataIndex: 'code',
+    key: 'code',
+    sorter: (a, b) => a.code.localeCompare(b.code)
+  },
+  {
+    title: 'Số lượng',
+    dataIndex: 'quantity',
+    key: 'quantity',
+    sorter: (a, b) => a.quantity.localeCompare(b.quantity)
+  },
+
+  {
+    title: 'Thời gian',
+    dataIndex: 'voucher_time',
+    key: 'voucher_time'
   },
   {
     title: 'Tình trạng',
@@ -171,7 +199,7 @@ watch(
   (newValue) => {
     state.filterOptions.archive = newValue === 'true' ? true : false;
     state.pageTitle =
-      newValue === 'true' ? 'Danh sách lưu trữ thương hiệu' : 'Danh sách thương hiệu';
+      newValue === 'true' ? 'Danh sách lưu trữ mã giảm giá' : 'Danh sách mã giảm giá';
     deboucedFetchData();
   }
 );

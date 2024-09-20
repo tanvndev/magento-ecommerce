@@ -151,7 +151,9 @@
               <a href="#" class="d-xl-show"
                 ><i class="w-icon-map-marker mr-1"></i>Theo dõi đơn hàng</a
               >
-              <a href="#"><i class="w-icon-sale"></i>Mã giảm giá </a>
+              <NuxtLink to="/voucher"
+                ><i class="w-icon-sale"></i>Mã giảm giá
+              </NuxtLink>
             </div>
           </div>
         </div>
