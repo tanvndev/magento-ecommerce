@@ -186,6 +186,10 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+<<<<<<< HEAD
+=======
+        'Redis' => Illuminate\Support\Facades\Redis::class,
+>>>>>>> 03d7105 (Update Cart Session Module)
     ])->toArray(),
 
 ];

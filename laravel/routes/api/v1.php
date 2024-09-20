@@ -137,11 +137,12 @@ Route::middleware('log.request.response', 'api')->group(function () {
     });
 
     // CART ROUTE
-    Route::controller(CartController::class)->name('cart.')->group(function () {
-        Route::get('carts', 'index')->name('index');
-        Route::post('carts', 'createOrUpdate')->name('store-or-update');
-        Route::delete('carts/clean', 'forceDestroy')->name('force-destroy');
-        Route::delete('carts/{id}', 'destroy')->name('destroy');
+    $method = auth()->check() ? 'GET' : 'POST';
+    Route::controller(CartController::class)->name('cart.')->group(function () use ($method) {
+        Route::$method('carts', 'index')->name('index');
+        Route::post('carts/save', 'createOrUpdate')->name('store-or-update');
+        Route::post('carts/clean', 'forceDestroy')->name('force-destroy');
+        Route::post('carts/{id}', 'destroy')->name('destroy');
         Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
     });
 });
