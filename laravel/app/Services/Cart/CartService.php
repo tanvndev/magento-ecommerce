@@ -20,9 +20,9 @@ class CartService extends BaseService implements CartServiceInterface
         $this->productVariantRepository                 = $productVariantRepository;
     }
 
-    public function getCart()
+    public function getCart($sessionId = null)
     {
-        $conditions                                     = $this->getUserOrSessionConditions();
+        $conditions                                     = $this->getUserOrSessionConditions($sessionId);
 
         $this->checkStockProductAndUpdateCart($conditions);
 
@@ -35,9 +35,9 @@ class CartService extends BaseService implements CartServiceInterface
         return $cart->cart_items ?? collect();
     }
 
-    public function createOrUpdate($request)
+    public function createOrUpdate($request, $sessionId = null)
     {
-        return $this->executeInTransaction(function () use ($request) {
+        return $this->executeInTransaction(function () use ($request, $sessionId) {
             if (!$request->product_variant_id) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
@@ -47,14 +47,14 @@ class CartService extends BaseService implements CartServiceInterface
                 return errorResponse(__('messages.cart.error.max'));
             }
 
-            $conditions                                 = $this->getUserOrSessionConditions();
+            $conditions                                 = $this->getUserOrSessionConditions($sessionId);
             $cart                                       = $this->cartRepository->findByWhere($conditions) ?? $this->cartRepository->create($conditions);
 
             $cart->cart_items()->where('product_variant_id', $request->product_variant_id)->exists()
                 ? $this->updateCartItem($cart, $request)
                 : $this->createCartItem($cart, $request);
 
-            return $this->getCart();
+            return $this->getCart($sessionId);
         }, __('messages.cart.error.not_found'));
     }
 
@@ -79,20 +79,25 @@ class CartService extends BaseService implements CartServiceInterface
 
     public function checkStockProductAndUpdateCart($conditions)
     {
-        $cart                                           = $this->cartRepository->findByWhere($conditions);
+        $cart = $this->cartRepository->findByWhere($conditions);
 
         foreach ($cart->cart_items as $item) {
-            $productVariant                             = $this->productVariantRepository->findById($item->product_variant_id);
+            $productVariant = $this->productVariantRepository->findById($item->product_variant_id);
             if ($productVariant->stock < $item->quantity) {
-                $item->update(['quantity'               => $productVariant->stock]);
+                $item->update(['quantity' => $productVariant->stock]);
             }
         }
+
+        $sessionId = request()->input('session_id', null);
+        $this->mergeSessionCartToUserCart($sessionId);
     }
 
-    public function deleteOneItem($request, $id)
+
+
+    public function deleteOneItem($id, $sessionId = null)
     {
-        return $this->executeInTransaction(function () use ($id) {
-            $conditions                                 = $this->getUserOrSessionConditions();
+        return $this->executeInTransaction(function () use ($id, $sessionId) {
+            $conditions                                 = $this->getUserOrSessionConditions($sessionId);
             $cart                                       = $this->cartRepository->findByWhere($conditions);
 
             if (!$cart) {
@@ -100,16 +105,17 @@ class CartService extends BaseService implements CartServiceInterface
             }
 
             $cartItem                                   = $cart->cart_items()->where('product_variant_id', $id)->first();
+
             $cartItem?->delete();
 
-            return $this->getCart();
+            return $this->getCart($sessionId);
         }, __('messages.cart.error.item_not_found'));
     }
 
-    public function cleanCart()
+    public function cleanCart($sessionId = null)
     {
-        return $this->executeInTransaction(function () {
-            $conditions                                 = $this->getUserOrSessionConditions();
+        return $this->executeInTransaction(function () use ($sessionId) {
+            $conditions                                 = $this->getUserOrSessionConditions($sessionId);
             $cart                                       = $this->cartRepository->findByWhere($conditions);
 
             if (!$cart) {
@@ -121,10 +127,10 @@ class CartService extends BaseService implements CartServiceInterface
         }, __('messages.cart.error.delete'));
     }
 
-    public function handleSelected($request)
+    public function handleSelected($request, $sessionId = null)
     {
-        return $this->executeInTransaction(function () use ($request) {
-            $conditions                                 = $this->getUserOrSessionConditions();
+        return $this->executeInTransaction(function () use ($request, $sessionId) {
+            $conditions                                 = $this->getUserOrSessionConditions($sessionId);
             $cart                                       = $this->cartRepository->findByWhere($conditions);
 
             if (!$cart) {
@@ -139,9 +145,30 @@ class CartService extends BaseService implements CartServiceInterface
                 $cart->cart_items()->update(['is_selected' => (bool)$request->select_all, 'updated_at' => now()]);
             }
 
-            return $this->getCart();
+            return $this->getCart($sessionId);
         }, __('messages.cart.error.not_found'));
     }
+
+    public function deleteCartSelected($sessionId = null)
+    {
+        return $this->executeInTransaction(function () use ($sessionId) {
+            $conditions = $this->getUserOrSessionConditions($sessionId);
+            $cart = $this->cartRepository->findByWhere($conditions);
+
+            if (!$cart) {
+                return errorResponse(__('messages.cart.error.not_found'));
+            }
+
+            $selectedItems = $cart->cart_items()->where('is_selected', true)->get();
+
+            foreach ($selectedItems as $item) {
+                $item->delete();
+            }
+
+            return $this->getCart($sessionId);
+        }, __('messages.cart.error.delete'));
+    }
+
 
     private function toggleCartItemSelection($cart, $productId)
     {
@@ -152,10 +179,50 @@ class CartService extends BaseService implements CartServiceInterface
         }
     }
 
-    private function getUserOrSessionConditions(): array
+    private function getUserOrSessionConditions($sessionId): array
     {
         return auth()->check()
             ? ['user_id' => auth()->user()->id]
-            : ['session_id' => request()->input('session_id')];
+            : ['session_id' => $sessionId];
+    }
+
+    public function mergeSessionCartToUserCart($sessionId)
+    {
+        if (!auth()->check()) {
+            return;
+        }
+
+        $userId = auth()->user()->id;
+        $userCart = $this->cartRepository->findByWhere(['user_id' => $userId]);
+        $sessionCart = $this->cartRepository->findByWhere(['session_id' => $sessionId]);
+
+        if (!$sessionCart) {
+            return;
+        }
+
+        if (!$userCart) {
+            $userCart = $this->cartRepository->create(['user_id' => $userId]);
+        }
+
+        foreach ($sessionCart->cart_items as $sessionItem) {
+
+            $existingItem = $userCart->cart_items()->where('product_variant_id', $sessionItem->product_variant_id)->first();
+
+            if ($existingItem) {
+
+                $existingItem->update([
+                    'quantity' => $existingItem->quantity + $sessionItem->quantity,
+                    'updated_at' => now(),
+                ]);
+            } else {
+
+                $userCart->cart_items()->create([
+                    'product_variant_id' => $sessionItem->product_variant_id,
+                    'quantity' => $sessionItem->quantity,
+                ]);
+            }
+        }
+
+        $sessionCart->cart_items()->delete();
     }
 }

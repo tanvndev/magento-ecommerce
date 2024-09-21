@@ -128,12 +128,12 @@ Route::middleware('log.request.response', 'api')->group(function () {
     });
 
     // CART ROUTE
-    $method = auth()->check() ? 'GET' : 'POST';
-    Route::controller(CartController::class)->name('cart.')->group(function () use ($method) {
-        Route::$method('carts', 'index')->name('index');
-        Route::post('carts/save', 'createOrUpdate')->name('store-or-update');
-        Route::post('carts/clean', 'forceDestroy')->name('force-destroy');
-        Route::post('carts/{id}', 'destroy')->name('destroy');
-        Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
+    Route::controller(CartController::class)->name('cart.')->group(function () {
+        Route::get('carts/{session_id?}', 'index')->name('index');
+        Route::post('carts/{session_id?}/save', 'createOrUpdate')->name('store-or-update');
+        Route::delete('carts/{session_id?}/clean', 'forceDestroy')->name('force-destroy');
+        Route::delete('carts/{id}/{session_id?}', 'destroy')->name('destroy');
+        Route::put('carts/{session_id?}/handle-selected', 'handleSelected')->name('handle-selected');
+        Route::delete('carts/{session_id?}/deleteCartSelected', 'deleteCartSelected')->name('deleteCartSelected');
     });
 });

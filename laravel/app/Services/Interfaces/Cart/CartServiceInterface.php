@@ -4,13 +4,15 @@ namespace App\Services\Interfaces\Cart;
 
 interface CartServiceInterface
 {
-    public function getCart();
+    public function getCart($sessionId = null);
 
-    public function createOrUpdate($request);
+    public function createOrUpdate($request, $sessionId = null);
 
-    public function deleteOneItem($request, $id);
+    public function deleteOneItem($id, $sessionId = null);
 
-    public function cleanCart();
+    public function cleanCart($sessionId = null);
 
-    public function handleSelected($request);
+    public function handleSelected($request, $sessionId = null);
+
+    public function deleteCartSelected($sessionId = null);
 }
