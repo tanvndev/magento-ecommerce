@@ -13,6 +13,10 @@ class PaymentMethod extends Model
 {
     use HasFactory, QueryScopes;
 
+    const COD_ID = '1';
+    const VNPAY_ID = '2';
+    const MOMO_ID = '3';
+
     protected $fillable = [
         'name',
         'code',

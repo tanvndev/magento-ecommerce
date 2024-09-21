@@ -8,6 +8,8 @@ use App\Classes\Momo;
 use App\Classes\Paypal;
 use App\Classes\Vnpay;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\PaymentMethod;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Illuminate\Http\Request;
 
@@ -24,36 +26,34 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $order = $this->orderService->create();
-        dd($order);
-        // if (!empty($order)) {
-        //     $request->session()->put('orderSuccess', $order);
+        if (empty($order)) {
+            return errorResponse(__('messages.order.error.create'));
+        }
 
-        //     $response = $this->handlePaymentMethod($order);
-        //     if ($response['code'] == 00) {
-        //         return redirect()->away($response['url']);
-        //     }
+        $response = $this->handlePaymentMethod($order);
 
-        //     return redirect()->route('cart.success')->with('toast_success', 'Đặt hàng thành công.');
-        // }
+        if ($response['status'] == 'success') {
+            return redirect()->away($response['url']);
+        }
+
         // return redirect()->back()->with('toast_error', 'Đặt hàng thất bại, vui lòng đặt lại!');
     }
 
-    private function handlePaymentMethod($order = null)
+    private function handlePaymentMethod(Order $order)
     {
-
-        switch ($order['payment_method']) {
-            case 'vnp_payment':
+        switch ($order->payment_method_id) {
+            case PaymentMethod::VNPAY_ID:
                 $response = Vnpay::payment($order);
 
                 break;
-            case 'momo_payment':
+            case PaymentMethod::MOMO_ID:
                 $response = Momo::payment($order);
 
                 break;
-            case 'paypal_payment':
-                $response = Paypal::payment($order);
+                // case 'paypal_payment':
+                //     $response = Paypal::payment($order);
 
-                break;
+                //     break;
 
             default:
                 // code...

@@ -264,14 +264,19 @@ const updateAllSelectedCarts = async () => {
   const response = await $axios.put('/carts/handle-selected', {
     select_all: allChecked.value,
   })
-  cartStore.setTotalAmount(response.data?.total_amount)
+  setCartToStore(response.data)
 }
 
 const updateOneSelectedCarts = async (variantId) => {
   const response = await $axios.put('/carts/handle-selected', {
     product_variant_id: variantId,
   })
-  cartStore.setTotalAmount(response.data?.total_amount)
+  setCartToStore(response.data)
+}
+
+const setCartToStore = (data) => {
+  cartStore.setTotalAmount(data?.total_amount)
+  cartStore.setCarts(data?.items)
 }
 
 const handleClearCart = async () => {
@@ -284,8 +289,8 @@ const handleClearCart = async () => {
 
 const handleRemove = async (variantId) => {
   const response = await $axios.delete(`/carts/${variantId}`)
-  cartStore.setTotalAmount(response.data?.total_amount)
-  cartStore.setCarts(response.data?.items)
+
+  setCartToStore(response.data)
   checkedItems.value = []
   handleSelectCart()
 }
@@ -297,8 +302,7 @@ const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
   })
 
   if (response.status == 'success') {
-    cartStore.setCarts(response.data?.items)
-    cartStore.setTotalAmount(response.data?.total_amount)
+    setCartToStore(response.data)
   }
 }, 1300)
 

@@ -1,7 +1,8 @@
 <?php
 
-
-
+use App\Http\Controllers\Payment\MomoController;
+use App\Http\Controllers\Payment\PaypalController;
+use App\Http\Controllers\Payment\VnpController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,22 +24,15 @@ Route::get('images/{path}', function (Server $server, Request $request, $path) {
 })->where('path', '.*')->name('glide');
 //**** */ KHONG DUOC XOA HAY COMMENT ROUTE NAY ****//
 
-Route::get('carts', [TestController::class, 'getAllCart']);
 
-Route::post('carts', [TestController::class, 'createOrUpdateCart']);
+// VNPAY
+Route::get('return/vnpay', [VnpController::class, 'handleReturnUrl'])->name('return.vnpay');
+Route::get('return/vnpay_ipn', [VnpController::class, 'handleVnpIpn'])->name('return.vnpay_ipn');
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+// MOMO
+Route::get('return/momo', [MomoController::class, 'handleReturnUrl'])->name('return.momo');
+Route::get('return/momo_ipn', [MomoController::class, 'handleMomoIpn'])->name('return.momo_ipn');
 
-// Route::get('/test', [TestController::class, 'index']);
-// Route::get('/emails', function () {
-//     return view('emails.forgot-email');
-// });
-
-// Route::get('/notification/{boolean}/{messages}', function ($boolean, $messages) {
-//     return view('auth.notification', compact(
-//         'boolean',
-//         'messages'
-//     ));
-// })->name('notifications');
+// PAYPAL
+Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal.success');
+Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');

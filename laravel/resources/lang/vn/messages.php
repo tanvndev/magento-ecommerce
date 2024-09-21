@@ -61,6 +61,16 @@ return [
         ],
         'success' => 'Ma giam gia da duoc ap dung thanh cong',
     ],
+    'order' => [
+        'error' => [
+            'create' => 'Tạo đơn hàng thất bại vui lòng thử lại.',
+            'payment' => 'Thanh toán đơn hàng thất bại vui lòng thử lại.',
+        ],
+        'success' => [
+            'create' => 'Tạo đơn hàng thành công vui lòng kiểm tra email.',
+            'payment' => 'Thanh toán đơn hàng thành công.',
+        ],
+    ],
     'auth' => [
         'register' => [
             'success'        => 'Người dùng đã đăng ký thành công. Vui lòng kiểm tra email của bạn để xác nhận đăng ký.',

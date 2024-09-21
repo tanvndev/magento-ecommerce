@@ -2,7 +2,7 @@
 
 
 
-namespace App\Http\Controllers\Api\V1\Payment;
+namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;

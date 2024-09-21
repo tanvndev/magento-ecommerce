@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services\Interfaces\Order;
 
 interface OrderServiceInterface
@@ -10,5 +8,7 @@ interface OrderServiceInterface
 
     public function create();
 
-    public function update($id);
+    public function update(string $id);
+
+    public function updatePayment(string $id, array $payload);
 }

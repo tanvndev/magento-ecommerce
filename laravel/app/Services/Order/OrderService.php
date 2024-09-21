@@ -4,6 +4,7 @@
 
 namespace App\Services\Order;
 
+use App\Models\Order;
 use App\Models\Voucher;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;
@@ -37,10 +38,10 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $payload = $this->createOrder($request);
+            $order = $this->createOrder($request);
 
-            dd($payload ?? 0);
-        });
+            return $order;
+        }, __('messages.order.error.create'));
     }
 
     private function createOrder($request)
@@ -64,8 +65,6 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $order = $this->orderRepository->create($payload);
         $this->createOrderItems($order, $cartItems);
-
-        dd(1);
 
         return $order;
     }
@@ -262,141 +261,40 @@ class OrderService extends BaseService implements OrderServiceInterface
         return false;
     }
 
-    public function update($id)
+    public function update(string $id)
     {
-        return $this->orderRepository->update($id);
+        return $this->executeInTransaction(function () use ($id) {}, __('messages.order.error.payment'));
     }
 
-    public function order()
+    public function updatePayment(string $id, array $payload)
     {
-        // DB::beginTransaction();
-        // try {
-        //     $payload = $this->handlePayloadOrder();
+        return $this->executeInTransaction(function () use ($id, $payload) {
 
-        //     $order = $this->orderRepository->create($payload);
+            $payload['paid_at'] = now();
 
-        //     if ($order->id == null || empty($order->id)) {
-        //         throw new \Exception('Error create order.');
-        //     }
-        //     $payload['id'] = $order->id;
-        //     // Dong bo du lieu vao bang order_product
-        //     $this->createOrderProduct($payload, $order);
-        //     // Gui mail cho khach hang
-        //     $this->sendMail($payload);
-        //     DB::commit();
-        //     return $payload;
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     echo $e->getMessage() . ' ' . $e->getLine() . ' ' . $e->getFile();
-        //     die;
-        //     return [];
-        // }
+            $order = $this->orderRepository->save($id, $payload);
+
+            $payloadOrderPaymentable = $this->formatPayloadOrderPaymentable($order, $payload);
+
+            $order->order_paymentable()->create($payloadOrderPaymentable);
+
+            return successResponse(__('messages.order.success.payment'));
+        }, __('messages.order.error.payment'));
     }
 
-    private function sendMail($order)
+    private function formatPayloadOrderPaymentable(Order $order, array $payload)
     {
-        $to = $order['email'];
-        $cc = env('MAIL_USERNAME');
-        Mail::to($to)->cc($cc)->send(new OrderMail($order));
-    }
-
-    private function createOrderProduct($payload, $order)
-    {
-        $data = [];
-        foreach ($payload['cart']['detail'] as $key => $cartItem) {
-            // tach ra de lay product_id va uuid
-            $ids = explode('_', $cartItem->id);
-
-            $data[] = [
-                'product_id' => $ids[0],
-                'uuid'       => $ids[1] ?? 0,
-                'name'       => $cartItem->name,
-                'quantity'   => $cartItem->qty,
-                'price'      => $cartItem->originalPrice,
-                'price_sale' => $cartItem->price,
-                'promotion'  => json_encode($payload['promotion']),
-                'option'     => json_encode($cartItem->options),
-            ];
-        }
-
-        $order->products()->sync($data);
-    }
-
-    public function cartPromotion($cartTotal)
-    {
-        $maxDiscount = 0;
-        $selectedPromotion = null;
-        $promotions = $this->promotionRepository->getPromtionByCartTotal(0);
-
-        if (empty($promotions)) {
-            return [];
-        }
-
-        foreach ($promotions as $promotion) {
-            $discountInfo = $promotion->discount_infomation['info'];
-            $amountFrom = $discountInfo['amountFrom'] ?? [];
-            $amountTo = $discountInfo['amountTo'] ?? [];
-            $amountValue = $discountInfo['amountValue'] ?? [];
-            $amountType = $discountInfo['amountType'] ?? [];
-
-            $length = min(count($amountFrom), count($amountTo), count($amountValue), count($amountType));
-
-            for ($i = 0; $i < $length; $i++) {
-                $currentAmountFrom = convertPrice($amountFrom[$i]);
-                $currentAmountTo = convertPrice($amountTo[$i]);
-                $currentAmountValue = convertPrice($amountValue[$i]);
-                $currentAmountType = $amountType[$i];
-
-                if (($cartTotal > $currentAmountFrom && $cartTotal <= $currentAmountTo) || $cartTotal > $currentAmountTo) {
-                    if ($currentAmountType == 'cast') {
-                        $discount = $currentAmountValue;
-                    } elseif ($currentAmountType == 'percent') {
-                        $discount = ($currentAmountValue / 100) * $cartTotal;
-                    } else {
-                        continue;
-                    }
-
-                    // Lay ra discount co duoc giam gia nhieu nhat
-                    if ($discount > $maxDiscount) {
-                        $maxDiscount = $discount;
-                        $selectedPromotion = $promotion;
-                    }
-                }
-            }
-        }
 
         return [
-            'discount'  => $maxDiscount,
-            'promotion' => $selectedPromotion,
+            'payment_method_id' => $order->payment_method_id,
+            'payment_detail' => $payload['payment_detail'],
+            'method_name' => $order->payment_method->name,
         ];
     }
 
-    private function handlePayloadOrder()
+    private function sendMailUpdatePayment(Order $order)
     {
-        $carts = $this->getCart();
-        $cartPromotion = $this->cartPromotion($carts->total);
-
-        // Lấy ra tất cả các trường và loại bỏ 2 trường bên dưới
-        $payload = request()->except('_token');
-        $payload['code'] = $this->generateOrderCode();
-        $payload['created_at'] = date('Y-m-d H:i:s');
-        $payload['user_id'] = Auth::id();
-
-        $payload['cart'] = [
-            'detail' => $carts,
-            'total'  => $carts->total,
-            'count'  => $carts->count,
-        ];
-        $payload['promotion'] = [
-            'discount' => $cartPromotion['discount'],
-            'name'     => $cartPromotion['promotion']->name ?? '',
-            'start_at' => $cartPromotion['promotion']->start_at ?? '',
-            'end_at'   => $cartPromotion['promotion']->end_at ?? '',
-        ];
-        $payload['confirm'] = 'pending';
-        $payload['delivery'] = 'pending';
-        $payload['payment'] = 'unpaid';
-
-        return $payload;
+        // $mail = new OrderMail($order);
+        // $mail->send();
     }
 }

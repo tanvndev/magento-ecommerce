@@ -1,13 +1,11 @@
 <?php
 
-
-
-namespace App\Http\Controllers\Api\V1\Payment;
+namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;
 use App\Services\Interfaces\Order\OrderServiceInterface;
-
 use Exception;
 use Illuminate\Http\Request;
 
@@ -21,7 +19,6 @@ class VnpController extends Controller
         OrderRepositoryInterface $orderRepository,
         OrderServiceInterface $orderService
     ) {
-        parent::__construct();
         $this->orderRepository = $orderRepository;
         $this->orderService = $orderService;
     }
@@ -29,7 +26,7 @@ class VnpController extends Controller
     public function handleReturnUrl(Request $request)
     {
         // Lấy cấu hình từ config
-        $vnpConfig = config('apps.paymentConfig')['vnpay'];
+        $vnpConfig = config('apps.payment-config')['vnpay'];
         $vnp_HashSecret = $vnpConfig['vnp_HashSecret'];
         $vnp_SecureHash = $request->input('vnp_SecureHash');
 
@@ -65,18 +62,11 @@ class VnpController extends Controller
         // Kiểm tra tính hợp lệ của chữ ký
         if ($secureHash == $vnp_SecureHash) {
             if ($request->input('vnp_ResponseCode') == '00') {
-                $request->session()->put('paymentReturn',  $inputData);
-                $request->session()->put('templatePayment',  'clients.includes.vnpay');
-
-                $this->handleVnpIpn($inputData);
-
-                return redirect()->route('cart.success')->with('toast_success', 'Đặt hàng thành công.');
+                return $this->handleVnpIpn($inputData);
             }
         }
-        // Xoa orderSuccess
-        $request->session()->forget('orderSuccess');
 
-        return redirect()->route('checkout')->with('toast_error', 'Đặt hàng thất bại, vui lòng thử lại!');
+        // return redirect()->route('checkout')->with('toast_error', 'Đặt hàng thất bại, vui lòng thử lại!');
     }
 
     private function handleVnpIpn($get)
@@ -95,7 +85,7 @@ class VnpController extends Controller
         */
 
         // Lấy cấu hình từ config
-        $vnpConfig = config('apps.paymentConfig')['vnpay'];
+        $vnpConfig = config('apps.payment-config')['vnpay'];
         $vnp_HashSecret = $vnpConfig['vnp_HashSecret'];
 
         $inputData = [];
@@ -126,6 +116,9 @@ class VnpController extends Controller
         $vnp_BankCode = $inputData['vnp_BankCode']; //Ngân hàng thanh toán
         $vnp_Amount = $inputData['vnp_Amount'] / 100; // Số tiền thanh toán VNPAY phản hồi
 
+
+
+
         $Status = 0; // Là trạng thái thanh toán của giao dịch chưa có IPN lưu tại hệ thống của merchant chiều khởi tạo URL thanh toán.
 
         $orderCode = $inputData['vnp_TxnRef'];
@@ -138,17 +131,23 @@ class VnpController extends Controller
                 //Việc kiểm tra trạng thái của đơn hàng giúp hệ thống không xử lý trùng lặp, xử lý nhiều lần một giao dịch
                 //Giả sử: $order = mysqli_fetch_assoc($result);
 
-                $order = $this->orderRepository->findByWhere(['code' => ['=', $orderCode]]);
-                $orderAmount = $order->cart['total'] - $order->promotion['discount'];
+                $order = $this->orderRepository->findByWhere(['code' => $orderCode]);
+                $orderFinalAmount = $order->final_price;
+
                 if ($order != null) {
-                    if ($orderAmount <= $vnp_Amount) { //Kiểm tra số tiền thanh toán của giao dịch: giả sử số tiền kiểm tra là đúng.
+                    if ($orderFinalAmount <= $vnp_Amount) { //Kiểm tra số tiền thanh toán của giao dịch: giả sử số tiền kiểm tra là đúng.
                         //$order["Amount"] == $vnp_Amount
-                        if ($order->payment != 'paid' && $order->payment == 'unpaid') {
+                        if (
+                            $order->payment_status != Order::PAYMENT_STATUS_PAID &&
+                            $order->payment_status == Order::PAYMENT_STATUS_UNPAID
+                        ) {
                             if ($inputData['vnp_ResponseCode'] == '00' || $inputData['vnp_TransactionStatus'] == '00') {
-                                $payload['payment'] = 'paid'; // Trạng thái thanh toán thành công
+                                $payload['payment'] = Order::PAYMENT_STATUS_PAID; // Trạng thái thanh toán thành công
                             } else {
-                                $payload['payment'] = 'unpaid'; // Trạng thái thanh toán thất bại / lỗi
+                                $payload['payment'] = Order::PAYMENT_STATUS_UNPAID; // Trạng thái thanh toán thất bại / lỗi
                             }
+
+                            $payload['payment_detail'] = $inputData;
                             //Cài đặt Code cập nhật kết quả thanh toán, tình trạng đơn hàng vào DB
 
                             $this->orderService->updatePayment($order->id, $payload);
@@ -177,6 +176,11 @@ class VnpController extends Controller
             $returnData['RspCode'] = '99';
             $returnData['Message'] = 'Unknow error';
         }
+
+        if ($returnData['RspCode'] == '00') {
+            return redirect()->away(env('NUXT_APP_URL') . '/order-success?code=' . $orderCode);
+        }
+
         //Trả lại VNPAY theo định dạng JSON
         // echo json_encode($returnData);
     }

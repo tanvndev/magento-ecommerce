@@ -43,7 +43,7 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->string('order_status', 50)->default('pending')->comment('pending, confirmed, completed, cancelled, returned');
-            $table->string('payment_status', 50)->default('pending')->comment('pending, paid, failed');
+            $table->string('payment_status', 50)->default('unpaid')->comment('unpaid, paid');
             $table->string('delivery_status', 50)->default('pending')->comment('pending', 'inTransit', 'delivered', 'failed', 'cancelled', 'returned');
             $table->decimal('total_price', 15, 2);
             $table->decimal('shipping_fee', 15, 2);

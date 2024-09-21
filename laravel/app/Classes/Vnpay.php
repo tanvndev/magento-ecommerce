@@ -8,7 +8,7 @@ class Vnpay
 {
     public static function payment($order)
     {
-        $vnpConfig = config('apps.paymentConfig')['vnpay'];
+        $vnpConfig = config('apps.payment-config')['vnpay'];
         //Config
         $vnp_Url = $vnpConfig['vnp_Url'];
         $vnp_TmnCode = $vnpConfig['vnp_TmnCode'];
@@ -18,29 +18,30 @@ class Vnpay
         $locale = 'vn';
 
         // Tạo một mảng chứa thông tin cần thiết
-        $amount = $order['cart']['total'] - $order['promotion']['discount'];
+        $final_amount = $order->final_price;
+
         $inputData = [
             'vnp_Version'    => '2.1.0',
             'vnp_TmnCode'    => $vnp_TmnCode,
-            'vnp_Amount'     => $amount * 100,
+            'vnp_Amount'     => $final_amount * 100,
             'vnp_Command'    => 'pay',
             'vnp_CreateDate' => date('YmdHis'),
             'vnp_CurrCode'   => 'VND',
             'vnp_IpAddr'     => $_SERVER['REMOTE_ADDR'],
             'vnp_Locale'     => $locale,
-            'vnp_OrderInfo'  => $order['description'] ?? 'Thanh toan don hang ' . $order['code'] . ' qua VNPAY.',
+            'vnp_OrderInfo'  => $order->note ?? 'Thanh toan don hang ' . $order->code . ' qua VNPAY.',
             'vnp_OrderType'  => 'billpayment',
             'vnp_ReturnUrl'  => $vnp_ReturnUrl,
-            'vnp_TxnRef'     => $order['code'],
+            'vnp_TxnRef'     => $order->code,
         ];
 
         // Thêm thông tin nhưng không bắt buộc
-        if (isset($order['bank_code']) && $order['bank_code'] != '') {
-            $inputData['vnp_BankCode'] = $order['bank_code'];
+        if (isset($order->vnp_BankCode) && $order->vnp_BankCode != '') {
+            $inputData['vnp_BankCode'] = $order->vnp_BankCode;
         }
 
-        if (isset($order['txt_bill_state']) && $order['txt_bill_state'] != '') {
-            $inputData['vnp_Bill_State'] = $order['txt_bill_state'];
+        if (isset($order->vnp_Bill_State) && $order->vnp_Bill_State != '') {
+            $inputData['vnp_Bill_State'] = $order->vnp_Bill_State;
         }
 
         ksort($inputData);
@@ -57,8 +58,8 @@ class Vnpay
         }
 
         $returnData = [
-            'code'    => '00',
-            'message' => 'success',
+            'status' => 'success',
+            'messages' => 'Tạo liên kết thanh toán thành công.',
             'url'     => $vnp_Url,
         ];
 

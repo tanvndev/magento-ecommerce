@@ -52,4 +52,5 @@ import { useCartStore } from '#imports'
 
 const cartStore = useCartStore()
 const carts = computed(() => cartStore.getCartSelected)
+
 </script>

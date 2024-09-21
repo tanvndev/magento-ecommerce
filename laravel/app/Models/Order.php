@@ -12,6 +12,9 @@ class Order extends Model
 {
     use HasFactory, QueryScopes;
 
+    const PAYMENT_STATUS_PAID = 'paid';
+    const PAYMENT_STATUS_UNPAID = 'unpaid';
+
     protected $fillable = [
         'code',
         'customer_name',

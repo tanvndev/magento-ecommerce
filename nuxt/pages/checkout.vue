@@ -21,43 +21,43 @@
 
     <!-- Start of PageContent -->
     <div class="page-content checkout-content-wrapper">
-      <div class="container">
-        <div class="coupon-toggle">
-          Bạn có mã giảm giá?
-          <a
-            @click.prevent="showApplyVoucher = !showApplyVoucher"
-            href="#"
-            class="show-coupon font-weight-bold text-uppercase text-dark"
-            >Nhập mã code</a
-          >
-        </div>
-        <div class="coupon-content mb-4" v-show="showApplyVoucher">
-          <p>
-            Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới. Bạn có thể xem mã
-            giảm giá
-            <NuxtLink
-              to="/voucher"
-              target="_blank"
-              title="Xem mã giảm giá tại đây"
-              >tại đây</NuxtLink
+      <form @submit.prevent="onSubmit">
+        <div class="container">
+          <div class="coupon-toggle">
+            Bạn có mã giảm giá?
+            <a
+              @click.prevent="showApplyVoucher = !showApplyVoucher"
+              href="#"
+              class="show-coupon font-weight-bold text-uppercase text-dark"
+              >Nhập mã code</a
             >
-          </p>
-          <div class="input-wrapper-inline">
-            <input
-              type="text"
-              name="Mã giảm giá"
-              class="form-control form-control-md mr-1 mb-2"
-              placeholder="Mã giảm giá"
-            />
-            <button
-              type="button"
-              class="btn button btn-rounded btn-coupon mb-2"
-            >
-              Áp Dụng Mã
-            </button>
           </div>
-        </div>
-        <form class="form checkout-form" action="#" method="post">
+          <div class="coupon-content mb-4" v-show="showApplyVoucher">
+            <p>
+              Nếu bạn có mã giảm giá, vui lòng áp dụng bên dưới. Bạn có thể xem
+              mã giảm giá
+              <NuxtLink
+                to="/voucher"
+                target="_blank"
+                title="Xem mã giảm giá tại đây"
+                >tại đây</NuxtLink
+              >
+            </p>
+            <div class="input-wrapper-inline">
+              <input
+                type="text"
+                name="Mã giảm giá"
+                class="form-control form-control-md mr-1 mb-2"
+                placeholder="Mã giảm giá"
+              />
+              <button
+                type="button"
+                class="btn button btn-rounded btn-coupon mb-2"
+              >
+                Áp Dụng Mã
+              </button>
+            </div>
+          </div>
           <div class="row mb-9">
             <div class="col-lg-7 pr-lg-4 mb-4 main-content" ref="mainContent">
               <!-- Checkout address -->
@@ -71,16 +71,14 @@
 
               <div class="form-group mt-3">
                 <div class="col-md-12">
-                  <v-textarea
-                    hint="Lời nhắn về đơn hàng của bạn, ví dụ ghi chú đặc biệt về việc giao hàng"
-                    clearable
-                    row-height="20"
-                    rows="2"
-                    auto-grow
-                    variant="outlined"
-                    density="comfortable"
+                  <IncludesInputComponent
+                    :row-height="20"
+                    :rows="2"
+                    type-input="textarea"
+                    name="note"
                     label="Lời nhắn"
-                  ></v-textarea>
+                    hint="Lời nhắn về đơn hàng của bạn, ví dụ ghi chú đặc biệt về việc giao hàng"
+                  />
                 </div>
               </div>
             </div>
@@ -94,8 +92,8 @@
               </div>
             </div>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
     <!-- End of PageContent -->
   </main>
@@ -103,13 +101,57 @@
 </template>
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useForm } from 'vee-validate'
 
+const { $axios } = useNuxtApp()
 const showApplyVoucher = ref(false)
 const sidebarStyle = ref({})
 const mainContent = ref(null)
 const secondaryContent = ref(null)
 const stickyOffset = 20
 
+const { handleSubmit } = useForm({
+  validationSchema: {
+    customer_name(value) {
+      if (value) return true
+      return 'Vui lòng nhập họ và tên.'
+    },
+    shipping_address(value) {
+      if (value) return true
+      return 'Vui lòng nhập địa chỉ.'
+    },
+    province_id(value) {
+      if (value) return true
+      return 'Vui lòng chọn Tỉnh / Thành phố.'
+    },
+    district_id(value) {
+      if (value) return true
+      return 'Vui lòng chọn Quận / Huyện.'
+    },
+    ward_id(value) {
+      if (value) return true
+      return 'Vui lòng chọn Phường / Xã.'
+    },
+    customer_phone(value) {
+      if (!value) return 'Số điện thoại không được để trống.'
+      if (/^(0[0-9]{9})$/.test(value)) return true
+      return 'Số điện thoại không đúng định dạng.'
+    },
+    customer_email(value) {
+      if (!value) return 'Email không được để trống.'
+      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value))
+        return true
+      return 'Email không đúng định dạng.'
+    },
+  },
+})
+
+const onSubmit = handleSubmit(async (values) => {
+  const response = await $axios.post('/orders', values)
+
+  console.log('response', response);
+
+})
 const handleScroll = () => {
   const scrollY = window.scrollY
   const mainRect = mainContent.value?.getBoundingClientRect()

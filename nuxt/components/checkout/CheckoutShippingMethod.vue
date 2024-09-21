@@ -6,7 +6,10 @@
       class="card-container"
       v-for="item in shippingMethods"
       :key="item.id"
-      :class="{ selected: isSelected === item.id }"
+      :class="{
+        selected: isSelected === item.id,
+        error: errorMessage,
+      }"
       @click="handleSelected(item.id)"
     >
       <span class="checked-icon"></span>
@@ -29,12 +32,14 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { useCartStore, useOrderStore } from '#imports'
+import { useCartStore, useOrderStore, useLoadingStore } from '#imports'
+import { useField } from 'vee-validate'
 
-const emits = defineEmits(['onChange'])
 const { $axios } = useNuxtApp()
 const cartStore = useCartStore()
 const orderStore = useOrderStore()
+const loadingStore = useLoadingStore()
+const { value, errorMessage } = useField('shipping_method_id')
 
 const shippingMethods = ref([])
 const isSelected = ref(1)
@@ -48,22 +53,29 @@ const handleSelected = (id) => {
 
   orderStore.setShippingFee(shippingMethod?.base_cost)
 
-  emits('onChange', shippingMethod)
+  value.value = id
 }
-
-const setShippingFee = (id) => {}
 
 const getAllShippingMethods = async (productVariantIds) => {
   if (!productVariantIds) {
     return
   }
 
-  const response = await $axios.get(
-    '/getShippingMethodByProductVariant/' + productVariantIds
-  )
+  try {
+    loadingStore.setLoading(true)
+    const response = await $axios.get(
+      '/getShippingMethodByProductVariant/' + productVariantIds
+    )
 
-  shippingMethods.value = response?.data
-  isSelected.value = response?.data[0]?.id
+    shippingMethods.value = response?.data
+    isSelected.value = response?.data[0]?.id
+    orderStore.setShippingFee(response?.data[0]?.base_cost)
+
+    value.value = response?.data[0]?.id
+  } catch (error) {
+  } finally {
+    loadingStore.setLoading(false)
+  }
 }
 
 const getProductVariantIds = () => {

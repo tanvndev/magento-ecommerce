@@ -235,7 +235,6 @@
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
-import MoreInfomation from '~/components/product/MoreInfomation.vue'
 import 'swiper/css'
 import {
   sortAndConcatenate,
@@ -245,7 +244,6 @@ import {
   handlePrice,
   toast,
 } from '#imports'
-import QuantityComponent from '~/components/includes/QuantityComponent.vue'
 import { useLoadingStore, useCartStore } from '#imports'
 
 const modules = [Navigation, Autoplay]

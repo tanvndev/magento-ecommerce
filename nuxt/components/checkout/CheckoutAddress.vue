@@ -9,38 +9,26 @@
     <div class="customer-address">
       <div class="row gutter-sm">
         <div class="col-xs-6">
-          <v-text-field
-            v-model="firstName"
-            :rules="rules"
-            clearable
-            color="primary"
-            variant="outlined"
-            density="comfortable"
-            label="Họ và tên *"
-          ></v-text-field>
+          <IncludesInputComponent name="customer_name" label="Họ và tên *" />
         </div>
         <div class="col-xs-6">
-          <v-text-field
-            v-model="firstName"
-            :rules="rules"
-            clearable
-            variant="outlined"
-            density="comfortable"
+          <IncludesInputComponent
+            name="customer_phone"
             label="Số điện thoại *"
-          ></v-text-field>
+          />
         </div>
         <div class="col-xs-12">
-          <v-text-field
-            v-model="firstName"
-            :rules="rules"
-            clearable
-            variant="outlined"
-            density="comfortable"
+          <IncludesInputComponent
+            name="customer_email"
             label="Địa chỉ email *"
-          ></v-text-field>
+          />
         </div>
         <div class="col-xs-12 mb-5">
-          <v-btn rounded="xl" prepend-icon="mdi-map-marker">
+          <v-btn
+            rounded="xl"
+            prepend-icon="mdi-map-marker"
+            @click="handleAddAddress"
+          >
             <template v-slot:prepend>
               <v-icon color="warning"></v-icon>
             </template>
@@ -51,60 +39,24 @@
       </div>
       <div class="row gutter-sm">
         <div class="col-md-4">
-          <v-select
-            :items="[
-              'California',
-              'Colorado',
-              'Florida',
-              'Georgia',
-              'Texas',
-              'Wyoming',
-            ]"
-            variant="outlined"
-            density="comfortable"
+          <IncludesSelectComponent
+            name="province_id"
             label="Tỉnh / Thành phố *"
-          ></v-select>
+          />
         </div>
         <div class="col-md-4">
-          <v-select
-            :items="[
-              'California',
-              'Colorado',
-              'Florida',
-              'Georgia',
-              'Texas',
-              'Wyoming',
-            ]"
-            variant="outlined"
-            density="comfortable"
-            label="Quận / Huyện *"
-          ></v-select>
+          <IncludesSelectComponent name="district_id" label="Quận / Huyện *" />
         </div>
         <div class="col-md-4">
-          <v-select
-            :items="[
-              'California',
-              'Colorado',
-              'Florida',
-              'Georgia',
-              'Texas',
-              'Wyoming',
-            ]"
-            variant="outlined"
-            density="comfortable"
-            label="Phường / Xã *"
-          ></v-select>
+          <IncludesSelectComponent name="ward_id" label="Phường / Xã *" />
         </div>
 
         <div class="col-md-12">
-          <v-textarea
-            row-height="15"
-            rows="1"
-            auto-grow
-            variant="outlined"
-            density="comfortable"
-            label="Địa chỉ chi tiết *"
-          ></v-textarea>
+          <IncludesInputComponent
+            name="shipping_address"
+            label="Địa chỉ *"
+            typeInput="textarea"
+          />
         </div>
       </div>
     </div>
@@ -140,7 +92,11 @@
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+const handleAddAddress = () => {
+  console.log('handleAddAddress')
+}
+</script>
 
 <style scoped>
 .v2-address-title-container {

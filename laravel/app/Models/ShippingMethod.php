@@ -14,6 +14,9 @@ class ShippingMethod extends Model
 {
     use HasFactory, QueryScopes, SoftDeletes;
 
+    const COD_ID = "1";
+    const FAST_ID = "2";
+
     protected $fillable = [
         'name',
         'code',

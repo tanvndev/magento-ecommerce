@@ -23,15 +23,19 @@
             <div class="checkout-summary-main">
               <div class="checkout-summary-label">Phí vận chuyển</div>
               <div class="checkout-summary-value">
-                <span class="checkout-summary-noline-value">59.500 ₫</span>
+                <span class="checkout-summary-noline-value">{{
+                  formatCurrency(shippingFee)
+                }}</span>
               </div>
             </div>
           </div>
-          <div class="checkout-summary-row">
+          <div class="checkout-summary-row" v-if="discount">
             <div class="checkout-summary-main">
               <div class="checkout-summary-label">Mã giảm giá</div>
               <div class="checkout-summary-value">
-                <span class="checkout-summary-noline-value">-5.740 ₫</span>
+                <span class="checkout-summary-noline-value"
+                  >- {{ formatCurrency(discount) }}</span
+                >
               </div>
             </div>
           </div>
