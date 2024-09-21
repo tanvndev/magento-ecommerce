@@ -219,7 +219,7 @@
           </div>
 
           <!-- Start of MoreInfomation -->
-          <MoreInfomation :product="product" />
+          <ProductMoreInfomation :product="product" />
           <!-- End of MoreInfomation -->
         </div>
         <!-- End of Main Content -->

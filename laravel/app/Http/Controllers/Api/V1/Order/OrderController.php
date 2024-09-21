@@ -9,6 +9,7 @@ use App\Classes\Paypal;
 use App\Classes\Vnpay;
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Order\Client\ClientOrderResource;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Services\Interfaces\Order\OrderServiceInterface;
@@ -47,16 +48,29 @@ class OrderController extends Controller
                 $response = Momo::payment($order);
 
                 break;
-                // case 'paypal_payment':
-                //     $response = Paypal::payment($order);
+            case 'paypal_payment':
+                $response = Paypal::payment($order);
 
-                //     break;
-
+                break;
+            case PaymentMethod::COD_ID:
+                $response = [
+                    'status' => 'success',
+                    'messages' => __('messages.order.success.create'),
+                    'url'    => env('NUXT_APP_URL') . "/order-success?code=" . $order->code,
+                ];
             default:
                 // code...
                 break;
         }
 
         return $response;
+    }
+
+    public function getOrder(string $orderCode)
+    {
+        $order = $this->orderService->getOrder($orderCode);
+
+        $data = new ClientOrderResource($order);
+        return successResponse('', $data);
     }
 }

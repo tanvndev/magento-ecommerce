@@ -11,4 +11,6 @@ interface OrderServiceInterface
     public function update(string $id);
 
     public function updatePayment(string $id, array $payload);
+
+    public function getOrder(string $orderCode);
 }

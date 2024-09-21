@@ -102,15 +102,17 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useForm } from 'vee-validate'
-import { useOrderStore } from '#imports'
+import { useCartStore } from '#imports'
 
 const { $axios } = useNuxtApp()
-const orderStore = useOrderStore()
+const cartStore = useCartStore()
+const router = useRouter()
 const showApplyVoucher = ref(false)
 const sidebarStyle = ref({})
 const mainContent = ref(null)
 const secondaryContent = ref(null)
 const stickyOffset = 20
+const carts = computed(() => cartStore.getCartSelected)
 
 const { handleSubmit, setFieldValue } = useForm({
   validationSchema: {
@@ -150,7 +152,6 @@ const { handleSubmit, setFieldValue } = useForm({
 
 const onSubmit = handleSubmit(async (values) => {
   const response = await $axios.post('/orders', values)
-
 
   if (response.status == 'success') {
     return (location.href = response?.url)
@@ -198,6 +199,12 @@ const handleScroll = () => {
     sidebarStyle.value = {}
   }
 }
+
+onBeforeMount(() => {
+  if (!carts.value.length) {
+    router.push({ name: 'cart' })
+  }
+})
 
 onMounted(async () => {
   window.addEventListener('scroll', handleScroll)

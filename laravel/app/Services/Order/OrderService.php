@@ -298,4 +298,15 @@ class OrderService extends BaseService implements OrderServiceInterface
         // $mail = new OrderMail($order);
         // $mail->send();
     }
+
+    public function getOrder(string $orderCode)
+    {
+        $order = $this->orderRepository->findByWhere(
+            ['code' => $orderCode],
+            ['*'],
+            ['order_items']
+        );
+
+        return $order;
+    }
 }

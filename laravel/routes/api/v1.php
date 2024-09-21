@@ -52,6 +52,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('getOrder/{orderCode}', [OrderController::class, 'getOrder']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {

@@ -505,6 +505,34 @@
   font-weight: normal;
 }
 
+.v2-address-title-container {
+  font-size: 16px;
+  color: #333333;
+  margin-bottom: 6px;
+}
+.v2-address-title {
+  margin-right: 20px;
+}
+.customer-user {
+  margin-top: -10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 30px;
+}
+.v2-address-tag-label {
+  padding: 3px 14px;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-right: 4px;
+}
+.v2-address-info-address {
+  font-size: 14px;
+  color: #333333;
+}
+
 /* V-table */
 /* .v-table {
   font-size: 14px !important;
