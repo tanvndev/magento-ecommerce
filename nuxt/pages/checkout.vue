@@ -12,7 +12,7 @@
             <NuxtLink to="checkout">Thanh toán</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="orderComplete">Hoàn tất đơn hàng</NuxtLink>
+            <a href="#">Hoàn tất đơn hàng</a>
           </li>
         </ul>
       </div>
@@ -61,7 +61,7 @@
           <div class="row mb-9">
             <div class="col-lg-7 pr-lg-4 mb-4 main-content" ref="mainContent">
               <!-- Checkout address -->
-              <CheckoutAddress />
+              <CheckoutAddress @on-location="handleLocationChange" />
 
               <!-- Shipping method -->
               <CheckoutShippingMethod />
@@ -102,15 +102,17 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useForm } from 'vee-validate'
+import { useOrderStore } from '#imports'
 
 const { $axios } = useNuxtApp()
+const orderStore = useOrderStore()
 const showApplyVoucher = ref(false)
 const sidebarStyle = ref({})
 const mainContent = ref(null)
 const secondaryContent = ref(null)
 const stickyOffset = 20
 
-const { handleSubmit } = useForm({
+const { handleSubmit, setFieldValue } = useForm({
   validationSchema: {
     customer_name(value) {
       if (value) return true
@@ -149,9 +151,21 @@ const { handleSubmit } = useForm({
 const onSubmit = handleSubmit(async (values) => {
   const response = await $axios.post('/orders', values)
 
-  console.log('response', response);
 
+  if (response.status == 'success') {
+    return (location.href = response?.url)
+  }
 })
+
+const handleLocationChange = (target) => {
+  if (target === 'districts') {
+    setFieldValue('ward_id', '')
+    setFieldValue('district_id', '')
+  } else if (target === 'wards') {
+    setFieldValue('ward_id', '')
+  }
+}
+
 const handleScroll = () => {
   const scrollY = window.scrollY
   const mainRect = mainContent.value?.getBoundingClientRect()

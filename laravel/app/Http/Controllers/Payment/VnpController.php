@@ -116,9 +116,6 @@ class VnpController extends Controller
         $vnp_BankCode = $inputData['vnp_BankCode']; //Ngân hàng thanh toán
         $vnp_Amount = $inputData['vnp_Amount'] / 100; // Số tiền thanh toán VNPAY phản hồi
 
-
-
-
         $Status = 0; // Là trạng thái thanh toán của giao dịch chưa có IPN lưu tại hệ thống của merchant chiều khởi tạo URL thanh toán.
 
         $orderCode = $inputData['vnp_TxnRef'];
@@ -142,9 +139,9 @@ class VnpController extends Controller
                             $order->payment_status == Order::PAYMENT_STATUS_UNPAID
                         ) {
                             if ($inputData['vnp_ResponseCode'] == '00' || $inputData['vnp_TransactionStatus'] == '00') {
-                                $payload['payment'] = Order::PAYMENT_STATUS_PAID; // Trạng thái thanh toán thành công
+                                $payload['payment_status'] = Order::PAYMENT_STATUS_PAID; // Trạng thái thanh toán thành công
                             } else {
-                                $payload['payment'] = Order::PAYMENT_STATUS_UNPAID; // Trạng thái thanh toán thất bại / lỗi
+                                $payload['payment_status'] = Order::PAYMENT_STATUS_UNPAID; // Trạng thái thanh toán thất bại / lỗi
                             }
 
                             $payload['payment_detail'] = $inputData;

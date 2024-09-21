@@ -33,13 +33,17 @@ class LocationService extends BaseService implements LocationServiceInterface
 
     public function getLocationByAddress($address)
     {
+
+        $wardName = $address['quarter'] ?? $address['suburb'];
+        $districtName = $address['city_district'] ?? $address['suburb'];
+
         $wardConditions = [
-            'full_name' => ['LIKE', '%' . $address['quarter'] . '%'],
+            'full_name' => ['LIKE', '%' . $wardName . '%'],
         ];
 
         $withRelations = [
             'districts' => [
-                ['full_name', 'LIKE', '%' . $address['suburb'] . '%'],
+                ['full_name', 'LIKE', '%' . $districtName . '%'],
             ],
         ];
 
@@ -62,18 +66,37 @@ class LocationService extends BaseService implements LocationServiceInterface
 
     private function formatLocationData($data)
     {
+        $districts = $this->provinceRepository->findByWhere(
+            ['code' => $data['districts']['provinces']['code']],
+            ['code', 'name', 'full_name'],
+            ['districts'],
+        );
+
+
+        $wards = $this->districtRepository->findByWhere(
+            ['code' => $data['districts']['code']],
+            ['code', 'name', 'full_name'],
+            ['wards'],
+        );
+
+
         return [
             'ward' => [
+                'target'    => 'wards',
                 'code'      => $data['code'],
                 'name'      => $data['name'],
                 'full_name' => $data['full_name'],
+                'data'      => $wards?->wards ?? []
             ],
             'district' => [
+                'target'    => 'districts',
                 'code'      => $data['districts']['code'],
                 'name'      => $data['districts']['name'],
                 'full_name' => $data['districts']['full_name'],
+                'data'      => $districts?->districts ?? []
             ],
             'province' => [
+                'target'    => 'provinces',
                 'code'      => $data['districts']['provinces']['code'],
                 'name'      => $data['districts']['provinces']['name'],
                 'full_name' => $data['districts']['provinces']['full_name'],

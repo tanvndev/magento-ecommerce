@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\V1\Order;
 use App\Classes\Momo;
 use App\Classes\Paypal;
 use App\Classes\Vnpay;
+use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\PaymentMethod;
@@ -32,11 +33,7 @@ class OrderController extends Controller
 
         $response = $this->handlePaymentMethod($order);
 
-        if ($response['status'] == 'success') {
-            return redirect()->away($response['url']);
-        }
-
-        // return redirect()->back()->with('toast_error', 'Đặt hàng thất bại, vui lòng đặt lại!');
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 
     private function handlePaymentMethod(Order $order)

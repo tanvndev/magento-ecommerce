@@ -286,6 +286,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
 
         return [
+            'order_id' => $order->id,
             'payment_method_id' => $order->payment_method_id,
             'payment_detail' => $payload['payment_detail'],
             'method_name' => $order->payment_method->name,

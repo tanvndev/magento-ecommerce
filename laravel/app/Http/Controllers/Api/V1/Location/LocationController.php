@@ -64,6 +64,7 @@ class LocationController extends Controller
     public function getLocationByAddress(Request $request)
     {
         $addressData = $request->addressData;
+
         if (empty($addressData)) {
             return errorResponse('Get location failed.');
         }

@@ -10,6 +10,7 @@
     :label="props.label"
     :clearable="props.clearable"
     no-data-text="Không có dữ liệu."
+    @update:search="debounceHandleChange"
   ></v-select>
 
   <v-autocomplete
@@ -23,12 +24,14 @@
     :label="props.label"
     :clearable="props.clearable"
     no-data-text="Không có dữ liệu."
+    @update:search="debounceHandleChange"
   ></v-autocomplete>
 </template>
 
 <script setup>
 import { useField } from 'vee-validate'
 import { watch } from 'vue'
+import { debounce } from '#imports';
 
 const emits = defineEmits(['onChange'])
 const props = defineProps({
@@ -42,14 +45,7 @@ const props = defineProps({
   },
   items: {
     type: Array,
-    default: () => [
-      'California',
-      'Colorado',
-      'Florida',
-      'Georgia',
-      'Texas',
-      'Wyoming',
-    ],
+    default: () => [],
   },
   name: {
     type: String,
@@ -82,6 +78,12 @@ const props = defineProps({
 })
 
 const { value, errorMessage } = useField(props.name)
+
+const onChange = () => {
+  emits('onChange', value.value)
+}
+
+const debounceHandleChange = debounce(onChange, 700)
 
 // Watch for changes in oldValue and set value accordingly
 watch(

@@ -12,7 +12,7 @@
             <NuxtLink to="/checkout">Thanh toán</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/orderComplete">Hoàn tất đơn hàng</NuxtLink>
+            <a href="#">Hoàn tất đơn hàng</a>
           </li>
         </ul>
       </div>
