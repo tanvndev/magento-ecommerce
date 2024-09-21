@@ -47,6 +47,8 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('getWidget/{code}', [WidgetController::class, 'getWidget']);
     Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
     Route::get('getAllVouchers', [VoucherController::class, 'getAllVoucher']);
+    Route::get('getAllPaymentMethods', [PaymentMethodController::class, 'getAllPaymentMethod']);
+    Route::get('getShippingMethodByProductVariant/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');

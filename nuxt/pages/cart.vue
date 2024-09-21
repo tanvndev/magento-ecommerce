@@ -186,12 +186,12 @@
                   </div>
 
                   <div class="ml-4" style="width: 500px">
-                    <a
-                      href="#"
+                    <NuxtLink
+                      to="/checkout"
                       class="btn btn-block btn-dark btn-icon-right btn-rounded btn-checkout"
                     >
                       Mua hàng<i class="w-icon-long-arrow-right"></i
-                    ></a>
+                    ></NuxtLink>
                   </div>
                 </div>
               </div>

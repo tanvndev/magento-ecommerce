@@ -11,4 +11,8 @@ interface ShippingMethodServiceInterface
     public function create();
 
     public function update($id);
+
+    public function getAllShippingMethod();
+
+    public function getShippingMethodByProductVariant(string $productVariantIds);
 }

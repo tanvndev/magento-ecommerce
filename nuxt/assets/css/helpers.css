@@ -2528,3 +2528,18 @@
 .-pr-100 {
   padding-right: -100px;
 }
+
+/* Lớp in đậm */
+.fw-bold {
+  font-weight: bold;
+}
+
+/* Lớp bình thường */
+.fw-normal {
+  font-weight: normal;
+}
+
+/* Lớp nhẹ */
+.fw-light {
+  font-weight: 300; /* Hoặc sử dụng giá trị nhẹ hơn nếu cần */
+}

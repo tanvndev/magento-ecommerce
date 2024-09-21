@@ -17,33 +17,15 @@ use Exception;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
-    protected $orderRepository;
-
-    protected $productVariantRepository;
-
-    protected $cartRepository;
-
-    protected $paymentMethodRepository;
-
-    protected $shippingMethodRepository;
-
-    protected $voucherRepository;
 
     public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        ProductVariantRepositoryInterface $productVariantRepository,
-        CartRepositoryInterface $cartRepository,
-        PaymentMethodRepositoryInterface $paymentMethodRepository,
-        ShippingMethodRepositoryInterface $shippingMethodRepository,
-        VoucherRepositoryInterface $voucherRepository
-    ) {
-        $this->orderRepository = $orderRepository;
-        $this->productVariantRepository = $productVariantRepository;
-        $this->cartRepository = $cartRepository;
-        $this->paymentMethodRepository = $paymentMethodRepository;
-        $this->shippingMethodRepository = $shippingMethodRepository;
-        $this->voucherRepository = $voucherRepository;
-    }
+        protected OrderRepositoryInterface $orderRepository,
+        protected ProductVariantRepositoryInterface $productVariantRepository,
+        protected CartRepositoryInterface $cartRepository,
+        protected PaymentMethodRepositoryInterface $paymentMethodRepository,
+        protected ShippingMethodRepositoryInterface $shippingMethodRepository,
+        protected VoucherRepositoryInterface $voucherRepository
+    ) {}
 
     // public function paginate()
     // {

@@ -13,6 +13,7 @@ export const useCartStore = defineStore('cart', {
     getCartCount: (state) => state.cartCount,
     getCart: (state) => state.carts,
     getTotalAmount: (state) => state.totalAmount,
+    getCartSelected: (state) => state.carts?.filter((cart) => cart.is_selected),
   },
   actions: {
     setCartCount(count) {

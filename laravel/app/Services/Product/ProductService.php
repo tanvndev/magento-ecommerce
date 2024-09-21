@@ -20,21 +20,11 @@ use Ramsey\Uuid\Uuid;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
-    protected $productRepository;
-
-    protected $productVariantRepository;
-
-    protected $attributeValueRepository;
-
     public function __construct(
-        ProductRepositoryInterface $productRepository,
-        ProductVariantRepositoryInterface $productVariantRepository,
-        AttributeValueRepositoryInterface $attributeValueRepository
-    ) {
-        $this->productRepository = $productRepository;
-        $this->productVariantRepository = $productVariantRepository;
-        $this->attributeValueRepository = $attributeValueRepository;
-    }
+        protected ProductRepositoryInterface $productRepository,
+        protected ProductVariantRepositoryInterface $productVariantRepository,
+        protected AttributeValueRepositoryInterface $attributeValueRepository
+    ) {}
 
     public function paginate()
     {

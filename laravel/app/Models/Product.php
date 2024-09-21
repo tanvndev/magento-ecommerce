@@ -33,9 +33,9 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'upsell_ids'   => 'json',
-        'album'        => 'json',
-        'shipping_ids' => 'json',
+        'upsell_ids'   => 'array',
+        'album'        => 'array',
+        'shipping_ids' => 'array',
     ];
 
     protected static function boot()
