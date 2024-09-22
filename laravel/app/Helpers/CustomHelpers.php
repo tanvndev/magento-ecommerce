@@ -9,7 +9,7 @@ if (! function_exists('getServiceInstance')) {
     {
         $folderName = str_replace(['Catalogue', 'Variant'], '', $modelName);
 
-        $serviceInterfaceNameSpace = 'App\Services\Interfaces\\' . ucfirst($folderName) . '\\' . ucfirst($modelName) . 'ServiceInterface';
+        $serviceInterfaceNameSpace = 'App\Services\Interfaces\\'.ucfirst($folderName).'\\'.ucfirst($modelName).'ServiceInterface';
         if (interface_exists($serviceInterfaceNameSpace)) {
             // hàm app() giúp truy cập các đối tượng đã đăng ký trong container
             return app($serviceInterfaceNameSpace);
@@ -26,7 +26,7 @@ if (! function_exists('generateStrongPassword')) {
         $numbers = '0123456789';
         $specialChars = '!@#$%^&*()_+-=[]{}|';
 
-        $allChars = $uppercase . $lowercase . $numbers . $specialChars;
+        $allChars = $uppercase.$lowercase.$numbers.$specialChars;
         $password = '';
 
         for ($i = 0; $i < $length; $i++) {
@@ -41,7 +41,7 @@ if (! function_exists('getRepositoryInstance')) {
     {
         $folderName = str_replace(['Catalogue', 'Variant'], '', $modelName);
 
-        $repositoryInterfaceNameSpace = 'App\Repositories\Interfaces\\' . ucfirst($folderName) . '\\' . ucfirst($modelName) . 'RepositoryInterface';
+        $repositoryInterfaceNameSpace = 'App\Repositories\Interfaces\\'.ucfirst($folderName).'\\'.ucfirst($modelName).'RepositoryInterface';
         if (interface_exists($repositoryInterfaceNameSpace)) {
             // hàm app() giúp truy cập các đối tượng đã đăng ký trong container
             return app($repositoryInterfaceNameSpace);
@@ -59,7 +59,7 @@ if (! function_exists('formatToCommas')) {
         $str = '';
         for ($i = strlen($nStr); $i > 0; $i -= 3) {
             $a = $i - 3 < 0 ? 0 : $i - 3;
-            $str = substr($nStr, $a, $i - $a) . '.' . $str;
+            $str = substr($nStr, $a, $i - $a).'.'.$str;
         }
         $str = substr($str, 0, -1);
 
@@ -129,13 +129,13 @@ if (! function_exists('formatCurrency')) {
         switch (strtoupper($currencyCode)) {
             case 'VN':
                 // Định dạng cho tiền tệ Việt Nam (VND)
-                return number_format($amount, 0, ',', '.') . ' ₫';
+                return number_format($amount, 0, ',', '.').' ₫';
             case 'CN':
                 // Định dạng cho tiền tệ Trung Quốc (CNY)
-                return '¥' . number_format($amount, 2, '.', ',');
+                return '¥'.number_format($amount, 2, '.', ',');
             case 'EN':
                 // Định dạng cho tiền tệ Hoa Kỳ (USD)
-                return '$' . number_format($amount, 2, '.', ',');
+                return '$'.number_format($amount, 2, '.', ',');
             default:
                 // Nếu mã tiền tệ không được hỗ trợ, trả về số tiền gốc
                 return $amount;
@@ -176,7 +176,7 @@ if (! function_exists('cut_string_and_decode')) {
         $str = html_entity_decode($str);
         $str = strip_tags($str);
         if (mb_strlen($str) > $n) {
-            $str = mb_substr($str, 0, $n) . '...';
+            $str = mb_substr($str, 0, $n).'...';
         }
 
         return $str;
@@ -236,7 +236,7 @@ if (! function_exists('generateStarPercent')) {
 
         // Add overlay with dynamic width
         $html .= '
-            <div class="overlay" style="width: ' . htmlspecialchars($percent) . '%;"></div>
+            <div class="overlay" style="width: '.htmlspecialchars($percent).'%;"></div>
         </div>
         ';
 
@@ -265,7 +265,7 @@ if (! function_exists('renderProress')) {
 
         // Add overlay with dynamic width
         $html .= '
-            <div class="overlay" style="width: ' . htmlspecialchars($percent) . '%;"></div>
+            <div class="overlay" style="width: '.htmlspecialchars($percent).'%;"></div>
         </div>
         ';
 
@@ -356,10 +356,10 @@ if (! function_exists('renderRatingFilter')) {
         $html = '';
         for ($i = 1; $i <= 5; $i++) {
             $html .= '<div class="mb-3 ps-0 form-check filter-star">';
-            $html .= '<input type="checkbox" class="form-check-input filtering" name="rate[]" value="' . $i . '" id="rate_' . $i . '">';
-            $html .= '<label class="form-check-label" for="rate_' . $i . '">';
+            $html .= '<input type="checkbox" class="form-check-input filtering" name="rate[]" value="'.$i.'" id="rate_'.$i.'">';
+            $html .= '<label class="form-check-label" for="rate_'.$i.'">';
             for ($j = 0; $j < 5; $j++) {
-                $html .= '<i class="flaticon-star me-1 ' . ($i > $j ? 'active' : '') . '"></i>';
+                $html .= '<i class="flaticon-star me-1 '.($i > $j ? 'active' : '').'"></i>';
             }
             $html .= '</label>';
             $html .= '</div>';
@@ -378,9 +378,9 @@ if (! function_exists('generateSKU')) {
             return strtoupper(preg_replace('/[^a-z0-9]+/i', '', strtolower($option)));
         }, $options);
 
-        $sku = $skuProductName . '-' . implode('-', $cleanOptions);
+        $sku = $skuProductName.'-'.implode('-', $cleanOptions);
 
-        return $sku . '-' . time();
+        return $sku.'-'.time();
     }
 }
 if (! function_exists('removeEmptyValues')) {
@@ -463,7 +463,7 @@ if (! function_exists('truncate')) {
         $truncated = mb_substr($text, 0, $length);
 
         if ($appendEllipsis) {
-            return $truncated . '...';
+            return $truncated.'...';
         }
 
         return $truncated;

@@ -4,31 +4,33 @@
 
 namespace App\Services\Cart;
 
-use App\Services\BaseService;
-use App\Services\Interfaces\Cart\CartServiceInterface;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
+use App\Services\BaseService;
+use App\Services\Interfaces\Cart\CartServiceInterface;
 
 class CartService extends BaseService implements CartServiceInterface
 {
-    protected CartRepositoryInterface                   $cartRepository;
-    protected ProductVariantRepositoryInterface         $productVariantRepository;
+    protected CartRepositoryInterface $cartRepository;
+
+    protected ProductVariantRepositoryInterface $productVariantRepository;
 
     public function __construct(
-        CartRepositoryInterface                         $cartRepository,
-        ProductVariantRepositoryInterface               $productVariantRepository
+        CartRepositoryInterface $cartRepository,
+        ProductVariantRepositoryInterface $productVariantRepository
     ) {
-        $this->cartRepository                           = $cartRepository;
-        $this->productVariantRepository                 = $productVariantRepository;
+        $this->cartRepository = $cartRepository;
+        $this->productVariantRepository = $productVariantRepository;
     }
 
-    public function getCart($sessionId = null)
+    public function getCart()
     {
-        $conditions                                     = $this->getUserOrSessionConditions($sessionId);
+        $sessionId = request('session_id');
+        $conditions = $this->getUserOrSessionConditions($sessionId);
 
         $this->checkStockProductAndUpdateCart($conditions);
 
-        $cart                                           = $this->cartRepository->findByWhere(
+        $cart = $this->cartRepository->findByWhere(
             $conditions,
             ['*'],
             ['cart_items.product_variant.attribute_values']
@@ -37,50 +39,51 @@ class CartService extends BaseService implements CartServiceInterface
         return $cart->cart_items ?? collect();
     }
 
-    public function createOrUpdate($request, $sessionId = null)
+    public function createOrUpdate($request)
     {
-        return $this->executeInTransaction(function () use ($request, $sessionId) {
-            if (!$request->product_variant_id) {
+        return $this->executeInTransaction(function () use ($request) {
+            if (! $request->product_variant_id) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
-            $productVariant                             = $this->productVariantRepository->findById($request->product_variant_id);
+            $productVariant = $this->productVariantRepository->findById($request->product_variant_id);
             if ($productVariant->stock < $request->quantity) {
                 return errorResponse(__('messages.cart.error.max'));
             }
 
-            $conditions                                 = $this->getUserOrSessionConditions($sessionId);
-            $cart                                       = $this->cartRepository->findByWhere($conditions) ?? $this->cartRepository->create($conditions);
+            $sessionId = request('session_id');
+
+            $conditions = $this->getUserOrSessionConditions($sessionId);
+            $cart = $this->cartRepository->findByWhere($conditions) ?? $this->cartRepository->create($conditions);
 
             $cart->cart_items()->where('product_variant_id', $request->product_variant_id)->exists()
                 ? $this->updateCartItem($cart, $request)
                 : $this->createCartItem($cart, $request);
 
-            return $this->getCart($sessionId);
+            return $this->getCart();
         }, __('messages.cart.error.not_found'));
     }
 
     private function createCartItem($cart, $request)
     {
         $cart->cart_items()->create([
-<<<<<<< HEAD
-            'product_variant_id' => $request->product_variant_id,
-            'quantity'           => 1,
-=======
+
             'product_variant_id'                        => $request->product_variant_id,
             'quantity'                                  => $request->quantity ?? 1,
             'updated_at'                                => now(),
->>>>>>> 03d7105 (Update Cart Session Module)
+            'product_variant_id' => $request->product_variant_id,
+            'quantity' => $request->quantity ?? 1,
+            'updated_at' => now(),
         ]);
     }
 
     private function updateCartItem($cart, $request)
     {
-        $cartItem                                       = $cart->cart_items()->where('product_variant_id', $request->product_variant_id)->first();
-        $quantity                                       = $request->quantity ?? $cartItem->quantity + 1;
+        $cartItem = $cart->cart_items()->where('product_variant_id', $request->product_variant_id)->first();
+        $quantity = $request->quantity ?? $cartItem->quantity + 1;
         $cartItem->update([
-            'quantity'                                  => $quantity,
-            'updated_at'                                => now(),
+            'quantity' => $quantity,
+            'updated_at' => now(),
         ]);
     }
 
@@ -95,52 +98,57 @@ class CartService extends BaseService implements CartServiceInterface
             }
         }
 
-        $sessionId = request()->input('session_id', null);
+        $sessionId = request('session_id');
         $this->mergeSessionCartToUserCart($sessionId);
     }
 
-
-
-    public function deleteOneItem($id, $sessionId = null)
+    public function deleteOneItem($id)
     {
-        return $this->executeInTransaction(function () use ($id, $sessionId) {
-            $conditions                                 = $this->getUserOrSessionConditions($sessionId);
-            $cart                                       = $this->cartRepository->findByWhere($conditions);
+        return $this->executeInTransaction(function () use ($id) {
 
-            if (!$cart) {
+            $sessionId = request('session_id');
+            $conditions = $this->getUserOrSessionConditions($sessionId);
+            $cart = $this->cartRepository->findByWhere($conditions);
+
+            if (! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
-            $cartItem                                   = $cart->cart_items()->where('product_variant_id', $id)->first();
+            $cartItem = $cart->cart_items()->where('product_variant_id', $id)->first();
 
             $cartItem?->delete();
 
-            return $this->getCart($sessionId);
+            return $this->getCart();
         }, __('messages.cart.error.item_not_found'));
     }
 
-    public function cleanCart($sessionId = null)
+    public function cleanCart()
     {
-        return $this->executeInTransaction(function () use ($sessionId) {
-            $conditions                                 = $this->getUserOrSessionConditions($sessionId);
-            $cart                                       = $this->cartRepository->findByWhere($conditions);
+        return $this->executeInTransaction(function () {
 
-            if (!$cart) {
+            $sessionId = request('session_id');
+            $conditions = $this->getUserOrSessionConditions($sessionId);
+            $cart = $this->cartRepository->findByWhere($conditions);
+
+            if (! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
             $cart->cart_items()->delete();
+
             return successResponse(__('messages.cart.success.clean'));
         }, __('messages.cart.error.delete'));
     }
 
-    public function handleSelected($request, $sessionId = null)
+    public function handleSelected($request)
     {
-        return $this->executeInTransaction(function () use ($request, $sessionId) {
-            $conditions                                 = $this->getUserOrSessionConditions($sessionId);
-            $cart                                       = $this->cartRepository->findByWhere($conditions);
+        return $this->executeInTransaction(function () use ($request) {
 
-            if (!$cart) {
+            $sessionId = request('session_id');
+            $conditions = $this->getUserOrSessionConditions($sessionId);
+            $cart = $this->cartRepository->findByWhere($conditions);
+
+            if (! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -149,20 +157,22 @@ class CartService extends BaseService implements CartServiceInterface
             }
 
             if (isset($request->select_all)) {
-                $cart->cart_items()->update(['is_selected' => (bool)$request->select_all, 'updated_at' => now()]);
+                $cart->cart_items()->update(['is_selected' => (bool) $request->select_all, 'updated_at' => now()]);
             }
 
-            return $this->getCart($sessionId);
+            return $this->getCart();
         }, __('messages.cart.error.not_found'));
     }
 
-    public function deleteCartSelected($sessionId = null)
+    public function deleteCartSelected()
     {
-        return $this->executeInTransaction(function () use ($sessionId) {
+        return $this->executeInTransaction(function () {
+
+            $sessionId = request('session_id');
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
-            if (!$cart) {
+            if (! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -172,17 +182,16 @@ class CartService extends BaseService implements CartServiceInterface
                 $item->delete();
             }
 
-            return $this->getCart($sessionId);
+            return $this->getCart();
         }, __('messages.cart.error.delete'));
     }
 
-
     private function toggleCartItemSelection($cart, $productId)
     {
-        $cartItem                                       = $cart->cart_items()->where('product_variant_id', $productId)->first();
+        $cartItem = $cart->cart_items()->where('product_variant_id', $productId)->first();
 
         if ($cartItem) {
-            $cartItem->update(['is_selected'            => !$cartItem->is_selected, 'updated_at' => now()]);
+            $cartItem->update(['is_selected' => ! $cartItem->is_selected, 'updated_at' => now()]);
         }
     }
 
@@ -195,7 +204,7 @@ class CartService extends BaseService implements CartServiceInterface
 
     public function mergeSessionCartToUserCart($sessionId)
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -203,11 +212,11 @@ class CartService extends BaseService implements CartServiceInterface
         $userCart = $this->cartRepository->findByWhere(['user_id' => $userId]);
         $sessionCart = $this->cartRepository->findByWhere(['session_id' => $sessionId]);
 
-        if (!$sessionCart) {
+        if (! $sessionCart) {
             return;
         }
 
-        if (!$userCart) {
+        if (! $userCart) {
             $userCart = $this->cartRepository->create(['user_id' => $userId]);
         }
 
