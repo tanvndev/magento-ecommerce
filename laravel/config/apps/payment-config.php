@@ -1,7 +1,5 @@
 <?php
 
-
-
 return [
     'vnpay' => [
         'vnp_Url'        => 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',

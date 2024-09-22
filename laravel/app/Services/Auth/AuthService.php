@@ -1,7 +1,5 @@
 <?php
 
-
-
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Auth;
@@ -36,7 +34,7 @@ class AuthService extends BaseService implements AuthServiceInterface
                 ]
             );
 
-            if (! empty($user)) {
+            if ( ! empty($user)) {
                 if ($user->hasVerifiedEmail()) {
                     return errorResponse(__('messages.auth.register.email_verified'));
                 }

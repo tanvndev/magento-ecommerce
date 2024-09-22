@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services\Order;
 
 use App\Models\Order;
@@ -18,7 +16,6 @@ use Exception;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
-
     public function __construct(
         protected OrderRepositoryInterface $orderRepository,
         protected ProductVariantRepositoryInterface $productVariantRepository,
@@ -85,7 +82,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (! $paymentMethod) {
+        if ( ! $paymentMethod) {
             throw new Exception('Payment method not found.');
         }
 
@@ -99,7 +96,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (! $shippingMethod) {
+        if ( ! $shippingMethod) {
             throw new Exception('Shipping method not found.');
         }
 
@@ -123,7 +120,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if (! $cart) {
+        if ( ! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -152,7 +149,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (! $voucher) {
+        if ( ! $voucher) {
             throw new Exception('Voucher not found.');
         }
 
@@ -240,7 +237,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     private function isSalePriceValid($productVariant)
     {
-        if (! $productVariant->sale_price || ! $productVariant->price) {
+        if ( ! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 
@@ -263,7 +260,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     public function update(string $id)
     {
-        return $this->executeInTransaction(function () use ($id) {}, __('messages.order.error.payment'));
+        return $this->executeInTransaction(function () {}, __('messages.order.error.payment'));
     }
 
     public function updatePayment(string $id, array $payload)
@@ -286,10 +283,10 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
 
         return [
-            'order_id' => $order->id,
+            'order_id'          => $order->id,
             'payment_method_id' => $order->payment_method_id,
-            'payment_detail' => $payload['payment_detail'],
-            'method_name' => $order->payment_method->name,
+            'payment_detail'    => $payload['payment_detail'],
+            'method_name'       => $order->payment_method->name,
         ];
     }
 

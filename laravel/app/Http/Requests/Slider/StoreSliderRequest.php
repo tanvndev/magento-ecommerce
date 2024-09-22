@@ -22,13 +22,13 @@ class StoreSliderRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => 'required',
-            'code' => 'required|unique:sliders',
-            'items.*' => 'required',
-            'items.*.image' => 'required|string',
+            'name'                => 'required',
+            'code'                => 'required|unique:sliders',
+            'items.*'             => 'required',
+            'items.*.image'       => 'required|string',
             'items.*.description' => 'string',
-            'items.*.url' => 'required|string',
-            'items.*.alt' => 'required|string',
+            'items.*.url'         => 'required|string',
+            'items.*.alt'         => 'required|string',
         ];
 
         return $rules;
@@ -37,9 +37,9 @@ class StoreSliderRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên trình chiếu',
-            'code' => 'Mã trình chiếu',
-            'items' => 'Hình ảnh trình chiếu',
+            'name'    => 'Tên trình chiếu',
+            'code'    => 'Mã trình chiếu',
+            'items'   => 'Hình ảnh trình chiếu',
             'setting' => 'Cài đặt trình chiếu',
         ];
     }

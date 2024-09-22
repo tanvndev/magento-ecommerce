@@ -1,7 +1,5 @@
 <?php
 
-
-
 return [
     'create' => [
         'success' => 'Tạo mới bản ghi thành công.',
@@ -63,11 +61,11 @@ return [
     ],
     'order' => [
         'error' => [
-            'create' => 'Tạo đơn hàng thất bại vui lòng thử lại.',
+            'create'  => 'Tạo đơn hàng thất bại vui lòng thử lại.',
             'payment' => 'Thanh toán đơn hàng thất bại vui lòng thử lại.',
         ],
         'success' => [
-            'create' => 'Tạo đơn hàng thành công vui lòng kiểm tra email.',
+            'create'  => 'Tạo đơn hàng thành công vui lòng kiểm tra email.',
             'payment' => 'Thanh toán đơn hàng thành công.',
         ],
     ],

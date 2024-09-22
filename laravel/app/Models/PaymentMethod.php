@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Models;
 
 use App\Traits\QueryScopes;
@@ -14,7 +12,9 @@ class PaymentMethod extends Model
     use HasFactory, QueryScopes;
 
     const COD_ID = '1';
+
     const VNPAY_ID = '2';
+
     const MOMO_ID = '3';
 
     protected $fillable = [
@@ -54,7 +54,7 @@ class PaymentMethod extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $code = "{$originalCode}-".$count++;
+            $code = "{$originalCode}-" . $count++;
         }
 
         return $code;

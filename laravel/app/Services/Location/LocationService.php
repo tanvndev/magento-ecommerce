@@ -1,7 +1,5 @@
 <?php
 
-
-
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Location;
@@ -72,13 +70,11 @@ class LocationService extends BaseService implements LocationServiceInterface
             ['districts'],
         );
 
-
         $wards = $this->districtRepository->findByWhere(
             ['code' => $data['districts']['code']],
             ['code', 'name', 'full_name'],
             ['wards'],
         );
-
 
         return [
             'ward' => [
@@ -86,14 +82,14 @@ class LocationService extends BaseService implements LocationServiceInterface
                 'code'      => $data['code'],
                 'name'      => $data['name'],
                 'full_name' => $data['full_name'],
-                'data'      => $wards?->wards ?? []
+                'data'      => $wards?->wards ?? [],
             ],
             'district' => [
                 'target'    => 'districts',
                 'code'      => $data['districts']['code'],
                 'name'      => $data['districts']['name'],
                 'full_name' => $data['districts']['full_name'],
-                'data'      => $districts?->districts ?? []
+                'data'      => $districts?->districts ?? [],
             ],
             'province' => [
                 'target'    => 'provinces',

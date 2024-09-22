@@ -32,7 +32,7 @@ class SliderService extends BaseService implements SliderServiceInterface
         ];
 
         $condition = [
-            'search' => addslashes($request->search),
+            'search'  => addslashes($request->search),
             'publish' => $request->publish,
             'archive' => $request->boolean('archive'),
         ];

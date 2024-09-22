@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Classes;
 
 class Vnpay
@@ -58,9 +56,9 @@ class Vnpay
         }
 
         $returnData = [
-            'status' => 'success',
+            'status'   => 'success',
             'messages' => 'Tạo liên kết thanh toán thành công.',
-            'url'     => $vnp_Url,
+            'url'      => $vnp_Url,
         ];
 
         return $returnData;

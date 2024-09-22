@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Console;
 
 use App\Models\User;

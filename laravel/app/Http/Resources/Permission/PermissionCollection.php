@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Permission;
 
 use Illuminate\Http\Request;

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Api\V1\Order;
 
 use App\Classes\Momo;
@@ -54,9 +52,9 @@ class OrderController extends Controller
                 break;
             case PaymentMethod::COD_ID:
                 $response = [
-                    'status' => 'success',
+                    'status'   => 'success',
                     'messages' => __('messages.order.success.create'),
-                    'url'    => env('NUXT_APP_URL') . "/order-success?code=" . $order->code,
+                    'url'      => env('NUXT_APP_URL') . '/order-success?code=' . $order->code,
                 ];
             default:
                 // code...
@@ -71,6 +69,7 @@ class OrderController extends Controller
         $order = $this->orderService->getOrder($orderCode);
 
         $data = new ClientOrderResource($order);
+
         return successResponse('', $data);
     }
 }

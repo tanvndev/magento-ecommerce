@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services;
 
 use App\Services\Interfaces\BaseServiceInterface;
@@ -41,7 +39,7 @@ class BaseService implements BaseServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $repositoryName = lcfirst($request->modelName).'Repository';
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
             $payload[$request->field] = $request->value;
 
             $this->{$repositoryName}->update($request->value, $payload);
@@ -55,7 +53,7 @@ class BaseService implements BaseServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $repositoryName = lcfirst($request->modelName).'Repository';
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
             $payload[$request->field] = $request->value;
 
             $this->{$repositoryName}->updateByWhereIn('id', $request->modelIds, $payload);
@@ -69,7 +67,7 @@ class BaseService implements BaseServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $repositoryName = lcfirst($request->modelName).'Repository';
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
             $forceDelete = ($request->has('forceDelete') && $request->forceDelete == '1')
                 ? 'forceDeleteByWhereIn'
                 : 'deleteByWhereIn';
@@ -108,7 +106,7 @@ class BaseService implements BaseServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $repositoryName = lcfirst($request->modelName).'Repository';
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
 
             $this->{$repositoryName}->restoreByWhereIn('id', $request->modelIds);
 

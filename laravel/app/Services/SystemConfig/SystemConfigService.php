@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services\SystemConfig;
 
 use App\Repositories\Interfaces\SystemConfig\SystemConfigRepositoryInterface;

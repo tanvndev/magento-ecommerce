@@ -1,7 +1,5 @@
 <?php
 
-
-
 return [
     'confirm' => [
         ''        => 'Chọn tình trạng',

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Cart;
 
 use Illuminate\Http\Request;

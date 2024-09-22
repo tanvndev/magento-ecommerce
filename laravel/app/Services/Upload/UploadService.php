@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services\Upload;
 
 use App\Classes\Upload;
@@ -62,24 +60,24 @@ class UploadService extends BaseService implements UploadServiceInterface
 
             // Xây dựng dữ liệu cho từng ảnh và thêm vào mảng images
             $imageInfo = [
-                'id' => 'ID_'.$lastModified + $size,
-                'url' => asset($storedPath),
-                'link' => asset($newPath),
-                'name' => $filename,
-                'size' => $size,
+                'id'           => 'ID_' . $lastModified + $size,
+                'url'          => asset($storedPath),
+                'link'         => asset($newPath),
+                'name'         => $filename,
+                'size'         => $size,
                 'lastModified' => $lastModified,
-                'sizes' => [
-                    'thumbnail' => asset($newPath.$thumbnail),
-                    'medium' => asset($newPath.$medium),
-                    'large' => asset($newPath.$large),
-                    'original' => asset($newPath),
+                'sizes'        => [
+                    'thumbnail' => asset($newPath . $thumbnail),
+                    'medium'    => asset($newPath . $medium),
+                    'large'     => asset($newPath . $large),
+                    'original'  => asset($newPath),
                 ],
             ];
 
             $images[] = $imageInfo;
         }
         // Sắp xếp mảng theo thời gian sửa đổi cuối cùng (lastModified), giảm dần
-        if (! empty($images)) {
+        if ( ! empty($images)) {
             usort($images, function ($a, $b) {
                 return $b['lastModified'] - $a['lastModified'];
             });

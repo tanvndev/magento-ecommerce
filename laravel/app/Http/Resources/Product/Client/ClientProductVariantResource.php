@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Product\Client;
 
 use App\Http\Resources\Attribute\AttributeValueResource;
@@ -45,7 +43,7 @@ class ClientProductVariantResource extends JsonResource
 
     private function handleDiscountValue()
     {
-        if (! $this->sale_price || ! $this->price) {
+        if ( ! $this->sale_price || ! $this->price) {
             return null;
         }
 

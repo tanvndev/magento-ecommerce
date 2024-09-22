@@ -1,7 +1,5 @@
 <?php
 
-
-
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Attribute;
@@ -30,7 +28,7 @@ class AttributeValueService extends BaseService implements AttributeValueService
 
         ];
 
-        if (! empty($request->attribute_id)) {
+        if ( ! empty($request->attribute_id)) {
             $condition['where'] = [
                 'attribute_id' => ['=', $request->attribute_id],
             ];

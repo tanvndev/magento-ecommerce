@@ -3,7 +3,6 @@
 use App\Http\Controllers\Payment\MomoController;
 use App\Http\Controllers\Payment\PaypalController;
 use App\Http\Controllers\Payment\VnpController;
-use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use League\Glide\Server;
@@ -23,7 +22,6 @@ Route::get('images/{path}', function (Server $server, Request $request, $path) {
     $server->outputImage($path, $request->all());
 })->where('path', '.*')->name('glide');
 //**** */ KHONG DUOC XOA HAY COMMENT ROUTE NAY ****//
-
 
 // VNPAY
 Route::get('return/vnpay', [VnpController::class, 'handleReturnUrl'])->name('return.vnpay');

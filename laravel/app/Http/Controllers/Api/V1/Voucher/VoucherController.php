@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Api\V1\Voucher;
 
 use App\Enums\ResponseEnum;

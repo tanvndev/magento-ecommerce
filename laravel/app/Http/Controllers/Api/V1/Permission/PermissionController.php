@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Api\V1\Permission;
 
 use App\Enums\ResponseEnum;

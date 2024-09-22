@@ -1,7 +1,5 @@
 <?php
 
-
-
 return [
     'messages' => [
         'required'        => ':attribute không được để trống.',

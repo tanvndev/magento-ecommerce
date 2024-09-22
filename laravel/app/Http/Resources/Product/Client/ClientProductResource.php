@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Product\Client;
 
 use App\Http\Resources\Product\ProductCatalogueResource;

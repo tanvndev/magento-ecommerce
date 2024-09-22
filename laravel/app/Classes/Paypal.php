@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Classes;
 
 use Srmklive\PayPal\Services\PayPal as PayPalClient;

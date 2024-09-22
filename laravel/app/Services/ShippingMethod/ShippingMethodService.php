@@ -1,7 +1,5 @@
 <?php
 
-
-
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\ShippingMethod;
@@ -88,7 +86,7 @@ class ShippingMethodService extends BaseService implements ShippingMethodService
             [
                 'product' => function ($q) {
                     $q->select('id', 'shipping_ids');
-                }
+                },
             ]
         );
 
@@ -116,7 +114,7 @@ class ShippingMethodService extends BaseService implements ShippingMethodService
             [],
             [
                 'field' => 'id',
-                'value' => $shippingIds
+                'value' => $shippingIds,
             ]
         );
 

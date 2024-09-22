@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Voucher\Client;
 
 use Carbon\Carbon;
@@ -18,16 +16,16 @@ class ClientVoucherResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'code' => $this->code,
-            'image' => $this->image,
-            'description' => $this->description,
-            'value_type' => $this->value_type,
-            'value' => $this->value,
-            'status' => $this->getStatus(),
-            'expired' => $this->end_at,
-            'text_description' => $this->getTextDescription()
+            'id'               => $this->id,
+            'name'             => $this->name,
+            'code'             => $this->code,
+            'image'            => $this->image,
+            'description'      => $this->description,
+            'value_type'       => $this->value_type,
+            'value'            => $this->value,
+            'status'           => $this->getStatus(),
+            'expired'          => $this->end_at,
+            'text_description' => $this->getTextDescription(),
         ];
     }
 
