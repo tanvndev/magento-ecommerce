@@ -1,7 +1,5 @@
 <?php
 
-
-
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\PaymentMethod;
@@ -12,7 +10,6 @@ use App\Services\Interfaces\PaymentMethod\PaymentMethodServiceInterface;
 
 class PaymentMethodService extends BaseService implements PaymentMethodServiceInterface
 {
-
     public function __construct(
         protected PaymentMethodRepositoryInterface $paymentMethodRepository,
     ) {}

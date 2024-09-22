@@ -1,7 +1,5 @@
 <?php
 
-
-
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Product;
@@ -173,7 +171,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function createProductAttribute($product, array $payload)
     {
-        if (! isset($payload['attributes']) || empty($payload['attributes'])) {
+        if ( ! isset($payload['attributes']) || empty($payload['attributes'])) {
             return false;
         }
 
@@ -210,7 +208,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function combineVariantAttributeValue($productVariants)
     {
-        if (! count($productVariants)) {
+        if ( ! count($productVariants)) {
             return [];
         }
 
@@ -283,7 +281,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                 }
 
                 if ($catalogues = json_decode($request->input('catalogues', '[]'), true)) {
-                    if (! empty($catalogues)) {
+                    if ( ! empty($catalogues)) {
                         $q->whereHas('catalogues', function ($q) use ($catalogues) {
                             $q->whereIn('product_catalogue_id', $catalogues);
                         });
@@ -328,7 +326,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         // Transform keys by removing "variable_" prefix
         $payloadFormat = array_combine(
-            array_map(fn($key) => str_replace('variable_', '', $key), array_keys($payload)),
+            array_map(fn ($key) => str_replace('variable_', '', $key), array_keys($payload)),
             array_values($payload)
         );
 
@@ -351,20 +349,20 @@ class ProductService extends BaseService implements ProductServiceInterface
                 'is_used' => ['=', false],
             ]);
 
-            if (! $variant) {
+            if ( ! $variant) {
                 throw new Exception('VARIANT_NOT_FOUND');
             }
 
-            if (! $variant->delete()) {
+            if ( ! $variant->delete()) {
                 throw new Exception('FAILED_TO_DELETE_VARIANT');
             }
 
             $remainingAttributes = ProductVariantAttributeValue::query()
-                ->whereHas('product_variant', fn($query) => $query->where('product_id', $variant->product_id))
+                ->whereHas('product_variant', fn ($query) => $query->where('product_id', $variant->product_id))
                 ->with('attribute_value:id,attribute_id')
                 ->get(['attribute_value_id'])
                 ->groupBy('attribute_value.attribute_id')
-                ->map(fn($group) => [
+                ->map(fn ($group) => [
                     'product_id'          => $variant->product_id,
                     'attribute_id'        => $group->first()->attribute_value->attribute_id,
                     'attribute_value_ids' => $group->pluck('attribute_value_id')->unique()->values()->toArray(),
@@ -449,7 +447,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $existingAttributeCombines = $productVariants->pluck('attribute_value_combine')->toArray();
 
         $productVariantPayload = $attributeValueCombines->map(function ($attributeValueCombine, $key) use ($existingAttributeCombines, $product) {
-            if (! in_array($attributeValueCombine['attribute_value_combine'], $existingAttributeCombines)) {
+            if ( ! in_array($attributeValueCombine['attribute_value_combine'], $existingAttributeCombines)) {
                 $productName = $product->name;
                 $options = explode(' - ', $attributeValueCombine['attributeText'] ?? '');
                 $sku = generateSKU($productName, 3, $options) . '-' . ($key + 1);

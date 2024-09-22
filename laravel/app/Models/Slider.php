@@ -20,7 +20,7 @@ class Slider extends Model
     ];
 
     protected $casts = [
-        'items' => 'array',
+        'items'   => 'array',
         'setting' => 'array',
     ];
 }

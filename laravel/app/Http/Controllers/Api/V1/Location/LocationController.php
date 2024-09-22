@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Api\V1\Location;
 
 use App\Http\Controllers\Controller;

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services\Interfaces\ShippingMethod;
 
 interface ShippingMethodServiceInterface

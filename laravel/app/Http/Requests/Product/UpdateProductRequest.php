@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Requests\Product;
 
 use App\Models\Product;

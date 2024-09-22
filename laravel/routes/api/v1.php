@@ -1,7 +1,5 @@
 <?php
 
-
-
 use App\Http\Controllers\Api\TestApiController;
 use App\Http\Controllers\Api\V1\Attribute\AttributeController;
 use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Classes;
 
 class Momo

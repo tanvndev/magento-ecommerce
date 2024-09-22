@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Requests\Attribute;
 
 use Illuminate\Foundation\Http\FormRequest;

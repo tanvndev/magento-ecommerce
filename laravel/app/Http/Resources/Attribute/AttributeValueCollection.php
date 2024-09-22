@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Attribute;
 
 use Illuminate\Http\Request;

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Voucher;
 
 use Illuminate\Http\Request;

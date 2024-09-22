@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Requests\Voucher;
 
 use App\Models\Voucher;

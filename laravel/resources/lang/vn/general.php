@@ -1,7 +1,5 @@
 <?php
 
-
-
 return [
     'publish' => [
         '-1' => 'Chọn tình trạng',

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Models;
 
 use App\Traits\QueryScopes;
@@ -69,7 +67,7 @@ class ProductVariant extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $slug = "{$originalSlug}-".$count++;
+            $slug = "{$originalSlug}-" . $count++;
         }
 
         return $slug;

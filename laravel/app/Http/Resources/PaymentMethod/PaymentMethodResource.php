@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\PaymentMethod;
 
 use Illuminate\Http\Request;

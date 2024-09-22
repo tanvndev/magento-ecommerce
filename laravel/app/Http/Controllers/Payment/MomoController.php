@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
@@ -32,7 +30,7 @@ class MomoController extends Controller
         $accessKey = $configMomo['accessKey'];
         $inputData = $request->query();
 
-        if (! empty($inputData)) {
+        if ( ! empty($inputData)) {
             $rawHash = 'accessKey=' . $accessKey;
             $rawHash .= '&amount=' . $inputData['amount'];
             $rawHash .= '&extraData=' . $inputData['extraData'];
@@ -75,7 +73,7 @@ class MomoController extends Controller
         $secretKey = $configMomo['secretKey'];
         $accessKey = $configMomo['accessKey'];
 
-        if (! empty($get)) {
+        if ( ! empty($get)) {
             $response = [];
             try {
                 $rawHash = 'accessKey=' . $accessKey;

@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Cart;
 
 use DateTime;
@@ -36,7 +34,7 @@ class CartResource extends JsonResource
     private function handleSalePrice()
     {
         $productVariant = $this->product_variant;
-        if (! $productVariant->sale_price || ! $productVariant->price) {
+        if ( ! $productVariant->sale_price || ! $productVariant->price) {
             return null;
         }
 

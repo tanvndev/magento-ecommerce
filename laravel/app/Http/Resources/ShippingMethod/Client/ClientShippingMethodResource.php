@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\ShippingMethod\Client;
 
 use Illuminate\Http\Request;

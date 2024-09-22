@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
@@ -15,7 +13,7 @@ class VerificationController extends Controller
         $user = User::find($id);
 
         //   Kiem tra co email chua
-        if (! $user) {
+        if ( ! $user) {
             return redirect()->route('notifications', ['boolean' => 0, 'messages' => 'Tài khoản người dùng chưa được đăng ký vui lòng đăng ký.']);
         }
 
@@ -25,19 +23,19 @@ class VerificationController extends Controller
         }
 
         // Kiem tra het han dang ky
-        if (! $request->hasValidSignature()) {
+        if ( ! $request->hasValidSignature()) {
             $user->delete();
 
             return $this->fail($user);
         }
 
         // Kiem tra co id nguoi dung co hop le khong
-        if (! hash_equals((string) $request->route('id'), (string) $user->getKey())) {
+        if ( ! hash_equals((string) $request->route('id'), (string) $user->getKey())) {
             return $this->fail($user);
         }
 
         //Kiem tra co hash co hop le khong
-        if (! hash_equals((string) $request->query('hash'), sha1($user->getEmailForVerification()))) {
+        if ( ! hash_equals((string) $request->query('hash'), sha1($user->getEmailForVerification()))) {
             return $this->fail($user);
         }
 

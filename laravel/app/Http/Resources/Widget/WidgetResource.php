@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Resources\Widget;
 
 use Illuminate\Http\Request;
