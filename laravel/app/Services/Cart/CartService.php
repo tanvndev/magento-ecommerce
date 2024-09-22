@@ -40,7 +40,7 @@ class CartService extends BaseService implements CartServiceInterface
     public function createOrUpdate($request)
     {
         return $this->executeInTransaction(function () use ($request) {
-            if ( ! $request->product_variant_id) {
+            if (! $request->product_variant_id) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -68,10 +68,6 @@ class CartService extends BaseService implements CartServiceInterface
             'product_variant_id'                        => $request->product_variant_id,
             'quantity'                                  => $request->quantity ?? 1,
             'updated_at'                                => now(),
-            'product_variant_id'                        => $request->product_variant_id,
-            'quantity'                                  => $request->quantity ?? 1,
-            'updated_at'                                => now(),
-
         ]);
     }
 
@@ -96,7 +92,7 @@ class CartService extends BaseService implements CartServiceInterface
             }
         }
 
-        $sessionId = request('session_id');
+        $sessionId = request('session_id', '');
         $this->mergeSessionCartToUserCart($sessionId);
     }
 
@@ -108,7 +104,7 @@ class CartService extends BaseService implements CartServiceInterface
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
-            if ( ! $cart) {
+            if (! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -128,7 +124,7 @@ class CartService extends BaseService implements CartServiceInterface
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
-            if ( ! $cart) {
+            if (! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -146,7 +142,7 @@ class CartService extends BaseService implements CartServiceInterface
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
-            if ( ! $cart) {
+            if (! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -170,7 +166,7 @@ class CartService extends BaseService implements CartServiceInterface
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
-            if ( ! $cart) {
+            if (! $cart) {
                 return errorResponse(__('messages.cart.error.not_found'));
             }
 
@@ -202,7 +198,7 @@ class CartService extends BaseService implements CartServiceInterface
 
     public function mergeSessionCartToUserCart($sessionId)
     {
-        if ( ! auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -210,11 +206,11 @@ class CartService extends BaseService implements CartServiceInterface
         $userCart = $this->cartRepository->findByWhere(['user_id' => $userId]);
         $sessionCart = $this->cartRepository->findByWhere(['session_id' => $sessionId]);
 
-        if ( ! $sessionCart) {
+        if (! $sessionCart) {
             return;
         }
 
-        if ( ! $userCart) {
+        if (! $userCart) {
             $userCart = $this->cartRepository->create(['user_id' => $userId]);
         }
 
