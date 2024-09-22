@@ -9,10 +9,12 @@
             <NuxtLink to="/cart">Giỏ hàng</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/checkout">Thanh toán</NuxtLink>
+            <NuxtLink :to="cartSelected?.length ? '/checkout' : '#'"
+              >Thanh toán</NuxtLink
+            >
           </li>
           <li>
-            <NuxtLink to="/orderComplete">Hoàn tất đơn hàng</NuxtLink>
+            <a href="#">Hoàn tất đơn hàng</a>
           </li>
         </ul>
       </div>
@@ -186,12 +188,14 @@
                   </div>
 
                   <div class="ml-4" style="width: 500px">
-                    <a
-                      href="#"
+                    <NuxtLink
+                      :to="cartSelected?.length ? '/checkout' : '#'"
                       class="btn btn-block btn-dark btn-icon-right btn-rounded btn-checkout"
+                      :class="{ disabled: !cartSelected?.length }"
                     >
-                      Mua hàng<i class="w-icon-long-arrow-right"></i
-                    ></a>
+                      Thanh toán
+                      <i class="w-icon-long-arrow-right"></i
+                    ></NuxtLink>
                   </div>
                 </div>
               </div>
@@ -216,6 +220,7 @@ const { $axios } = useNuxtApp()
 const cartStore = useCartStore()
 
 const carts = computed(() => cartStore.getCart)
+const cartSelected = computed(() => cartStore.getCartSelected)
 const checkedItems = ref([])
 const allChecked = ref(false)
 const openClearCart = ref(false)
@@ -264,14 +269,19 @@ const updateAllSelectedCarts = async () => {
   const response = await $axios.put('/carts/handle-selected', {
     select_all: allChecked.value,
   })
-  cartStore.setTotalAmount(response.data?.total_amount)
+  setCartToStore(response.data)
 }
 
 const updateOneSelectedCarts = async (variantId) => {
   const response = await $axios.put('/carts/handle-selected', {
     product_variant_id: variantId,
   })
-  cartStore.setTotalAmount(response.data?.total_amount)
+  setCartToStore(response.data)
+}
+
+const setCartToStore = (data) => {
+  cartStore.setTotalAmount(data?.total_amount)
+  cartStore.setCarts(data?.items)
 }
 
 const handleClearCart = async () => {
@@ -284,8 +294,8 @@ const handleClearCart = async () => {
 
 const handleRemove = async (variantId) => {
   const response = await $axios.delete(`/carts/${variantId}`)
-  cartStore.setTotalAmount(response.data?.total_amount)
-  cartStore.setCarts(response.data?.items)
+
+  setCartToStore(response.data)
   checkedItems.value = []
   handleSelectCart()
 }
@@ -297,8 +307,7 @@ const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
   })
 
   if (response.status == 'success') {
-    cartStore.setCarts(response.data?.items)
-    cartStore.setTotalAmount(response.data?.total_amount)
+    setCartToStore(response.data)
   }
 }, 1300)
 
@@ -314,6 +323,11 @@ watch(checkedItems, checkSelectedAll, { deep: true })
 </script>
 
 <style scoped>
+.btn-checkout.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .product-thumbnail figure {
   background-color: #f5f6f7;
   border-radius: 8px;

@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Providers;
 
 use App\Events\AuthForgotEvent;
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         AuthForgotEvent::class => [
             SendEmailResetPassword::class,
+        ],
+        'App\Events\OrderShippedEvent' => [
+            'App\Listeners\SendOrderShippedEmailListener',
         ],
     ];
 

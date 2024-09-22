@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Models;
 
 use App\Traits\QueryScopes;
@@ -36,9 +38,9 @@ class ProductVariant extends Model
     ];
 
     protected $casts = [
-        'album' => 'json',
+        'album'            => 'json',
         'is_discount_time' => 'boolean',
-        'is_used' => 'boolean',
+        'is_used'          => 'boolean',
     ];
 
     protected static function boot()

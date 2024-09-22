@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -19,10 +21,10 @@ class LogRequestsAndResponses
         // Log request
         Log::info('>>Incoming request<<', [
             'method' => $request->method(),
-            'url' => $request->fullUrl(),
+            'url'    => $request->fullUrl(),
             // 'headers' => $request->headers->all(),
-            'payload' => $this->getPayload($request),
-            'ip' => $request->ip(),
+            'payload'    => $this->getPayload($request),
+            'ip'         => $request->ip(),
             'user_agent' => $request->header('User-Agent'),
         ]);
 

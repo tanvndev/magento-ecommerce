@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Exceptions;
 
 use App\Enums\ResponseEnum;
@@ -31,17 +33,15 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        $this->reportable(function (Throwable $e) {});
     }
 
     public function report(Throwable $exception)
     {
         Log::error('>>Exception occurred<<', [
             'message' => $exception->getMessage(),
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
+            'file'    => $exception->getFile(),
+            'line'    => $exception->getLine(),
         ]);
 
         parent::report($exception);
@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
 
             if ($exception instanceof ValidationException) {
                 return response()->json([
-                    'error' => 'Validation Error',
+                    'error'    => 'Validation Error',
                     'messages' => $exception->errors(),
                 ], 422);
             }

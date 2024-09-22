@@ -1,5 +1,7 @@
 <?php
 
+
+
 use Carbon\Carbon;
 
 if (! function_exists('getServiceInstance')) {
@@ -105,6 +107,21 @@ if (! function_exists('convertPrice')) {
         return $price;
     }
 }
+
+if (! function_exists('generateOrderCode')) {
+
+    function generateOrderCode($prefix = 'ORD')
+    {
+        $prefix = strtoupper($prefix);
+        $date = date('Ymd');
+        $uniqueId = uniqid();
+        $uniqueHash = substr(md5($uniqueId), 0, 6);
+        $orderCode = $prefix . $date . strtoupper($uniqueHash);
+
+        return $orderCode;
+    }
+}
+
 if (! function_exists('formatCurrency')) {
 
     function formatCurrency($amount, string $currencyCode = 'vn')
@@ -135,7 +152,7 @@ if (! function_exists('recursive')) {
             foreach ($data as $key => $value) {
                 if ($value->parent_id == $parent_id) {
                     $result[] = [
-                        'item' => $value,
+                        'item'     => $value,
                         'children' => recursive($data, $value->id),
                     ];
                 }
@@ -304,9 +321,9 @@ if (! function_exists('errorResponse')) {
     function errorResponse(string $message): array
     {
         return [
-            'status' => 'error',
+            'status'   => 'error',
             'messages' => $message,
-            'data' => null,
+            'data'     => null,
         ];
     }
 }
@@ -315,9 +332,9 @@ if (! function_exists('successResponse')) {
     function successResponse(string $message, $data = null): array
     {
         return [
-            'status' => 'success',
+            'status'   => 'success',
             'messages' => $message,
-            'data' => $data,
+            'data'     => $data,
         ];
     }
 }
@@ -326,8 +343,8 @@ if (! function_exists('handleResponse')) {
     function handleResponse($response, $successCode = 200)
     {
         $status = $response['status'] ?? '';
-        
-        $statusCode =  $status === 'success' ? $successCode : 500;
+
+        $statusCode = $status === 'success' ? $successCode : 500;
 
         return response()->json($response, $statusCode);
     }
@@ -418,6 +435,7 @@ if (! function_exists('getError')) {
         echo 'Error: ' . $e->getMessage() . '<br>';
         echo 'Line: ' . $e->getLine() . '<br>';
         echo 'File: ' . $e->getFile() . '<br>';
+
         exit();
     }
 }
@@ -449,5 +467,26 @@ if (! function_exists('truncate')) {
         }
 
         return $truncated;
+    }
+}
+
+if (! function_exists('haversineGreatCircleDistance')) {
+
+    function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
+    {
+        $latFrom = deg2rad($latitudeFrom);
+        $lonFrom = deg2rad($longitudeFrom);
+        $latTo = deg2rad($latitudeTo);
+        $lonTo = deg2rad($longitudeTo);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $a = sin($latDelta / 2) * sin($latDelta / 2) +
+            cos($latFrom) * cos($latTo) *
+            sin($lonDelta / 2) * sin($lonDelta / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }

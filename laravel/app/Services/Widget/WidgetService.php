@@ -1,5 +1,7 @@
 <?php
 
+
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Widget;
@@ -28,7 +30,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $request = request();
 
         $condition = [
-            'search' => addslashes($request->search),
+            'search'  => addslashes($request->search),
             'publish' => $request->publish,
             'archive' => $request->boolean('archive'),
         ];
@@ -73,10 +75,10 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
         if ($payload['type'] == 'advertisement' && isset($payload['image']) && ! empty($payload['image'])) {
             $payload['advertisement_banners'] = array_map(fn($image, $key) => [
-                'image' => $image,
-                'alt' => $payload['alt'][$key] ?? '',
+                'image'   => $image,
+                'alt'     => $payload['alt'][$key] ?? '',
                 'content' => $payload['content'][$key] ?? '',
-                'url' => $payload['url'][$key] ?? '',
+                'url'     => $payload['url'][$key] ?? '',
             ], $payload['image'], array_keys($payload['image']));
         }
 
@@ -98,7 +100,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     {
         $widgets = $this->widgetRepository->findByWhere(
             [
-                'code' => $code,
+                'code'    => $code,
                 'publish' => 1,
             ],
             ['id', 'name', 'code', 'order', 'model_ids', 'advertisement_banners', 'type'],
@@ -113,8 +115,8 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             $item->items =
                 match ($item->type) {
                     'advertisement' => $item->advertisement_banners,
-                    'product' => $this->getProductVariants($item),
-                    default => [],
+                    'product'       => $this->getProductVariants($item),
+                    default         => [],
                 };
 
             return $item;

@@ -1,5 +1,7 @@
 <?php
 
+
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Product;
@@ -25,7 +27,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         $request = request();
 
         $condition = [
-            'search' => addslashes($request->search),
+            'search'  => addslashes($request->search),
             'publish' => $request->publish,
             'archive' => $request->boolean('archive'),
         ];
@@ -43,10 +45,10 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             );
 
             return [
-                'data' => $this->formatDataToTable($data),
-                'total' => $data->total(),
+                'data'         => $this->formatDataToTable($data),
+                'total'        => $data->total(),
                 'current_page' => $data->currentPage(),
-                'per_page' => $data->perPage(),
+                'per_page'     => $data->perPage(),
             ];
         }
 
@@ -68,16 +70,16 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         foreach ($dataById as $item) {
             if ($item->parent_id == $parentId) {
                 $formattedItem = [
-                    'key' => $item->id,
-                    'id' => $item->id,
-                    'name' => $item->name,
-                    'canonical' => $item->canonical,
-                    'publish' => $item->publish,
+                    'key'         => $item->id,
+                    'id'          => $item->id,
+                    'name'        => $item->name,
+                    'canonical'   => $item->canonical,
+                    'publish'     => $item->publish,
                     'is_featured' => $item->is_featured,
-                    'parent_id' => $item->parent_id,
-                    'order' => $item->order,
-                    'image' => $item->image,
-                    'children' => $this->formatDataToTable($dataById, $item->id),
+                    'parent_id'   => $item->parent_id,
+                    'order'       => $item->order,
+                    'image'       => $item->image,
+                    'children'    => $this->formatDataToTable($dataById, $item->id),
                 ];
                 $formattedData[] = $formattedItem;
             }
@@ -131,7 +133,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
     {
         $condition = [
             'where' => [
-                'publish' => 1,
+                'publish'     => 1,
                 'is_featured' => 1,
             ],
         ];

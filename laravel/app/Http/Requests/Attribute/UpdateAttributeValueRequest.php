@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Requests\Attribute;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,7 +24,7 @@ class UpdateAttributeValueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name'         => 'required',
             'attribute_id' => 'required',
         ];
     }
@@ -30,7 +32,7 @@ class UpdateAttributeValueRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên giá trị thuộc tính',
+            'name'         => 'Tên giá trị thuộc tính',
             'attribute_id' => 'Thuộc tính',
         ];
     }

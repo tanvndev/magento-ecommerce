@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Models;
 
 use App\Traits\QueryScopes;
@@ -48,7 +50,7 @@ class ProductCatalogue extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $canonical = "{$originalCanonical}-".$count++;
+            $canonical = "{$originalCanonical}-" . $count++;
         }
 
         return $canonical;

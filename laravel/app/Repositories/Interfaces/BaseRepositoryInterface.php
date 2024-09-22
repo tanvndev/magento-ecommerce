@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Repositories\Interfaces;
 
 interface BaseRepositoryInterface
@@ -15,7 +17,8 @@ interface BaseRepositoryInterface
         $all = false,
         $orderBy = null,
         $whereInParams = [],
-        $withCount = []
+        $withWhereHas = [],
+        $withCount = [],
     );
 
     public function findByWhereHas($condition = [], $column = ['*'], $relation = [], $alias = '', $all = false);

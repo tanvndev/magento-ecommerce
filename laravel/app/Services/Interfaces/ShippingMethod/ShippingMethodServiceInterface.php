@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Services\Interfaces\ShippingMethod;
 
 interface ShippingMethodServiceInterface
@@ -9,4 +11,8 @@ interface ShippingMethodServiceInterface
     public function create();
 
     public function update($id);
+
+    public function getAllShippingMethod();
+
+    public function getShippingMethodByProductVariant(string $productVariantIds);
 }

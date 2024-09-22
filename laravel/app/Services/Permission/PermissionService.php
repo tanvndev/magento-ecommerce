@@ -1,5 +1,7 @@
 <?php
 
+
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Permission;
@@ -25,8 +27,8 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
         $request = request();
 
         $condition = [
-            'search' => addslashes($request->search),
-            'publish' => $request->publish,
+            'search'       => addslashes($request->search),
+            'publish'      => $request->publish,
             'searchFields' => ['canonical'],
         ];
 
@@ -61,38 +63,38 @@ class PermissionService extends BaseService implements PermissionServiceInterfac
                     $date = now()->toDateTimeString();
                     if (strpos($CRUD, 'C') !== false) {
                         $dataToInsert[] = [
-                            'name' => "Tạo mới {$name}",
-                            'canonical' => "{$canonicalName}.store",
+                            'name'       => "Tạo mới {$name}",
+                            'canonical'  => "{$canonicalName}.store",
                             'created_at' => $date,
                             'updated_at' => $date,
                         ];
                     }
                     if (strpos($CRUD, 'R') !== false) {
                         $dataToInsert[] = [
-                            'name' => "Xem nhiều {$name}",
-                            'canonical' => "{$canonicalName}.index",
+                            'name'       => "Xem nhiều {$name}",
+                            'canonical'  => "{$canonicalName}.index",
                             'created_at' => $date,
                             'updated_at' => $date,
                         ];
                         $dataToInsert[] = [
-                            'name' => "Xem một {$name}",
-                            'canonical' => "{$canonicalName}.show",
+                            'name'       => "Xem một {$name}",
+                            'canonical'  => "{$canonicalName}.show",
                             'created_at' => $date,
                             'updated_at' => $date,
                         ];
                     }
                     if (strpos($CRUD, 'U') !== false) {
                         $dataToInsert[] = [
-                            'name' => "Chỉnh sửa {$name}",
-                            'canonical' => "{$canonicalName}.update",
+                            'name'       => "Chỉnh sửa {$name}",
+                            'canonical'  => "{$canonicalName}.update",
                             'created_at' => $date,
                             'updated_at' => $date,
                         ];
                     }
                     if (strpos($CRUD, 'D') !== false) {
                         $dataToInsert[] = [
-                            'name' => "Xóa {$name}",
-                            'canonical' => "{$canonicalName}.destroy",
+                            'name'       => "Xóa {$name}",
+                            'canonical'  => "{$canonicalName}.destroy",
                             'created_at' => $date,
                             'updated_at' => $date,
                         ];
