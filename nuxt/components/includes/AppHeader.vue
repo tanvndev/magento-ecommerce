@@ -12,7 +12,7 @@
           <!-- End of Dropdown Menu -->
           <span class="d-lg-show"></span>
           <NuxtLink to="contact" class="d-lg-show">Liên hệ</NuxtLink>
-          <NuxtLink to="#" class="d-lg-show">Tài khoản</NuxtLink>
+          <NuxtLink to="/user/profile" class="d-lg-show">Tài khoản</NuxtLink>
           <a
             v-if="!authStore.isSignedIn"
             :href="`${config.public.vueUrl}/login`"
