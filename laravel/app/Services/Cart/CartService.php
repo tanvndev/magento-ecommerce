@@ -70,6 +70,10 @@ class CartService extends BaseService implements CartServiceInterface
             'product_variant_id'                        => $request->product_variant_id,
             'quantity'                                  => $request->quantity ?? 1,
             'updated_at'                                => now(),
+            'product_variant_id' => $request->product_variant_id,
+            'quantity' => $request->quantity ?? 1,
+            'updated_at' => now(),
+
         ]);
     }
 

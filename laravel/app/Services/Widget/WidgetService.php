@@ -74,7 +74,8 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $payload['model_ids'] = array_map('intval', $payload['model_ids'] ?? []);
 
         if ($payload['type'] == 'advertisement' && isset($payload['image']) && ! empty($payload['image'])) {
-            $payload['advertisement_banners'] = array_map(fn($image, $key) => [
+            $payload['advertisement_banners'] = array_map(fn ($image, $key) => [
+
                 'image' => $image,
                 'alt' => $payload['alt'][$key] ?? '',
                 'content' => $payload['content'][$key] ?? '',
