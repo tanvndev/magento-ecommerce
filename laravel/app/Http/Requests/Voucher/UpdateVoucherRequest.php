@@ -25,12 +25,12 @@ class UpdateVoucherRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name'            => 'required|max:255',
-            'code'            => 'required|unique:vouchers,code,' . $this->voucher,
-            'value_type'      => 'required',
-            'value'           => 'required',
-            'quantity'        => 'required|integer|min:1',
-            'voucher_time'    => 'required',
+            'name' => 'required|max:255',
+            'code' => 'required|unique:vouchers,code,' . $this->voucher,
+            'value_type' => 'required',
+            'value' => 'required',
+            'quantity' => 'required|integer|min:1',
+            'voucher_time' => 'required',
             'condition_apply' => 'required',
         ];
 

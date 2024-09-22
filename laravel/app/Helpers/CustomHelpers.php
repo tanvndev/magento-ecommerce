@@ -432,9 +432,9 @@ if (! function_exists('convertToYyyyMmDdHhMmSs')) {
 if (! function_exists('getError')) {
     function getError($e)
     {
-        echo 'Error: ' . $e->getMessage() . '<br>';
-        echo 'Line: ' . $e->getLine() . '<br>';
-        echo 'File: ' . $e->getFile() . '<br>';
+        echo 'Error: '.$e->getMessage().'<br>';
+        echo 'Line: '.$e->getLine().'<br>';
+        echo 'File: '.$e->getFile().'<br>';
         exit();
     }
 }
