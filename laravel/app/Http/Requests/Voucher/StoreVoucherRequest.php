@@ -44,7 +44,6 @@ class StoreVoucherRequest extends FormRequest
             $rules['value'] = 'required|integer|min:1|max:100';
         }
 
-
         return $rules;
     }
 

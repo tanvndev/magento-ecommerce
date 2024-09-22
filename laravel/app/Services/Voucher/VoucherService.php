@@ -94,7 +94,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         return $payload;
     }
 
-
     // CLIENT API //
 
     public function getAllVoucher()

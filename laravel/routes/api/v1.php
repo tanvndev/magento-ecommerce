@@ -129,11 +129,11 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
     // CART ROUTE
     Route::controller(CartController::class)->name('cart.')->group(function () {
-        Route::get('carts/{session_id?}', 'index')->name('index');
-        Route::post('carts/{session_id?}/save', 'createOrUpdate')->name('store-or-update');
-        Route::delete('carts/{session_id?}/clean', 'forceDestroy')->name('force-destroy');
-        Route::delete('carts/{id}/{session_id?}', 'destroy')->name('destroy');
-        Route::put('carts/{session_id?}/handle-selected', 'handleSelected')->name('handle-selected');
-        Route::delete('carts/{session_id?}/deleteCartSelected', 'deleteCartSelected')->name('deleteCartSelected');
+        Route::get('carts', 'index')->name('index');
+        Route::post('carts', 'createOrUpdate')->name('store-or-update');
+        Route::delete('carts/clean', 'forceDestroy')->name('force-destroy');
+        Route::delete('carts/{id}', 'destroy')->name('destroy');
+        Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
+        Route::delete('carts/deleteCartSelected', 'deleteCartSelected')->name('deleteCartSelected');
     });
 });

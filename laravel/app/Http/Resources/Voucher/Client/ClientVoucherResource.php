@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Voucher\Client;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Carbon\Carbon;
 
 class ClientVoucherResource extends JsonResource
 {
@@ -25,7 +25,7 @@ class ClientVoucherResource extends JsonResource
             'value' => $this->value,
             'status' => $this->getStatus(),
             'expired' => $this->end_at,
-            'text_description' => $this->getTextDescription()
+            'text_description' => $this->getTextDescription(),
         ];
     }
 

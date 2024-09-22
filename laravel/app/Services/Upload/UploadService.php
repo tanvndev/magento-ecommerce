@@ -59,16 +59,16 @@ class UploadService extends BaseService implements UploadServiceInterface
 
             // Xây dựng dữ liệu cho từng ảnh và thêm vào mảng images
             $imageInfo = [
-                'id' => 'ID_' . $lastModified + $size,
+                'id' => 'ID_'.$lastModified + $size,
                 'url' => asset($storedPath),
                 'link' => asset($newPath),
                 'name' => $filename,
                 'size' => $size,
                 'lastModified' => $lastModified,
                 'sizes' => [
-                    'thumbnail' => asset($newPath . $thumbnail),
-                    'medium' => asset($newPath . $medium),
-                    'large' => asset($newPath . $large),
+                    'thumbnail' => asset($newPath.$thumbnail),
+                    'medium' => asset($newPath.$medium),
+                    'large' => asset($newPath.$large),
                     'original' => asset($newPath),
                 ],
             ];
