@@ -73,3 +73,9 @@ lerna-debug.log*
 /.nitro
 /.cache
 /dist
+
+
+/vue/package-lock.json
+/laravel/package-lock.json
+/nuxt/package-lock.json
+/laravel/composer-lock
