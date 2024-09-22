@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Enums\ResponseEnum;
@@ -73,13 +75,13 @@ class AuthController extends Controller
     private function respondWithToken($token, $message, $user = null)
     {
         return response()->json([
-            'status' => ResponseEnum::OK,
+            'status'   => ResponseEnum::OK,
             'messages' => [$message],
-            'data' => [
+            'data'     => [
                 'access_token' => $token,
-                'token_type' => 'bearer',
-                'catalogue' => $user->user_catalogue->code ?? null,
-                'expires_in' => auth()->factory()->getTTL() * 60,
+                'token_type'   => 'bearer',
+                'catalogue'    => $user->user_catalogue->code ?? null,
+                'expires_in'   => auth()->factory()->getTTL() * 60,
             ],
         ], ResponseEnum::OK)->cookie(
             'access_token',

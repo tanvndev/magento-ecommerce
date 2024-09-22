@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Resources\Voucher\Client;
 
 use Carbon\Carbon;
@@ -16,15 +18,15 @@ class ClientVoucherResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'code' => $this->code,
-            'image' => $this->image,
-            'description' => $this->description,
-            'value_type' => $this->value_type,
-            'value' => $this->value,
-            'status' => $this->getStatus(),
-            'expired' => $this->end_at,
+            'id'               => $this->id,
+            'name'             => $this->name,
+            'code'             => $this->code,
+            'image'            => $this->image,
+            'description'      => $this->description,
+            'value_type'       => $this->value_type,
+            'value'            => $this->value,
+            'status'           => $this->getStatus(),
+            'expired'          => $this->end_at,
             'text_description' => $this->getTextDescription(),
         ];
     }
@@ -38,27 +40,27 @@ class ClientVoucherResource extends JsonResource
         if ($this->quantity <= 0) {
             return [
                 'color' => 'inactive',
-                'text' => 'Đã hết lượt sử dụng',
+                'text'  => 'Đã hết lượt sử dụng',
             ];
         }
 
         if ($this->publish == 2) {
             return [
                 'color' => 'inactive',
-                'text' => 'Chưa kích hoạt',
+                'text'  => 'Chưa kích hoạt',
             ];
         }
 
         if ($start && $end && ($now->lt($start) || $now->gt($end))) {
             return [
                 'color' => 'inactive',
-                'text' => 'Đã hết hạn',
+                'text'  => 'Đã hết hạn',
             ];
         }
 
         return [
             'color' => 'active',
-            'text' => 'Sử dụng ngay',
+            'text'  => 'Sử dụng ngay',
         ];
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Resources\Product\Client;
 
 use App\Http\Resources\Product\ProductCatalogueResource;
@@ -24,24 +26,24 @@ class ClientProductResource extends JsonResource
             ->get();
 
         return [
-            'id' => $this->id,
-            'key' => $this->id,
-            'name' => $this->name,
-            'brand_id' => $this->brand_id,
-            'brand_name' => $this->brand->name,
-            'description' => $this->description,
-            'excerpt' => $this->excerpt,
-            'upsells' => ClientProductVariantResource::collection($productVariants),
-            'canonical' => $this->canonical,
-            'meta_title' => $this->meta_title,
-            'meta_description' => $this->meta_description,
-            'variants' => ClientProductVariantResource::collection($this->variants),
-            'catalogues' => ProductCatalogueResource::collection($this->catalogues),
-            'attribute_not_enabled' => ClientProductAttributeResource::collection($this->attributes->where('enable_variation', false)),
+            'id'                        => $this->id,
+            'key'                       => $this->id,
+            'name'                      => $this->name,
+            'brand_id'                  => $this->brand_id,
+            'brand_name'                => $this->brand->name,
+            'description'               => $this->description,
+            'excerpt'                   => $this->excerpt,
+            'upsells'                   => ClientProductVariantResource::collection($productVariants),
+            'canonical'                 => $this->canonical,
+            'meta_title'                => $this->meta_title,
+            'meta_description'          => $this->meta_description,
+            'variants'                  => ClientProductVariantResource::collection($this->variants),
+            'catalogues'                => ProductCatalogueResource::collection($this->catalogues),
+            'attribute_not_enabled'     => ClientProductAttributeResource::collection($this->attributes->where('enable_variation', false)),
             'attribute_not_enabled_ids' => $this->attributes->where('enable_variation', false)->pluck('attribute_id'),
-            'attribute_enabled' => ClientProductAttributeResource::collection($this->attributes->where('enable_variation', true)),
-            'attribute_enabled_ids' => $this->attributes->where('enable_variation', true)->pluck('attribute_id'),
-            'product_catalogue_ids' => $this->catalogues->pluck('id'),
+            'attribute_enabled'         => ClientProductAttributeResource::collection($this->attributes->where('enable_variation', true)),
+            'attribute_enabled_ids'     => $this->attributes->where('enable_variation', true)->pluck('attribute_id'),
+            'product_catalogue_ids'     => $this->catalogues->pluck('id'),
         ];
     }
 }

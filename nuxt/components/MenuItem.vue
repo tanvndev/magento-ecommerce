@@ -47,6 +47,10 @@ const props = defineProps({
   color: #333;
 }
 
+.ct-menu-link:first-child {
+  padding-left: 0;
+}
+
 .sub-menu {
   border-radius: 2px;
   list-style: none;

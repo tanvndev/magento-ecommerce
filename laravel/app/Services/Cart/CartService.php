@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Services\Cart;
 
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
@@ -73,7 +75,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         $cart->cart_items()->create([
             'product_variant_id' => $request->product_variant_id,
-            'quantity' => 1,
+            'quantity'           => 1,
         ]);
     }
 

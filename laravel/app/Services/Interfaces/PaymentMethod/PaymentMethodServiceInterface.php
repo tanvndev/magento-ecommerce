@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Services\Interfaces\PaymentMethod;
 
 interface PaymentMethodServiceInterface
@@ -9,4 +11,6 @@ interface PaymentMethodServiceInterface
     public function create();
 
     public function update($id);
+
+    public function getAllPaymentMethod();
 }

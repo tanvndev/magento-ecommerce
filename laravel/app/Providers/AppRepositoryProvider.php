@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +24,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Location\ProvinceRepositoryInterface' => 'App\Repositories\Location\ProvinceRepository',
         // District
         'App\Repositories\Interfaces\Location\DistrictRepositoryInterface' => 'App\Repositories\Location\DistrictRepository',
+        // Ward
+        'App\Repositories\Interfaces\Location\WardRepositoryInterface' => 'App\Repositories\Location\WardRepository',
         // ProductCatalogue
         'App\Repositories\Interfaces\Product\ProductCatalogueRepositoryInterface' => 'App\Repositories\Product\ProductCatalogueRepository',
         // Product
@@ -48,6 +52,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface' => 'App\Repositories\Voucher\VoucherRepository',
         // Slider
         'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
+        // Order
+        'App\Repositories\Interfaces\Order\OrderRepositoryInterface' => 'App\Repositories\Order\OrderRepository',
 
     ];
 
@@ -61,8 +67,5 @@ class AppRepositoryProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void
-    {
-        //
-    }
+    public function boot(): void {}
 }

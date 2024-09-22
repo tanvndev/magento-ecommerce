@@ -1,8 +1,11 @@
 <?php
 
+
+
 namespace App\Http\Resources\Product\Client;
 
 use App\Http\Resources\Attribute\AttributeValueResource;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,26 +19,26 @@ class ClientProductVariantResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'key' => $this->id,
-            'product_id' => $this->product_id,
-            'name' => $this->name,
-            'slug' => $this->slug,
-            'price' => $this->price,
+            'id'                      => $this->id,
+            'key'                     => $this->id,
+            'product_id'              => $this->product_id,
+            'name'                    => $this->name,
+            'slug'                    => $this->slug,
+            'price'                   => $this->price,
             'attribute_value_combine' => $this->attribute_value_combine,
-            'image' => $this->image ?? [],
-            'album' => $this->album,
-            'sku' => $this->sku,
-            'price' => $this->price,
-            'sale_price' => $this->sale_price ?? null,
-            'is_discount_time' => $this->is_discount_time,
-            'sale_price_time' => [
+            'image'                   => $this->image ?? [],
+            'album'                   => $this->album,
+            'sku'                     => $this->sku,
+            'price'                   => $this->price,
+            'sale_price'              => $this->sale_price ?? null,
+            'is_discount_time'        => $this->is_discount_time,
+            'sale_price_time'         => [
                 $this->sale_price_start_at,
                 $this->sale_price_end_at,
             ],
-            'discount' => $this->handleDiscountValue(),
-            'stock' => $this->stock ?? 0,
-            'attributes' => AttributeValueResource::collection($this->attribute_values),
+            'discount'         => $this->handleDiscountValue(),
+            'stock'            => $this->stock ?? 0,
+            'attributes'       => AttributeValueResource::collection($this->attribute_values),
             'attribute_values' => $this->attribute_values->pluck('name')->implode(' - ') ?? 'Default',
         ];
     }
@@ -47,9 +50,9 @@ class ClientProductVariantResource extends JsonResource
         }
 
         if ($this->is_discount_time && $this->sale_price_time) {
-            $now = new \DateTime;
-            $start = new \DateTime($this->sale_price_start_at);
-            $end = new \DateTime($this->sale_price_end_at);
+            $now = new DateTime;
+            $start = new DateTime($this->sale_price_start_at);
+            $end = new DateTime($this->sale_price_end_at);
 
             if ($now < $start || $now > $end) {
                 return null;
