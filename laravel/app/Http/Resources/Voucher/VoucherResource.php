@@ -36,8 +36,8 @@ class VoucherResource extends JsonResource
                 $this->start_at,
                 $this->end_at,
             ],
-            'publish'          => $this->publish,
-            'text_description' => $this->getTextDescription(),
+            'publish' => $this->publish,
+            'text_description' => $this->getTextDescription()
         ];
     }
 

@@ -54,6 +54,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
         // Voucher
         'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
+        // Slider
+        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
         // Order
         'App\Services\Interfaces\Order\OrderServiceInterface' => 'App\Services\Order\OrderService',
         // Location
