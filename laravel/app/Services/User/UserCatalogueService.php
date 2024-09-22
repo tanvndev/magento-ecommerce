@@ -1,5 +1,7 @@
 <?php
 
+
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\User;
@@ -8,6 +10,7 @@ use App\Models\User;
 use App\Repositories\Interfaces\User\UserCatalogueRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\User\UserCatalogueServiceInterface;
+use Exception;
 
 class UserCatalogueService extends BaseService implements UserCatalogueServiceInterface
 {
@@ -26,7 +29,7 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
         $request = request();
 
         $condition = [
-            'search' => addslashes($request->search),
+            'search'  => addslashes($request->search),
             'publish' => $request->publish,
             'archive' => $request->boolean('archive'),
         ];
@@ -161,11 +164,11 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
         $catalogues = $this->userCatalogueRepository->findById($id, ['users']);
 
         if ($catalogues->users->count() > 0) {
-            throw new \Exception(__('messages.delete.error'));
+            throw new Exception(__('messages.delete.error'));
         }
 
         if ($id == User::ROLE_ADMIN || $id == User::ROLE_CUSTOMER) {
-            throw new \Exception(__('messages.delete.error'));
+            throw new Exception(__('messages.delete.error'));
         }
     }
 
@@ -174,11 +177,11 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
         $catalogues = $this->userCatalogueRepository->findByWhereIn($ids, 'id', ['users']);
 
         if ($catalogues->users->count() > 0) {
-            throw new \Exception(__('messages.delete.error'));
+            throw new Exception(__('messages.delete.error'));
         }
 
         if (in_array(User::ROLE_ADMIN, $ids) || in_array(User::ROLE_CUSTOMER, $ids)) {
-            throw new \Exception(__('messages.delete.error'));
+            throw new Exception(__('messages.delete.error'));
         }
     }
 }

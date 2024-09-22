@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Providers;
 
 use Carbon\Carbon;
@@ -52,6 +54,12 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
         // Voucher
         'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
+        // Slider
+        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
+        // Order
+        'App\Services\Interfaces\Order\OrderServiceInterface' => 'App\Services\Order\OrderService',
+        // Location
+        'App\Services\Interfaces\Location\LocationServiceInterface' => 'App\Services\Location\LocationService',
     ];
 
     public function register(): void
@@ -67,11 +75,11 @@ class AppServiceProvider extends ServiceProvider
             $fileSystem = $app->make(Filesystem::class);
 
             return ServerFactory::create([
-                'response' => new LaravelResponseFactory(app('request')),
-                'source' => $fileSystem->getDriver(),
-                'cache' => $fileSystem->getDriver(),
+                'response'           => new LaravelResponseFactory(app('request')),
+                'source'             => $fileSystem->getDriver(),
+                'cache'              => $fileSystem->getDriver(),
                 'source_path_prefix' => env('IMAGE_SOURCE_PATH'),
-                'cache_path_prefix' => '.cache',
+                'cache_path_prefix'  => '.cache',
             ]);
         });
 
@@ -86,14 +94,14 @@ class AppServiceProvider extends ServiceProvider
     private function printLogSql()
     {
         DB::listen(function ($query) {
-            $logPath = storage_path('logs/sql/'.Carbon::now()->format('Y-m-d').'-slow-log.sql');
+            $logPath = storage_path('logs/sql/' . Carbon::now()->format('Y-m-d') . '-slow-log.sql');
 
             $sqlWithBindings = $this->interpolateQuery($query->sql, $query->bindings);
 
             $logContent = sprintf(
-                "/*==================================================================*/\n".
-                    "/* Origin (request): %s\n".
-                    "   Query %d - %s [%sms] */\n\n".
+                "/*==================================================================*/\n" .
+                    "/* Origin (request): %s\n" .
+                    "   Query %d - %s [%sms] */\n\n" .
                     "%s\n\n",
                 request()->fullUrl() ?? 'N/A',
                 $query->time, // Số thứ tự truy vấn
@@ -109,7 +117,7 @@ class AppServiceProvider extends ServiceProvider
     private function interpolateQuery($sql, $bindings)
     {
         foreach ($bindings as $binding) {
-            $value = is_numeric($binding) ? $binding : "'$binding'";
+            $value = is_numeric($binding) ? $binding : "'{$binding}'";
             $sql = preg_replace('/\?/', $value, $sql, 1);
         }
 

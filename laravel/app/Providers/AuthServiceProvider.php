@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
@@ -13,9 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array<class-string, class-string>
      */
-    protected $policies = [
-        //
-    ];
+    protected $policies = [];
 
     /**
      * Register any authentication / authorization services.
@@ -30,11 +30,8 @@ class AuthServiceProvider extends ServiceProvider
 
             // Kiểm tra nếu có canonical được cấp sẽ trả về true
             $permission = $user->user_catalogue->permissions;
-            if ($permission->contains('canonical', $permissionName)) {
-                return true;
-            }
 
-            return false;
+            return (bool) ($permission->contains('canonical', $permissionName));
         });
     }
 }

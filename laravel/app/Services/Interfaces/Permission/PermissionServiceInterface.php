@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Services\Interfaces\Permission;
 
 interface PermissionServiceInterface
