@@ -28,9 +28,10 @@ class CartController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($sessionId = null)
     {
-        $response = $this->cartService->getCart();
+
+        $response = $this->cartService->getCart($sessionId);
 
         $data = new CartCollection($response);
 
@@ -40,16 +41,16 @@ class CartController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function createOrUpdate(CreateAndUpdateRequest $request)
+    public function createOrUpdate(CreateAndUpdateRequest $request, $sessionId = null)
     {
 
-        $response = $this->cartService->createOrUpdate($request);
+        $response   = $this->cartService->createOrUpdate($request, $sessionId);
 
         if (is_array($response)) {
             return $response;
         }
 
-        $data = new CartCollection($response);
+        $data       = new CartCollection($response);
 
         return successResponse(__('messages.cart.success.create'), $data);
     }
@@ -57,28 +58,35 @@ class CartController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, $sessionId = null)
     {
-        $response = $this->cartService->deleteOneItem($id);
+        $response   = $this->cartService->deleteOneItem($id, $sessionId);
 
-        $data = new CartCollection($response);
+        $data       = new CartCollection($response);
 
         return successResponse('', $data);
     }
 
-    public function forceDestroy()
+    public function forceDestroy($sessionId = null)
     {
-        $response = $this->cartService->cleanCart();
+        $response   = $this->cartService->cleanCart($sessionId);
 
         return handleResponse($response);
     }
 
-    public function handleSelected(Request $request)
+    public function handleSelected(Request $request, $sessionId = null)
     {
-        $response = $this->cartService->handleSelected($request);
+        $response   = $this->cartService->handleSelected($request, $sessionId);
 
-        $data = new CartCollection($response);
+        $data       = new CartCollection($response);
 
         return successResponse('', $data);
+    }
+
+    public function deleteCartSelected($sessionId = null){
+
+        $response   = $this->cartService->deleteCartSelected($sessionId);
+
+        return handleResponse($response);
     }
 }
