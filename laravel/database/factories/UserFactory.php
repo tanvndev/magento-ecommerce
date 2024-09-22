@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,17 +26,17 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'fullname' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'phone' => fake()->phoneNumber(),
+            'fullname'          => fake()->name(),
+            'email'             => fake()->unique()->safeEmail(),
+            'phone'             => fake()->phoneNumber(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
-            'publish' => rand(1, 2),
-            'ip' => fake()->ipv4(),
-            'user_agent' => fake()->userAgent(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'password'          => static::$password ??= Hash::make('password'),
+            'remember_token'    => Str::random(10),
+            'publish'           => rand(1, 2),
+            'ip'                => fake()->ipv4(),
+            'user_agent'        => fake()->userAgent(),
+            'created_at'        => now(),
+            'updated_at'        => now(),
             'user_catalogue_id' => rand(1, 6),
         ];
     }
@@ -44,7 +46,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

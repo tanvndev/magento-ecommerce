@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Requests\PaymentMethod;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,8 +24,8 @@ class StorePaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required',
-            'code' => 'string|unique',
+            'name'  => 'string|required',
+            'code'  => 'string|unique',
             'image' => 'string',
         ];
     }
@@ -31,8 +33,8 @@ class StorePaymentMethodRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên phương thức thanh toán',
-            'code' => 'Mã phương thức thanh toán',
+            'name'  => 'Tên phương thức thanh toán',
+            'code'  => 'Mã phương thức thanh toán',
             'image' => 'Ảnh phương thức thanh toán',
         ];
     }

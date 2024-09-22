@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Resources\Voucher\Client;
 
 use Illuminate\Http\Request;
@@ -19,16 +21,15 @@ class ClientVoucherCollection extends ResourceCollection
             $this->resource instanceof \Illuminate\Pagination\Paginator
         ) {
 
-
             return [
                 'data' => $this->collection->map(function ($voucher) {
                     return new ClientVoucherResource($voucher);
                 }),
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
+                'total'        => $this->total(),
+                'per_page'     => $this->perPage(),
                 'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
-                'next_page' => $this->currentPage() + 1,
+                'last_page'    => $this->lastPage(),
+                'next_page'    => $this->currentPage() + 1,
             ];
         }
 

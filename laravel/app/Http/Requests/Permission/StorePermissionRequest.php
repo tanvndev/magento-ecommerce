@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Requests\Permission;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -22,7 +24,7 @@ class StorePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'name'      => 'required|string',
             'canonical' => 'required|string|unique:permissions',
         ];
     }
@@ -30,7 +32,7 @@ class StorePermissionRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên ngôn ngữ',
+            'name'      => 'Tên ngôn ngữ',
             'canonical' => 'Canonical',
         ];
     }

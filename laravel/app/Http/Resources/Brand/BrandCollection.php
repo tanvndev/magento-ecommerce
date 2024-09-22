@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Resources\Brand;
 
 use Illuminate\Http\Request;
@@ -22,10 +24,10 @@ class BrandCollection extends ResourceCollection
                 'data' => $this->collection->map(function ($brand) {
                     return new BrandResource($brand);
                 }),
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
+                'total'        => $this->total(),
+                'per_page'     => $this->perPage(),
                 'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
+                'last_page'    => $this->lastPage(),
             ];
         }
 

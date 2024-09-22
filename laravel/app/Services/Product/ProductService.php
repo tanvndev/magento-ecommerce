@@ -1,5 +1,7 @@
 <?php
 
+
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Product;
@@ -12,33 +14,24 @@ use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductServiceInterface;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 class ProductService extends BaseService implements ProductServiceInterface
 {
-    protected $productRepository;
-
-    protected $productVariantRepository;
-
-    protected $attributeValueRepository;
-
     public function __construct(
-        ProductRepositoryInterface $productRepository,
-        ProductVariantRepositoryInterface $productVariantRepository,
-        AttributeValueRepositoryInterface $attributeValueRepository
-    ) {
-        $this->productRepository = $productRepository;
-        $this->productVariantRepository = $productVariantRepository;
-        $this->attributeValueRepository = $attributeValueRepository;
-    }
+        protected ProductRepositoryInterface $productRepository,
+        protected ProductVariantRepositoryInterface $productVariantRepository,
+        protected AttributeValueRepositoryInterface $attributeValueRepository
+    ) {}
 
     public function paginate()
     {
         $request = request();
 
         $condition = [
-            'search' => addslashes($request->search),
+            'search'  => addslashes($request->search),
             'publish' => $request->publish,
             'archive' => $request->boolean('archive'),
         ];
@@ -92,26 +85,26 @@ class ProductService extends BaseService implements ProductServiceInterface
         $is_discount_time = filter_var($payload['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $sale_price_start_at = $payload['sale_price_time'][0] ?? null;
         $sale_price_end_at = $payload['sale_price_time'][1] ?? null;
-        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.'default');
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . 'default');
 
         $mainData = [
-            'uuid' => $uuid,
-            'name' => $payload['name'] ?? null,
-            'image' => $payload['image'] ?? null,
-            'album' => $payload['album'] ?? null,
-            'price' => $payload['price'] ?? null,
-            'sale_price' => $payload['sale_price'] ?? null,
-            'cost_price' => $payload['cost_price'] ?? null,
-            'is_discount_time' => $is_discount_time,
-            'weight' => $payload['weight'] ?? null,
-            'length' => $payload['length'] ?? null,
-            'width' => $payload['width'] ?? null,
-            'height' => $payload['height'] ?? null,
-            'stock' => $payload['stock'] ?? 0,
-            'low_stock_amount' => $payload['low_stock_amount'] ?? 0,
-            'sku' => generateSKU($payload['name'], 3, ['default']),
+            'uuid'                => $uuid,
+            'name'                => $payload['name'] ?? null,
+            'image'               => $payload['image'] ?? null,
+            'album'               => $payload['album'] ?? null,
+            'price'               => $payload['price'] ?? null,
+            'sale_price'          => $payload['sale_price'] ?? null,
+            'cost_price'          => $payload['cost_price'] ?? null,
+            'is_discount_time'    => $is_discount_time,
+            'weight'              => $payload['weight'] ?? null,
+            'length'              => $payload['length'] ?? null,
+            'width'               => $payload['width'] ?? null,
+            'height'              => $payload['height'] ?? null,
+            'stock'               => $payload['stock'] ?? 0,
+            'low_stock_amount'    => $payload['low_stock_amount'] ?? 0,
+            'sku'                 => generateSKU($payload['name'], 3, ['default']),
             'sale_price_start_at' => $sale_price_start_at ? convertToYyyyMmDdHhMmSs($sale_price_start_at) : null,
-            'sale_price_end_at' => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
+            'sale_price_end_at'   => $sale_price_end_at ? convertToYyyyMmDdHhMmSs($sale_price_end_at) : null,
         ];
 
         if ($payload['product_type'] === Product::TYPE_SIMPLE) {
@@ -141,30 +134,30 @@ class ProductService extends BaseService implements ProductServiceInterface
             ->map(function ($variable, $key) use ($mainData, $variantTexts, $variantIds, $product) {
 
                 $options = explode('-', $variantTexts[$key] ?? '');
-                $sku = generateSKU($mainData['name'], 3, $options).'-'.($key + 1);
+                $sku = generateSKU($mainData['name'], 3, $options) . '-' . ($key + 1);
                 $name = "{$mainData['name']} {$variantTexts[$key]}";
                 $attribute_value_combine = sortString($variantIds[$key]);
-                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.$attribute_value_combine);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
 
                 $variantData = [
-                    'uuid' => $uuid,
-                    'name' => $name,
+                    'uuid'                    => $uuid,
+                    'name'                    => $name,
                     'attribute_value_combine' => $attribute_value_combine,
-                    'image' => $variable['image'] ?? $mainData['image'],
-                    'album' => $variable['album'] ?? $mainData['album'],
-                    'price' => $variable['price'] ?? $mainData['price'],
-                    'sale_price' => $variable['sale_price'] ?? null,
-                    'cost_price' => $variable['cost_price'] ?? $mainData['cost_price'],
-                    'is_discount_time' => filter_var($variable['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN),
-                    'width' => $variable['width'] ?? $mainData['width'],
-                    'height' => $variable['height'] ?? $mainData['height'],
-                    'length' => $variable['length'] ?? $mainData['length'],
-                    'weight' => $variable['weight'] ?? $mainData['weight'],
-                    'sku' => $sku,
-                    'stock' => $variable['stock'] ?? 0,
-                    'low_stock_amount' => $variable['low_stock_amount'] ?? 0,
-                    'sale_price_start_at' => isset($variable['sale_price_time'][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][0]) : null,
-                    'sale_price_end_at' => isset($variable['sale_price_time'][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][1]) : null,
+                    'image'                   => $variable['image'] ?? $mainData['image'],
+                    'album'                   => $variable['album'] ?? $mainData['album'],
+                    'price'                   => $variable['price'] ?? $mainData['price'],
+                    'sale_price'              => $variable['sale_price'] ?? null,
+                    'cost_price'              => $variable['cost_price'] ?? $mainData['cost_price'],
+                    'is_discount_time'        => filter_var($variable['is_discount_time'] ?? false, FILTER_VALIDATE_BOOLEAN),
+                    'width'                   => $variable['width'] ?? $mainData['width'],
+                    'height'                  => $variable['height'] ?? $mainData['height'],
+                    'length'                  => $variable['length'] ?? $mainData['length'],
+                    'weight'                  => $variable['weight'] ?? $mainData['weight'],
+                    'sku'                     => $sku,
+                    'stock'                   => $variable['stock'] ?? 0,
+                    'low_stock_amount'        => $variable['low_stock_amount'] ?? 0,
+                    'sale_price_start_at'     => isset($variable['sale_price_time'][0]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][0]) : null,
+                    'sale_price_end_at'       => isset($variable['sale_price_time'][1]) ? convertToYyyyMmDdHhMmSs($variable['sale_price_time'][1]) : null,
                 ];
 
                 return $variantData;
@@ -190,9 +183,9 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         foreach ($attributes['attrIds'] as $attrId => $attrValueIds) {
             $attributePayload[] = [
-                'attribute_id' => $attrId,
+                'attribute_id'        => $attrId,
                 'attribute_value_ids' => $attrValueIds,
-                'enable_variation' => $attributes['enable_variation'][$attrId] ?? false,
+                'enable_variation'    => $attributes['enable_variation'][$attrId] ?? false,
             ];
         }
 
@@ -259,9 +252,9 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         foreach ($attributeValueIds as $attrId => $attributeValueId) {
             $attributePayload[] = [
-                'attribute_id' => $attrId,
+                'attribute_id'        => $attrId,
                 'attribute_value_ids' => array_map('intval', $attributeValueId),
-                'enable_variation' => false,
+                'enable_variation'    => false,
             ];
         }
 
@@ -277,7 +270,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         $request = request();
         $condition = [
-            'search' => addslashes($request->search),
+            'search'  => addslashes($request->search),
             'archive' => $request->boolean('archive'),
         ];
 
@@ -335,7 +328,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         // Transform keys by removing "variable_" prefix
         $payloadFormat = array_combine(
-            array_map(fn ($key) => str_replace('variable_', '', $key), array_keys($payload)),
+            array_map(fn($key) => str_replace('variable_', '', $key), array_keys($payload)),
             array_values($payload)
         );
 
@@ -354,28 +347,28 @@ class ProductService extends BaseService implements ProductServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
             $variant = $this->productVariantRepository->findByWhere([
-                'id' => ['=', $id],
+                'id'      => ['=', $id],
                 'is_used' => ['=', false],
             ]);
 
             if (! $variant) {
-                throw new \Exception('VARIANT_NOT_FOUND');
+                throw new Exception('VARIANT_NOT_FOUND');
             }
 
             if (! $variant->delete()) {
-                throw new \Exception('FAILED_TO_DELETE_VARIANT');
+                throw new Exception('FAILED_TO_DELETE_VARIANT');
             }
 
             $remainingAttributes = ProductVariantAttributeValue::query()
-                ->whereHas('product_variant', fn ($query) => $query->where('product_id', $variant->product_id))
+                ->whereHas('product_variant', fn($query) => $query->where('product_id', $variant->product_id))
                 ->with('attribute_value:id,attribute_id')
                 ->get(['attribute_value_id'])
                 ->groupBy('attribute_value.attribute_id')
-                ->map(fn ($group) => [
-                    'product_id' => $variant->product_id,
-                    'attribute_id' => $group->first()->attribute_value->attribute_id,
+                ->map(fn($group) => [
+                    'product_id'          => $variant->product_id,
+                    'attribute_id'        => $group->first()->attribute_value->attribute_id,
                     'attribute_value_ids' => $group->pluck('attribute_value_id')->unique()->values()->toArray(),
-                    'enable_variation' => true,
+                    'enable_variation'    => true,
                 ])
                 ->values();
 
@@ -402,13 +395,13 @@ class ProductService extends BaseService implements ProductServiceInterface
             $payload = request()->input('attribute_attribute_value_ids');
 
             if (empty($payload)) {
-                throw new \Exception('PAYLOAD_NOT_FOUND');
+                throw new Exception('PAYLOAD_NOT_FOUND');
             }
 
             $product = $this->productRepository->findById($productId, ['id', 'name', 'product_type'], ['variants']);
 
             if (empty($product)) {
-                throw new \Exception('PRODUCT_NOT_FOUND');
+                throw new Exception('PRODUCT_NOT_FOUND');
             }
 
             if ($product->product_type == Product::TYPE_SIMPLE) {
@@ -459,18 +452,18 @@ class ProductService extends BaseService implements ProductServiceInterface
             if (! in_array($attributeValueCombine['attribute_value_combine'], $existingAttributeCombines)) {
                 $productName = $product->name;
                 $options = explode(' - ', $attributeValueCombine['attributeText'] ?? '');
-                $sku = generateSKU($productName, 3, $options).'-'.($key + 1);
+                $sku = generateSKU($productName, 3, $options) . '-' . ($key + 1);
                 $name = "{$productName} {$attributeValueCombine['attributeText']}";
                 $attribute_value_combine = $attributeValueCombine['attribute_value_combine'];
-                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id.', '.$attribute_value_combine);
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $attribute_value_combine);
 
                 return [
-                    'uuid' => $uuid,
-                    'name' => $name,
+                    'uuid'                    => $uuid,
+                    'name'                    => $name,
                     'attribute_value_combine' => $attribute_value_combine,
-                    'sku' => $sku,
-                    'price' => 0,
-                    'cost_price' => 0,
+                    'sku'                     => $sku,
+                    'price'                   => 0,
+                    'cost_price'              => 0,
                 ];
             }
         })->filter()
@@ -493,7 +486,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             ksort($combination);
             $attributeValue = $this->attributeValueRepository->findByWhereIn($combination);
             $data = [
-                'attributeText' => implode(' - ', $attributeValue->pluck('name')->toArray()),
+                'attributeText'           => implode(' - ', $attributeValue->pluck('name')->toArray()),
                 'attribute_value_combine' => implode(',', array_values($combination)),
             ];
 

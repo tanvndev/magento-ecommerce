@@ -1,7 +1,10 @@
 <?php
 
+
+
 namespace App\Classes;
 
+use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,21 +20,21 @@ class Upload
         $fileList = ['jpg', 'jpeg', 'png', 'webp', 'svg', 'gif', 'tiff', 'heic', 'raw'];
         try {
             $extension = strtolower($image->getClientOriginalExtension());
-            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME).'.'.$extension;
+            $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $extension;
             if ($image != null && in_array($extension, $fileList)) {
 
                 // Kiểm tra kích thước của ảnh
                 if ($image->getSize() > 5000000) {
                     return [
-                        'status' => 'error',
-                        'message' => 'Dung lượng tệp ---> '.$originalName.' <--- không được vượt quá 5MB.',
+                        'status'  => 'error',
+                        'message' => 'Dung lượng tệp ---> ' . $originalName . ' <--- không được vượt quá 5MB.',
                     ];
                 }
                 // dd($image);
 
                 $uuid = uniqid();
-                $path = $imageSrc.date('Y').'/'.date('m');
-                $filename = Str::slug($originalName).'_'.$uuid.'.webp'; // Change the extension to .webp
+                $path = $imageSrc . date('Y') . '/' . date('m');
+                $filename = Str::slug($originalName) . '_' . $uuid . '.webp'; // Change the extension to .webp
 
                 // Create the directory if it doesn't exist
                 if (! Storage::exists($path)) {
@@ -51,7 +54,7 @@ class Upload
                 }
 
                 // Save the optimized image temporarily
-                $temporaryPath = $temporaryDirectory.$filename;
+                $temporaryPath = $temporaryDirectory . $filename;
                 $img->save($temporaryPath);
 
                 // Optimize the image further using spatie/image-optimizer
@@ -59,26 +62,26 @@ class Upload
                 $optimizerChain->optimize($temporaryPath);
 
                 // Move the optimized image to the final destination
-                $storedPath = $path.'/'.$filename;
+                $storedPath = $path . '/' . $filename;
                 Storage::put($storedPath, file_get_contents($temporaryPath));
 
                 // Remove temporary file
                 unlink($temporaryPath);
 
                 return [
-                    'status' => 'success',
+                    'status'  => 'success',
                     'message' => __('messages.upload.create.success'),
                 ];
             } else {
                 return [
-                    'status' => 'error',
-                    'message' => 'Định dạng tệp ---> '.$originalName.' <--- không hợp lệ. Chỉ chấp nhận các định dạng: JPG, JPEG, PNG, WEBP, SVG, GIF, TIFF, HEIC, RAW.',
+                    'status'  => 'error',
+                    'message' => 'Định dạng tệp ---> ' . $originalName . ' <--- không hợp lệ. Chỉ chấp nhận các định dạng: JPG, JPEG, PNG, WEBP, SVG, GIF, TIFF, HEIC, RAW.',
                 ];
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
-                'status' => 'error',
-                'message' => 'Có lỗi từ tệp ---> '.$originalName.' <--- vui lòng thử tải lại.',
+                'status'  => 'error',
+                'message' => 'Có lỗi từ tệp ---> ' . $originalName . ' <--- vui lòng thử tải lại.',
             ];
         }
     }

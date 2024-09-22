@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Repositories\Interfaces\PaymentMethod;
 
 use App\Repositories\Interfaces\BaseRepositoryInterface;

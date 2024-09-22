@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Resources\Product;
 
 use App\Http\Resources\Attribute\AttributeValueResource;
@@ -16,35 +18,35 @@ class ProductVariantResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'key' => $this->id,
-            'product_id' => $this->product_id,
-            'name' => $this->name,
-            'price' => $this->price,
+            'id'                      => $this->id,
+            'key'                     => $this->id,
+            'product_id'              => $this->product_id,
+            'name'                    => $this->name,
+            'price'                   => $this->price,
             'attribute_value_combine' => $this->attribute_value_combine,
-            'image' => $this->image ?? [],
-            'album' => $this->album,
-            'sku' => $this->sku,
-            'price' => $this->price,
-            'cost_price' => $this->cost_price ?? null,
-            'sale_price' => $this->sale_price ?? null,
-            'weight' => ($this->weight ?? null),
-            'length' => ($this->length ?? null),
-            'width' => ($this->width ?? null),
-            'height' => ($this->height ?? null),
-            'is_discount_time' => $this->is_discount_time,
-            'sale_price_time' => [
+            'image'                   => $this->image ?? [],
+            'album'                   => $this->album,
+            'sku'                     => $this->sku,
+            'price'                   => $this->price,
+            'cost_price'              => $this->cost_price ?? null,
+            'sale_price'              => $this->sale_price ?? null,
+            'weight'                  => ($this->weight ?? null),
+            'length'                  => ($this->length ?? null),
+            'width'                   => ($this->width ?? null),
+            'height'                  => ($this->height ?? null),
+            'is_discount_time'        => $this->is_discount_time,
+            'sale_price_time'         => [
                 $this->sale_price_start_at,
                 $this->sale_price_end_at,
             ],
-            'stock' => $this->stock ?? 0,
-            'stock_color' => getColorForStock($this->stock ?? null),
+            'stock'            => $this->stock ?? 0,
+            'stock_color'      => getColorForStock($this->stock ?? null),
             'low_stock_amount' => $this->low_stock_amount,
-            'attributes' => AttributeValueResource::collection($this->attribute_values),
+            'attributes'       => AttributeValueResource::collection($this->attribute_values),
             'attribute_values' => $this->attribute_values->pluck('name')->implode(' - ') ?? 'Default',
-            'is_used' => $this->is_used,
-            'lock_color' => $this->getColorForLock($this->is_used),
-            'lock_icon' => $this->getIconLock($this->is_used),
+            'is_used'          => $this->is_used,
+            'lock_color'       => $this->getColorForLock($this->is_used),
+            'lock_icon'        => $this->getIconLock($this->is_used),
 
         ];
     }

@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -13,10 +15,7 @@ class EmailResetPasswordNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct() {}
 
     /**
      * Get the notification's delivery channels.
@@ -47,8 +46,6 @@ class EmailResetPasswordNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 }

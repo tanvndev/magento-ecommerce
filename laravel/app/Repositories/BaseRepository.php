@@ -1,5 +1,7 @@
 <?php
 
+
+
 // Trong Laravel, Repository Pattern thường được sử dụng để tạo các lớp repository, giúp tách biệt logic của ứng dụng khỏi cơ sở dữ liệu.
 
 namespace App\Repositories;
@@ -37,7 +39,7 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
-    public function findByWhere($conditions = [], $column = ['*'], $relation = [], $all = false, $orderBy = null, $whereInParams = [], $withCount = [])
+    public function findByWhere($conditions = [], $column = ['*'], $relation = [], $all = false, $orderBy = null, $whereInParams = [],  $withWhereHas = [], $withCount = [])
     {
         $query = $this->model->select($column);
 
@@ -57,6 +59,13 @@ class BaseRepository implements BaseRepositoryInterface
 
         if (! empty($withCount)) {
             $query->withCount($withCount);
+        }
+
+        if (! empty($withWhereHas)) {
+            // 'relation_name' => [
+            //     ['field', 'operator', 'value'],
+            // ]
+            $query->whereHasRelations($withWhereHas);
         }
 
         return $all ? $query->get() : $query->first();
@@ -95,7 +104,7 @@ class BaseRepository implements BaseRepositoryInterface
         $query = $this->model->select($column);
         $query->whereHas($relation, function ($query) use ($condition, $alias) {
             foreach ($condition as $key => $value) {
-                $query->where($alias.'.'.$key, $value);
+                $query->where($alias . '.' . $key, $value);
             }
         });
 

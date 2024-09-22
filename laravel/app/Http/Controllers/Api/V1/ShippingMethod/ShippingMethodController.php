@@ -1,11 +1,14 @@
 <?php
 
+
+
 namespace App\Http\Controllers\Api\V1\ShippingMethod;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShippingMethod\StoreShippingMethodRequest;
 use App\Http\Requests\ShippingMethod\UpdateShippingMethodRequest;
+use App\Http\Resources\ShippingMethod\Client\ClientShippingMethodCollection;
 use App\Http\Resources\ShippingMethod\ShippingMethodCollection;
 use App\Http\Resources\ShippingMethod\ShippingMethodResource;
 use App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface;
@@ -64,5 +67,26 @@ class ShippingMethodController extends Controller
         $response = $this->shippingMethodService->update($id);
 
         return handleResponse($response);
+    }
+
+    // API CLIENT //
+
+    public function getAllShippingMethod()
+    {
+
+        $shippingMethods = $this->shippingMethodService->getAllShippingMethod();
+
+        $data = new ClientShippingMethodCollection($shippingMethods);
+
+        return successResponse('', $data);
+    }
+
+    public function getShippingMethodByProductVariant(string $productVariantIds)
+    {
+        $shippingMethods = $this->shippingMethodService->getShippingMethodByProductVariant($productVariantIds);
+
+        $data = new ClientShippingMethodCollection($shippingMethods);
+
+        return successResponse('', $data);
     }
 }

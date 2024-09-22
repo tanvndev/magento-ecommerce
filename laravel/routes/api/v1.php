@@ -1,5 +1,7 @@
 <?php
 
+
+
 use App\Http\Controllers\Api\TestApiController;
 use App\Http\Controllers\Api\V1\Attribute\AttributeController;
 use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
@@ -9,11 +11,13 @@ use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
+use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
+use App\Http\Controllers\Api\V1\Slider\SliderController;
 use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use App\Http\Controllers\Api\V1\Upload\UploadController;
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
@@ -44,6 +48,13 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('getWidget/{code}', [WidgetController::class, 'getWidget']);
     Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
     Route::get('getAllVouchers', [VoucherController::class, 'getAllVoucher']);
+    Route::get('getAllSlider', [SliderController::class, 'getAllSlider']);
+    Route::get('getAllPaymentMethods', [PaymentMethodController::class, 'getAllPaymentMethod']);
+    Route::get('getShippingMethodByProductVariant/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
+
+    // Order
+    Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('getOrder/{orderCode}', [OrderController::class, 'getOrder']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
@@ -58,6 +69,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::prefix('location')->group(function () {
         Route::get('provinces', [LocationController::class, 'getProvinces']);
         Route::get('getLocation', [LocationController::class, 'getLocation']);
+        Route::post('getLocationByAddress', [LocationController::class, 'getLocationByAddress']);
     });
 
     // Routes with JWT Middleware
@@ -123,8 +135,10 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::apiResource('widgets', WidgetController::class);
 
         // VOUCHER ROUTE
-
         Route::apiResource('vouchers', VoucherController::class);
+
+        // SLIDER ROUTE
+        Route::apiResource('sliders', SliderController::class);
     });
 
     // CART ROUTE

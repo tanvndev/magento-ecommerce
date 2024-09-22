@@ -1,5 +1,7 @@
 <?php
 
+
+
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
 namespace App\Services\Voucher;
@@ -41,7 +43,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         ];
 
         $condition = [
-            'search' => addslashes($request->search),
+            'search'  => addslashes($request->search),
             'publish' => $request->publish,
             'archive' => $request->boolean('archive'),
         ];
@@ -94,7 +96,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         return $payload;
     }
 
-
     // CLIENT API //
 
     public function getAllVoucher()
@@ -120,7 +121,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
         $condition = [
             'where' => [
-                'publish' => 1,
+                'publish'  => 1,
                 'start_at' => ['<=', date('Y-m-d H:i:s')],
             ],
         ];

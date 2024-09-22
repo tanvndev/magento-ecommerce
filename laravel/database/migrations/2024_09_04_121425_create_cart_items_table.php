@@ -1,5 +1,7 @@
 <?php
 
+
+
 use App\Models\Cart;
 use App\Models\ProductVariant;
 use Illuminate\Database\Migrations\Migration;

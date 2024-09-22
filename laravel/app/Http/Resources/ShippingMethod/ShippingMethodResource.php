@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Resources\ShippingMethod;
 
 use Illuminate\Http\Request;
@@ -15,16 +17,16 @@ class ShippingMethodResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'key' => $this->id,
-            'code' => $this->code,
-            'name' => $this->name,
+            'id'          => $this->id,
+            'key'         => $this->id,
+            'code'        => $this->code,
+            'name'        => $this->name,
             'description' => $this->description,
-            'status' => $this->publish == 1 ? 'Đang sử dụng' : 'Hủy sử dụng',
-            'color' => $this->publish == 1 ? 'green' : 'red',
-            'publish' => $this->publish,
-            'image' => $this->image,
-            'base_cost' => $this->base_cost,
+            'status'      => $this->publish == 1 ? 'Đang sử dụng' : 'Hủy sử dụng',
+            'color'       => $this->publish == 1 ? 'green' : 'red',
+            'publish'     => $this->publish,
+            'image'       => $this->image,
+            'base_cost'   => $this->base_cost,
         ];
     }
 }
