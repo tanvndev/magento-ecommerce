@@ -20,7 +20,7 @@ class AuthService {
       });
       return {
         success: true,
-        data: {token, catalogue: response.data.catalogue},
+        data: { token, catalogue: response.data.catalogue },
         messages: response.messages
       };
     } catch (error) {
@@ -94,6 +94,22 @@ class AuthService {
   async forgot($payload) {
     try {
       const response = await axios.post('/auth/forgot-password', $payload);
+
+      return {
+        success: true,
+        messages: response.messages
+      };
+    } catch (error) {
+      return {
+        success: false,
+        messages: error.response.data.messages
+      };
+    }
+  }
+
+  async logout() {
+    try {
+      const response = await axios.post('/auth/logout');
 
       return {
         success: true,

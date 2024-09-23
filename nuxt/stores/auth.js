@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
       const cartStore = useCartStore()
       const { $axios } = useNuxtApp()
 
-      await $axios.get('/auth/logout')
+      await $axios.post('/auth/logout')
 
       this.status.loggedIn = false
       this.accessToken = null
