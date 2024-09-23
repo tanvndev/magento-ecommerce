@@ -46,11 +46,24 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import AppFooter from '~/components/includes/AppFooter.vue'
 import AppHeader from '~/components/includes/AppHeader.vue'
 import Spinner from './components/includes/Spinner.vue'
+import Cookies from 'js-cookie'
+import { generateUUID } from '#imports'
 
 const authStore = useAuthStore()
 const token = computed(() => authStore.getToken ?? null)
 const route = useRoute()
 const { $authService } = useNuxtApp()
+
+const setSession_id = () => {
+  if (authStore.isSignedIn) return
+  if (Cookies.get('session_id')) return
+
+  const session_id = generateUUID()
+
+  Cookies.set('session_id', session_id, {
+    expires: parseInt(process.env.SESSION_ID_EXPIRES, 10)
+  })
+}
 
 const setTokenAndSetCurrentUser = async () => {
   if (token.value) {
@@ -89,6 +102,7 @@ const scrollToTop = (event) => {
 }
 
 onMounted(() => {
+  setSession_id()
   window.addEventListener('scroll', checkScroll)
 })
 
