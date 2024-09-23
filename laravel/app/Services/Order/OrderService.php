@@ -83,7 +83,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (! $paymentMethod) {
+        if ( ! $paymentMethod) {
             throw new Exception('Payment method not found.');
         }
 
@@ -97,7 +97,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (! $shippingMethod) {
+        if ( ! $shippingMethod) {
             throw new Exception('Shipping method not found.');
         }
 
@@ -121,7 +121,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if (! $cart) {
+        if ( ! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -150,7 +150,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (! $voucher) {
+        if ( ! $voucher) {
             throw new Exception('Voucher not found.');
         }
 
@@ -238,7 +238,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     private function isSalePriceValid($productVariant)
     {
-        if (! $productVariant->sale_price || ! $productVariant->price) {
+        if ( ! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 
@@ -300,8 +300,8 @@ class OrderService extends BaseService implements OrderServiceInterface
     public function getOrder(string $orderCode)
     {
         $condition = [
-            'code' => $orderCode,
-            'user_id' => auth()->check() ? auth()->user()->id : null
+            'code'    => $orderCode,
+            'user_id' => auth()->check() ? auth()->user()->id : null,
         ];
 
         $order = $this->orderRepository->findByWhere(
@@ -315,14 +315,14 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     public function getOrderByUser()
     {
-        if (! auth()->check()) {
+        if ( ! auth()->check()) {
             return [];
         }
 
         $request = request();
         $userId = auth()->user()->id;
 
-        $conditionWhere =  [
+        $conditionWhere = [
             'user_id' => $userId,
         ];
         if ($request->order_status == Order::PAYMENT_STATUS_UNPAID) {
@@ -339,9 +339,9 @@ class OrderService extends BaseService implements OrderServiceInterface
         }
 
         $condition = [
-            'search'  => addslashes($request->search),
+            'search'       => addslashes($request->search),
             'searchFields' => ['code'],
-            'where'   => $conditionWhere
+            'where'        => $conditionWhere,
         ];
 
         $cacheKey = 'orders_' . md5(json_encode($condition)) . '_page_' . $request->page ?? 5 . '_user_id_' . $userId;

@@ -12,7 +12,6 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
-use Illuminate\Http\JsonResponse;
 
 class Handler extends ExceptionHandler
 {

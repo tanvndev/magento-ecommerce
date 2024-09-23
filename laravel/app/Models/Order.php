@@ -11,23 +11,23 @@ class Order extends Model
     use HasFactory, QueryScopes;
 
     const ORDER_STATUS = [
-        'pending' => 'Chờ xác nhận',
+        'pending'    => 'Chờ xác nhận',
         'delivering' => 'Đang giao',
-        'completed' => 'Hoàn thành',
-        'canceled' => 'Đã huỷ',
-        'returned' => 'Trả hàng',
+        'completed'  => 'Hoàn thành',
+        'canceled'   => 'Đã huỷ',
+        'returned'   => 'Trả hàng',
     ];
 
     const PAYMENT_STATUS = [
-        'paid' => 'Đã thanh toán',
+        'paid'   => 'Đã thanh toán',
         'unpaid' => 'Chưa thanh toán',
     ];
 
     const SHIPPING_STATUS = [
-        'pending' => 'Chờ giao',
+        'pending'    => 'Chờ giao',
         'delivering' => 'Đang giao',
-        'delivered' => 'Đã giao hàng',
-        'failed' => 'Giao thất bại',
+        'delivered'  => 'Đã giao hàng',
+        'failed'     => 'Giao thất bại',
     ];
 
     const ORDER_STATUS_PENDING = 'pending';
@@ -51,7 +51,6 @@ class Order extends Model
     const SHIPPING_STATUS_DELIVERED = 'delivered';
 
     const SHIPPING_STATUS_FAILED = 'failed';
-
 
     protected $fillable = [
         'code',

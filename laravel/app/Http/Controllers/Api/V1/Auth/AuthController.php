@@ -36,11 +36,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (! $user) {
+        if ( ! $user) {
             return errorResponse('Email hoặc mật khẩu không chính xác.');
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if ( ! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.');
         }
 
@@ -95,6 +95,7 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
+
         return successResponse('Đăng xuất thành công.');
     }
 }
