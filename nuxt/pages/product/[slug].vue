@@ -235,6 +235,8 @@
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
+import QuantityComponent from '~/components/includes/QuantityComponent.vue'
+
 import 'swiper/css'
 import {
   sortAndConcatenate,
@@ -347,11 +349,7 @@ const addToCart = async () => {
     product_variant_id: variant.value.id,
     quantity: quantity.value,
   }
-
-  const response = await $axios.post('/carts', payload)
-
-  cartStore.setCartCount(response.data?.items.length)
-  toast(response.messages, response.status)
+  cartStore.addToCart(payload)
 }
 
 watch(
