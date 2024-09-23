@@ -38,7 +38,11 @@ class CartResource extends JsonResource
             return null;
         }
 
-        if ($productVariant->is_discount_time && $productVariant->sale_price_time) {
+        if (
+            $productVariant->is_discount_time
+            && $productVariant->sale_price_start_at
+            && $productVariant->sale_price_end_at
+        ) {
             $now = new DateTime;
             $start = new DateTime($productVariant->sale_price_start_at);
             $end = new DateTime($productVariant->sale_price_end_at);

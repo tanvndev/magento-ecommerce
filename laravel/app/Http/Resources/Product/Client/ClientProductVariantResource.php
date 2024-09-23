@@ -47,7 +47,11 @@ class ClientProductVariantResource extends JsonResource
             return null;
         }
 
-        if ($this->is_discount_time && $this->sale_price_time) {
+        if (
+            $this->is_discount_time
+            && $this->sale_price_start_at
+            && $this->sale_price_end_at
+        ) {
             $now = new DateTime;
             $start = new DateTime($this->sale_price_start_at);
             $end = new DateTime($this->sale_price_end_at);
