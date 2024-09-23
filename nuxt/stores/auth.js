@@ -24,13 +24,19 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async logout() {
       const cartStore = useCartStore()
+      const { $axios } = useNuxtApp()
+
+      await $axios.get('/auth/logout')
+
       this.status.loggedIn = false
       this.accessToken = null
       this.messages = ''
+
       Cookies.remove('token')
+
       cartStore.removeAllCarts()
-      const router = useRouter()
-      router.push('/')
+
+      navigateTo('/')
     },
     setToken(token) {
       this.status.loggedIn = true

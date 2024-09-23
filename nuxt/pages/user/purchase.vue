@@ -12,11 +12,11 @@
               align-tabs="start"
               color="primary"
               center-active
-              @update:modelValue="handleChangeTab"
+              @update:modelValue="debounceHandleChangeTab"
             >
               <v-tab
                 class="text-capitalize"
-                v-for="item in ORDER_STATUS"
+                v-for="item in ORDER_STATUS_TABS"
                 :key="item.value"
                 :value="item.value"
                 >{{ item.title }}</v-tab
@@ -26,17 +26,24 @@
 
           <div class="mt-3">
             <v-text-field
+              v-model="search"
+              @input="debounceHandleSearch"
               prepend-inner-icon="mdi-magnify"
-              hint="Bạn có thể tìm kiếm theo tên Shop, ID đơn hàng hoặc Tên Sản phẩm"
+              hint="Bạn có thể tìm kiếm theo ID đơn hàng"
               variant="outlined"
               clearable
               density="comfortable"
-              placeholder="Bạn có thể tìm kiếm theo tên Shop, ID đơn hàng hoặc Tên Sản phẩm"
+              placeholder="Bạn có thể tìm kiếm theo ID đơn hàng"
             ></v-text-field>
           </div>
 
           <v-row>
-            <v-col cols="12" md="12" v-for="(item, index) in 10" :key="index">
+            <v-col
+              cols="12"
+              md="12"
+              v-for="(order, index) in orders"
+              :key="order.id"
+            >
               <v-card hover class="mx-auto pa-3 item-order">
                 <div class="d-flex justify-between items-center pb-1">
                   <div>
@@ -53,73 +60,52 @@
                     <v-chip
                       prepend-icon="mdi-truck"
                       class="px-3 text-uppercase"
-                      color="green"
+                      :color="order?.order_status_color"
                     >
-                      Giao hàng thành công
+                      {{ order?.order_status }}
                     </v-chip>
                   </div>
                 </div>
                 <v-divider class="border-opacity-100"></v-divider>
 
-                <NuxtLink :to="`/user/order/${'ORD202409213564A1'}`">
-                  <div class="d-flex w-100 py-2 product-info-wrap">
+                <NuxtLink
+                  @click.prevent="getOrderDetail(order.id)"
+                  :to="`/user/order/${order.code}`"
+                >
+                  <div
+                    class="d-flex w-100 py-2 product-info-wrap"
+                    v-for="item in order?.order_items"
+                    :key="item.id"
+                  >
                     <div class="order-product-image">
                       <img
-                        src="https://down-vn.img.susercontent.com/file/83ef1311db3b1253241e21c0cb309e27_tn"
-                        alt=""
+                        class="object-contain"
+                        :src="item.image"
+                        :alt="item.product_variant_name"
                       />
                     </div>
 
                     <div class="order-product-info">
                       <div class="px-2 pt-1 product-title">
                         <div class="title">
-                          <NuxtLink to="#">
-                            Chuột không dây DAREU LM115G Pink / Black / White -
-                            Kết nối xa 10m
+                          <NuxtLink
+                            :to="`/product/${item.slug}-${item.product_id}`"
+                          >
+                            {{ item.product_variant_name }}
                           </NuxtLink>
                         </div>
-                        <div class="variant">Phân loại hàng: LM115G Đen</div>
+                        <div class="variant">
+                          Phân loại: {{ item.attribute_values }}
+                        </div>
                         <div class="quantity">x1</div>
                       </div>
                       <div>
                         <div class="product-price">
                           <ins class="new-price">{{
-                            formatCurrency(20000000)
+                            formatCurrency(item.sale_price || item.price)
                           }}</ins>
-                          <del class="old-price">{{
-                            formatCurrency(2000000)
-                          }}</del>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="d-flex w-100 py-2 product-info-wrap">
-                    <div class="order-product-image">
-                      <img
-                        src="https://down-vn.img.susercontent.com/file/83ef1311db3b1253241e21c0cb309e27_tn"
-                        alt=""
-                      />
-                    </div>
-
-                    <div class="order-product-info">
-                      <div class="px-2 pt-1 product-title">
-                        <div class="title">
-                          <NuxtLink to="#">
-                            Chuột không dây DAREU LM115G Pink / Black / White -
-                            Kết nối xa 10m
-                          </NuxtLink>
-                        </div>
-                        <div class="variant">Phân loại hàng: LM115G Đen</div>
-                        <div class="quantity">x1</div>
-                      </div>
-                      <div>
-                        <div class="product-price">
-                          <ins class="new-price">{{
-                            formatCurrency(20000000)
-                          }}</ins>
-                          <del class="old-price">{{
-                            formatCurrency(2000000)
+                          <del class="old-price" v-if="item.sale_price">{{
+                            formatCurrency(item.price)
                           }}</del>
                         </div>
                       </div>
@@ -142,6 +128,7 @@
                       </v-col>
                       <v-col cols="auto">
                         <v-btn
+                          @click="addToCart(order.id)"
                           size="large"
                           variant="text"
                           class="text-capitalize border"
@@ -161,26 +148,91 @@
                   <div class="order-middle">
                     <div class="total-amount">
                       <label>Thành tiền:</label>
-                      <div class="text">₫118.800</div>
+                      <div class="text">
+                        {{ formatCurrency(order.final_price) }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </v-card>
             </v-col>
-          </v-row>
+
+        </v-row>
+        <div v-if="!orders?.length">
+          <v-empty-state
+            icon="mdi-magnify"
+            text="Chúng tôi không thể tìm thấy đơn hàng của bạn vui lòng thử lại."
+            title="Không có dữ liệu."
+          ></v-empty-state>
+        </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import ORDER_STATUS from '~/static/orderStatus'
-const tab = ref(ORDER_STATUS[0].value)
-const handleChangeTab = () => {
-  console.log(tab.value)
+import { ORDER_STATUS_TABS } from '~/static/order'
+import { useLoadingStore, useCartStore, useOrderStore } from '#imports'
+
+const tab = ref(ORDER_STATUS_TABS[0].value)
+const { $axios } = useNuxtApp()
+const loadingStore = useLoadingStore()
+const orderStore = useOrderStore()
+const cartStore = useCartStore()
+const orders = ref([])
+const search = ref('')
+
+const getAllOrder = async () => {
+  try {
+    loadingStore.setLoading(true)
+    const response = await $axios.get('/getOrderUser', {
+      params: {
+        order_status: tab.value,
+        search: search.value,
+      },
+    })
+    orders.value = response.data?.data
+  } catch (error) {
+  } finally {
+    loadingStore.setLoading(false)
+  }
 }
+
+const debounceHandleSearch = debounce(getAllOrder, 500)
+
+const debounceHandleChangeTab = debounce(getAllOrder, 500)
+
+const getOrderDetail = async (orderId) => {
+  const order = orders.value.find((order) => order.id === orderId)
+  if (!order) {
+    return
+  }
+  orderStore.setOrderDetail(order)
+}
+
+const addToCart = async (orderId) => {
+  const order = orders.value.find((order) => order.id === orderId)
+  const variantIds = order.order_items
+    .map((item) => item.product_variant_id)
+    .join(',')
+
+  if (!variantIds) {
+    return toast('Có lỗi vui lòng thử lại.', 'error')
+  }
+
+  const payload = {
+    product_variant_id: variantIds,
+  }
+
+  const response = await $axios.post('/carts/comming-soon', payload)
+
+  cartStore.setCartCount(response.data?.items.length)
+  toast(response.messages, response.status)
+}
+
+onMounted(async () => {
+  await getAllOrder()
+})
 </script>
 
-<style>
-
-</style>
+<style></style>

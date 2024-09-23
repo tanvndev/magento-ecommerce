@@ -148,11 +148,13 @@
               </nav>
             </div>
             <div class="header-right">
-              <a href="#" class="d-xl-show"
-                ><i class="w-icon-map-marker mr-1"></i>Theo dõi đơn hàng</a
-              >
-              <NuxtLink to="/voucher"
-                ><i class="w-icon-sale"></i>Mã giảm giá
+              <NuxtLink to="/order-search" class="d-xl-show">
+                <i class="w-icon-map-marker mr-1"></i>
+                Theo dõi đơn hàng
+              </NuxtLink>
+              <NuxtLink to="/voucher">
+                <i class="w-icon-sale"></i>
+                Mã giảm giá
               </NuxtLink>
             </div>
           </div>

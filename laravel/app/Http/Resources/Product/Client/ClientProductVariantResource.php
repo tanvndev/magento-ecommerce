@@ -34,10 +34,10 @@ class ClientProductVariantResource extends JsonResource
                 $this->sale_price_start_at,
                 $this->sale_price_end_at,
             ],
-            'discount'         => $this->handleDiscountValue(),
-            'stock'            => $this->stock ?? 0,
-            'attributes'       => AttributeValueResource::collection($this->attribute_values),
-            'attribute_values' => $this->attribute_values->pluck('name')->implode(' - ') ?? 'Default',
+            'discount'                => $this->handleDiscountValue(),
+            'stock'                   => $this->stock ?? 0,
+            'attributes'              => AttributeValueResource::collection($this->attribute_values),
+            'attribute_values'        => $this->attribute_values->pluck('name')->implode(' - ') ?? 'Default',
         ];
     }
 

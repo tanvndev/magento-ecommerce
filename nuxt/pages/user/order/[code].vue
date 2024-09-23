@@ -18,43 +18,34 @@
 
               <div class="text-header">
                 <span class="text-uppercase mr-2"
-                  >MÃ ĐƠN HÀNG. 240818KJ4JQPN1</span
+                  >MÃ ĐƠN HÀNG. {{ order?.code }}</span
                 >
-                <span class="text-uppercase mr-2 text-primary"
-                  >Đơn hàng đã hoàn thành</span
-                >
+                <span class="text-uppercase mr-2 text-primary">{{
+                  order?.order_status
+                }}</span>
               </div>
             </div>
           </v-card>
-          <v-card class="pa-2 py-5 mt-3 shadow">
-            <v-timeline
-              truncate-line="both"
-              line-thickness="4"
-              line-color="green-lighten-2"
-              direction="horizontal"
-              side="end"
-            >
-              <v-timeline-item
-                fill-dot
-                icon="mdi-truck"
-                size="x-large"
-                dot-color="green"
-                v-for="(item, index) in 5"
-              >
-                Content
-              </v-timeline-item>
-            </v-timeline>
-          </v-card>
-
           <v-card class="pa-4 mt-3 shadow">
             <div class="order-details-wrapper">
-              <h4 class="title text-uppercase mb-2 ls-25">Địa chỉ nhận hàng</h4>
-              <div class="mt-3">
-                <span class="fs-16 mb-1"> Vũ Ngọc Tân </span>
+              <div class="d-flex justify-between items-center">
+                <h4 class="title text-uppercase mb-2 ls-25">
+                  Địa chỉ giao hàng
+                </h4>
+                <v-chip
+                  prepend-icon="mdi-truck"
+                  variant="text"
+                  class="text-capitalize"
+                >
+                  {{ order?.additional_details?.shipping_method?.name }}
+                </v-chip>
+              </div>
+              <div class="mt-2">
+                <span class="fs-16 mb-1"> {{ order?.customer_name }} </span>
                 <div style="color: #0000008a">
-                  <div>(+84) 332225690</div>
+                  <div>{{ order?.customer_phone }}</div>
                   <span>
-                    cụm dan cu 4, Kim Nỗ, Xã Kim Nỗ, Huyện Đông Anh, Hà Nội
+                    {{ order?.shipping_address }}
                   </span>
                 </div>
               </div>
@@ -64,66 +55,43 @@
           <v-row class="mt-1">
             <v-col cols="12" md="12">
               <v-card hover class="mx-auto pa-3 item-order shadow">
-                <h4 class="title text-uppercase mb-2 ls-25">Sản phẩm (2)</h4>
+                <h4 class="title text-uppercase mb-2 ls-25">
+                  Sản phẩm ({{ order?.order_items?.length }})
+                </h4>
                 <div>
-                  <div class="d-flex w-100 py-2 product-info-wrap">
+                  <div
+                    class="d-flex w-100 py-2 product-info-wrap"
+                    v-for="item in order?.order_items"
+                  >
                     <div class="order-product-image">
                       <img
-                        src="https://down-vn.img.susercontent.com/file/83ef1311db3b1253241e21c0cb309e27_tn"
-                        alt=""
+                        class="object-contain"
+                        :src="item.image"
+                        :alt="item.product_variant_name"
                       />
                     </div>
 
                     <div class="order-product-info">
                       <div class="px-2 pt-1 product-title">
                         <div class="title">
-                          <NuxtLink to="#">
-                            Chuột không dây DAREU LM115G Pink / Black / White -
-                            Kết nối xa 10m
+                          <NuxtLink
+                            :to="`/product/${item.slug}-${item.product_id}`"
+                          >
+                            {{ item.product_variant_name }}
                           </NuxtLink>
                         </div>
-                        <div class="variant">Phân loại hàng: LM115G Đen</div>
+                        <div class="variant">
+                          Phân loại: {{ item.attribute_values }}
+                        </div>
                         <div class="quantity">x1</div>
                       </div>
                       <div>
                         <div class="product-price">
                           <ins class="new-price">{{
-                            formatCurrency(20000000)
+                            formatCurrency(item.sale_price || item.price)
                           }}</ins>
-                          <del class="old-price">{{
-                            formatCurrency(2000000)
-                          }}</del>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="d-flex w-100 py-2 product-info-wrap">
-                    <div class="order-product-image">
-                      <img
-                        src="https://down-vn.img.susercontent.com/file/83ef1311db3b1253241e21c0cb309e27_tn"
-                        alt=""
-                      />
-                    </div>
-
-                    <div class="order-product-info">
-                      <div class="px-2 pt-1 product-title">
-                        <div class="title">
-                          <NuxtLink to="#">
-                            Chuột không dây DAREU LM115G Pink / Black / White -
-                            Kết nối xa 10m
-                          </NuxtLink>
-                        </div>
-                        <div class="variant">Phân loại hàng: LM115G Đen</div>
-                        <div class="quantity">x1</div>
-                      </div>
-                      <div>
-                        <div class="product-price">
-                          <ins class="new-price">{{
-                            formatCurrency(20000000)
-                          }}</ins>
-                          <del class="old-price">{{
-                            formatCurrency(2000000)
+                          <del class="old-price" v-if="item.sale_price">{{
+                            formatCurrency(item.price)
                           }}</del>
                         </div>
                       </div>
@@ -143,24 +111,26 @@
                 <tfoot>
                   <tr>
                     <th>Tạm tính:</th>
-                    <td>{{ formatCurrency(200000000) }}</td>
+                    <td>{{ formatCurrency(order?.total_price) }}</td>
                   </tr>
                   <tr>
                     <th>Phí vận chuyển:</th>
-                    <td>{{ formatCurrency(200000000) }}</td>
+                    <td>{{ formatCurrency(order?.shipping_fee) }}</td>
                   </tr>
-                  <tr>
+                  <tr v-if="order?.discount">
                     <th>Mã giảm giá:</th>
-                    <td>- {{ formatCurrency(200000000) }}</td>
+                    <td>- {{ formatCurrency(order?.shipping_fee) }}</td>
                   </tr>
                   <tr>
                     <th>Phương thức thanh toán:</th>
-                    <td>COD</td>
+                    <td>
+                      {{ order?.additional_details?.payment_method.name }}
+                    </td>
                   </tr>
                   <tr class="total border-b-none">
                     <th class="fs-20 fw-bold text-primary pt-4">Thành tiền:</th>
                     <td class="fs-20 fw-bold text-primary pt-4">
-                      {{ formatCurrency(200000000) }}
+                      {{ formatCurrency(order?.final_price) }}
                     </td>
                   </tr>
                 </tfoot>
@@ -172,7 +142,29 @@
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { useOrderStore } from '#imports'
+
+const orderStore = useOrderStore()
+const { $axios } = useNuxtApp()
+const route = useRoute()
+const order = ref([])
+const orderDetail = computed(() => orderStore.getOrderDetail)
+
+const getOrderByCode = async () => {
+  const response = await $axios.get(`/getOrder/${route.params.code}`)
+  order.value = response.data
+}
+
+watch(orderDetail, () => {})
+
+onMounted(() => {
+  order.value = orderDetail.value
+  if (!orderDetail.value?.length) {
+    getOrderByCode()
+  }
+})
+</script>
 <style scoped>
 .fw-bold {
   font-weight: bold !important;

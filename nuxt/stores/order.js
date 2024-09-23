@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia'
-import { useLoadingStore } from '#imports'
 
 export const useOrderStore = defineStore('order', {
   state: () => {
     return {
       shippingFee: 0,
       discount: 0,
+      orderDetail: [],
     }
   },
   getters: {
     getShippingFee: (state) => state.shippingFee,
     getDiscount: (state) => state.discount,
+    getOrderDetail: (state) => state.orderDetail,
   },
   actions: {
     setShippingFee(value) {
@@ -18,6 +19,9 @@ export const useOrderStore = defineStore('order', {
     },
     setDiscount(value) {
       this.discount = value
+    },
+    setOrderDetail(value) {
+      this.orderDetail = value
     },
   },
 })
