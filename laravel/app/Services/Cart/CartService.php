@@ -23,7 +23,7 @@ class CartService extends BaseService implements CartServiceInterface
 
     public function getCart()
     {
-        $sessionId = request('session_id');
+        $sessionId = request('session_id', 0);
         $conditions = $this->getUserOrSessionConditions($sessionId);
 
         $this->checkStockProductAndUpdateCart($conditions);
@@ -50,7 +50,7 @@ class CartService extends BaseService implements CartServiceInterface
                 return errorResponse(__('messages.cart.error.max'));
             }
 
-            $sessionId = request('session_id');
+            $sessionId = request('session_id', 0);
 
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions) ?? $this->cartRepository->create($conditions);
@@ -86,6 +86,10 @@ class CartService extends BaseService implements CartServiceInterface
     {
         $cart = $this->cartRepository->findByWhere($conditions);
 
+        if (! $cart) {
+            return;
+        }
+
         foreach ($cart->cart_items as $item) {
             $productVariant = $this->productVariantRepository->findById($item->product_variant_id);
             if ($productVariant->stock < $item->quantity) {
@@ -93,7 +97,7 @@ class CartService extends BaseService implements CartServiceInterface
             }
         }
 
-        $sessionId = request('session_id', '');
+        $sessionId = request('session_id', 0);
         $this->mergeSessionCartToUserCart($sessionId);
     }
 
@@ -101,7 +105,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            $sessionId = request('session_id');
+            $sessionId = request('session_id', 0);
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
@@ -121,7 +125,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         return $this->executeInTransaction(function () {
 
-            $sessionId = request('session_id');
+            $sessionId = request('session_id', 0);
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
@@ -139,7 +143,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         return $this->executeInTransaction(function () use ($request) {
 
-            $sessionId = request('session_id');
+            $sessionId = request('session_id', 0);
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
@@ -163,7 +167,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         return $this->executeInTransaction(function () {
 
-            $sessionId = request('session_id');
+            $sessionId = request('session_id', 0);
             $conditions = $this->getUserOrSessionConditions($sessionId);
             $cart = $this->cartRepository->findByWhere($conditions);
 
@@ -235,5 +239,50 @@ class CartService extends BaseService implements CartServiceInterface
         }
 
         $sessionCart->cart_items()->delete();
+    }
+
+    public function addPaidProductsToCart($request)
+    {
+        return $this->executeInTransaction(function () use ($request) {
+
+            $productVariantIds = explode(',', $request->get('product_variant_id'));
+
+            if (empty($productVariantIds)) {
+                return errorResponse(__('messages.cart.error.not_found'));
+            }
+
+            $conditions = $this->getUserOrSessionConditions('');
+
+            $cart = $this->cartRepository->findByWhere($conditions) ?? $this->cartRepository->create($conditions);
+
+            foreach ($productVariantIds as $productVariantId) {
+                $productVariant = $this->productVariantRepository->findById($productVariantId);
+
+                if ($productVariant->stock < 1) {
+                    return errorResponse(__('messages.cart.error.max'));
+                }
+
+                $cartItem = $cart->cart_items()->where('product_variant_id', $productVariantId)->first();
+
+                if ($cartItem) {
+                    $this->updateCartItemQuantity($cartItem, 1);
+                } else {
+
+                    $this->createCartItem($cart, (object) ['product_variant_id' => $productVariantId, 'quantity' => 1]);
+                }
+            }
+
+            return $this->getCart();
+        }, __('messages.cart.error.not_found'));
+    }
+
+    private function updateCartItemQuantity($cartItem, $additionalQuantity)
+    {
+        $newQuantity = $cartItem->quantity + $additionalQuantity;
+
+        $cartItem->update([
+            'quantity' => $newQuantity,
+            'updated_at' => now(),
+        ]);
     }
 }

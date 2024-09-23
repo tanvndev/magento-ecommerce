@@ -148,5 +148,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::delete('carts/{id}', 'destroy')->name('destroy');
         Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
         Route::delete('carts/deleteCartSelected', 'deleteCartSelected')->name('deleteCartSelected');
+        Route::get('carts/add-paid-products', 'addPaidProductsToCart')->name('add-paid-products');
     });
 });

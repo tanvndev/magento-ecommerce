@@ -88,4 +88,18 @@ class CartController extends Controller
 
         return handleResponse($response);
     }
+
+    public function addPaidProductsToCart(Request $request)
+    {
+
+        $response = $this->cartService->addPaidProductsToCart($request);
+
+        if (is_array($response)) {
+            return $response;
+        }
+
+        $data = new CartCollection($response);
+
+        return successResponse(__('messages.cart.success.create'), $data);
+    }
 }
