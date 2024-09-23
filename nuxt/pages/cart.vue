@@ -75,9 +75,10 @@
                     <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
                       {{ cart.name }}
                     </NuxtLink>
-                    <span class="d-block mt-1 fs-13" style="color: #336699">{{
-                      cart.attributes
-                    }}</span>
+                    <span class="d-block mt-1 fs-13" style="color: #336699">
+                      Phân loại:
+                      {{ cart.attributes }}
+                    </span>
                   </td>
                   <td class="text-right">
                     <div class="product-price">

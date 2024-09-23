@@ -18,7 +18,6 @@ class MomoController extends Controller
         OrderRepositoryInterface $orderRepository,
         OrderServiceInterface $orderService
     ) {
-        parent::__construct();
         $this->orderRepository = $orderRepository;
         $this->orderService = $orderService;
     }

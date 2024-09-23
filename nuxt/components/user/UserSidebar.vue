@@ -38,13 +38,8 @@
 import SIDEBAR_PROFILE from '~/static/sidebarProfile'
 const route = useRoute()
 const currentRoute = computed(() => route.path)
-console.log(currentRoute.value);
-
-
 const handleChangeRoute = (route) => {
   if (route) {
-    console.log(route)
-
     navigateTo(route)
   }
 }

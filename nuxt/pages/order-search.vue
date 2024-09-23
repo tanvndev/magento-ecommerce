@@ -1,31 +1,20 @@
 <template>
-  <!-- Start of Main -->
-  <main class="main order" v-if="order">
-    <!-- Start of Breadcrumb -->
-    <nav class="breadcrumb-nav">
-      <div class="container">
-        <ul class="breadcrumb shop-breadcrumb bb-no">
-          <li class="passed">
-            <NuxtLink to="/cart">Giỏ hàng</NuxtLink>
-          </li>
-          <li class="passed">
-            <NuxtLink to="/checkout">Thanh toán</NuxtLink>
-          </li>
-          <li class="active">
-            <a href="#">Hoàn tất đơn hàng</a>
-          </li>
-        </ul>
+  <div class="page-content mb-10 pb-2 mt-10">
+    <div class="container">
+      <h2 class="text-uppercase text-center mb-5">Tìm kiếm đơn hàng</h2>
+      <div class="mt-3">
+        <v-text-field
+          v-model="search"
+          @input="debounceHandleSearch"
+          prepend-inner-icon="mdi-magnify"
+          hint="Bạn có thể tìm kiếm theo ID đơn hàng"
+          variant="outlined"
+          clearable
+          density="comfortable"
+          placeholder="Bạn có thể tìm kiếm theo ID đơn hàng"
+        ></v-text-field>
       </div>
-    </nav>
-    <!-- End of Breadcrumb -->
-
-    <!-- Start of PageContent -->
-    <div class="page-content mb-10 pb-2">
-      <div class="container">
-        <div class="order-success text-center font-weight-bolder text-dark">
-          <i class="fas fa-check" style="color: green"></i>
-          Cảm ơn bạn. Đơn hàng của bạn đã được nhận.
-        </div>
+      <div v-if="order">
         <ul class="order-view list-style-none">
           <li>
             <label>Mã đơn hàng</label>
@@ -183,51 +172,47 @@
           </div>
         </div>
         <!-- End of Account Address -->
-
-        <NuxtLink
-          to="/"
-          class="btn btn-dark btn-rounded btn-icon-left btn-back mt-6"
-        >
-          <i class="w-icon-long-arrow-left"></i>
-          Quay lại trang chủ
-        </NuxtLink>
       </div>
+
+      <div v-else>
+        <v-empty-state
+          icon="mdi-magnify"
+          text="Chúng tôi không thể tìm thấy đơn hàng của bạn vui lòng thử lại."
+          title="Không có dữ liệu."
+        ></v-empty-state>
+      </div>
+
+      <NuxtLink
+        to="/"
+        class="btn btn-dark btn-rounded btn-icon-left btn-back mt-6"
+      >
+        <i class="w-icon-long-arrow-left"></i>
+        Quay lại trang chủ
+      </NuxtLink>
     </div>
-    <!-- End of PageContent -->
-  </main>
-  <!-- End of Main -->
+  </div>
 </template>
-
 <script setup>
-const { $axios } = useNuxtApp()
-const route = useRoute()
-
 const order = ref(null)
-const orderCode = route.query.code
+const search = ref('')
 
-const getOrder = async () => {
-  const response = await $axios.get(`/getOrder/${orderCode}`)
+const { $axios } = useNuxtApp()
+
+const getOrderByCode = async () => {
+  if (!search.value) {
+    return
+  }
+
+  const response = await $axios.get(`/getOrder/${search.value}`)
   order.value = response.data
 }
 
-onMounted(async () => {
-  if (!orderCode) {
-    return navigateTo('/')
-  }
-
-  if (!order.value) {
-    return navigateTo('/')
-  }
-
-  await getOrder()
-})
+const debounceHandleSearch = debounce(getOrderByCode, 500)
 </script>
-
 <style scoped>
 .product-price .new-price {
   font-weight: normal;
 }
-
 .order-product-image {
   flex-shrink: 0;
   width: 85px;

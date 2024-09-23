@@ -70,10 +70,13 @@ const mutations = {
     state.accessToken = null;
     state.user = null;
   },
-  logout(state) {
+  async logout(state) {
+    await AuthService.logout();
+
     state.status.loggedIn = false;
     state.accessToken = null;
     state.messages = '';
+
     Cookies.remove('token');
     router.push('/login');
   }

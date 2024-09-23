@@ -24,7 +24,10 @@ class ClientOrderItemResource extends JsonResource
             'quantity'                      => $this->quantity,
             'price'                         => $this->price,
             'sale_price'                    => $this->sale_price,
-            // 'variant' => ClientProductVariantResource::collection($this->product_variant),
+            'image'                         => $this->product_variant->image ?? '',
+            'slug'                          => $this->product_variant->slug ?? '',
+            'product_id'                    => $this->product_variant->product_id ?? '',
+            'attribute_values'              => $this->product_variant->attribute_values->pluck('name')->implode(' - ') ?? 'Default',
         ];
     }
 }

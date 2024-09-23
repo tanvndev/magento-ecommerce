@@ -2,12 +2,56 @@
 
 namespace App\Models;
 
+use App\Traits\QueryScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, QueryScopes;
+
+    const ORDER_STATUS = [
+        'pending' => 'Chờ xác nhận',
+        'delivering' => 'Đang giao',
+        'completed' => 'Hoàn thành',
+        'canceled' => 'Đã huỷ',
+        'returned' => 'Trả hàng',
+    ];
+
+    const PAYMENT_STATUS = [
+        'paid' => 'Đã thanh toán',
+        'unpaid' => 'Chưa thanh toán',
+    ];
+
+    const SHIPPING_STATUS = [
+        'pending' => 'Chờ giao',
+        'delivering' => 'Đang giao',
+        'delivered' => 'Đã giao hàng',
+        'failed' => 'Giao thất bại',
+    ];
+
+    const ORDER_STATUS_PENDING = 'pending';
+
+    const ORDER_STATUS_DELIVERING = 'delivering';
+
+    const ORDER_STATUS_COMPLETED = 'completed';
+
+    const ORDER_STATUS_CANCELED = 'canceled';
+
+    const ORDER_STATUS_RETURNED = 'returned';
+
+    const PAYMENT_STATUS_PAID = 'paid';
+
+    const PAYMENT_STATUS_UNPAID = 'unpaid';
+
+    const SHIPPING_STATUS_PENDING = 'pending';
+
+    const SHIPPING_STATUS_DELIVERING = 'delivering';
+
+    const SHIPPING_STATUS_DELIVERED = 'delivered';
+
+    const SHIPPING_STATUS_FAILED = 'failed';
+
 
     protected $fillable = [
         'code',

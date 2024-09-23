@@ -28,6 +28,7 @@ class CartService extends BaseService implements CartServiceInterface
 
         $this->checkStockProductAndUpdateCart($conditions);
 
+
         $cart = $this->cartRepository->findByWhere(
             $conditions,
             ['*'],

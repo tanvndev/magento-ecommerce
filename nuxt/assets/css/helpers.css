@@ -1,5 +1,13 @@
 /* Helper */
 
+.object-contain {
+  object-fit: contain;
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
 .mx-0 {
   margin-left: 0rem !important;
   margin-right: 0rem !important;

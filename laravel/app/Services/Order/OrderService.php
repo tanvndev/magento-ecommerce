@@ -13,6 +13,7 @@ use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
@@ -82,7 +83,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if ( ! $paymentMethod) {
+        if (! $paymentMethod) {
             throw new Exception('Payment method not found.');
         }
 
@@ -96,7 +97,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if ( ! $shippingMethod) {
+        if (! $shippingMethod) {
             throw new Exception('Shipping method not found.');
         }
 
@@ -120,7 +121,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if ( ! $cart) {
+        if (! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -149,7 +150,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if ( ! $voucher) {
+        if (! $voucher) {
             throw new Exception('Voucher not found.');
         }
 
@@ -237,7 +238,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     private function isSalePriceValid($productVariant)
     {
-        if ( ! $productVariant->sale_price || ! $productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 
@@ -298,12 +299,64 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     public function getOrder(string $orderCode)
     {
+        $condition = [
+            'code' => $orderCode,
+            'user_id' => auth()->check() ? auth()->user()->id : null
+        ];
+
         $order = $this->orderRepository->findByWhere(
-            ['code' => $orderCode],
+            $condition,
             ['*'],
             ['order_items']
         );
 
         return $order;
+    }
+
+    public function getOrderByUser()
+    {
+        if (! auth()->check()) {
+            return [];
+        }
+
+        $request = request();
+        $userId = auth()->user()->id;
+
+        $conditionWhere =  [
+            'user_id' => $userId,
+        ];
+        if ($request->order_status == Order::PAYMENT_STATUS_UNPAID) {
+            $conditionWhere['payment_status'] = Order::PAYMENT_STATUS_UNPAID;
+        }
+
+        if (
+            $request->has('order_status') &&
+            $request->order_status != '' &&
+            $request->order_status != 'all' &&
+            $request->order_status != Order::PAYMENT_STATUS_UNPAID
+        ) {
+            $conditionWhere['order_status'] = $request->order_status;
+        }
+
+        $condition = [
+            'search'  => addslashes($request->search),
+            'searchFields' => ['code'],
+            'where'   => $conditionWhere
+        ];
+
+        $cacheKey = 'orders_' . md5(json_encode($condition)) . '_page_' . $request->page ?? 5 . '_user_id_' . $userId;
+
+        $data = Cache::remember($cacheKey, 600, function () use ($condition) { // 600 seconds
+            return $this->orderRepository->pagination(
+                ['*'],
+                $condition,
+                5,
+                [],
+                [],
+                ['order_items'],
+            );
+        });
+
+        return $data;
     }
 }
