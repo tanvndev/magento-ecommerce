@@ -13,6 +13,7 @@ use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
@@ -343,14 +344,18 @@ class OrderService extends BaseService implements OrderServiceInterface
             'where'   => $conditionWhere
         ];
 
-        $data = $this->orderRepository->pagination(
-            ['*'],
-            $condition,
-            5,
-            [],
-            [],
-            ['order_items'],
-        );
+        $cacheKey = 'orders_' . md5(json_encode($condition)) . '_page_' . $request->page ?? 5 . '_user_id_' . $userId;
+
+        $data = Cache::remember($cacheKey, 600, function () use ($condition) { // 600 seconds
+            return $this->orderRepository->pagination(
+                ['*'],
+                $condition,
+                5,
+                [],
+                [],
+                ['order_items'],
+            );
+        });
 
         return $data;
     }
