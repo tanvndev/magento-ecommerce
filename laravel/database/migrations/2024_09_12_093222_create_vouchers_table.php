@@ -17,11 +17,13 @@ return new class extends Migration
             $table->string('code', 50)->unique();
             $table->string('image')->nullable();
             $table->string('description')->nullable();
-            $table->string('discount_type', 20);
-            $table->decimal('discount_value', 15, 2);
-            $table->unsignedInteger('quantity');
-            $table->decimal('min_order_value', 15, 2)->nullable();
-            $table->unsignedInteger('min_quantity')->nullable();
+            $table->string('value_type', 20);
+            $table->decimal('value', 15, 2);
+            $table->decimal('value_limit_amount', 15, 2)->nullable();
+            $table->unsignedInteger('quantity')->nullable();
+            $table->string('condition_apply', 50)->nullable()->comment('Điều kiện áp dụng');
+            $table->decimal('subtotal_price', 15, 2)->nullable()->comment('Tổng giá trị đơn hàng tối thiểu');
+            $table->unsignedSmallInteger('min_quantity')->nullable()->comment('Tổng số lượng sản phẩm được khuyến mại tối thiểu');
             $table->dateTime('start_at');
             $table->dateTime('end_at');
             $table->tinyInteger('publish')->default(1)->comment('1:Active, 2: Inactive');

@@ -20,11 +20,11 @@ class ClientProductAttributeResource extends JsonResource
         $attributeValues = AttributeValue::whereIn('id', $attributeValueIds)->get();
 
         return [
-            'product_id' => $this->product_id,
-            'attribute_id' => $this->attribute_id,
-            'attribute_name' => $this->attribute->name,
+            'product_id'          => $this->product_id,
+            'attribute_id'        => $this->attribute_id,
+            'attribute_name'      => $this->attribute->name,
             'attribute_value_ids' => AttributeValueResource::collection($attributeValues),
-            'enable_variation' => $this->enable_variation,
+            'enable_variation'    => $this->enable_variation,
         ];
     }
 }

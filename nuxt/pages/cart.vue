@@ -9,10 +9,12 @@
             <NuxtLink to="/cart">Giỏ hàng</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/checkout">Thanh toán</NuxtLink>
+            <NuxtLink :to="cartSelected?.length ? '/checkout' : '#'"
+              >Thanh toán</NuxtLink
+            >
           </li>
           <li>
-            <NuxtLink to="/orderComplete">Hoàn tất đơn hàng</NuxtLink>
+            <a href="#">Hoàn tất đơn hàng</a>
           </li>
         </ul>
       </div>
@@ -73,6 +75,10 @@
                     <NuxtLink :to="`product/${cart.slug}-${cart.product_id}`">
                       {{ cart.name }}
                     </NuxtLink>
+                    <span class="d-block mt-1 fs-13" style="color: #336699">
+                      Phân loại:
+                      {{ cart.attributes }}
+                    </span>
                   </td>
                   <td class="text-right">
                     <div class="product-price">
@@ -89,7 +95,10 @@
                       :old-quantity="cart.quantity"
                       :max="cart.stock - 2"
                       @update:quantity="
-                        handleQuantityChange(cart.product_variant_id, $event)
+                        debouncedHandleQuantityChange(
+                          cart.product_variant_id,
+                          $event
+                        )
                       "
                     />
                   </td>
@@ -183,12 +192,14 @@
                   </div>
 
                   <div class="ml-4" style="width: 500px">
-                    <a
-                      href="#"
+                    <NuxtLink
+                      :to="cartSelected?.length ? '/checkout' : '#'"
                       class="btn btn-block btn-dark btn-icon-right btn-rounded btn-checkout"
+                      :class="{ disabled: !cartSelected?.length }"
                     >
-                      Mua hàng<i class="w-icon-long-arrow-right"></i
-                    ></a>
+                      Thanh toán
+                      <i class="w-icon-long-arrow-right"></i
+                    ></NuxtLink>
                   </div>
                 </div>
               </div>
@@ -205,14 +216,16 @@
 import { onMounted, watch } from 'vue'
 import { formatCurrency } from '#imports'
 import QuantityComponent from '~/components/includes/QuantityComponent.vue'
-import { debounce, resizeImage } from '#imports'
-import { useCartStore } from '~/stores/cart'
-import { toast } from '#imports'
+import { debounce, resizeImage, toast } from '#imports'
+import { useCartStore, useAuthStore } from '#imports'
+import Cookies from 'js-cookie'
 
 const { $axios } = useNuxtApp()
 const cartStore = useCartStore()
+const authStore = useAuthStore()
 
 const carts = computed(() => cartStore.getCart)
+const cartSelected = computed(() => cartStore.getCartSelected)
 const checkedItems = ref([])
 const allChecked = ref(false)
 const openClearCart = ref(false)
@@ -238,7 +251,10 @@ const handleCheckboxChange = (event, index) => {
 
 const getCarts = async () => {
   await cartStore.getAllCarts()
+  handleSelectCart()
+}
 
+const handleSelectCart = () => {
   carts.value?.forEach((cart, index) => {
     if (cart.is_selected) {
       checkedItems.value[index] = cart.product_variant_id
@@ -255,49 +271,73 @@ const checkSelectedAll = () => {
 }
 
 const updateAllSelectedCarts = async () => {
-  const response = await $axios.put('/carts/handle-selected', {
+  const endpoint = getEndpointSelectedCart()
+
+  const response = await $axios.put(endpoint, {
     select_all: allChecked.value,
   })
-  cartStore.setTotalAmount(response.data?.total_amount)
+  setCartToStore(response.data)
 }
 
 const updateOneSelectedCarts = async (variantId) => {
-  const response = await $axios.put('/carts/handle-selected', {
+  const endpoint = getEndpointSelectedCart()
+
+  const response = await $axios.put(endpoint, {
     product_variant_id: variantId,
   })
-  cartStore.setTotalAmount(response.data?.total_amount)
+  setCartToStore(response.data)
+}
+
+const getEndpointSelectedCart = () => {
+  const endpoint = authStore.isSignedIn
+    ? '/carts/handle-selected'
+    : '/carts/handle-selected?session_id=' + Cookies.get('session_id')
+  return endpoint
+}
+
+const setCartToStore = (data) => {
+  cartStore.setTotalAmount(data?.total_amount)
+  cartStore.setCarts(data?.items)
 }
 
 const handleClearCart = async () => {
-  const response = await $axios.delete('/carts/clear')
+  const endpoint = authStore.isSignedIn
+    ? `/carts/clean`
+    : `/carts/clean?session_id=` + Cookies.get('session_id')
+
+  const response = await $axios.delete(endpoint)
   openClearCart.value = false
 
-  cartStore.setCarts(response.data || [])
+  cartStore.removeAllCarts()
   toast(response.messages, response.status)
 }
 
 const handleRemove = async (variantId) => {
-  const response = await $axios.delete(`/carts/${variantId}`)
-  if (response.status == 'success') {
-    getCarts()
-  }
+  const endpoint = authStore.isSignedIn
+    ? `/carts/${variantId}`
+    : `/carts/${variantId}?session_id=` + Cookies.get('session_id')
+
+  const response = await $axios.delete(endpoint)
+
+  setCartToStore(response.data)
+  checkedItems.value = []
+  handleSelectCart()
 }
 
 const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
-  const response = await $axios.post('/carts', {
+  const endpoint = authStore.isSignedIn
+    ? `/carts`
+    : `/carts?session_id=` + Cookies.get('session_id')
+
+  const response = await $axios.post(endpoint, {
     product_variant_id: variantId,
     quantity: quantity,
   })
 
   if (response.status == 'success') {
-    cartStore.setCarts(response.data?.items)
-    cartStore.setTotalAmount(response.data?.total_amount)
+    setCartToStore(response.data)
   }
-}, 1300)
-
-const handleQuantityChange = (variantId, quantity) => {
-  debouncedHandleQuantityChange(variantId, quantity)
-}
+}, 1000)
 
 onMounted(() => {
   getCarts()
@@ -307,6 +347,11 @@ watch(checkedItems, checkSelectedAll, { deep: true })
 </script>
 
 <style scoped>
+.btn-checkout.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 .product-thumbnail figure {
   background-color: #f5f6f7;
   border-radius: 8px;

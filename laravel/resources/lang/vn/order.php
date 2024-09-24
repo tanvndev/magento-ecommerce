@@ -4,17 +4,17 @@ return [
     'confirm' => [
         'pending' => [
             'title' => 'Đang chờ xác nhận đơn hàng',
-            'icon' => 'icofont-info',
+            'icon'  => 'icofont-info',
             'color' => 'warning',
         ],
         'success' => [
             'title' => 'Đơn hàng đã được xác nhận',
-            'icon' => 'icofont-check',
+            'icon'  => 'icofont-check',
             'color' => 'success',
         ],
         'cancel' => [
             'title' => 'Đơn hàng đã hủy',
-            'icon' => 'icofont-close',
+            'icon'  => 'icofont-close',
             'color' => 'danger',
         ],
 

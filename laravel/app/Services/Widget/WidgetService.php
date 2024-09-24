@@ -25,15 +25,18 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
     public function paginate()
     {
-        $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
-            'archive' => request()->boolean('archive'),
-        ];
-        $select = ['id', 'name', 'publish', 'description', 'code', 'advertisement_banners', 'type', 'order', 'model_ids'];
-        $pageSize = request('pageSize');
+        $request = request();
 
-        $data = $pageSize && request('page')
+        $condition = [
+            'search'  => addslashes($request->search),
+            'publish' => $request->publish,
+            'archive' => $request->boolean('archive'),
+        ];
+
+        $select = ['id', 'name', 'publish', 'description', 'code', 'advertisement_banners', 'type', 'order', 'model_ids'];
+        $pageSize = $request->pageSize;
+
+        $data = $pageSize && $request->page
             ? $this->widgetRepository->pagination($select, $condition, $pageSize, ['order' => 'ASC'])
             : $this->widgetRepository->findByWhere(['publish' => 1], $select, [], true);
 
@@ -70,10 +73,11 @@ class WidgetService extends BaseService implements WidgetServiceInterface
 
         if ($payload['type'] == 'advertisement' && isset($payload['image']) && ! empty($payload['image'])) {
             $payload['advertisement_banners'] = array_map(fn ($image, $key) => [
-                'image' => $image,
-                'alt' => $payload['alt'][$key] ?? '',
+
+                'image'   => $image,
+                'alt'     => $payload['alt'][$key] ?? '',
                 'content' => $payload['content'][$key] ?? '',
-                'url' => $payload['url'][$key] ?? '',
+                'url'     => $payload['url'][$key] ?? '',
             ], $payload['image'], array_keys($payload['image']));
         }
 
@@ -95,7 +99,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     {
         $widgets = $this->widgetRepository->findByWhere(
             [
-                'code' => $code,
+                'code'    => $code,
                 'publish' => 1,
             ],
             ['id', 'name', 'code', 'order', 'model_ids', 'advertisement_banners', 'type'],
@@ -110,8 +114,8 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             $item->items =
                 match ($item->type) {
                     'advertisement' => $item->advertisement_banners,
-                    'product' => $this->getProductVariants($item),
-                    default => [],
+                    'product'       => $this->getProductVariants($item),
+                    default         => [],
                 };
 
             return $item;
@@ -148,13 +152,3 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         );
     }
 }
-
-// [
-//     code => 'code',
-//     name => 'name',
-//     type => 'type',
-//     items => [
-//         'product...' or ,
-//         'images'...
-//     ]
-// ]

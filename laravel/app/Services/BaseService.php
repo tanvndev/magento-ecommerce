@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\Interfaces\BaseServiceInterface;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -38,10 +39,10 @@ class BaseService implements BaseServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $repositoryName = lcfirst($request->modelName).'Repository';
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
             $payload[$request->field] = $request->value;
 
-            $this->{$repositoryName}->update($request->id, $payload);
+            $this->{$repositoryName}->update($request->value, $payload);
 
             return successResponse(__('messages.publish.success'));
         }, __('messages.publish.error'));
@@ -52,7 +53,7 @@ class BaseService implements BaseServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $repositoryName = lcfirst($request->modelName).'Repository';
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
             $payload[$request->field] = $request->value;
 
             $this->{$repositoryName}->updateByWhereIn('id', $request->modelIds, $payload);
@@ -66,7 +67,7 @@ class BaseService implements BaseServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $repositoryName = lcfirst($request->modelName).'Repository';
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
             $forceDelete = ($request->has('forceDelete') && $request->forceDelete == '1')
                 ? 'forceDeleteByWhereIn'
                 : 'deleteByWhereIn';
@@ -85,13 +86,13 @@ class BaseService implements BaseServiceInterface
             DB::commit();
 
             return $result;
-        } catch (\Exception $e) {
-            // getError($e);
+        } catch (Exception $e) {
+            getError($e);
 
             Log::error('>>Transaction failed<<', [
                 'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
                 // 'trace' => $e->getTraceAsString(),
             ]);
             DB::rollBack();
@@ -105,7 +106,7 @@ class BaseService implements BaseServiceInterface
         return $this->executeInTransaction(function () {
             $request = request();
 
-            $repositoryName = lcfirst($request->modelName).'Repository';
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
 
             $this->{$repositoryName}->restoreByWhereIn('id', $request->modelIds);
 

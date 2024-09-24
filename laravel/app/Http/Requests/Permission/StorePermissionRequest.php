@@ -22,7 +22,7 @@ class StorePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'name'      => 'required|string',
             'canonical' => 'required|string|unique:permissions',
         ];
     }
@@ -30,7 +30,7 @@ class StorePermissionRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên ngôn ngữ',
+            'name'      => 'Tên ngôn ngữ',
             'canonical' => 'Canonical',
         ];
     }

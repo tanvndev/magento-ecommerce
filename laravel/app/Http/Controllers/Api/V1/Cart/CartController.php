@@ -28,6 +28,7 @@ class CartController extends Controller
      */
     public function index()
     {
+
         $response = $this->cartService->getCart();
 
         $data = new CartCollection($response);
@@ -59,7 +60,9 @@ class CartController extends Controller
     {
         $response = $this->cartService->deleteOneItem($id);
 
-        return handleResponse($response);
+        $data = new CartCollection($response);
+
+        return successResponse('', $data);
     }
 
     public function forceDestroy()
@@ -71,9 +74,32 @@ class CartController extends Controller
 
     public function handleSelected(Request $request)
     {
-
         $response = $this->cartService->handleSelected($request);
 
+        $data = new CartCollection($response);
+
+        return successResponse('', $data);
+    }
+
+    public function deleteCartSelected()
+    {
+
+        $response = $this->cartService->deleteCartSelected();
+
         return handleResponse($response);
+    }
+
+    public function addPaidProductsToCart(Request $request)
+    {
+
+        $response = $this->cartService->addPaidProductsToCart($request);
+
+        if (is_array($response)) {
+            return $response;
+        }
+
+        $data = new CartCollection($response);
+
+        return successResponse(__('messages.cart.success.create'), $data);
     }
 }

@@ -40,14 +40,14 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ->customGroupBy($groupBy ?? null)
             ->customOrderBy($orderBy ?? null);
 
-        if (! empty($withWhereHas)) {
+        if ( ! empty($withWhereHas)) {
             // Apply constraints to eager-loaded relationships
             foreach ($withWhereHas as $relation => $callback) {
                 $query->whereHas($relation, $callback);
             }
         }
 
-        if (! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
+        if ( ! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
             $query->onlyTrashed();
         }
 

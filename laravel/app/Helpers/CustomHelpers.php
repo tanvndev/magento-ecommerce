@@ -2,12 +2,12 @@
 
 use Carbon\Carbon;
 
-if (! function_exists('getServiceInstance')) {
+if ( ! function_exists('getServiceInstance')) {
     function getServiceInstance($modelName)
     {
         $folderName = str_replace(['Catalogue', 'Variant'], '', $modelName);
 
-        $serviceInterfaceNameSpace = 'App\Services\Interfaces\\'.ucfirst($folderName).'\\'.ucfirst($modelName).'ServiceInterface';
+        $serviceInterfaceNameSpace = 'App\Services\Interfaces\\' . ucfirst($folderName) . '\\' . ucfirst($modelName) . 'ServiceInterface';
         if (interface_exists($serviceInterfaceNameSpace)) {
             // hàm app() giúp truy cập các đối tượng đã đăng ký trong container
             return app($serviceInterfaceNameSpace);
@@ -16,7 +16,7 @@ if (! function_exists('getServiceInstance')) {
         return null;
     }
 }
-if (! function_exists('generateStrongPassword')) {
+if ( ! function_exists('generateStrongPassword')) {
     function generateStrongPassword(int $length = 12)
     {
         $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -24,7 +24,7 @@ if (! function_exists('generateStrongPassword')) {
         $numbers = '0123456789';
         $specialChars = '!@#$%^&*()_+-=[]{}|';
 
-        $allChars = $uppercase.$lowercase.$numbers.$specialChars;
+        $allChars = $uppercase . $lowercase . $numbers . $specialChars;
         $password = '';
 
         for ($i = 0; $i < $length; $i++) {
@@ -34,12 +34,12 @@ if (! function_exists('generateStrongPassword')) {
         return $password;
     }
 }
-if (! function_exists('getRepositoryInstance')) {
+if ( ! function_exists('getRepositoryInstance')) {
     function getRepositoryInstance(string $modelName)
     {
         $folderName = str_replace(['Catalogue', 'Variant'], '', $modelName);
 
-        $repositoryInterfaceNameSpace = 'App\Repositories\Interfaces\\'.ucfirst($folderName).'\\'.ucfirst($modelName).'RepositoryInterface';
+        $repositoryInterfaceNameSpace = 'App\Repositories\Interfaces\\' . ucfirst($folderName) . '\\' . ucfirst($modelName) . 'RepositoryInterface';
         if (interface_exists($repositoryInterfaceNameSpace)) {
             // hàm app() giúp truy cập các đối tượng đã đăng ký trong container
             return app($repositoryInterfaceNameSpace);
@@ -49,7 +49,7 @@ if (! function_exists('getRepositoryInstance')) {
     }
 }
 
-if (! function_exists('formatToCommas')) {
+if ( ! function_exists('formatToCommas')) {
     function formatToCommas($nStr)
     {
         $nStr = strval($nStr);
@@ -57,7 +57,7 @@ if (! function_exists('formatToCommas')) {
         $str = '';
         for ($i = strlen($nStr); $i > 0; $i -= 3) {
             $a = $i - 3 < 0 ? 0 : $i - 3;
-            $str = substr($nStr, $a, $i - $a).'.'.$str;
+            $str = substr($nStr, $a, $i - $a) . '.' . $str;
         }
         $str = substr($str, 0, -1);
 
@@ -65,7 +65,7 @@ if (! function_exists('formatToCommas')) {
     }
 }
 
-if (! function_exists('getColorForStock')) {
+if ( ! function_exists('getColorForStock')) {
     function getColorForStock($stock): string
     {
         if ($stock <= 0) {
@@ -80,7 +80,7 @@ if (! function_exists('getColorForStock')) {
     }
 }
 
-if (! function_exists('formatIso8601ToDatetime')) {
+if ( ! function_exists('formatIso8601ToDatetime')) {
     function formatIso8601ToDatetime($isoDate)
     {
         if (empty($isoDate)) {
@@ -94,7 +94,7 @@ if (! function_exists('formatIso8601ToDatetime')) {
     }
 }
 
-if (! function_exists('convertPrice')) {
+if ( ! function_exists('convertPrice')) {
 
     function convertPrice($priceString)
     {
@@ -105,20 +105,35 @@ if (! function_exists('convertPrice')) {
         return $price;
     }
 }
-if (! function_exists('formatCurrency')) {
+
+if ( ! function_exists('generateOrderCode')) {
+
+    function generateOrderCode($prefix = 'ORD')
+    {
+        $prefix = strtoupper($prefix);
+        $date = date('Ymd');
+        $uniqueId = uniqid();
+        $uniqueHash = substr(md5($uniqueId), 0, 6);
+        $orderCode = $prefix . $date . strtoupper($uniqueHash);
+
+        return $orderCode;
+    }
+}
+
+if ( ! function_exists('formatCurrency')) {
 
     function formatCurrency($amount, string $currencyCode = 'vn')
     {
         switch (strtoupper($currencyCode)) {
             case 'VN':
                 // Định dạng cho tiền tệ Việt Nam (VND)
-                return number_format($amount, 0, ',', '.').' ₫';
+                return number_format($amount, 0, ',', '.') . ' ₫';
             case 'CN':
                 // Định dạng cho tiền tệ Trung Quốc (CNY)
-                return '¥'.number_format($amount, 2, '.', ',');
+                return '¥' . number_format($amount, 2, '.', ',');
             case 'EN':
                 // Định dạng cho tiền tệ Hoa Kỳ (USD)
-                return '$'.number_format($amount, 2, '.', ',');
+                return '$' . number_format($amount, 2, '.', ',');
             default:
                 // Nếu mã tiền tệ không được hỗ trợ, trả về số tiền gốc
                 return $amount;
@@ -126,16 +141,16 @@ if (! function_exists('formatCurrency')) {
     }
 }
 
-if (! function_exists('recursive')) {
+if ( ! function_exists('recursive')) {
 
     function recursive($data, $parent_id = 0)
     {
         $result = [];
-        if (! is_null($data) && count($data) > 0) {
+        if ( ! is_null($data) && count($data) > 0) {
             foreach ($data as $key => $value) {
                 if ($value->parent_id == $parent_id) {
                     $result[] = [
-                        'item' => $value,
+                        'item'     => $value,
                         'children' => recursive($data, $value->id),
                     ];
                 }
@@ -146,26 +161,26 @@ if (! function_exists('recursive')) {
     }
 }
 
-if (! function_exists('convertDateTime')) {
+if ( ! function_exists('convertDateTime')) {
     function convertDateTime($dateTime = '', $format = 'd/m/Y H:i')
     {
         return date($format, strtotime($dateTime));
     }
 }
 
-if (! function_exists('cut_string_and_decode')) {
+if ( ! function_exists('cut_string_and_decode')) {
     function cut_string_and_decode($str = null, $n = 200)
     {
         $str = html_entity_decode($str);
         $str = strip_tags($str);
         if (mb_strlen($str) > $n) {
-            $str = mb_substr($str, 0, $n).'...';
+            $str = mb_substr($str, 0, $n) . '...';
         }
 
         return $str;
     }
 }
-if (! function_exists('sortString')) {
+if ( ! function_exists('sortString')) {
     function sortString($string)
     {
         if ($string == '') {
@@ -180,7 +195,7 @@ if (! function_exists('sortString')) {
     }
 }
 
-if (! function_exists('generateStar')) {
+if ( ! function_exists('generateStar')) {
     function generateStar($rate)
     {
         $filledStars = round($rate, 0);
@@ -198,7 +213,7 @@ if (! function_exists('generateStar')) {
     }
 }
 
-if (! function_exists('generateStarPercent')) {
+if ( ! function_exists('generateStarPercent')) {
     function generateStarPercent($rate = 100)
     {
         $percent = round(100 - ($rate / 5 * 100));
@@ -219,7 +234,7 @@ if (! function_exists('generateStarPercent')) {
 
         // Add overlay with dynamic width
         $html .= '
-            <div class="overlay" style="width: '.htmlspecialchars($percent).'%;"></div>
+            <div class="overlay" style="width: ' . htmlspecialchars($percent) . '%;"></div>
         </div>
         ';
 
@@ -227,7 +242,7 @@ if (! function_exists('generateStarPercent')) {
     }
 }
 
-if (! function_exists('renderProress')) {
+if ( ! function_exists('renderProress')) {
     function renderProress($rate = 100)
     {
         $percent = round(100 - ($rate / 5 * 100));
@@ -248,7 +263,7 @@ if (! function_exists('renderProress')) {
 
         // Add overlay with dynamic width
         $html .= '
-            <div class="overlay" style="width: '.htmlspecialchars($percent).'%;"></div>
+            <div class="overlay" style="width: ' . htmlspecialchars($percent) . '%;"></div>
         </div>
         ';
 
@@ -256,7 +271,7 @@ if (! function_exists('renderProress')) {
     }
 }
 
-if (! function_exists('sortAttributeId')) {
+if ( ! function_exists('sortAttributeId')) {
     function sortAttributeId($attributeId)
     {
         sort($attributeId, SORT_NUMERIC);
@@ -266,7 +281,7 @@ if (! function_exists('sortAttributeId')) {
     }
 }
 
-if (! function_exists('convertVndTo')) {
+if ( ! function_exists('convertVndTo')) {
 
     function convertVndTo($amountVnd, $currency = 'USD')
     {
@@ -277,7 +292,7 @@ if (! function_exists('convertVndTo')) {
             // Add more currencies as needed
         ];
 
-        if (! isset($exchangeRates[$currency])) {
+        if ( ! isset($exchangeRates[$currency])) {
             throw new Exception("Exchange rate for currency '{$currency}' not found.");
         }
 
@@ -287,7 +302,7 @@ if (! function_exists('convertVndTo')) {
     }
 }
 
-if (! function_exists('abbreviateName')) {
+if ( ! function_exists('abbreviateName')) {
     function abbreviateName($fullName)
     {
         $parts = explode(' ', $fullName);
@@ -300,47 +315,49 @@ if (! function_exists('abbreviateName')) {
     }
 }
 
-if (! function_exists('errorResponse')) {
+if ( ! function_exists('errorResponse')) {
     function errorResponse(string $message): array
     {
         return [
-            'status' => 'error',
+            'status'   => 'error',
             'messages' => $message,
-            'data' => null,
+            'data'     => null,
         ];
     }
 }
 
-if (! function_exists('successResponse')) {
+if ( ! function_exists('successResponse')) {
     function successResponse(string $message, $data = null): array
     {
         return [
-            'status' => 'success',
+            'status'   => 'success',
             'messages' => $message,
-            'data' => $data,
+            'data'     => $data,
         ];
     }
 }
 
-if (! function_exists('handleResponse')) {
+if ( ! function_exists('handleResponse')) {
     function handleResponse($response, $successCode = 200)
     {
-        $statusCode = $response['status'] ?? '' === 'success' ? $successCode : 500;
+        $status = $response['status'] ?? '';
+
+        $statusCode = $status === 'success' ? $successCode : 500;
 
         return response()->json($response, $statusCode);
     }
 }
 
-if (! function_exists('renderRatingFilter')) {
+if ( ! function_exists('renderRatingFilter')) {
     function renderRatingFilter()
     {
         $html = '';
         for ($i = 1; $i <= 5; $i++) {
             $html .= '<div class="mb-3 ps-0 form-check filter-star">';
-            $html .= '<input type="checkbox" class="form-check-input filtering" name="rate[]" value="'.$i.'" id="rate_'.$i.'">';
-            $html .= '<label class="form-check-label" for="rate_'.$i.'">';
+            $html .= '<input type="checkbox" class="form-check-input filtering" name="rate[]" value="' . $i . '" id="rate_' . $i . '">';
+            $html .= '<label class="form-check-label" for="rate_' . $i . '">';
             for ($j = 0; $j < 5; $j++) {
-                $html .= '<i class="flaticon-star me-1 '.($i > $j ? 'active' : '').'"></i>';
+                $html .= '<i class="flaticon-star me-1 ' . ($i > $j ? 'active' : '') . '"></i>';
             }
             $html .= '</label>';
             $html .= '</div>';
@@ -349,7 +366,7 @@ if (! function_exists('renderRatingFilter')) {
         return $html;
     }
 }
-if (! function_exists('generateSKU')) {
+if ( ! function_exists('generateSKU')) {
 
     function generateSKU(string $productName, int $length = 3, array $options = []): string
     {
@@ -359,12 +376,12 @@ if (! function_exists('generateSKU')) {
             return strtoupper(preg_replace('/[^a-z0-9]+/i', '', strtolower($option)));
         }, $options);
 
-        $sku = $skuProductName.'-'.implode('-', $cleanOptions);
+        $sku = $skuProductName . '-' . implode('-', $cleanOptions);
 
-        return $sku.'-'.time();
+        return $sku . '-' . time();
     }
 }
-if (! function_exists('removeEmptyValues')) {
+if ( ! function_exists('removeEmptyValues')) {
     function removeEmptyValues(array $array): array
     {
         if (empty($array)) {
@@ -385,7 +402,7 @@ if (! function_exists('removeEmptyValues')) {
         return $array;
     }
 }
-if (! function_exists('convertToFriDdMonYyyyHhMmSs')) {
+if ( ! function_exists('convertToFriDdMonYyyyHhMmSs')) {
 
     function convertToFriDdMonYyyyHhMmSs($dateStr)
     {
@@ -397,7 +414,7 @@ if (! function_exists('convertToFriDdMonYyyyHhMmSs')) {
         return $date->format($outputFormat);
     }
 }
-if (! function_exists('convertToYyyyMmDdHhMmSs')) {
+if ( ! function_exists('convertToYyyyMmDdHhMmSs')) {
 
     function convertToYyyyMmDdHhMmSs($dateStr)
     {
@@ -410,17 +427,18 @@ if (! function_exists('convertToYyyyMmDdHhMmSs')) {
     }
 }
 
-if (! function_exists('getError')) {
+if ( ! function_exists('getError')) {
     function getError($e)
     {
-        echo 'Error: '.$e->getMessage().'<br>';
-        echo 'Line: '.$e->getLine().'<br>';
-        echo 'File: '.$e->getFile().'<br>';
+        echo 'Error: ' . $e->getMessage() . '<br>';
+        echo 'Line: ' . $e->getLine() . '<br>';
+        echo 'File: ' . $e->getFile() . '<br>';
+
         exit();
     }
 }
 
-if (! function_exists('convertToAcronym')) {
+if ( ! function_exists('convertToAcronym')) {
     function convertToAcronym(string $input, string $delimiter = '-'): string
     {
         $parts = explode($delimiter, $input);
@@ -433,7 +451,7 @@ if (! function_exists('convertToAcronym')) {
         return $acronym;
     }
 }
-if (! function_exists('truncate')) {
+if ( ! function_exists('truncate')) {
     function truncate($text, $length = 60, $appendEllipsis = false)
     {
         if (mb_strlen($text) <= $length) {
@@ -443,9 +461,30 @@ if (! function_exists('truncate')) {
         $truncated = mb_substr($text, 0, $length);
 
         if ($appendEllipsis) {
-            return $truncated.'...';
+            return $truncated . '...';
         }
 
         return $truncated;
+    }
+}
+
+if ( ! function_exists('haversineGreatCircleDistance')) {
+
+    function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
+    {
+        $latFrom = deg2rad($latitudeFrom);
+        $lonFrom = deg2rad($longitudeFrom);
+        $latTo = deg2rad($latitudeTo);
+        $lonTo = deg2rad($longitudeTo);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $a = sin($latDelta / 2) * sin($latDelta / 2) +
+            cos($latFrom) * cos($latTo) *
+            sin($lonDelta / 2) * sin($lonDelta / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }

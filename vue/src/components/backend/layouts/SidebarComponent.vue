@@ -33,7 +33,9 @@
             <div class="fixed bottom-0 mx-auto mt-3 block w-64 px-6 py-6">
                 <button
                     class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-transparent bg-emerald-500 px-5 py-3 align-bottom font-medium leading-5 text-white transition-colors duration-150 hover:bg-emerald-600 focus:outline-none active:bg-emerald-600"
-                    type="button">
+                    type="button"
+                    @click="store.dispatch('authStore/logout')"
+                    >
                     <span class="flex items-center">
                         <i class="far fa-sign-out mr-3"></i>
                         <span class="text-sm">Đăng xuất</span>
@@ -49,7 +51,10 @@ import { ref, computed, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import sidebar from '@/static/sidebar';
 import _ from 'lodash';
+import { useStore } from 'vuex';
 
+
+const store = useStore();
 const selectedKeys = ref([]);
 const openKeys = ref([]);
 

@@ -6,6 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+/package-lock.json
+/composer.lock
 
 /node_modules
 /.DS_Store
@@ -71,3 +73,11 @@ lerna-debug.log*
 /.nitro
 /.cache
 /dist
+
+
+/vue/package-lock.json
+/laravel/package-lock.json
+/nuxt/package-lock.json
+/laravel/composer-lock
+
+/vue/.env

@@ -15,6 +15,14 @@ const sidebar = [
     subMenu: []
   },
   {
+    id: 'voucher_sidebar',
+    icon: 'fas fa-badge-percent text-[16px]',
+    name: 'Khuyến mại',
+    route: 'voucher.index',
+    active: ['voucher'],
+    subMenu: []
+  },
+  {
     id: 'setting_sidebar',
     icon: 'fas fa-cog text-[16px]',
     name: 'Cấu hình',

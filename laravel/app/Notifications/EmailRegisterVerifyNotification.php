@@ -14,10 +14,7 @@ class EmailRegisterVerifyNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct() {}
 
     /**
      * Get the notification's delivery channels.
@@ -38,7 +35,7 @@ class EmailRegisterVerifyNotification extends Notification
             'email.register.verify',
             now()->addMinutes(15),
             [
-                'id' => $notifiable->getKey(),
+                'id'   => $notifiable->getKey(),
                 'hash' => sha1($notifiable->getEmailForVerification()),
             ]
         );
@@ -46,7 +43,7 @@ class EmailRegisterVerifyNotification extends Notification
         return (new MailMessage)
             ->subject('Xác nhận đăng ký tài khoản')
             ->view('emails.register-email', [
-                'user' => $notifiable,
+                'user'            => $notifiable,
                 'verificationUrl' => $verificationUrl,
             ]);
     }
@@ -58,8 +55,6 @@ class EmailRegisterVerifyNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 }

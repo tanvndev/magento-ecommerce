@@ -15,11 +15,11 @@ class ProductAttributeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'product_id' => $this->product_id,
-            'attribute_id' => $this->attribute_id,
-            'attribute_name' => $this->attribute->name,
+            'product_id'          => $this->product_id,
+            'attribute_id'        => $this->attribute_id,
+            'attribute_name'      => $this->attribute->name,
             'attribute_value_ids' => $this->attribute_value_ids,
-            'enable_variation' => $this->enable_variation,
+            'enable_variation'    => $this->enable_variation,
         ];
     }
 }

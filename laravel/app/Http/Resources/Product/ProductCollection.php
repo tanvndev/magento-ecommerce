@@ -22,10 +22,10 @@ class ProductCollection extends ResourceCollection
                 'data' => $this->collection->map(function ($product) {
                     return new ProductResource($product);
                 }),
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
+                'total'        => $this->total(),
+                'per_page'     => $this->perPage(),
                 'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
+                'last_page'    => $this->lastPage(),
             ];
         }
 

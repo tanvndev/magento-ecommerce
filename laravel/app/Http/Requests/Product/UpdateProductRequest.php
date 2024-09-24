@@ -23,8 +23,8 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => 'required|string',
-            'product_type' => 'required',
+            'name'                 => 'required|string',
+            'product_type'         => 'required',
             'product_catalogue_id' => 'required',
         ];
 
@@ -43,10 +43,10 @@ class UpdateProductRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tiêu đề sản phẩm',
-            'product_type' => 'Loại sản phẩm',
+            'name'                 => 'Tiêu đề sản phẩm',
+            'product_type'         => 'Loại sản phẩm',
             'product_catalogue_id' => 'Nhóm sản phẩm',
-            'upsell_ids' => 'Sản phẩm liên kết',
+            'upsell_ids'           => 'Sản phẩm liên kết',
         ];
     }
 

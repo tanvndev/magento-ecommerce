@@ -221,9 +221,9 @@ const handleScroll = () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await getAllWidgetCode()
   window.addEventListener('scroll', handleScroll)
-  getAllWidgetCode()
 })
 
 onUnmounted(() => {

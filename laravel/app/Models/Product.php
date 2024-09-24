@@ -31,9 +31,9 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'upsell_ids' => 'json',
-        'album' => 'json',
-        'shipping_ids' => 'json',
+        'upsell_ids'   => 'array',
+        'album'        => 'array',
+        'shipping_ids' => 'array',
     ];
 
     protected static function boot()
@@ -59,7 +59,7 @@ class Product extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $canonical = "{$originalCanonical}-".$count++;
+            $canonical = "{$originalCanonical}-" . $count++;
         }
 
         return $canonical;

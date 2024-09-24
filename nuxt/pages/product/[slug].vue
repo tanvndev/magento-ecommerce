@@ -219,7 +219,7 @@
           </div>
 
           <!-- Start of MoreInfomation -->
-          <MoreInfomation :product="product" />
+          <ProductMoreInfomation :product="product" />
           <!-- End of MoreInfomation -->
         </div>
         <!-- End of Main Content -->
@@ -235,7 +235,8 @@
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay } from 'swiper/modules'
-import MoreInfomation from '~/components/product/MoreInfomation.vue'
+import QuantityComponent from '~/components/includes/QuantityComponent.vue'
+
 import 'swiper/css'
 import {
   sortAndConcatenate,
@@ -245,7 +246,6 @@ import {
   handlePrice,
   toast,
 } from '#imports'
-import QuantityComponent from '~/components/includes/QuantityComponent.vue'
 import { useLoadingStore, useCartStore } from '#imports'
 
 const modules = [Navigation, Autoplay]
@@ -349,11 +349,7 @@ const addToCart = async () => {
     product_variant_id: variant.value.id,
     quantity: quantity.value,
   }
-
-  const response = await $axios.post('/carts', payload)
-
-  cartStore.setCartCount(response.data?.items.length)
-  toast(response.messages, response.status)
+  cartStore.addToCart(payload)
 }
 
 watch(

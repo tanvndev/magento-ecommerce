@@ -22,9 +22,9 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string|email|unique:users,email,'.$this->user,
-            'phone' => 'required|unique:users,phone,'.$this->user,
-            'fullname' => 'required|string',
+            'email'             => 'required|string|email|unique:users,email,' . $this->user,
+            'phone'             => 'required|unique:users,phone,' . $this->user,
+            'fullname'          => 'required|string',
             'user_catalogue_id' => 'required|integer|gt:0',
 
         ];
@@ -33,9 +33,9 @@ class UpdateUserRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email' => 'Email',
-            'fullname' => 'Họ tên thành viên',
-            'phone' => 'Số điện thoại',
+            'email'             => 'Email',
+            'fullname'          => 'Họ tên thành viên',
+            'phone'             => 'Số điện thoại',
             'user_catalogue_id' => 'Nhóm thành viên',
 
         ];

@@ -22,7 +22,7 @@ class StoreProductCatalogueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name'      => 'required',
             'canonical' => 'unique',
         ];
     }
@@ -30,7 +30,7 @@ class StoreProductCatalogueRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên nhóm nhóm sản phẩm',
+            'name'      => 'Tên nhóm nhóm sản phẩm',
             'canonical' => 'Đường dẫn',
         ];
     }

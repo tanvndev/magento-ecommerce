@@ -12,7 +12,7 @@
           <!-- End of Dropdown Menu -->
           <span class="d-lg-show"></span>
           <NuxtLink to="contact" class="d-lg-show">Liên hệ</NuxtLink>
-          <NuxtLink to="#" class="d-lg-show">Tài khoản</NuxtLink>
+          <NuxtLink to="/user/profile" class="d-lg-show">Tài khoản</NuxtLink>
           <a
             v-if="!authStore.isSignedIn"
             :href="`${config.public.vueUrl}/login`"
@@ -148,10 +148,14 @@
               </nav>
             </div>
             <div class="header-right">
-              <a href="#" class="d-xl-show"
-                ><i class="w-icon-map-marker mr-1"></i>Theo dõi đơn hàng</a
-              >
-              <a href="#"><i class="w-icon-sale"></i>Mã giảm giá </a>
+              <NuxtLink to="/order-search" class="d-xl-show">
+                <i class="w-icon-map-marker mr-1"></i>
+                Theo dõi đơn hàng
+              </NuxtLink>
+              <NuxtLink to="/voucher">
+                <i class="w-icon-sale"></i>
+                Mã giảm giá
+              </NuxtLink>
             </div>
           </div>
         </div>

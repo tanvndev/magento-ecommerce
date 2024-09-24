@@ -21,16 +21,18 @@ class UserService extends BaseService implements UserServiceInterface
 
     public function paginate()
     {
+        $request = request();
+
         $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
+            'search'       => addslashes($request->search),
+            'publish'      => $request->publish,
             'searchFields' => ['fullname', 'email', 'phone', 'address'],
         ];
 
         $select = ['id', 'fullname', 'email', 'phone', 'address', 'publish', 'user_catalogue_id'];
-        $pageSize = request('pageSize');
+        $pageSize = $request->pageSize;
 
-        $data = $pageSize && request('page')
+        $data = $pageSize && $request->page
             ? $this->userRepository->pagination($select, $condition, $pageSize, [], [], ['user_catalogue'])
             : $this->userRepository->all($select);
 
@@ -51,10 +53,11 @@ class UserService extends BaseService implements UserServiceInterface
 
     private function formatPayload(array $payload): array
     {
+        $request = request();
         $payload = [
-            'password' => Hash::make($payload['password']),
-            'user_agent' => request()->header('User-Agent'),
-            'ip' => request()->ip(),
+            'password'          => Hash::make($payload['password']),
+            'user_agent'        => $request->header('User-Agent'),
+            'ip'                => $request->ip(),
             'email_verified_at' => now()->toDateTimeString(),
         ];
 

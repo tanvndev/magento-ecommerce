@@ -6,6 +6,7 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentMethod\StorePaymentMethodRequest;
 use App\Http\Requests\PaymentMethod\UpdatePaymentMethodRequest;
+use App\Http\Resources\PaymentMethod\Client\ClientPaymentMethodCollection;
 use App\Http\Resources\PaymentMethod\PaymentMethodCollection;
 use App\Http\Resources\PaymentMethod\PaymentMethodResource;
 use App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface;
@@ -64,5 +65,16 @@ class PaymentMethodController extends Controller
         $response = $this->paymentMethodService->update($id);
 
         return handleResponse($response);
+    }
+
+    // API CLIENT //
+
+    public function getAllPaymentMethod()
+    {
+        $paymentMethods = $this->paymentMethodService->getAllPaymentMethod();
+
+        $data = new ClientPaymentMethodCollection($paymentMethods);
+
+        return successResponse('', $data);
     }
 }

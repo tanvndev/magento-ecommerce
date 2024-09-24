@@ -22,8 +22,8 @@ class StoreUserCatalogueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'code' => 'required',
+            'name'        => 'required',
+            'code'        => 'required',
             'description' => 'required',
         ];
     }
@@ -31,8 +31,8 @@ class StoreUserCatalogueRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên nhóm thành viên',
-            'code' => 'Mã nhóm này',
+            'name'        => 'Tên nhóm thành viên',
+            'code'        => 'Mã nhóm này',
             'description' => 'Mô tả nhóm thành viên',
         ];
     }

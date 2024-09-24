@@ -142,13 +142,9 @@ const addToCart = async (variantId) => {
 
   const payload = {
     product_variant_id: variantId,
-    quantity: 1,
   }
 
-  const response = await $axios.post('/carts', payload)
-
-  cartStore.setCartCount(response.data?.items.length)
-  toast(response.messages, response.status)
+  await cartStore.addToCart(payload)
 }
 </script>
 <style scoped>

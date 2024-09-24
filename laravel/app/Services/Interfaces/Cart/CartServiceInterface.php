@@ -8,9 +8,12 @@ interface CartServiceInterface
 
     public function createOrUpdate($request);
 
-    public function deleteOneItem($request);
+    public function deleteOneItem($id);
 
     public function cleanCart();
 
     public function handleSelected($request);
+
+    public function deleteCartSelected();
+    public function addPaidProductsToCart($request);
 }

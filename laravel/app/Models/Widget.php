@@ -15,7 +15,7 @@ class Widget extends Model
     protected $fillable = ['name', 'code', 'type', 'description', 'publish', 'advertisement_banners', 'model_ids', 'model', 'order'];
 
     protected $casts = [
-        'model_ids' => 'json',
+        'model_ids'             => 'json',
         'advertisement_banners' => 'json',
     ];
 
@@ -42,7 +42,7 @@ class Widget extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $code = "{$originalCode}-".$count++;
+            $code = "{$originalCode}-" . $count++;
         }
 
         return $code;

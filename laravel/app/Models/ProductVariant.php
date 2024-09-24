@@ -63,11 +63,12 @@ class ProductVariant extends Model
         $originalSlug = $slug;
         $count = 1;
 
-        while (self::where('slug', $slug)
-            ->where('id', '!=', $excludeId)
-            ->exists()
+        while (
+            self::where('slug', $slug)
+                ->where('id', '!=', $excludeId)
+                ->exists()
         ) {
-            $slug = "{$originalSlug}-".$count++;
+            $slug = "{$originalSlug}-" . $count++;
         }
 
         return $slug;
@@ -87,10 +88,13 @@ class ProductVariant extends Model
     {
         return $this->hasMany(CartItem::class);
     }
-
     //relationship Wishlist
     public function wishLists()
     {
         return $this->hasMany(WishList::class);
+    }
+    public function order_items()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }

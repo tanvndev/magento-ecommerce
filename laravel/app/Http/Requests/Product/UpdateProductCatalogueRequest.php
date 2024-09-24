@@ -22,15 +22,15 @@ class UpdateProductCatalogueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'canonical' => 'unique:product_catalogues,canonical,'.$this->catalogue,
+            'name'      => 'required',
+            'canonical' => 'unique:product_catalogues,canonical,' . $this->catalogue,
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên nhóm nhóm sản phẩm',
+            'name'      => 'Tên nhóm nhóm sản phẩm',
             'canonical' => 'Đường dẫn',
         ];
     }

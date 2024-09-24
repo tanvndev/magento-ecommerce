@@ -12,6 +12,10 @@ class ShippingMethod extends Model
 {
     use HasFactory, QueryScopes, SoftDeletes;
 
+    const COD_ID = '1';
+
+    const FAST_ID = '2';
+
     protected $fillable = [
         'name',
         'code',
@@ -44,9 +48,14 @@ class ShippingMethod extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $code = "{$originalCode}-".$count++;
+            $code = "{$originalCode}-" . $count++;
         }
 
         return $code;
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

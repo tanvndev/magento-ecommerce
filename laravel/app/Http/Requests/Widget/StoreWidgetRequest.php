@@ -22,8 +22,8 @@ class StoreWidgetRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => 'required',
-            'type' => 'required',
+            'name'      => 'required',
+            'type'      => 'required',
             'canonical' => 'unique:brands',
         ];
 
@@ -42,10 +42,10 @@ class StoreWidgetRequest extends FormRequest
     public function attributes()
     {
         return [
-            'image.*' => 'Hình ảnh',
-            'url.*' => 'Đường dẫn',
-            'name' => 'Tên thương hiệu',
-            'type' => 'Loại widget',
+            'image.*'   => 'Hình ảnh',
+            'url.*'     => 'Đường dẫn',
+            'name'      => 'Tên thương hiệu',
+            'type'      => 'Loại widget',
             'canonical' => 'Đường dẫn',
             'model_ids' => 'Danh sách sản phẩm',
         ];
