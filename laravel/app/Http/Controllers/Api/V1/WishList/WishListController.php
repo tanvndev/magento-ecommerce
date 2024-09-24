@@ -28,6 +28,7 @@ class WishListController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         $paginator = $this->wishListService->paginate();
@@ -35,7 +36,14 @@ class WishListController extends Controller
 
         return $paginator;
     }
+    public function getByUserId()
+    {
+        $response = $this->wishListService->getWishListByUserId();
 
+        $data = new WishListCollection($response);
+
+        return successResponse('', $data);
+    }
     /**
      * Store a newly created resource in storage.
      */

@@ -9,20 +9,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WishList extends Model
 {
-    use HasFactory,QueryScopes,SoftDeletes;
+    use HasFactory, QueryScopes;
 
     public $table = 'wishlists';
-    
+
     protected $fillable = [
         'user_id',
         'product_variant_id'
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    
-    public function product_variant(){
+
+    public function product_variant()
+    {
         return $this->belongsTo(ProductVariant::class);
     }
 }

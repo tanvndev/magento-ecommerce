@@ -92,19 +92,38 @@ class WishListService extends BaseService implements WishListServiceInterface
         }, __('messages.wishlist.error.delete'));
     }
 
+    public function getWishListByUserId()
+    {
+        $user = auth()->user();
+
+        $user->wishList = $this->wishListRepository->findByWhere(
+            ['user_id' => $user->id],
+            ['*'],
+            [],
+            true
+        );
+
+        return $user->wishList ?? collect();
+    }
     public function destroyAll()
     {
         return $this->executeInTransaction(function () {
 
             $user = auth()->user();
 
-            $user->wishList = $this->wishListRepository->findByWhere(['user_id' => $user->id]);
+            $user->wishList = $this->wishListRepository->findByWhere(
+                ['user_id' => $user->id],
+                ['*'],
+                [],
+                true
+            );
 
             if (!$user->wishList) {
                 return errorResponse(__('messages.wishlist.error.wishlist_not_found'));
             }
-
-            $user->wishList->delete();
+            foreach ($user->wishList as $item) {
+                $item->delete();
+            }
 
             return successResponse(__('messages.wishlist.success.clean'));
         }, __('messages.wishlist.error.delete'));

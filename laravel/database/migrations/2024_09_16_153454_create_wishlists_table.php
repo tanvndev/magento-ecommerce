@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(ProductVariant::class)->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -42,4 +42,4 @@ Route::post('carts', [TestController::class, 'createOrUpdateCart']);
 //     ));
 // })->name('notifications');
 
-Route::post('test', [WishListController::class, 'store']);
+Route::delete('test', [WishListController::class, 'destroyAll']);

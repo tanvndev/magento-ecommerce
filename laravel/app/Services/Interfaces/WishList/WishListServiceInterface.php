@@ -11,4 +11,6 @@ interface WishListServiceInterface
     public function destroy($id);
 
     public function destroyAll();
+
+    public function getWishListByUserId();
 }
