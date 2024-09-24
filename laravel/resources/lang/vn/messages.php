@@ -53,6 +53,12 @@ return [
             'cart_not_found' => 'Người dùng chưa có giỏ hàng.',
         ],
     ],
+    'product_review' => [
+        'error' => [
+            'already_exists' => 'Sản phẩm trong đơn hàng đã được đánh giá!',
+        ]
+
+    ],
     'voucher' => [
         'error' => [
             'create' => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
