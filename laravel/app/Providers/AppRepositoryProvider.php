@@ -58,6 +58,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Order\OrderRepositoryInterface' => 'App\Repositories\Order\OrderRepository',
         // Slider
         'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
+        // UserAddress
+        'App\Repositories\Interfaces\UserAddress\UserAddressRepositoryInterface' => 'App\Repositories\UserAddress\UserAddressRepository',
 
     ];
 
@@ -71,5 +73,7 @@ class AppRepositoryProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void {}
+    public function boot(): void
+    {
+    }
 }

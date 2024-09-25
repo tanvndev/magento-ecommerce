@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\Api\V1\UserAddress\UserAddressController;
 use App\Http\Controllers\Api\V1\WishList\WishListController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\Payment\MomoController;
@@ -50,7 +50,7 @@ Route::get('return/momo_ipn', [MomoController::class, 'handleMomoIpn'])->name('r
 //     ));
 // })->name('notifications');
 
-Route::delete('test', [WishListController::class, 'destroyAll']);
+Route::get('test', [UserAddressController::class, 'index']);
 // PAYPAL
 Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal.success');
 Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');

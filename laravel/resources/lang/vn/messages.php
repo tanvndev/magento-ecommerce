@@ -93,6 +93,19 @@ return [
             'wishlist_not_found' => 'Bạn chưa có sản phẩm ưa thích',
             'auth' => 'Vui lòng đăng nhập để yêu thích sản phẩm'
         ]
-
+        ],
+        'userAddress' => [
+        'success' => [
+            'create' => 'Thêm địa chỉ thành công',
+            'delete' => 'Xóa địa chỉ thành công',
+        ],
+        'error' => [
+            'existed' => 'Sản phẩm đã tồn tại trong danh mục ưa thích.',
+            'create' => 'Thêm địa chỉ không thành công',
+            'delete' => 'Xóa địa chỉ thành công',
+            'userAddress_not_found' => 'Bạn chưa có địa chỉ',
+            'auth' => 'Vui lòng đăng nhập'
+        ]
     ]
+
 ];

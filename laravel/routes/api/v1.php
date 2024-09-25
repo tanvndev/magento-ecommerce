@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use App\Http\Controllers\Api\V1\Upload\UploadController;
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Controllers\Api\V1\UserAddress\UserAddressController;
 use App\Http\Controllers\Api\V1\Voucher\VoucherController;
 use App\Http\Controllers\Api\V1\Widget\WidgetController;
 use App\Http\Controllers\Api\V1\WishList\WishListController;
@@ -147,6 +148,13 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::post('wishlists', [WishListController::class, 'store']);
         Route::delete('wishlists/clean', [WishListController::class, 'destroyAll']);
         Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
+
+        // USERADDRESSES
+        Route::get('user-address/list', [UserAddressController::class, 'index']);
+        Route::get('user-address', [UserAddressController::class, 'getByUserId']);
+        Route::post('user-address', [UserAddressController::class, 'store']);
+        Route::put('user-address/{id}', [UserAddressController::class, 'update']);
+        Route::delete('user-address/{id}', [UserAddressController::class, 'destroy']);
     });
 
     // CART ROUTE
