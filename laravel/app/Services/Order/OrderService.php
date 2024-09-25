@@ -26,10 +26,36 @@ class OrderService extends BaseService implements OrderServiceInterface
         protected VoucherRepositoryInterface $voucherRepository
     ) {}
 
-    // public function paginate()
-    // {
-    //     return $this->orderRepository->paginate();
-    // }
+    public function paginate()
+    {
+        $request = request();
+
+        $condition = [
+            'search'  => addslashes($request->search),
+            'searchFields' => ['code'],
+        ];
+
+        $pageSize = $request->pageSize;
+
+        $data = $this->orderRepository->pagination(['*'], $condition, $pageSize);
+
+        return $data;
+    }
+
+    public function getOrder(string $orderCode)
+    {
+        $condition = [
+            'code'    => $orderCode,
+        ];
+
+        $order = $this->orderRepository->findByWhere(
+            $condition,
+            ['*'],
+            ['order_items']
+        );
+
+        return $order;
+    }
 
     public function create()
     {
@@ -83,7 +109,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if ( ! $paymentMethod) {
+        if (! $paymentMethod) {
             throw new Exception('Payment method not found.');
         }
 
@@ -97,7 +123,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if ( ! $shippingMethod) {
+        if (! $shippingMethod) {
             throw new Exception('Shipping method not found.');
         }
 
@@ -121,7 +147,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if ( ! $cart) {
+        if (! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -150,7 +176,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if ( ! $voucher) {
+        if (! $voucher) {
             throw new Exception('Voucher not found.');
         }
 
@@ -238,7 +264,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     private function isSalePriceValid($productVariant)
     {
-        if ( ! $productVariant->sale_price || ! $productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 
@@ -297,7 +323,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         // $mail->send();
     }
 
-    public function getOrder(string $orderCode)
+    public function getOrderUserByCode(string $orderCode)
     {
         $condition = [
             'code'    => $orderCode,
@@ -315,7 +341,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     public function getOrderByUser()
     {
-        if ( ! auth()->check()) {
+        if (! auth()->check()) {
             return [];
         }
 
