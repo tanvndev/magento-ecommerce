@@ -23,31 +23,31 @@ const ORDER_STATUS = [
 
 const PAYMENT_STATUS = [
   {
-    label: 'Chưa thanh toán',
-    value: 'unpaid'
+    value: 'unpaid',
+    label: 'Chưa thanh toán'
   },
   {
-    label: 'Đã thanh toán',
-    value: 'paid'
+    value: 'paid',
+    label: 'Đã thanh toán'
   }
 ];
 
 const DELYVERY_STATUS = [
   {
-    label: 'Chờ giao',
-    value: 'pending'
+    value: 'pending',
+    label: 'Chờ giao'
   },
   {
-    label: 'Đang giao',
-    value: 'delivering'
+    value: 'delivering',
+    label: 'Đang giao'
   },
   {
-    label: 'Đã giao hàng',
-    value: 'delivered'
+    value: 'delivered',
+    label: 'Đã giao hàng'
   },
   {
-    label: 'Giao thất bại',
-    value: 'failed'
+    value: 'failed',
+    label: 'Giao thất bại'
   }
 ];
 

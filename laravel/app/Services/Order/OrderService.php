@@ -17,6 +17,14 @@ use Illuminate\Support\Facades\Cache;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
+    /**
+     * @param OrderRepositoryInterface $orderRepository
+     * @param ProductVariantRepositoryInterface $productVariantRepository
+     * @param CartRepositoryInterface $cartRepository
+     * @param PaymentMethodRepositoryInterface $paymentMethodRepository
+     * @param ShippingMethodRepositoryInterface $shippingMethodRepository
+     * @param VoucherRepositoryInterface $voucherRepository
+     */
     public function __construct(
         protected OrderRepositoryInterface $orderRepository,
         protected ProductVariantRepositoryInterface $productVariantRepository,
@@ -26,6 +34,19 @@ class OrderService extends BaseService implements OrderServiceInterface
         protected VoucherRepositoryInterface $voucherRepository
     ) {}
 
+    /**
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    /**
+     * Get all orders with pagination
+     *
+     * @queryParam search string Search order by code. Example: T123456
+     * @queryParam page_size int Number of orders to return per page. Example: 12
+     * @queryParam page int Page number to return. Example: 1
+     * @queryParam sort string Sort order by column. Example: created_at|DESC
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function paginate()
     {
         $request = request();
@@ -42,7 +63,14 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $data;
     }
 
-    public function getOrder(string $orderCode)
+    /**
+     * Get an order by its code.
+     *
+     * @param string $orderCode The order code.
+     *
+     * @return \App\Models\Order The order.
+     */
+    public function getOrder(string $orderCode): Order
     {
         $condition = [
             'code'    => $orderCode,
@@ -57,7 +85,65 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $order;
     }
 
-    public function create()
+    /**
+     * Update an order
+     *
+     * @param string $id
+     *
+     * @return array
+     */
+    public function update(string $id): array
+    {
+        return $this->executeInTransaction(function () use ($id) {
+            $request = request();
+            $payload = $request->except('_token', '_method');
+
+            $order = $this->orderRepository->findById($id);
+
+            if (
+                $request->has('order_status')
+                && $request->has('payment_status')
+                && $request->has('delivery_status')
+            ) {
+                if (!$this->checkUpdateStatus($request, $order)) {
+                    return errorResponse(__('messages.order.error.invalid'));
+                };
+            }
+
+            $order->update($payload);
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
+    }
+
+    /**
+     * Check if the order can be updated to the given status.
+     *
+     * If the order status is to be updated to completed, the payment status must be paid and the delivery status must be delivered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Order  $order
+     * @return bool
+     */
+    public function checkUpdateStatus($request, Order $order): bool
+    {
+        if ($request->order_status == Order::ORDER_STATUS_COMPLETED) {
+            if (
+                $order->payment_status != Order::PAYMENT_STATUS_PAID
+                || $order->delivery_status != Order::DELYVERY_STATUS_DELIVERED
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Create a new order in the database.
+     *
+     * @return \App\Models\Order|null
+     */
+    public function create(): Order
     {
         return $this->executeInTransaction(function () {
             $request = request();
@@ -68,7 +154,13 @@ class OrderService extends BaseService implements OrderServiceInterface
         }, __('messages.order.error.create'));
     }
 
-    private function createOrder($request)
+    /**
+     * Create a new order in the database.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \App\Models\Order
+     */
+    private function createOrder($request): Order
     {
         $userId = auth()->user()->id;
         $payload = $this->prepareOrderPayload($request, $userId);
@@ -93,7 +185,14 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $order;
     }
 
-    private function prepareOrderPayload($request, $userId)
+    /**
+     * Prepare order payload.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $userId
+     * @return array
+     */
+    private function prepareOrderPayload($request, string $userId): array
     {
         return array_merge($request->except('_token'), [
             'user_id'    => $userId,
@@ -102,7 +201,14 @@ class OrderService extends BaseService implements OrderServiceInterface
         ]);
     }
 
-    private function getPaymentMethod($paymentMethodId)
+    /**
+     * Get a payment method by id.
+     *
+     * @param int $paymentMethodId
+     * @return \App\Models\PaymentMethod
+     * @throws \Exception
+     */
+    private function getPaymentMethod(int $paymentMethodId)
     {
         $paymentMethod = $this->paymentMethodRepository->findByWhere([
             'id'      => $paymentMethodId,
@@ -116,7 +222,15 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $paymentMethod;
     }
 
-    private function getShippingMethod($shippingMethodId)
+
+    /**
+     * Get a shipping method by id.
+     *
+     * @param int $shippingMethodId
+     * @return \App\Models\ShippingMethod
+     * @throws \Exception
+     */
+    private function getShippingMethod(int $shippingMethodId)
     {
         $shippingMethod = $this->shippingMethodRepository->findByWhere([
             'id'      => $shippingMethodId,
@@ -130,7 +244,14 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $shippingMethod;
     }
 
-    private function getCartItems($userId)
+    /**
+     * Get cart items by user id.
+     *
+     * @param int $userId
+     * @return \Illuminate\Database\Eloquent\Collection
+     * @throws \Exception
+     */
+    private function getCartItems(int $userId)
     {
         $relation = [
             [
@@ -154,7 +275,15 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $cart->cart_items;
     }
 
-    private function getAdditionalDetails($paymentMethod, $shippingMethod, &$payload)
+    /**
+     * Get additional details from payment method and shipping method to store in order.
+     *
+     * @param \App\Models\PaymentMethod $paymentMethod
+     * @param \App\Models\ShippingMethod $shippingMethod
+     * @param array $payload
+     * @return array
+     */
+    private function getAdditionalDetails($paymentMethod, $shippingMethod, array &$payload)
     {
         return [
             'payment_method' => [
@@ -169,7 +298,13 @@ class OrderService extends BaseService implements OrderServiceInterface
         ];
     }
 
-    private function applyVoucher(&$payload)
+    /**
+     * Apply voucher to order.
+     *
+     * @param array $payload
+     * @throws \Exception
+     */
+    private function applyVoucher(array &$payload)
     {
         $voucher = $this->voucherRepository->findByWhere([
             'id'      => $payload['voucher_id'],
@@ -194,13 +329,27 @@ class OrderService extends BaseService implements OrderServiceInterface
         }
     }
 
-    private function createOrderItems($order, $cartItems)
+    /**
+     * Create order items from cart items.
+     *
+     * @param \App\Models\Order $order
+     * @param \Illuminate\Database\Eloquent\Collection $cartItems
+     * @return void
+     */
+    private function createOrderItems($order, $cartItems): void
     {
         $payloadOrderItem = $this->formatPayloadOrderItem($cartItems ?? [], $order->id);
         $order->order_items()->createMany($payloadOrderItem);
     }
 
-    private function formatPayloadOrderItem($cartItem, $orderId)
+    /**
+     * Format payload for create order items
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $cartItem
+     * @param int $orderId
+     * @return array
+     */
+    private function formatPayloadOrderItem($cartItem, int $orderId): array
     {
         $payload = $cartItem->map(function ($item) use ($orderId) {
             $salePrice = $this->getEffectivePrice($item->product_variant, false);
@@ -219,7 +368,13 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $payload;
     }
 
-    private function calculateFinalPrice($payload)
+    /**
+     * Calculate final price of an order.
+     *
+     * @param array $payload
+     * @return float
+     */
+    private function calculateFinalPrice(array $payload): float
     {
         $totalPrice = floatval($payload['total_price'] ?? 0);
         $shippingFee = floatval($payload['shipping_fee'] ?? 0);
@@ -230,12 +385,24 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $finalPrice;
     }
 
-    private function calculateShippingFee($shippingMethod)
+    /**
+     * Calculate shipping fee from shipping method.
+     *
+     * @param \App\Models\ShippingMethod $shippingMethod
+     * @return float
+     */
+    private function calculateShippingFee($shippingMethod): float
     {
         return $shippingMethod->base_cost;
     }
 
-    private function calculateTotalPrice($cartItems)
+    /**
+     * Calculate total price of an order from cart items.
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $cartItems
+     * @return float
+     */
+    private function calculateTotalPrice($cartItems): float
     {
         $totalPrice = 0;
 
@@ -253,7 +420,18 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $totalPrice;
     }
 
-    private function getEffectivePrice($productVariant, $returnOriginalPrice = true)
+    /**
+     * Get the effective price of a product variant, taking into account the sale price
+     * and discount time.
+     *
+     * If the sale price is valid, return the sale price. Otherwise, return the original
+     * price if $returnOriginalPrice is true, or null if it is false.
+     *
+     * @param  \App\Models\ProductVariant  $productVariant
+     * @param  bool  $returnOriginalPrice
+     * @return float|null
+     */
+    private function getEffectivePrice($productVariant, bool $returnOriginalPrice = true): ?float
     {
         if ($this->isSalePriceValid($productVariant)) {
             return $productVariant->sale_price;
@@ -262,7 +440,20 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $returnOriginalPrice ? $productVariant->price : null;
     }
 
-    private function isSalePriceValid($productVariant)
+    /**
+     * Determine if the sale price of a product variant is valid.
+     *
+     * A sale price is valid if it has a value and the product variant has a price.
+     * If the product variant has a discount time,
+     * the sale price is valid if the current time is between the start and end times
+     * of the discount time.
+     * If the product variant does not have a discount time,
+     * the sale price is valid.
+     *
+     * @param  \App\Models\ProductVariant  $productVariant
+     * @return bool
+     */
+    private function isSalePriceValid($productVariant): bool
     {
         if (! $productVariant->sale_price || ! $productVariant->price) {
             return false;
@@ -285,11 +476,14 @@ class OrderService extends BaseService implements OrderServiceInterface
         return false;
     }
 
-    public function update(string $id)
-    {
-        return $this->executeInTransaction(function () {}, __('messages.order.error.payment'));
-    }
 
+    /**
+     * Update the payment of an order.
+     *
+     * @param  string  $id
+     * @param  array  $payload
+     * @return \Illuminate\Http\Response
+     */
     public function updatePayment(string $id, array $payload)
     {
         return $this->executeInTransaction(function () use ($id, $payload) {
@@ -306,7 +500,14 @@ class OrderService extends BaseService implements OrderServiceInterface
         }, __('messages.order.error.payment'));
     }
 
-    private function formatPayloadOrderPaymentable(Order $order, array $payload)
+    /**
+     * Format the payload for OrderPaymentable model.
+     *
+     * @param \App\Models\Order $order
+     * @param array $payload
+     * @return array
+     */
+    private function formatPayloadOrderPaymentable(Order $order, array $payload): array
     {
 
         return [
@@ -317,13 +518,28 @@ class OrderService extends BaseService implements OrderServiceInterface
         ];
     }
 
-    private function sendMailUpdatePayment(Order $order)
+    /**
+     * Send mail to customer when update payment status of an order.
+     *
+     * @param \App\Models\Order $order
+     * @return void
+     */
+    private function sendMailUpdatePayment(Order $order): void
     {
         // $mail = new OrderMail($order);
         // $mail->send();
     }
 
-    public function getOrderUserByCode(string $orderCode)
+    /**
+     * Get an order by its code and the current user's id.
+     *
+     * If the user is not logged in, only return the order if it exists.
+     * If the user is logged in, only return the order if it exists and belongs to the user.
+     *
+     * @param string $orderCode
+     * @return \App\Models\Order|null
+     */
+    public function getOrderUserByCode(string $orderCode): ?Order
     {
         $condition = [
             'code'    => $orderCode,
@@ -339,7 +555,19 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $order;
     }
 
-    public function getOrderByUser()
+
+    /**
+     * Get all orders of the current user.
+     *
+     * If the user is not logged in, return an empty array.
+     * If the user is logged in, return all orders of the user.
+     * If the user is logged in and the order status is 'unpaid', return all unpaid orders of the user.
+     * If the user is logged in and the order status is not 'unpaid' and not 'all', return all orders of the user with the given order status.
+     * If the user is logged in and the order status is 'all', return all orders of the user.
+     *
+     * @return array
+     */
+    public function getOrderByUser(): array
     {
         if (! auth()->check()) {
             return [];

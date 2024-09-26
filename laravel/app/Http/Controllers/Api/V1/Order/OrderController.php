@@ -7,6 +7,7 @@ use App\Classes\Paypal;
 use App\Classes\Vnpay;
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\Client\ClientOrderCollection;
 use App\Http\Resources\Order\Client\ClientOrderResource;
 use App\Http\Resources\Order\OrderCollection;
@@ -56,6 +57,14 @@ class OrderController extends Controller
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
+
+    public function update(UpdateOrderRequest $request, string $id)
+    {
+        $response = $this->orderService->update($id);
+
+        return handleResponse($response);
+    }
+
 
     private function handlePaymentMethod(Order $order)
     {

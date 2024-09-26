@@ -41,7 +41,15 @@ class ClientOrderResource extends JsonResource
         ];
     }
 
-    private function getOrderStatus()
+    /**
+     * Get the order status.
+     *
+     * If the payment method is not COD and the payment status is unpaid,
+     * return the payment status as unpaid. Otherwise, return the order status.
+     *
+     * @return string
+     */
+    private function getOrderStatus(): string
     {
         if (
             $this->payment_method_id != PaymentMethod::COD_ID
@@ -53,14 +61,23 @@ class ClientOrderResource extends JsonResource
         return Order::ORDER_STATUS[$this->order_status];
     }
 
-    private function getOrderStatusColor()
+    /**
+     * Get the color of the order status.
+     *
+     * If the order status is canceled, return red. If the order status is completed, return green.
+     * If the payment method is not COD and the payment status is unpaid, return orange.
+     * Otherwise, return orange.
+     *
+     * @return string
+     */
+    private function getOrderStatusColor(): string
     {
         switch ($this->order_status) {
             case Order::ORDER_STATUS_CANCELED:
                 return 'red';
 
-            case Order::ORDER_STATUS_PENDING:
-                return 'orange';
+            case Order::ORDER_STATUS_COMPLETED:
+                return 'green';
 
             default:
                 if (
@@ -70,7 +87,7 @@ class ClientOrderResource extends JsonResource
                     return 'orange';
                 }
 
-                return 'green';
+                return 'orange';
         }
     }
 }

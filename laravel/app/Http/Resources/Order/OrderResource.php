@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\User\UserResource;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
@@ -50,19 +51,29 @@ class OrderResource extends JsonResource
             'district_code'              => $this->district->code,
             'ward_code'                  => $this->ward->code,
             'note'                       => $this->note,
+            'user'                       => new UserResource($this->user),
             'order_items'                => OrderItemResource::collection($this->order_items),
         ];
     }
 
 
-    private function getOrderStatusColor()
+    /**
+     * Get the color of the order status.
+     *
+     * If the order status is canceled, return red. If the order status is completed, return green.
+     * If the payment method is not COD and the payment status is unpaid, return orange.
+     * Otherwise, return orange.
+     *
+     * @return string
+     */
+    private function getOrderStatusColor(): string
     {
         switch ($this->order_status) {
             case Order::ORDER_STATUS_CANCELED:
                 return 'red';
 
-            case Order::ORDER_STATUS_PENDING:
-                return 'orange';
+            case Order::ORDER_STATUS_COMPLETED:
+                return 'green';
 
             default:
                 if (
@@ -72,11 +83,19 @@ class OrderResource extends JsonResource
                     return 'orange';
                 }
 
-                return 'green';
+                return 'orange';
         }
     }
 
-    private function getPaymentStatusColor()
+
+    /**
+     * Get the color of the payment status.
+     *
+     * If the payment status is paid, return green. Otherwise, return red.
+     *
+     * @return string
+     */
+    private function getPaymentStatusColor(): string
     {
         switch ($this->payment_status) {
             case Order::PAYMENT_STATUS_PAID:
@@ -86,15 +105,23 @@ class OrderResource extends JsonResource
                 return 'red';
         }
     }
-    private function getDeliveryStatusColor()
+    /**
+     * Get the color of the delivery status.
+     *
+     * If the delivery status is delivered, return green. If the delivery status is failed, return red.
+     * Otherwise, return orange.
+     *
+     * @return string
+     */
+    private function getDeliveryStatusColor(): string
     {
         switch ($this->delivery_status) {
-            case Order::DELYVERY_STATUS_PENDING:
-                return 'orange';
+            case Order::DELYVERY_STATUS_DELIVERED:
+                return 'green';
             case Order::DELYVERY_STATUS_FAILED:
                 return 'red';
             default:
-                return 'green';
+                return 'orange';
         }
     }
 }
