@@ -138,6 +138,11 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // SLIDER ROUTE
         Route::apiResource('sliders', SliderController::class);
+
+        // ORDER ROUTE
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
+        Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
     });
 
     // CART ROUTE
@@ -148,6 +153,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::delete('carts/{id}', 'destroy')->name('destroy');
         Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
         Route::delete('carts/deleteCartSelected', 'deleteCartSelected')->name('deleteCartSelected');
-        Route::get('carts/add-paid-products', 'addPaidProductsToCart')->name('add-paid-products');
+        Route::get('carts/addPaidProducts', 'addPaidProductsToCart')->name('addPaidProducts');
     });
 });

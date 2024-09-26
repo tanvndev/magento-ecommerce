@@ -4,7 +4,7 @@ namespace App\Services\Interfaces\Order;
 
 interface OrderServiceInterface
 {
-    // public function paginate();
+    public function paginate();
 
     public function create();
 
@@ -13,6 +13,8 @@ interface OrderServiceInterface
     public function updatePayment(string $id, array $payload);
 
     public function getOrder(string $orderCode);
+
+    public function getOrderUserByCode(string $orderCode);
 
     public function getOrderByUser();
 }

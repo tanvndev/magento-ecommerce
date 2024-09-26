@@ -7,8 +7,11 @@ use App\Classes\Paypal;
 use App\Classes\Vnpay;
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\Client\ClientOrderCollection;
 use App\Http\Resources\Order\Client\ClientOrderResource;
+use App\Http\Resources\Order\OrderCollection;
+use App\Http\Resources\Order\OrderResource;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Services\Interfaces\Order\OrderServiceInterface;
@@ -24,6 +27,25 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
+
+    public function index()
+    {
+        $order = $this->orderService->paginate();
+
+        $data = new OrderCollection($order ?? []);
+
+        return successResponse('', $data);
+    }
+
+    public function show($orderCode)
+    {
+        $order = $this->orderService->getOrderUserByCode($orderCode);
+
+        $data = is_null($order) ? null : new OrderResource($order ?? []);
+
+        return successResponse('', $data);
+    }
+
     public function store(Request $request)
     {
         $order = $this->orderService->create();
@@ -35,6 +57,14 @@ class OrderController extends Controller
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
+
+    public function update(UpdateOrderRequest $request, string $id)
+    {
+        $response = $this->orderService->update($id);
+
+        return handleResponse($response);
+    }
+
 
     private function handlePaymentMethod(Order $order)
     {
@@ -67,7 +97,7 @@ class OrderController extends Controller
 
     public function getOrder(string $orderCode)
     {
-        $order = $this->orderService->getOrder($orderCode);
+        $order = $this->orderService->getOrderUserByCode($orderCode);
 
         $data = is_null($order) ? null : new ClientOrderResource($order ?? []);
 
