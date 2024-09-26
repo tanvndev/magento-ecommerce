@@ -6,11 +6,10 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cart\CreateAndUpdateRequest;
 use App\Http\Requests\WishList\StoreWishListRequest;
-use App\Http\Requests\WishList\UpdateWishListRequest;
 use App\Http\Resources\Cart\CartCollection;
 use App\Http\Resources\WishList\WishListCollection;
-use App\Http\Resources\WishList\WishListResource;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
+use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Repositories\Interfaces\WishList\WishListRepositoryInterface;
 use App\Services\Interfaces\Cart\CartServiceInterface;
 use App\Services\Interfaces\WishList\WishListServiceInterface;
@@ -23,18 +22,19 @@ class WishListController extends Controller
 
     protected $cartService;
 
-    protected $cartdRepository;
+    protected $cartRepository;
 
     public function __construct(
         WishListServiceInterface $wishListService,
         WishListRepositoryInterface $wishListRepository,
         CartServiceInterface $cartService,
-        CartRepositoryInterface $cartdRepository
+        CartRepositoryInterface $cartRepository,
+
     ) {
         $this->wishListService = $wishListService;
         $this->wishListRepository = $wishListRepository;
         $this->cartService = $cartService;
-        $this->cartdRepository = $cartdRepository;
+        $this->cartRepository = $cartRepository;
     }
 
     /**
@@ -95,5 +95,11 @@ class WishListController extends Controller
         $data = new CartCollection($response);
 
         return successResponse(__('messages.cart.success.create'), $data);
+    }
+    public function sendWishListMail()
+    {
+        $response = $this->wishListService->sendWishListMail();
+
+        return handleResponse($response);
     }
 }

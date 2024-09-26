@@ -50,7 +50,7 @@ Route::get('return/momo_ipn', [MomoController::class, 'handleMomoIpn'])->name('r
 //     ));
 // })->name('notifications');
 
-Route::get('test', [UserAddressController::class, 'index']);
+Route::get('test', [WishListController::class, 'sendWishListMail']);
 // PAYPAL
 Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal.success');
 Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');

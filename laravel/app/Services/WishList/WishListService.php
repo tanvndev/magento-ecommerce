@@ -4,6 +4,8 @@
 
 namespace App\Services\WishList;
 
+use App\Events\WishListEvent;
+use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Repositories\Interfaces\WishList\WishListRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\WishList\WishListServiceInterface;
@@ -13,10 +15,14 @@ class WishListService extends BaseService implements WishListServiceInterface
 
     protected $wishListRepository;
 
+    protected $userRepository;
+
     public function __construct(
         WishListRepositoryInterface $wishListRepository,
+        UserRepositoryInterface $userRepository
     ) {
         $this->wishListRepository = $wishListRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function paginate()
@@ -127,5 +133,25 @@ class WishListService extends BaseService implements WishListServiceInterface
 
             return successResponse(__('messages.wishlist.success.clean'));
         }, __('messages.wishlist.error.delete'));
+    }
+    public function sendWishListMail()
+    {
+        return $this->executeInTransaction(function () {
+
+            $userId = auth()->user()->id;
+
+            $user = $this->userRepository->findById($userId);
+
+            $data = $this->wishListRepository->findByWhere(
+                ['user_id' => $userId],
+                ['*'],
+                ['product_variant'],
+                true
+            )->take(5);
+
+            event(new WishListEvent($user, $data));
+
+            return successResponse(__('messages.wishlist.success.mail'));
+        }, __('messages.wishlist.error.mail'));
     }
 }

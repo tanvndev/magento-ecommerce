@@ -13,4 +13,6 @@ interface WishListServiceInterface
     public function destroyAll();
 
     public function getWishListByUserId();
+
+    public function sendWishListMail();
 }
