@@ -123,7 +123,9 @@
                         class="mr-2"
                         v-if="
                           ORDER_STATUS[2].value == order.order_status_code &&
-                          order.payment_status_code == PAYMENT_STATUS[1].value
+                          order.payment_status_code ==
+                            PAYMENT_STATUS[1].value &&
+                          DELYVERY_STATUS[2].value == order.delivery_status_code
                         "
                       >
                         <v-btn
@@ -220,6 +222,7 @@
                           size="large"
                           color="primary"
                           class="text-capitalize border"
+                          @click="handleOrderPayment(order.code)"
                           >Thanh toán</v-btn
                         >
                       </v-col>
@@ -303,7 +306,8 @@
                             <NuxtLink
                               :to="`/product/${item.slug}-${item.product_id}`"
                             >
-                              {{ item.product_variant_name }} toi laa con ga nami anasu chang ai co aisdkj asd
+                              {{ item.product_variant_name }} toi laa con ga
+                              nami anasu chang ai co aisdkj asd
                             </NuxtLink>
                           </div>
                           <div class="variant">
@@ -397,6 +401,21 @@ const confirmCompleteOrder = ref(false)
 const orderIdToUpdateStatus = ref(null)
 const comment = ref('')
 
+const handleOrderPayment = async (orderCode) => {
+  if (!orderCode) {
+    return toast('Có lỗi vui lòng tải lại trang.')
+  }
+
+  console.log(orderCode)
+
+  try {
+    const response = await $axios.get(`/orderPayment/${orderCode}`)
+
+    return (location.href = response?.url)
+  } catch (error) {
+    return toast('Có lỗi vui lòng tải lại trang.')
+  }
+}
 const openReviewDialog = (orderId) => {
   const order = orders.value.find((order) => order.id === orderId)
 

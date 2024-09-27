@@ -13,8 +13,8 @@ use App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Order\OrderServiceInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Exception;
-use Illuminate\Support\Facades\Cache;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
@@ -217,7 +217,33 @@ class OrderService extends BaseService implements OrderServiceInterface
         $order = $this->orderRepository->create($payload);
         $this->createOrderItems($order, $cartItems);
 
+        $this->decreaseStockProductVariants($cartItems);
+
         return $order;
+    }
+
+    /**
+     * Decrease stock of product variants when creating an order.
+     *
+     * This method loops through the cart items and decrements the stock of each product variant by the quantity of the cart item.
+     * It also sets the is_used flag of the product variant to true.
+     *
+     * @param  \Illuminate\Support\Collection  $cartItems
+     * @return void
+     */
+    private function decreaseStockProductVariants(Collection $cartItems): void
+    {
+        foreach ($cartItems as $cartItem) {
+            $productVariant = $cartItem->product_variant->lockForUpdate()->first();
+            $quantity = $cartItem->quantity;
+
+            $productVariant->update(
+                [
+                    'stock' => $productVariant->stock - $quantity,
+                    'is_used' => true
+                ]
+            );
+        }
     }
 
     /**
@@ -256,7 +282,6 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         return $paymentMethod;
     }
-
 
     /**
      * Get a shipping method by id.
@@ -333,6 +358,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         ];
     }
 
+
     /**
      * Apply voucher to order.
      *
@@ -344,7 +370,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         $voucher = $this->voucherRepository->findByWhere([
             'id'      => $payload['voucher_id'],
             'publish' => 1,
-        ]);
+        ])->lockForUpdate()->first();
 
         if (! $voucher) {
             throw new Exception('Voucher not found.');
@@ -362,7 +388,11 @@ class OrderService extends BaseService implements OrderServiceInterface
         } elseif ($voucher->value_type === Voucher::TYPE_FIXED) {
             $payload['discount'] = $voucher->value;
         }
+
+        $voucher->quantity -= 1;
+        $voucher->save();
     }
+
 
     /**
      * Create order items from cart items.

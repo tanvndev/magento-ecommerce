@@ -26,13 +26,14 @@
         <span class="text-[16px]"> {{ formatCurrency(order?.final_price) }}</span>
       </a-col>
     </a-row>
-    <a-divider />
+    <!-- <a-divider /> -->
 
-    <a-button size="large"> Cập nhập trạng thái vận chuyển </a-button>
+    <!-- <a-button size="large"> Cập nhập trạng thái vận chuyển </a-button> -->
   </div>
 </template>
 <script setup>
 import { defineProps } from 'vue';
+import { formatCurrency } from '@/utils/format';
 
 defineProps({
   order: Object,

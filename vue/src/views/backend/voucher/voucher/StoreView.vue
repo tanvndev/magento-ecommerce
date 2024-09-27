@@ -164,7 +164,6 @@ import {
 import { computed, onMounted, reactive } from 'vue';
 import { useForm } from 'vee-validate';
 import { formatMessages } from '@/utils/format';
-import { useStore } from 'vuex';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
@@ -172,7 +171,6 @@ import { DISCOUNT_TYPE, DISCOUNT_CONDITION_APPLY } from '@/static/constants';
 
 // VARIABLES
 
-const store = useStore();
 const { getOne, create, update, messages, data } = useCRUD();
 const id = computed(() => router.currentRoute.value.params.id || null);
 import { handleDateChangeToAnt } from '@/utils/helpers';
@@ -213,7 +211,7 @@ const onSubmit = handleSubmit(async (values) => {
     return (state.errors = formatMessages(messages.value));
   }
 
-  message.success(response.messages);
+  message.success(messages.value);
   state.errors = {};
   router.push({ name: 'voucher.index' });
 });
