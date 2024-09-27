@@ -56,8 +56,11 @@ return [
     'voucher' => [
         'error' => [
             'create' => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
+            'apply'  => 'Đơn hàng chưa đủ điều kiện áp dụng mã giảm giá.',
         ],
-        'success'    => 'Mã giảm giá đã được áp dụng thành công.',
+        'success' => [
+            'apply' => 'Áp dụng giảm giá thành công.',
+        ],
     ],
     'order' => [
         'error' => [

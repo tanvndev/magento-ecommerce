@@ -49,11 +49,13 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('getAllSlider', [SliderController::class, 'getAllSlider']);
     Route::get('getAllPaymentMethods', [PaymentMethodController::class, 'getAllPaymentMethod']);
     Route::get('getShippingMethodByProductVariant/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
+    Route::post('applyVoucher/{code}', [VoucherController::class, 'applyVoucher']);
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('getOrder/{orderCode}', [OrderController::class, 'getOrder']);
     Route::get('getOrderUser', [OrderController::class, 'getOrderByUser']);
+    Route::get('orderPayment/{orderCode}', [OrderController::class, 'handleOrderPayment']);
     Route::put('orders/update/completed/{id}', [OrderController::class, 'updateCompletedOrder']);
     Route::put('orders/update/cancelled/{id}', [OrderController::class, 'updateCancelledOrder']);
 

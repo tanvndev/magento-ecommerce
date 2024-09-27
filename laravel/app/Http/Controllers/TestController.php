@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Classes\Upload;
-use App\Models\Product;
-use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 
 class TestController extends Controller

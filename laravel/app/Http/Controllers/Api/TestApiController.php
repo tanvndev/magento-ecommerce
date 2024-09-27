@@ -19,7 +19,7 @@ class TestApiController extends Controller
     public function upload(Request $request)
     {
         $file = $request->file('file');
-        
+
         Upload::uploadImage($file);
     }
 }

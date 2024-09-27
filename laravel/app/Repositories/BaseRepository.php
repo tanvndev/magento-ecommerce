@@ -17,7 +17,13 @@ class BaseRepository implements BaseRepositoryInterface
         $this->model = $model;
     }
 
-    public function all($column = ['*'], $relation = [], $orderBy = null)
+    /**
+     * Get all records.
+     *
+     * @param  array|string  $column
+     * @return mixed
+     */
+    public function all($column = ['*'], array $relation = [], ?string $orderBy = null)
     {
         $query = $this->model->select($column);
 
@@ -32,13 +38,34 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->get();
     }
 
-    public function findById($modelId, $column = ['*'], $relation = [])
+    /**
+     * Find a record by its ID.
+     *
+     * @param  mixed  $modelId
+     * @param  array|string  $column
+     * @return mixed
+     */
+    public function findById($modelId, $column = ['*'], array $relation = [])
     {
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
-    public function findByWhere($conditions = [], $column = ['*'], $relation = [], $all = false, $orderBy = null, $whereInParams = [],  $withWhereHas = [], $withCount = [])
-    {
+    /**
+     * Find records by specified conditions.
+     *
+     * @param  array|string  $column
+     * @return mixed
+     */
+    public function findByWhere(
+        array $conditions = [],
+        $column = ['*'],
+        array $relation = [],
+        bool $all = false,
+        ?string $orderBy = null,
+        array $whereInParams = [],
+        array $withWhereHas = [],
+        array $withCount = []
+    ) {
         $query = $this->model->select($column);
 
         if ( ! empty($relation)) {
@@ -69,6 +96,11 @@ class BaseRepository implements BaseRepositoryInterface
         return $all ? $query->get() : $query->first();
     }
 
+    /**
+     * Find records where the specified field is in a given array of values.
+     *
+     * @return mixed
+     */
     public function findByWhereIn(
         array $values,
         string $field = 'id',
@@ -96,7 +128,13 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->get();
     }
 
-    public function findByWhereHas($condition = [], $column = ['*'], $relation = [], $alias = '', $all = false)
+    /**
+     * Find records by conditions with relationships.
+     *
+     * @param  array|string  $column
+     * @return mixed
+     */
+    public function findByWhereHas(array $condition = [], $column = ['*'], array $relation = [], string $alias = '', bool $all = false)
     {
 
         $query = $this->model->select($column);
@@ -109,16 +147,22 @@ class BaseRepository implements BaseRepositoryInterface
         return $all ? $query->get() : $query->first();
     }
 
+    /**
+     * Paginate records based on specified conditions.
+     *
+     * @param  array|string  $column
+     * @return mixed
+     */
     public function pagination(
-        $column = ['*'],
-        $condition = [],
-        $perPage = 10,
-        $orderBy = ['id' => 'DESC'],
-        $join = [],
-        $relations = [],
-        $groupBy = [],
-        $withWhereHas = [],
-        $rawQuery = [],
+        array $column = ['*'],
+        array $condition = [],
+        int $perPage = 10,
+        array $orderBy = ['id' => 'DESC'],
+        array $join = [],
+        array $relations = [],
+        array $groupBy = [],
+        array $withWhereHas = [],
+        array $rawQuery = []
     ) {
         $query = $this->model->select($column);
         $query->search($condition['search'] ?? null, $condition['searchFields'] ?? null)
@@ -146,13 +190,23 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->paginate($perPage)->withQueryString();
     }
 
-    public function create($payload = [])
+    /**
+     * Create a new record.
+     *
+     * @return mixed
+     */
+    public function create(array $payload = [])
     {
         $create = $this->model->create($payload);
 
         return $create->fresh();
     }
 
+    /**
+     * Create a new record or return the first record matching the given conditions.
+     *
+     * @return mixed
+     */
     public function firstOrCreate(array $condition, array $payload = [])
     {
         $create = $this->model->firstOrCreate($condition, $payload);
@@ -160,25 +214,48 @@ class BaseRepository implements BaseRepositoryInterface
         return $create;
     }
 
-    public function createBatch($payload = [])
+    /**
+     * Create multiple records in batch.
+     *
+     * @return mixed
+     */
+    public function createBatch(array $payload = [])
     {
         return $this->model->insert($payload);
     }
 
-    public function createPivot($model, $payload = [], $relation = '')
+    /**
+     * Create a pivot table record.
+     *
+     * @param  mixed  $model
+     * @return mixed
+     */
+    public function createPivot($model, array $payload = [], string $relation = '')
     {
         // attach($model->id, $payload) là phương thức được gọi để thêm một bản ghi mới vào bảng pivot.
         return $model->{$relation}()->attach($model->id, $payload);
     }
 
-    public function update($modelId, $payload = [])
+    /**
+     * Update an existing record.
+     *
+     * @param  mixed  $modelId
+     * @return mixed
+     */
+    public function update($modelId, array $payload = [])
     {
         $model = $this->findById($modelId);
 
         return $model->update($payload);
     }
 
-    public function save($modelId, $payload = [])
+    /**
+     * Save an existing record with the given ID.
+     *
+     * @param  mixed  $modelId
+     * @return mixed
+     */
+    public function save($modelId, array $payload = [])
     {
         $model = $this->findById($modelId);
         $model->fill($payload);
@@ -187,10 +264,15 @@ class BaseRepository implements BaseRepositoryInterface
         return $model;
     }
 
-    public function lockForUpdate(array $condition, array $payload)
+    /**
+     * Lock records for update.
+     *
+     * @return mixed
+     */
+    public function lockForUpdate(array $conditions, array $payload)
     {
         return $this->model->newQuery()
-            ->customWhere($condition)
+            ->customWhere($conditions)
             ->lockForUpdate()
             ->firstOrFail()
             ->fill($payload)
@@ -198,41 +280,78 @@ class BaseRepository implements BaseRepositoryInterface
     }
 
     // Truyen vao ham updateByWhereIn (Field name, array field name, va mang data can update)
-    public function updateByWhereIn($whereInField = '', $whereIn = [], $payload = [])
+    /**
+     * Update records by the specified field where values are in a given array.
+     *
+     * @return mixed
+     */
+    public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = [])
     {
         return $this->model->whereIn($whereInField, $whereIn)->update($payload);
     }
 
-    public function updateByWhere($conditions = [], $payload = [])
+    /**
+     * Update records based on specified conditions.
+     *
+     * @return mixed
+     */
+    public function updateByWhere(array $conditions = [], array $payload = [])
     {
         $query = $this->model->newQuery();
 
         return $query->customWhere($conditions)->update($payload);
     }
 
-    public function updateOrCreate($payload = [], $conditions = [])
+    /**
+     * Update or create a record based on specified conditions.
+     *
+     * @return mixed
+     */
+    public function updateOrCreate(array $payload = [], array $conditions = [])
     {
         $this->model->updateOrCreate($conditions, $payload);
     }
 
+    /**
+     * Delete a record by its ID.
+     *
+     * @param  mixed  $modelId
+     * @return mixed
+     */
     public function delete($modelId)
     {
         return $this->model->where('id', $modelId)->delete();
     }
 
-    public function deleteByWhere($conditions = [])
+    /**
+     * Delete records based on specified conditions.
+     *
+     * @return mixed
+     */
+    public function deleteByWhere(array $conditions = [])
     {
         $query = $this->model->newQuery();
 
         return $query->customWhere($conditions)->delete();
     }
 
-    public function deleteByWhereIn($whereInField = '', $whereIn = [])
+    /**
+     * Delete records where the specified field is in a given array of values.
+     *
+     * @return mixed
+     */
+    public function deleteByWhereIn(string $whereInField = '', array $whereIn = [])
     {
         return $this->model->whereIn($whereInField, $whereIn)->delete();
     }
 
     // Xoá cứng
+    /**
+     * Permanently delete a record by its ID.
+     *
+     * @param  mixed  $modelId
+     * @return mixed
+     */
     public function forceDelete($modelId)
     {
         $delete = $this->findById($modelId);
@@ -240,19 +359,34 @@ class BaseRepository implements BaseRepositoryInterface
         return $delete->forceDelete();
     }
 
-    public function forceDeleteByWhere($conditions)
+    /**
+     * Permanently delete records based on specified conditions.
+     *
+     * @return mixed
+     */
+    public function forceDeleteByWhere(array $conditions)
     {
         $query = $this->model->newQuery();
 
         return $query->customWhere($conditions)->forceDelete();
     }
 
-    public function forceDeleteByWhereIn($whereInField = '', $whereIn = [])
+    /**
+     * Permanently delete records where the specified field is in a given array of values.
+     *
+     * @return mixed
+     */
+    public function forceDeleteByWhereIn(string $whereInField = '', array $whereIn = [])
     {
         return $this->model->whereIn($whereInField, $whereIn)->forceDelete();
     }
 
-    public function restoreByWhereIn($whereInField = '', $whereIn = [])
+    /**
+     * Restore records where the specified field is in a given array of values.
+     *
+     * @return mixed
+     */
+    public function restoreByWhereIn(string $whereInField = '', array $whereIn = [])
     {
         return $this->model->whereIn($whereInField, $whereIn)->restore();
     }

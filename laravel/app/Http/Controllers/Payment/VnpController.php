@@ -66,7 +66,7 @@ class VnpController extends Controller
             }
         }
 
-        // return redirect()->route('checkout')->with('toast_error', 'Đặt hàng thất bại, vui lòng thử lại!');
+        return redirect()->away(env('NUXT_APP_URL') . '/payment-fail');
     }
 
     private function handleVnpIpn($get)

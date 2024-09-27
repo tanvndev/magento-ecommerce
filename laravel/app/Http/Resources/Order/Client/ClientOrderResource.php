@@ -50,8 +50,6 @@ class ClientOrderResource extends JsonResource
      *
      * If the payment method is not COD and the payment status is unpaid,
      * return the payment status as unpaid. Otherwise, return the order status.
-     *
-     * @return string
      */
     private function getOrderStatus(): string
     {
@@ -83,8 +81,6 @@ class ClientOrderResource extends JsonResource
      * If the order status is canceled, return red. If the order status is completed, return green.
      * If the payment method is not COD and the payment status is unpaid, return orange.
      * Otherwise, return orange.
-     *
-     * @return string
      */
     private function getOrderStatusColor(): string
     {

@@ -316,24 +316,28 @@ if ( ! function_exists('abbreviateName')) {
 }
 
 if ( ! function_exists('errorResponse')) {
-    function errorResponse(string $message): array
+    function errorResponse(string $message, $isResponse = false): array
     {
-        return [
-            'status'   => 'error',
+        $response = [
+            'status'   => 'success',
             'messages' => $message,
             'data'     => null,
         ];
+
+        return $isResponse ? response()->json($response, 500) : $response;
     }
 }
 
 if ( ! function_exists('successResponse')) {
-    function successResponse(string $message, $data = null): array
+    function successResponse(string $message, $data = null, bool $isResponse = false)
     {
-        return [
+        $response = [
             'status'   => 'success',
             'messages' => $message,
             'data'     => $data,
         ];
+
+        return $isResponse ? response()->json($response) : $response;
     }
 }
 

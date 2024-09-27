@@ -15,5 +15,6 @@ interface CartServiceInterface
     public function handleSelected($request);
 
     public function deleteCartSelected();
+
     public function addPaidProductsToCart($request);
 }

@@ -10,6 +10,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Services\Interfaces\Auth\AuthServiceInterface;
+use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -22,55 +23,75 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    public function register(RegisterRequest $request)
+    /**
+     * Register a new user.
+     *
+     * @param  \App\Http\Requests\RegisterRequest  $request
+     */
+    public function register(RegisterRequest $request): JsonResponse
     {
         $response = $this->authService->register();
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
-    public function login(LoginRequest $request)
+    /**
+     * Log in an existing user.
+     *
+     * @param  \App\Http\Requests\LoginRequest  $request
+     */
+    public function login(LoginRequest $request): JsonResponse
     {
-
         $credentials = $request->only('email', 'password');
 
         $user = User::where('email', $credentials['email'])->first();
 
         if ( ! $user) {
-            return errorResponse('Email hoặc mật khẩu không chính xác.');
+            return errorResponse('Email hoặc mật khẩu không chính xác.', true);
         }
 
         if ( ! $user->hasVerifiedEmail()) {
-            return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.');
+            return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.', true);
         }
 
         if ($token = JWTAuth::attempt($credentials)) {
             return $this->respondWithToken($token, 'Đăng nhập thành công.', $user);
         }
 
-        return errorResponse('Email hoặc mật khẩu không chính xác.');
+        return errorResponse('Email hoặc mật khẩu không chính xác.', true);
     }
 
-    public function forgotPassword(ForgotRequest $request)
+    /**
+     * Handle password reset for a user.
+     *
+     * @param  \App\Http\Requests\ForgotRequest  $request
+     */
+    public function forgotPassword(ForgotRequest $request): JsonResponse
     {
         $response = $this->authService->resetPassword();
 
         return handleResponse($response);
     }
 
-    public function me()
+    /**
+     * Get the authenticated user's information.
+     */
+    public function me(): JsonResponse
     {
         $user = new UserResource(auth()->user());
 
         return response()->json($user);
     }
 
-    public function refreshToken()
+    /**
+     * Refresh the authentication token.
+     */
+    public function refreshToken(): JsonResponse
     {
-        return $this->respondWithToken(auth()->refresh(), 'Token đã được thay đổi');
+        return $this->respondWithToken(auth()->refresh(), 'Token đã được thay đổi');
     }
 
-    private function respondWithToken($token, $message, $user = null)
+    private function respondWithToken(string $token, string $message, ?User $user = null): JsonResponse
     {
         return response()->json([
             'status'   => ResponseEnum::OK,
@@ -92,10 +113,13 @@ class AuthController extends Controller
         );
     }
 
-    public function logout()
+    /**
+     * Logout user (Revoke the token)
+     */
+    public function logout(): JsonResponse
     {
         auth()->logout();
 
-        return successResponse('Đăng xuất thành công.');
+        return successResponse('Đăng xuất thành công.', [], true);
     }
 }

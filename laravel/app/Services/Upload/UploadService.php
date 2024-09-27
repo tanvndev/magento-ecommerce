@@ -126,7 +126,7 @@ class UploadService extends BaseService implements UploadServiceInterface
             }
             $data = $this->paginate();
 
-            return successResponse(__('messages.upload.delete.sucess'), $data['data']);
+            return successResponse(__('messages.upload.delete.success'), $data['data']);
         } catch (Exception $e) {
             return errorResponse(__('messages.upload.delete.error'));
         }

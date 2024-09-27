@@ -27,7 +27,11 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $order = $this->orderService->paginate();
@@ -37,6 +41,12 @@ class OrderController extends Controller
         return successResponse('', $data);
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  string  $orderCode
+     * @return \Illuminate\Http\Response
+     */
     public function show($orderCode)
     {
         $order = $this->orderService->getOrderUserByCode($orderCode);
@@ -46,6 +56,11 @@ class OrderController extends Controller
         return successResponse('', $data);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $order = $this->orderService->create();
@@ -58,6 +73,11 @@ class OrderController extends Controller
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function update(UpdateOrderRequest $request, string $id)
     {
         $response = $this->orderService->update($id);
@@ -65,8 +85,35 @@ class OrderController extends Controller
         return handleResponse($response);
     }
 
+    /**
+     * Handle order payment.
+     *
+     * @param  string  $orderCode  The order code.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function handleOrderPayment(string $orderCode)
+    {
+        $order = $this->orderService->getOrderUserByCode($orderCode);
 
-    private function handlePaymentMethod(Order $order)
+        if ( ! $order) {
+            $response = [
+                'status'   => 'error',
+                'messages' => __('messages.order.error.create'),
+                'url'      => env('NUXT_APP_URL') . '/payment-fail',
+            ];
+
+            return handleResponse($response);
+        }
+
+        $response = $this->handlePaymentMethod($order);
+
+        return handleResponse($response);
+    }
+
+    /**
+     * Handle payment method.
+     */
+    private function handlePaymentMethod(Order $order): array
     {
         switch ($order->payment_method_id) {
             case PaymentMethod::VNPAY_ID:
@@ -88,13 +135,19 @@ class OrderController extends Controller
                     'url'      => env('NUXT_APP_URL') . '/order-success?code=' . $order->code,
                 ];
             default:
-                // code...
+
                 break;
         }
 
         return $response;
     }
 
+    /**
+     * Get an order by its code.
+     *
+     * @param  string  $orderCode  The order code.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getOrder(string $orderCode)
     {
         $order = $this->orderService->getOrderUserByCode($orderCode);
@@ -104,6 +157,11 @@ class OrderController extends Controller
         return successResponse('', $data);
     }
 
+    /**
+     * Get all orders of the current user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getOrderByUser()
     {
         $orders = $this->orderService->getOrderByUser();
@@ -113,6 +171,12 @@ class OrderController extends Controller
         return successResponse('', $data);
     }
 
+    /**
+     * Update the order status to completed.
+     *
+     * @param  string  $id  The order id.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateCompletedOrder(string $id)
     {
         $response = $this->orderService->updateStatusOrderToCompleted($id);
@@ -120,6 +184,12 @@ class OrderController extends Controller
         return handleResponse($response);
     }
 
+    /**
+     * Update the order status to cancelled.
+     *
+     * @param  string  $id  The order id.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateCancelledOrder(string $id)
     {
 
