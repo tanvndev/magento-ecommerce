@@ -10,6 +10,7 @@
           hint="Bạn có thể tìm kiếm theo ID đơn hàng"
           variant="outlined"
           clearable
+          autofocus
           density="comfortable"
           placeholder="Bạn có thể tìm kiếm theo ID đơn hàng"
         ></v-text-field>

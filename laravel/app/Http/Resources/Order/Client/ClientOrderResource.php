@@ -24,6 +24,10 @@ class ClientOrderResource extends JsonResource
             'customer_email'             => $this->customer_email,
             'shipping_address'           => $this->shipping_address,
             'order_status'               => $this->getOrderStatus(),
+            'order_status_code'          => $this->order_status,
+            'delivery_status_code'       => $this->delivery_status,
+            'payment_status_code'        => $this->payment_status,
+            'payment_method_id'          => $this->payment_method_id,
             'order_status_color'         => $this->getOrderStatusColor(),
             'payment_status'             => Order::PAYMENT_STATUS[$this->payment_status],
             'delivery_status'            => Order::DELYVERY_STATUS[$this->delivery_status],
@@ -56,6 +60,18 @@ class ClientOrderResource extends JsonResource
             && $this->payment_status == Order::PAYMENT_STATUS_UNPAID
         ) {
             return Order::PAYMENT_STATUS[Order::PAYMENT_STATUS_UNPAID];
+        }
+
+        if (
+            $this->order_status == Order::ORDER_STATUS_CANCELED
+        ) {
+            return Order::ORDER_STATUS[Order::ORDER_STATUS_CANCELED];
+        }
+
+        if (
+            $this->delivery_status == Order::DELYVERY_STATUS_PENDING
+        ) {
+            return Order::DELYVERY_STATUS[Order::DELYVERY_STATUS_PENDING];
         }
 
         return Order::ORDER_STATUS[$this->order_status];
