@@ -11,6 +11,7 @@ use App\Http\Resources\Voucher\VoucherCollection;
 use App\Http\Resources\Voucher\VoucherResource;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\Interfaces\Voucher\VoucherServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class VoucherController extends Controller
 {
@@ -26,51 +27,73 @@ class VoucherController extends Controller
         $this->voucherRepository = $voucherRepository;
     }
 
+
     /**
-     * Display a listing of the resource.
+     * Get all vouchers.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->voucherService->paginate();
         $data = new VoucherCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
+
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param \App\Http\Requests\Voucher\StoreVoucherRequest $request
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreVoucherRequest $request)
+    public function store(StoreVoucherRequest $request): JsonResponse
     {
         $response = $this->voucherService->create();
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
+
     /**
      * Display the specified resource.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $Voucher = new VoucherResource($this->voucherRepository->findById($id));
 
         return successResponse('', $Voucher);
     }
 
+
     /**
      * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\Voucher\UpdateVoucherRequest  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateVoucherRequest $request, string $id)
+    public function update(UpdateVoucherRequest $request, string $id): JsonResponse
     {
         $response = $this->voucherService->update($id);
 
         return handleResponse($response);
     }
 
+
     /**
      * Remove the specified resource from storage.
+     *
+     * @param string $id
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->voucherService->destroy($id);
 
@@ -79,12 +102,31 @@ class VoucherController extends Controller
 
     // CLIENT API //
 
-    public function getAllVoucher()
+    /**
+     * Get all vouchers.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllVoucher(): JsonResponse
     {
         $paginator = $this->voucherService->getAllVoucher();
 
         $data = new ClientVoucherCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
+    }
+
+    /**
+     * Apply a voucher to a user's cart.
+     *
+     * @param string $code
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function applyVoucher(string $code): JsonResponse
+    {
+        $response = $this->voucherService->applyVoucher($code);
+
+        return handleResponse($response);
     }
 }
