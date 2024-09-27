@@ -28,8 +28,6 @@ class AttributeController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -39,12 +37,8 @@ class AttributeController extends Controller
         return successResponse('', $data, true);
     }
 
-
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\Attribute\StoreAttributeRequest  $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreAttributeRequest $request): JsonResponse
     {
@@ -53,12 +47,8 @@ class AttributeController extends Controller
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
-
     /**
      * Display the specified resource.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -67,13 +57,8 @@ class AttributeController extends Controller
         return successResponse('', $response, true);
     }
 
-
     /**
      * Update the specified resource in storage.
-     *
-     * @param  UpdateAttributeRequest  $request
-     * @param  string  $id
-     * @return JsonResponse
      */
     public function update(UpdateAttributeRequest $request, string $id): JsonResponse
     {
@@ -82,13 +67,8 @@ class AttributeController extends Controller
         return handleResponse($response);
     }
 
-
     /**
      * Remove the specified resource from storage.
-     *
-     * @param string $id
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {

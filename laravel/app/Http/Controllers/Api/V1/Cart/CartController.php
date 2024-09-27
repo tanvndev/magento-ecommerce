@@ -26,8 +26,6 @@ class CartController extends Controller
 
     /**
      * Display the user's cart.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -40,9 +38,6 @@ class CartController extends Controller
 
     /**
      * Create or update an item in the cart.
-     *
-     * @param \App\Http\Requests\Cart\CreateAndUpdateRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function createOrUpdate(CreateAndUpdateRequest $request): JsonResponse
     {
@@ -59,9 +54,6 @@ class CartController extends Controller
 
     /**
      * Remove the specified item from the cart.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
@@ -74,8 +66,6 @@ class CartController extends Controller
 
     /**
      * Clean the entire cart.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function forceDestroy(): JsonResponse
     {
@@ -86,9 +76,6 @@ class CartController extends Controller
 
     /**
      * Handle selected items in the cart.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function handleSelected(Request $request): JsonResponse
     {
@@ -101,8 +88,6 @@ class CartController extends Controller
 
     /**
      * Delete selected items from the cart.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function deleteCartSelected(): JsonResponse
     {
@@ -113,9 +98,6 @@ class CartController extends Controller
 
     /**
      * Add paid products to the cart.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function addPaidProductsToCart(Request $request): JsonResponse
     {

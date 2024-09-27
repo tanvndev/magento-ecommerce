@@ -20,20 +20,18 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Get all records.
      *
-     * @param array|string $column
-     * @param array $relation
-     * @param string|null $orderBy
+     * @param  array|string  $column
      * @return mixed
      */
     public function all($column = ['*'], array $relation = [], ?string $orderBy = null)
     {
         $query = $this->model->select($column);
 
-        if (! is_null($orderBy)) {
+        if ( ! is_null($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if (! empty($relation)) {
+        if ( ! empty($relation)) {
             return $query->relation($relation)->get();
         }
 
@@ -43,9 +41,8 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Find a record by its ID.
      *
-     * @param mixed $modelId
-     * @param array|string $column
-     * @param array $relation
+     * @param  mixed  $modelId
+     * @param  array|string  $column
      * @return mixed
      */
     public function findById($modelId, $column = ['*'], array $relation = [])
@@ -56,14 +53,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Find records by specified conditions.
      *
-     * @param array $conditions
-     * @param array|string $column
-     * @param array $relation
-     * @param bool $all
-     * @param string|null $orderBy
-     * @param array $whereInParams
-     * @param array $withWhereHas
-     * @param array $withCount
+     * @param  array|string  $column
      * @return mixed
      */
     public function findByWhere(
@@ -78,25 +68,25 @@ class BaseRepository implements BaseRepositoryInterface
     ) {
         $query = $this->model->select($column);
 
-        if (! empty($relation)) {
+        if ( ! empty($relation)) {
             $query->relation($relation);
         }
 
         $query->customWhere($conditions);
 
-        if (! empty($whereInParams)) {
+        if ( ! empty($whereInParams)) {
             $query->whereIn($whereInParams['field'], $whereInParams['value']);
         }
 
-        if (! is_null($orderBy)) {
+        if ( ! is_null($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if (! empty($withCount)) {
+        if ( ! empty($withCount)) {
             $query->withCount($withCount);
         }
 
-        if (! empty($withWhereHas)) {
+        if ( ! empty($withWhereHas)) {
             // 'relation_name' => [
             //     ['field', 'operator', 'value'],
             // ]
@@ -109,11 +99,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Find records where the specified field is in a given array of values.
      *
-     * @param array $values
-     * @param string $field
-     * @param array $columns
-     * @param array $relations
-     * @param array $relationConditions
      * @return mixed
      */
     public function findByWhereIn(
@@ -125,15 +110,15 @@ class BaseRepository implements BaseRepositoryInterface
     ) {
         $query = $this->model->newQuery()->whereIn($field, $values);
 
-        if (! empty($columns)) {
+        if ( ! empty($columns)) {
             $query->select($columns);
         }
 
-        if (! empty($relations)) {
+        if ( ! empty($relations)) {
             $query->with($relations);
         }
 
-        if (! empty($relationConditions)) {
+        if ( ! empty($relationConditions)) {
             // 'relation_name' => [
             //     ['field', 'operator', 'value'],
             // ]
@@ -146,11 +131,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Find records by conditions with relationships.
      *
-     * @param array $condition
-     * @param array|string $column
-     * @param array $relation
-     * @param string $alias
-     * @param bool $all
+     * @param  array|string  $column
      * @return mixed
      */
     public function findByWhereHas(array $condition = [], $column = ['*'], array $relation = [], string $alias = '', bool $all = false)
@@ -169,15 +150,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Paginate records based on specified conditions.
      *
-     * @param array|string $column
-     * @param array $condition
-     * @param int $perPage
-     * @param array $orderBy
-     * @param array $join
-     * @param array $relations
-     * @param array $groupBy
-     * @param array $withWhereHas
-     * @param array $rawQuery
+     * @param  array|string  $column
      * @return mixed
      */
     public function pagination(
@@ -202,14 +175,14 @@ class BaseRepository implements BaseRepositoryInterface
             ->customGroupBy($groupBy ?? null)
             ->customOrderBy($orderBy ?? null);
 
-        if (! empty($withWhereHas)) {
+        if ( ! empty($withWhereHas)) {
             // Apply constraints to eager-loaded relationships
             foreach ($withWhereHas as $relation => $callback) {
                 $query->whereHas($relation, $callback);
             }
         }
 
-        if (! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
+        if ( ! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
             $query->onlyTrashed();
         }
 
@@ -220,7 +193,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Create a new record.
      *
-     * @param array $payload
      * @return mixed
      */
     public function create(array $payload = [])
@@ -233,8 +205,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Create a new record or return the first record matching the given conditions.
      *
-     * @param array $condition
-     * @param array $payload
      * @return mixed
      */
     public function firstOrCreate(array $condition, array $payload = [])
@@ -247,7 +217,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Create multiple records in batch.
      *
-     * @param array $payload
      * @return mixed
      */
     public function createBatch(array $payload = [])
@@ -258,9 +227,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Create a pivot table record.
      *
-     * @param mixed $model
-     * @param array $payload
-     * @param string $relation
+     * @param  mixed  $model
      * @return mixed
      */
     public function createPivot($model, array $payload = [], string $relation = '')
@@ -272,8 +239,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Update an existing record.
      *
-     * @param mixed $modelId
-     * @param array $payload
+     * @param  mixed  $modelId
      * @return mixed
      */
     public function update($modelId, array $payload = [])
@@ -286,8 +252,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Save an existing record with the given ID.
      *
-     * @param mixed $modelId
-     * @param array $payload
+     * @param  mixed  $modelId
      * @return mixed
      */
     public function save($modelId, array $payload = [])
@@ -302,8 +267,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Lock records for update.
      *
-     * @param array $conditions
-     * @param array $payload
      * @return mixed
      */
     public function lockForUpdate(array $conditions, array $payload)
@@ -320,9 +283,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Update records by the specified field where values are in a given array.
      *
-     * @param string $whereInField
-     * @param array $whereIn
-     * @param array $payload
      * @return mixed
      */
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = [])
@@ -333,8 +293,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Update records based on specified conditions.
      *
-     * @param array $conditions
-     * @param array $payload
      * @return mixed
      */
     public function updateByWhere(array $conditions = [], array $payload = [])
@@ -347,8 +305,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Update or create a record based on specified conditions.
      *
-     * @param array $payload
-     * @param array $conditions
      * @return mixed
      */
     public function updateOrCreate(array $payload = [], array $conditions = [])
@@ -359,7 +315,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Delete a record by its ID.
      *
-     * @param mixed $modelId
+     * @param  mixed  $modelId
      * @return mixed
      */
     public function delete($modelId)
@@ -370,7 +326,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Delete records based on specified conditions.
      *
-     * @param array $conditions
      * @return mixed
      */
     public function deleteByWhere(array $conditions = [])
@@ -383,8 +338,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Delete records where the specified field is in a given array of values.
      *
-     * @param string $whereInField
-     * @param array $whereIn
      * @return mixed
      */
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = [])
@@ -396,7 +349,7 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Permanently delete a record by its ID.
      *
-     * @param mixed $modelId
+     * @param  mixed  $modelId
      * @return mixed
      */
     public function forceDelete($modelId)
@@ -409,7 +362,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Permanently delete records based on specified conditions.
      *
-     * @param array $conditions
      * @return mixed
      */
     public function forceDeleteByWhere(array $conditions)
@@ -422,8 +374,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Permanently delete records where the specified field is in a given array of values.
      *
-     * @param string $whereInField
-     * @param array $whereIn
      * @return mixed
      */
     public function forceDeleteByWhereIn(string $whereInField = '', array $whereIn = [])
@@ -434,8 +384,6 @@ class BaseRepository implements BaseRepositoryInterface
     /**
      * Restore records where the specified field is in a given array of values.
      *
-     * @param string $whereInField
-     * @param array $whereIn
      * @return mixed
      */
     public function restoreByWhereIn(string $whereInField = '', array $whereIn = [])

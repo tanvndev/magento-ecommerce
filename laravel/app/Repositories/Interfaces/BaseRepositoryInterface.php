@@ -7,9 +7,7 @@ interface BaseRepositoryInterface
     /**
      * Get all records.
      *
-     * @param array|string $column
-     * @param array $relation
-     * @param string|null $orderBy
+     * @param  array|string  $column
      * @return mixed
      */
     public function all($column = ['*'], array $relation = [], ?string $orderBy = null);
@@ -17,9 +15,8 @@ interface BaseRepositoryInterface
     /**
      * Find a record by its ID.
      *
-     * @param mixed $modelId
-     * @param array|string $column
-     * @param array $relation
+     * @param  mixed  $modelId
+     * @param  array|string  $column
      * @return mixed
      */
     public function findById($modelId, $column = ['*'], array $relation = []);
@@ -27,14 +24,7 @@ interface BaseRepositoryInterface
     /**
      * Find records by specified conditions.
      *
-     * @param array $conditions
-     * @param array|string $column
-     * @param array $relation
-     * @param bool $all
-     * @param string|null $orderBy
-     * @param array $whereInParams
-     * @param array $withWhereHas
-     * @param array $withCount
+     * @param  array|string  $column
      * @return mixed
      */
     public function findByWhere(
@@ -51,11 +41,7 @@ interface BaseRepositoryInterface
     /**
      * Find records by conditions with relationships.
      *
-     * @param array $condition
-     * @param array|string $column
-     * @param array $relation
-     * @param string $alias
-     * @param bool $all
+     * @param  array|string  $column
      * @return mixed
      */
     public function findByWhereHas(array $condition = [], $column = ['*'], array $relation = [], string $alias = '', bool $all = false);
@@ -63,11 +49,6 @@ interface BaseRepositoryInterface
     /**
      * Find records where the specified field is in a given array of values.
      *
-     * @param array $values
-     * @param string $field
-     * @param array $columns
-     * @param array $relations
-     * @param array $relationConditions
      * @return mixed
      */
     public function findByWhereIn(
@@ -81,7 +62,6 @@ interface BaseRepositoryInterface
     /**
      * Create a new record.
      *
-     * @param array $payload
      * @return mixed
      */
     public function create(array $payload = []);
@@ -89,8 +69,6 @@ interface BaseRepositoryInterface
     /**
      * Create a new record or return the first record matching the given conditions.
      *
-     * @param array $condition
-     * @param array $payload
      * @return mixed
      */
     public function firstOrCreate(array $condition, array $payload = []);
@@ -98,7 +76,6 @@ interface BaseRepositoryInterface
     /**
      * Create multiple records in batch.
      *
-     * @param array $payload
      * @return mixed
      */
     public function createBatch(array $payload = []);
@@ -106,9 +83,7 @@ interface BaseRepositoryInterface
     /**
      * Create a pivot table record.
      *
-     * @param mixed $model
-     * @param array $payload
-     * @param string $relation
+     * @param  mixed  $model
      * @return mixed
      */
     public function createPivot($model, array $payload = [], string $relation = '');
@@ -116,8 +91,7 @@ interface BaseRepositoryInterface
     /**
      * Update an existing record.
      *
-     * @param mixed $modelId
-     * @param array $payload
+     * @param  mixed  $modelId
      * @return mixed
      */
     public function update($modelId, array $payload = []);
@@ -125,8 +99,7 @@ interface BaseRepositoryInterface
     /**
      * Save an existing record with the given ID.
      *
-     * @param mixed $modelId
-     * @param array $payload
+     * @param  mixed  $modelId
      * @return mixed
      */
     public function save($modelId, array $payload = []);
@@ -134,9 +107,6 @@ interface BaseRepositoryInterface
     /**
      * Update records by the specified field where values are in a given array.
      *
-     * @param string $whereInField
-     * @param array $whereIn
-     * @param array $payload
      * @return mixed
      */
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = []);
@@ -144,8 +114,7 @@ interface BaseRepositoryInterface
     /**
      * Update records based on specified conditions.
      *
-     * @param array $condition
-     * @param array $payload
+     * @param  array  $condition
      * @return mixed
      */
     public function updateByWhere(array $conditions = [], array $payload = []);
@@ -153,8 +122,7 @@ interface BaseRepositoryInterface
     /**
      * Lock records for update.
      *
-     * @param array $condition
-     * @param array $payload
+     * @param  array  $condition
      * @return mixed
      */
     public function lockForUpdate(array $conditions, array $payload);
@@ -162,7 +130,7 @@ interface BaseRepositoryInterface
     /**
      * Delete a record by its ID.
      *
-     * @param mixed $modelId
+     * @param  mixed  $modelId
      * @return mixed
      */
     public function delete($modelId);
@@ -170,8 +138,6 @@ interface BaseRepositoryInterface
     /**
      * Update or create a record based on specified conditions.
      *
-     * @param array $payload
-     * @param array $conditions
      * @return mixed
      */
     public function updateOrCreate(array $payload = [], array $conditions = []);
@@ -179,7 +145,6 @@ interface BaseRepositoryInterface
     /**
      * Delete records based on specified conditions.
      *
-     * @param array $conditions
      * @return mixed
      */
     public function deleteByWhere(array $conditions = []);
@@ -187,8 +152,6 @@ interface BaseRepositoryInterface
     /**
      * Delete records where the specified field is in a given array of values.
      *
-     * @param string $whereInField
-     * @param array $whereIn
      * @return mixed
      */
     public function deleteByWhereIn(string $whereInField = '', array $whereIn = []);
@@ -196,7 +159,7 @@ interface BaseRepositoryInterface
     /**
      * Permanently delete a record by its ID.
      *
-     * @param mixed $modelId
+     * @param  mixed  $modelId
      * @return mixed
      */
     public function forceDelete($modelId);
@@ -204,7 +167,6 @@ interface BaseRepositoryInterface
     /**
      * Permanently delete records based on specified conditions.
      *
-     * @param array $conditions
      * @return mixed
      */
     public function forceDeleteByWhere(array $conditions);
@@ -212,8 +174,6 @@ interface BaseRepositoryInterface
     /**
      * Permanently delete records where the specified field is in a given array of values.
      *
-     * @param string $whereInField
-     * @param array $whereIn
      * @return mixed
      */
     public function forceDeleteByWhereIn(string $whereInField = '', array $whereIn = []);
@@ -221,8 +181,6 @@ interface BaseRepositoryInterface
     /**
      * Restore records where the specified field is in a given array of values.
      *
-     * @param string $whereInField
-     * @param array $whereIn
      * @return mixed
      */
     public function restoreByWhereIn(string $whereInField = '', array $whereIn = []);
@@ -230,15 +188,7 @@ interface BaseRepositoryInterface
     /**
      * Paginate records based on specified conditions.
      *
-     * @param array|string $column
-     * @param array $condition
-     * @param int $perPage
-     * @param array $orderBy
-     * @param array $join
-     * @param array $relations
-     * @param array $groupBy
-     * @param array $withWhereHas
-     * @param array $rawQuery
+     * @param  array|string  $column
      * @return mixed
      */
     public function pagination(

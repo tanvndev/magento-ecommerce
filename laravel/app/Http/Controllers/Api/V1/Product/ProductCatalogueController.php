@@ -28,8 +28,6 @@ class ProductCatalogueController extends Controller
 
     /**
      * Display a listing of the product catalogues.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -40,9 +38,6 @@ class ProductCatalogueController extends Controller
 
     /**
      * Store a newly created product catalogue in storage.
-     *
-     * @param \App\Http\Requests\Product\StoreProductCatalogueRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreProductCatalogueRequest $request): JsonResponse
     {
@@ -53,9 +48,6 @@ class ProductCatalogueController extends Controller
 
     /**
      * Display the specified product catalogue.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -66,10 +58,6 @@ class ProductCatalogueController extends Controller
 
     /**
      * Update the specified product catalogue in storage.
-     *
-     * @param \App\Http\Requests\Product\UpdateProductCatalogueRequest $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateProductCatalogueRequest $request, string $id): JsonResponse
     {
@@ -80,9 +68,6 @@ class ProductCatalogueController extends Controller
 
     /**
      * Remove the specified product catalogue from storage.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
@@ -93,8 +78,6 @@ class ProductCatalogueController extends Controller
 
     /**
      * List all product catalogues for the client.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function list(): JsonResponse
     {

@@ -41,8 +41,8 @@ class UpdateOrderRequest extends FormRequest
     {
         return [
             'order_status'      => 'Trạng thái đơn hàng',
-            'payment_status' => 'Trạng thái thanh toán',
-            'delivery_status' => 'Trạng thái giao hàng',
+            'payment_status'    => 'Trạng thái thanh toán',
+            'delivery_status'   => 'Trạng thái giao hàng',
         ];
     }
 

@@ -29,8 +29,6 @@ class ShippingMethodController extends Controller
 
     /**
      * Display a listing of the shipping methods.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -42,9 +40,6 @@ class ShippingMethodController extends Controller
 
     /**
      * Store a newly created shipping method in storage.
-     *
-     * @param \App\Http\Requests\ShippingMethod\StoreShippingMethodRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreShippingMethodRequest $request): JsonResponse
     {
@@ -55,9 +50,6 @@ class ShippingMethodController extends Controller
 
     /**
      * Display the specified shipping method.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -68,10 +60,6 @@ class ShippingMethodController extends Controller
 
     /**
      * Update the specified shipping method in storage.
-     *
-     * @param \App\Http\Requests\ShippingMethod\UpdateShippingMethodRequest $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateShippingMethodRequest $request, string $id): JsonResponse
     {
@@ -84,8 +72,6 @@ class ShippingMethodController extends Controller
 
     /**
      * Get all available shipping methods for clients.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getAllShippingMethod(): JsonResponse
     {
@@ -98,9 +84,6 @@ class ShippingMethodController extends Controller
 
     /**
      * Get shipping methods available for the specified product variant.
-     *
-     * @param string $productVariantIds
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getShippingMethodByProductVariant(string $productVariantIds): JsonResponse
     {

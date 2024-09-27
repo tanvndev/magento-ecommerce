@@ -32,8 +32,6 @@ class ProductController extends Controller
 
     /**
      * Display a listing of the products.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -45,9 +43,6 @@ class ProductController extends Controller
 
     /**
      * Store a newly created product in storage.
-     *
-     * @param \App\Http\Requests\Product\StoreProductRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreProductRequest $request): JsonResponse
     {
@@ -58,9 +53,6 @@ class ProductController extends Controller
 
     /**
      * Display the specified product.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -73,10 +65,6 @@ class ProductController extends Controller
 
     /**
      * Update the specified product in storage.
-     *
-     * @param \App\Http\Requests\Product\UpdateProductRequest $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateProductRequest $request, string $id): JsonResponse
     {
@@ -87,9 +75,6 @@ class ProductController extends Controller
 
     /**
      * Remove the specified product from storage.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
@@ -100,8 +85,6 @@ class ProductController extends Controller
 
     /**
      * Get all product variants.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getProductVariants(): JsonResponse
     {
@@ -113,9 +96,6 @@ class ProductController extends Controller
 
     /**
      * Update a specific product variant.
-     *
-     * @param \App\Http\Requests\Product\UpdateProductVariantRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function updateVariant(UpdateProductVariantRequest $request): JsonResponse
     {
@@ -126,9 +106,6 @@ class ProductController extends Controller
 
     /**
      * Delete a specific product variant.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function deleteVariant(string $id): JsonResponse
     {
@@ -139,10 +116,6 @@ class ProductController extends Controller
 
     /**
      * Update attributes for a specific product.
-     *
-     * @param \App\Http\Requests\Product\UpdateProductAttributeRequest $request
-     * @param string $productId
-     * @return \Illuminate\Http\JsonResponse
      */
     public function updateAttribute(UpdateProductAttributeRequest $request, string $productId): JsonResponse
     {
@@ -155,9 +128,6 @@ class ProductController extends Controller
 
     /**
      * Get a specific product by its slug.
-     *
-     * @param string $slug
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getProduct(string $slug): JsonResponse
     {

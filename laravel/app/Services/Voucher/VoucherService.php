@@ -5,11 +5,12 @@
 namespace App\Services\Voucher;
 
 use App\Models\Voucher;
+use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Voucher\VoucherServiceInterface;
-use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 
 class VoucherService extends BaseService implements VoucherServiceInterface
@@ -25,7 +26,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         $this->voucherRepository = $voucherRepository;
         $this->cartRepository = $cartRepository;
     }
-
 
     /**
      * Get all vouchers and filter with condition from request.
@@ -83,12 +83,9 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         }, __('messages.create.error'));
     }
 
-
-
     /**
      * Update the specified resource in storage.
      *
-     * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function update(string $id)
@@ -102,11 +99,9 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         }, __('messages.update.error'));
     }
 
-
     /**
      * Destroy the specified resource from storage.
      *
-     * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(string $id)
@@ -120,8 +115,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
     /**
      * Prepare payload for voucher update/create.
-     *
-     * @return array
      */
     private function preparePayload(): array
     {
@@ -140,7 +133,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      *
      * @return \Illuminate\Http\JsonResponse
      */
-
     public function getAllVoucher()
     {
         $request = request();
@@ -179,9 +171,9 @@ class VoucherService extends BaseService implements VoucherServiceInterface
     /**
      * Get cart items by user id.
      *
-     * @param int $userId
      * @return \Illuminate\Database\Eloquent\Collection
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     private function getCartItems(int $userId)
     {
@@ -200,8 +192,8 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if (! $cart) {
-            throw new \Exception('Cart not found.');
+        if ( ! $cart) {
+            throw new Exception('Cart not found.');
         }
 
         return $cart->cart_items;
@@ -210,7 +202,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
     /**
      * Apply voucher to order
      *
-     * @param string $code
      *
      * @return array
      */
@@ -225,27 +216,21 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
         $condition = $this->handleConditionVoucher($voucher, $cartItems, $totalPrice);
 
-        if (!$condition) {
+        if ( ! $condition) {
             return errorResponse(__('messages.voucher.error.apply'));
         }
 
         $discount = $this->getDisount($voucher, $totalPrice);
         $data = [
             'voucher_id' => $voucher->id,
-            'discount' => $discount,
+            'discount'   => $discount,
         ];
 
         return successResponse(__('messages.voucher.success.apply'), $data);
     }
 
-
     /**
      * Calculate discount value
-     *
-     * @param Voucher $voucher
-     * @param float $totalPrice
-     *
-     * @return float
      */
     private function getDisount(Voucher $voucher, float $totalPrice): float
     {
@@ -261,12 +246,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
     /**
      * Handle condition voucher before apply to cart
-     *
-     * @param Voucher $voucher
-     * @param Collection $cartItems
-     * @param float $totalPrice
-     *
-     * @return bool
      */
     /**
      * Conditions:
@@ -275,8 +254,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      * - Subtotal price of cart is greater than or equal to subtotal price of voucher
      * - Min quantity of voucher is less than or equal to quantity of items in cart
      * - Apply to all items in cart
-     *
-     * @return bool
      */
     private function handleConditionVoucher(Voucher $voucher, Collection $cartItems, float $totalPrice): bool
     {
@@ -311,7 +288,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      * Calculate total price of cart items.
      *
      * @param  \Illuminate\Database\Eloquent\Collection  $cartItems
-     * @return float
      */
     private function calculateTotalPrice($cartItems): float
     {
@@ -339,8 +315,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      * price if $returnOriginalPrice is true, or null if it is false.
      *
      * @param  \App\Models\ProductVariant  $productVariant
-     * @param  bool  $returnOriginalPrice
-     * @return float|null
      */
     private function getEffectivePrice($productVariant, bool $returnOriginalPrice = true): ?float
     {
@@ -362,11 +336,10 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      * the sale price is valid.
      *
      * @param  \App\Models\ProductVariant  $productVariant
-     * @return bool
      */
     private function isSalePriceValid($productVariant): bool
     {
-        if (! $productVariant->sale_price || ! $productVariant->price) {
+        if ( ! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 

@@ -27,11 +27,8 @@ class VoucherController extends Controller
         $this->voucherRepository = $voucherRepository;
     }
 
-
     /**
      * Get all vouchers.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -41,13 +38,8 @@ class VoucherController extends Controller
         return successResponse('', $data, true);
     }
 
-
     /**
      * Store a newly created resource in storage.
-     *
-     * @param \App\Http\Requests\Voucher\StoreVoucherRequest $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreVoucherRequest $request): JsonResponse
     {
@@ -56,12 +48,8 @@ class VoucherController extends Controller
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
-
     /**
      * Display the specified resource.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -70,13 +58,8 @@ class VoucherController extends Controller
         return successResponse('', $Voucher);
     }
 
-
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\Voucher\UpdateVoucherRequest  $request
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateVoucherRequest $request, string $id): JsonResponse
     {
@@ -85,13 +68,8 @@ class VoucherController extends Controller
         return handleResponse($response);
     }
 
-
     /**
      * Remove the specified resource from storage.
-     *
-     * @param string $id
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
@@ -104,8 +82,6 @@ class VoucherController extends Controller
 
     /**
      * Get all vouchers.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getAllVoucher(): JsonResponse
     {
@@ -118,10 +94,6 @@ class VoucherController extends Controller
 
     /**
      * Apply a voucher to a user's cart.
-     *
-     * @param string $code
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function applyVoucher(string $code): JsonResponse
     {

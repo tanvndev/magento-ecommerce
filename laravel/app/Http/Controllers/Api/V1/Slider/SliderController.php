@@ -28,8 +28,6 @@ class SliderController extends Controller
 
     /**
      * Display a listing of the sliders.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -41,9 +39,6 @@ class SliderController extends Controller
 
     /**
      * Store a newly created slider in storage.
-     *
-     * @param \App\Http\Requests\Slider\StoreSliderRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreSliderRequest $request): JsonResponse
     {
@@ -54,9 +49,6 @@ class SliderController extends Controller
 
     /**
      * Display the specified slider.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -67,10 +59,6 @@ class SliderController extends Controller
 
     /**
      * Update the specified slider in storage.
-     *
-     * @param \App\Http\Requests\Slider\UpdateSliderRequest $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateSliderRequest $request, string $id): JsonResponse
     {
@@ -81,9 +69,6 @@ class SliderController extends Controller
 
     /**
      * Remove the specified slider from storage.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
@@ -96,8 +81,6 @@ class SliderController extends Controller
 
     /**
      * Get all sliders for clients.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getAllSlider(): JsonResponse
     {

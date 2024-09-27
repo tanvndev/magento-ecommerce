@@ -26,11 +26,8 @@ class BrandController extends Controller
         $this->brandRepository = $brandRepository;
     }
 
-
     /**
      * Display a listing of the brands.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -42,9 +39,6 @@ class BrandController extends Controller
 
     /**
      * Store a newly created brand in storage.
-     *
-     * @param \App\Http\Requests\Brand\StoreBrandRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreBrandRequest $request): JsonResponse
     {
@@ -55,9 +49,6 @@ class BrandController extends Controller
 
     /**
      * Display the specified brand.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -68,10 +59,6 @@ class BrandController extends Controller
 
     /**
      * Update the specified brand in storage.
-     *
-     * @param \App\Http\Requests\Brand\UpdateBrandRequest $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateBrandRequest $request, string $id): JsonResponse
     {
@@ -82,9 +69,6 @@ class BrandController extends Controller
 
     /**
      * Remove the specified brand from storage.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {

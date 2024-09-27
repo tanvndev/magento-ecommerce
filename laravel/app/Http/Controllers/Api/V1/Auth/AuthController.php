@@ -23,12 +23,10 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-
     /**
      * Register a new user.
      *
-     * @param \App\Http\Requests\RegisterRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Http\Requests\RegisterRequest  $request
      */
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -40,8 +38,7 @@ class AuthController extends Controller
     /**
      * Log in an existing user.
      *
-     * @param \App\Http\Requests\LoginRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Http\Requests\LoginRequest  $request
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -49,11 +46,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (! $user) {
+        if ( ! $user) {
             return errorResponse('Email hoặc mật khẩu không chính xác.', true);
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if ( ! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.', true);
         }
 
@@ -67,8 +64,7 @@ class AuthController extends Controller
     /**
      * Handle password reset for a user.
      *
-     * @param \App\Http\Requests\ForgotRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Http\Requests\ForgotRequest  $request
      */
     public function forgotPassword(ForgotRequest $request): JsonResponse
     {
@@ -79,8 +75,6 @@ class AuthController extends Controller
 
     /**
      * Get the authenticated user's information.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function me(): JsonResponse
     {
@@ -91,22 +85,13 @@ class AuthController extends Controller
 
     /**
      * Refresh the authentication token.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function refreshToken(): JsonResponse
     {
         return $this->respondWithToken(auth()->refresh(), 'Token đã được thay đổi');
     }
 
-
-    /**
-     * @param string $token
-     * @param string $message
-     * @param User|null $user
-     * @return JsonResponse
-     */
-    private function respondWithToken(string $token, string $message, User $user = null): JsonResponse
+    private function respondWithToken(string $token, string $message, ?User $user = null): JsonResponse
     {
         return response()->json([
             'status'   => ResponseEnum::OK,
@@ -130,8 +115,6 @@ class AuthController extends Controller
 
     /**
      * Logout user (Revoke the token)
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function logout(): JsonResponse
     {

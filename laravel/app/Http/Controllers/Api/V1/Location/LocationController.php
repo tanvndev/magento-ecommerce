@@ -31,10 +31,6 @@ class LocationController extends Controller
 
     /**
      * Get location by id.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getLocation(Request $request): JsonResponse
     {
@@ -63,10 +59,6 @@ class LocationController extends Controller
 
     /**
      * Get location by address.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getLocationByAddress(Request $request): JsonResponse
     {

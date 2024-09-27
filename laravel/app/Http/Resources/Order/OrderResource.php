@@ -18,44 +18,43 @@ class OrderResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'                         => $this->id ?? '',
-            'code'                       => $this->code,
-            'customer_name'              => $this->customer_name,
+            'id'                          => $this->id ?? '',
+            'code'                        => $this->code,
+            'customer_name'               => $this->customer_name,
             'customer_email'              => $this->customer_email,
-            'customer_phone'             => $this->customer_phone,
-            'customer_email'             => $this->customer_email,
-            'shipping_address'           => $this->shipping_address,
-            'payment_method_name'        => $this->payment_method->name,
-            'order_status'               => Order::ORDER_STATUS[$this->order_status],
-            'order_status_code'          => $this->order_status,
-            'order_status_color'         => $this->getOrderStatusColor(),
-            'payment_status'             => Order::PAYMENT_STATUS[$this->payment_status],
-            'payment_status_code'        => $this->payment_status,
-            'payment_status_color'       => $this->getPaymentStatusColor(),
-            'delivery_status'            => Order::DELYVERY_STATUS[$this->delivery_status],
-            'delivery_status_code'       => $this->delivery_status,
-            'delivery_status_color'      => $this->getDeliveryStatusColor(),
-            'payment_method_id'          => $this->payment_method_id,
-            'total_price'                => $this->total_price,
-            'shipping_fee'               => $this->shipping_fee,
-            'discount'                   => $this->discount,
-            'final_price'                => $this->final_price,
-            'ordered_at'                 => $this->ordered_at,
-            'paid_at'                    => $this->paid_at,
-            'delivered_at'               => $this->delivered_at,
-            'additional_details'         => $this->additional_details,
-            'province_name'              => $this->province->full_name,
-            'district_name'              => $this->district->full_name,
-            'ward_name'                  => $this->ward->full_name,
-            'province_code'              => $this->province->code,
-            'district_code'              => $this->district->code,
-            'ward_code'                  => $this->ward->code,
-            'note'                       => $this->note,
-            'user'                       => new UserResource($this->user),
-            'order_items'                => OrderItemResource::collection($this->order_items),
+            'customer_phone'              => $this->customer_phone,
+            'customer_email'              => $this->customer_email,
+            'shipping_address'            => $this->shipping_address,
+            'payment_method_name'         => $this->payment_method->name,
+            'order_status'                => Order::ORDER_STATUS[$this->order_status],
+            'order_status_code'           => $this->order_status,
+            'order_status_color'          => $this->getOrderStatusColor(),
+            'payment_status'              => Order::PAYMENT_STATUS[$this->payment_status],
+            'payment_status_code'         => $this->payment_status,
+            'payment_status_color'        => $this->getPaymentStatusColor(),
+            'delivery_status'             => Order::DELYVERY_STATUS[$this->delivery_status],
+            'delivery_status_code'        => $this->delivery_status,
+            'delivery_status_color'       => $this->getDeliveryStatusColor(),
+            'payment_method_id'           => $this->payment_method_id,
+            'total_price'                 => $this->total_price,
+            'shipping_fee'                => $this->shipping_fee,
+            'discount'                    => $this->discount,
+            'final_price'                 => $this->final_price,
+            'ordered_at'                  => $this->ordered_at,
+            'paid_at'                     => $this->paid_at,
+            'delivered_at'                => $this->delivered_at,
+            'additional_details'          => $this->additional_details,
+            'province_name'               => $this->province->full_name,
+            'district_name'               => $this->district->full_name,
+            'ward_name'                   => $this->ward->full_name,
+            'province_code'               => $this->province->code,
+            'district_code'               => $this->district->code,
+            'ward_code'                   => $this->ward->code,
+            'note'                        => $this->note,
+            'user'                        => new UserResource($this->user),
+            'order_items'                 => OrderItemResource::collection($this->order_items),
         ];
     }
-
 
     /**
      * Get the color of the order status.
@@ -63,8 +62,6 @@ class OrderResource extends JsonResource
      * If the order status is canceled, return red. If the order status is completed, return green.
      * If the payment method is not COD and the payment status is unpaid, return orange.
      * Otherwise, return orange.
-     *
-     * @return string
      */
     private function getOrderStatusColor(): string
     {
@@ -87,13 +84,10 @@ class OrderResource extends JsonResource
         }
     }
 
-
     /**
      * Get the color of the payment status.
      *
      * If the payment status is paid, return green. Otherwise, return red.
-     *
-     * @return string
      */
     private function getPaymentStatusColor(): string
     {
@@ -105,13 +99,12 @@ class OrderResource extends JsonResource
                 return 'red';
         }
     }
+
     /**
      * Get the color of the delivery status.
      *
      * If the delivery status is delivered, return green. If the delivery status is failed, return red.
      * Otherwise, return orange.
-     *
-     * @return string
      */
     private function getDeliveryStatusColor(): string
     {

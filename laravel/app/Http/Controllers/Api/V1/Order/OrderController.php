@@ -27,7 +27,6 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-
     /**
      * Display a listing of the resource.
      *
@@ -60,7 +59,6 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -78,8 +76,6 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\Order\UpdateOrderRequest  $request
-     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateOrderRequest $request, string $id)
@@ -89,19 +85,17 @@ class OrderController extends Controller
         return handleResponse($response);
     }
 
-
     /**
      * Handle order payment.
      *
-     * @param string $orderCode The order code.
-     *
+     * @param  string  $orderCode  The order code.
      * @return \Illuminate\Http\JsonResponse
      */
     public function handleOrderPayment(string $orderCode)
     {
         $order = $this->orderService->getOrderUserByCode($orderCode);
 
-        if (!$order) {
+        if ( ! $order) {
             $response = [
                 'status'   => 'error',
                 'messages' => __('messages.order.error.create'),
@@ -116,12 +110,8 @@ class OrderController extends Controller
         return handleResponse($response);
     }
 
-
     /**
      * Handle payment method.
-     *
-     * @param  \App\Models\Order  $order
-     * @return array
      */
     private function handlePaymentMethod(Order $order): array
     {
@@ -155,8 +145,7 @@ class OrderController extends Controller
     /**
      * Get an order by its code.
      *
-     * @param string $orderCode The order code.
-     *
+     * @param  string  $orderCode  The order code.
      * @return \Illuminate\Http\JsonResponse
      */
     public function getOrder(string $orderCode)
@@ -167,8 +156,6 @@ class OrderController extends Controller
 
         return successResponse('', $data);
     }
-
-
 
     /**
      * Get all orders of the current user.
@@ -184,12 +171,10 @@ class OrderController extends Controller
         return successResponse('', $data);
     }
 
-
     /**
      * Update the order status to completed.
      *
-     * @param string $id The order id.
-     *
+     * @param  string  $id  The order id.
      * @return \Illuminate\Http\JsonResponse
      */
     public function updateCompletedOrder(string $id)
@@ -202,8 +187,7 @@ class OrderController extends Controller
     /**
      * Update the order status to cancelled.
      *
-     * @param string $id The order id.
-     *
+     * @param  string  $id  The order id.
      * @return \Illuminate\Http\JsonResponse
      */
     public function updateCancelledOrder(string $id)

@@ -26,11 +26,8 @@ class AttributeValueController extends Controller
         $this->attributeValueRepository = $attributeValueRepository;
     }
 
-
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -43,8 +40,7 @@ class AttributeValueController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \App\Http\Requests\StoreAttributeValueRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Http\Requests\StoreAttributeValueRequest  $request
      */
     public function store(StoreAttributeValueRequest $request): JsonResponse
     {
@@ -55,9 +51,6 @@ class AttributeValueController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -69,9 +62,7 @@ class AttributeValueController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \App\Http\Requests\UpdateAttributeValueRequest $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Http\Requests\UpdateAttributeValueRequest  $request
      */
     public function update(UpdateAttributeValueRequest $request, string $id): JsonResponse
     {
@@ -82,9 +73,6 @@ class AttributeValueController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {

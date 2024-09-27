@@ -27,11 +27,8 @@ class PaymentMethodController extends Controller
         $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
-
     /**
      * Display a listing of the payment methods.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -43,9 +40,6 @@ class PaymentMethodController extends Controller
 
     /**
      * Store a newly created payment method in storage.
-     *
-     * @param \App\Http\Requests\PaymentMethod\StorePaymentMethodRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StorePaymentMethodRequest $request): JsonResponse
     {
@@ -56,9 +50,6 @@ class PaymentMethodController extends Controller
 
     /**
      * Display the specified payment method.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -69,10 +60,6 @@ class PaymentMethodController extends Controller
 
     /**
      * Update the specified payment method in storage.
-     *
-     * @param \App\Http\Requests\PaymentMethod\UpdatePaymentMethodRequest $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdatePaymentMethodRequest $request, string $id): JsonResponse
     {
@@ -83,8 +70,6 @@ class PaymentMethodController extends Controller
 
     /**
      * Retrieve all payment methods for the client.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getAllPaymentMethod(): JsonResponse
     {

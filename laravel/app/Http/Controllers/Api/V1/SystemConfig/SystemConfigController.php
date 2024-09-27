@@ -24,8 +24,6 @@ class SystemConfigController extends Controller
 
     /**
      * Display a listing of the system configurations.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -36,8 +34,6 @@ class SystemConfigController extends Controller
 
     /**
      * Update the system configurations.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(): JsonResponse
     {

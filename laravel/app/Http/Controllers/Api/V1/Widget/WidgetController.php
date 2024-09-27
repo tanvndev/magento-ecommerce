@@ -29,8 +29,6 @@ class WidgetController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -42,9 +40,6 @@ class WidgetController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param \App\Http\Requests\Widget\StoreWidgetRequest $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreWidgetRequest $request): JsonResponse
     {
@@ -55,9 +50,6 @@ class WidgetController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $id): JsonResponse
     {
@@ -68,10 +60,6 @@ class WidgetController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param \App\Http\Requests\Widget\UpdateWidgetRequest $request
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateWidgetRequest $request, string $id): JsonResponse
     {
@@ -82,9 +70,6 @@ class WidgetController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
@@ -97,9 +82,6 @@ class WidgetController extends Controller
 
     /**
      * Get a widget by its code.
-     *
-     * @param string $code
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getWidget(string $code): JsonResponse
     {
@@ -112,8 +94,6 @@ class WidgetController extends Controller
 
     /**
      * Get all widget codes.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getAllWidgetCode(): JsonResponse
     {
