@@ -10,6 +10,7 @@ use App\Http\Resources\Attribute\AttributeValueCollection;
 use App\Http\Resources\Attribute\AttributeValueResource;
 use App\Repositories\Interfaces\Attribute\AttributeValueRepositoryInterface;
 use App\Services\Interfaces\Attribute\AttributeValueServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class AttributeValueController extends Controller
 {
@@ -25,10 +26,13 @@ class AttributeValueController extends Controller
         $this->attributeValueRepository = $attributeValueRepository;
     }
 
+
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->attributeValueService->paginate();
         $data = new AttributeValueCollection($paginator);
@@ -38,8 +42,11 @@ class AttributeValueController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param \App\Http\Requests\StoreAttributeValueRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreAttributeValueRequest $request)
+    public function store(StoreAttributeValueRequest $request): JsonResponse
     {
         $response = $this->attributeValueService->create();
 
@@ -48,8 +55,11 @@ class AttributeValueController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $response = new AttributeValueResource($this->attributeValueRepository->findById($id));
 
@@ -58,8 +68,12 @@ class AttributeValueController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param \App\Http\Requests\UpdateAttributeValueRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateAttributeValueRequest $request, string $id)
+    public function update(UpdateAttributeValueRequest $request, string $id): JsonResponse
     {
         $response = $this->attributeValueService->update($id);
 
@@ -68,8 +82,11 @@ class AttributeValueController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->attributeValueService->destroy($id);
 

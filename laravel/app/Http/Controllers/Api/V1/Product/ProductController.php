@@ -14,6 +14,7 @@ use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductVariantCollection;
 use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
 use App\Services\Interfaces\Product\ProductServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
@@ -30,44 +31,54 @@ class ProductController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the products.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->productService->paginate();
         $data = new ProductCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created product in storage.
+     *
+     * @param \App\Http\Requests\Product\StoreProductRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): JsonResponse
     {
-        // dd($request->all());
-        // return response()->json($request->all());
         $response = $this->productService->create();
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified product.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $response = new ProductResource(
             $this->productRepository->findById($id)
         );
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified product in storage.
+     *
+     * @param \App\Http\Requests\Product\UpdateProductRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateProductRequest $request, string $id)
+    public function update(UpdateProductRequest $request, string $id): JsonResponse
     {
         $response = $this->productService->update($id);
 
@@ -75,38 +86,65 @@ class ProductController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified product from storage.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->productService->destroy($id);
 
         return handleResponse($response);
     }
 
-    public function getProductVariants()
+    /**
+     * Get all product variants.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProductVariants(): JsonResponse
     {
         $paginator = $this->productService->getProductVariants();
         $data = new ProductVariantCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
-    public function updateVariant(UpdateProductVariantRequest $request)
+    /**
+     * Update a specific product variant.
+     *
+     * @param \App\Http\Requests\Product\UpdateProductVariantRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateVariant(UpdateProductVariantRequest $request): JsonResponse
     {
         $response = $this->productService->updateVariant();
 
         return handleResponse($response);
     }
 
-    public function deleteVariant(string $id)
+    /**
+     * Delete a specific product variant.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteVariant(string $id): JsonResponse
     {
         $response = $this->productService->deleteVariant($id);
 
         return handleResponse($response);
     }
 
-    public function updateAttribute(UpdateProductAttributeRequest $request, string $productId)
+    /**
+     * Update attributes for a specific product.
+     *
+     * @param \App\Http\Requests\Product\UpdateProductAttributeRequest $request
+     * @param string $productId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateAttribute(UpdateProductAttributeRequest $request, string $productId): JsonResponse
     {
         $response = $this->productService->updateAttribute($productId);
 
@@ -115,12 +153,18 @@ class ProductController extends Controller
 
     // CLIENT API //
 
-    public function getProduct(string $slug)
+    /**
+     * Get a specific product by its slug.
+     *
+     * @param string $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProduct(string $slug): JsonResponse
     {
         $response = new ClientProductResource(
             $this->productService->getProduct($slug)
         );
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 }

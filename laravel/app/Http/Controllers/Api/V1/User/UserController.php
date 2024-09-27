@@ -10,6 +10,7 @@ use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Services\Interfaces\User\UserServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -27,21 +28,26 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         // $this->authorize('modules', 'users.index');
 
         $paginator = $this->userService->paginate();
         $data = new UserCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param \App\Http\Requests\User\StoreUserRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): JsonResponse
     {
         // $this->authorize('modules', 'users.store');
 
@@ -52,20 +58,27 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         // $this->authorize('modules', 'users.show');
 
         $response = new UserResource($this->userRepository->findById($id));
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param \App\Http\Requests\User\UpdateUserRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateUserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, string $id): JsonResponse
     {
         // $this->authorize('modules', 'users.update');
 
@@ -76,8 +89,11 @@ class UserController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         // $this->authorize('modules', 'users.destroy');
 

@@ -11,6 +11,7 @@ use App\Http\Resources\Widget\WidgetCollection;
 use App\Http\Resources\Widget\WidgetResource;
 use App\Repositories\Interfaces\Widget\WidgetRepositoryInterface;
 use App\Services\Interfaces\Widget\WidgetServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class WidgetController extends Controller
 {
@@ -28,21 +29,25 @@ class WidgetController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->widgetService->paginate();
         $data = new WidgetCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param \App\Http\Requests\Widget\StoreWidgetRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreWidgetRequest $request)
+    public function store(StoreWidgetRequest $request): JsonResponse
     {
-        // return response()->json($request->all());
         $response = $this->widgetService->create();
 
         return handleResponse($response, ResponseEnum::CREATED);
@@ -50,18 +55,25 @@ class WidgetController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $widget = new WidgetResource($this->widgetRepository->findById($id));
 
-        return successResponse('', $widget);
+        return successResponse('', $widget, true);
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param \App\Http\Requests\Widget\UpdateWidgetRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateWidgetRequest $request, string $id)
+    public function update(UpdateWidgetRequest $request, string $id): JsonResponse
     {
         $response = $this->widgetService->update($id);
 
@@ -70,8 +82,11 @@ class WidgetController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->widgetService->destroy($id);
 
@@ -80,19 +95,30 @@ class WidgetController extends Controller
 
     // CLIENT API //
 
-    public function getWidget($code)
+    /**
+     * Get a widget by its code.
+     *
+     * @param string $code
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getWidget(string $code): JsonResponse
     {
         $response = $this->widgetService->getWidgetByCode($code);
 
         $data = new ClientWidgetCollection($response);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
-    public function getAllWidgetCode()
+    /**
+     * Get all widget codes.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllWidgetCode(): JsonResponse
     {
         $response = $this->widgetService->getAllWidgetCode();
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 }

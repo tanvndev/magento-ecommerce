@@ -10,6 +10,7 @@ use App\Http\Resources\Product\ProductCatalogueCollection;
 use App\Http\Resources\Product\ProductCatalogueResource;
 use App\Repositories\Interfaces\Product\ProductCatalogueRepositoryInterface;
 use App\Services\Interfaces\Product\ProductCatalogueServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class ProductCatalogueController extends Controller
 {
@@ -26,19 +27,24 @@ class ProductCatalogueController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the product catalogues.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $response = $this->productCatalogueService->paginate();
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created product catalogue in storage.
+     *
+     * @param \App\Http\Requests\Product\StoreProductCatalogueRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreProductCatalogueRequest $request)
+    public function store(StoreProductCatalogueRequest $request): JsonResponse
     {
         $response = $this->productCatalogueService->create();
 
@@ -46,19 +52,26 @@ class ProductCatalogueController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified product catalogue.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $response = new ProductCatalogueResource($this->productCatalogueRepository->findById($id));
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified product catalogue in storage.
+     *
+     * @param \App\Http\Requests\Product\UpdateProductCatalogueRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateProductCatalogueRequest $request, string $id)
+    public function update(UpdateProductCatalogueRequest $request, string $id): JsonResponse
     {
         $response = $this->productCatalogueService->update($id);
 
@@ -66,22 +79,28 @@ class ProductCatalogueController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified product catalogue from storage.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->productCatalogueService->destroy($id);
 
         return handleResponse($response);
     }
 
-    // CLIENT API //
-
-    public function list()
+    /**
+     * List all product catalogues for the client.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function list(): JsonResponse
     {
         $paginator = $this->productCatalogueService->list();
         $data = new ProductCatalogueCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 }

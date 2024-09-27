@@ -7,6 +7,7 @@ use App\Http\Requests\Cart\CreateAndUpdateRequest;
 use App\Http\Resources\Cart\CartCollection;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Services\Interfaces\Cart\CartServiceInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -24,24 +25,27 @@ class CartController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display the user's cart.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
-
         $response = $this->cartService->getCart();
 
         $data = new CartCollection($response);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create or update an item in the cart.
+     *
+     * @param \App\Http\Requests\Cart\CreateAndUpdateRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function createOrUpdate(CreateAndUpdateRequest $request)
+    public function createOrUpdate(CreateAndUpdateRequest $request): JsonResponse
     {
-
         $response = $this->cartService->createOrUpdate($request);
 
         if (is_array($response)) {
@@ -50,48 +54,71 @@ class CartController extends Controller
 
         $data = new CartCollection($response);
 
-        return successResponse(__('messages.cart.success.create'), $data);
+        return successResponse(__('messages.cart.success.create'), $data, true);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified item from the cart.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->cartService->deleteOneItem($id);
 
         $data = new CartCollection($response);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
-    public function forceDestroy()
+    /**
+     * Clean the entire cart.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function forceDestroy(): JsonResponse
     {
         $response = $this->cartService->cleanCart();
 
         return handleResponse($response);
     }
 
-    public function handleSelected(Request $request)
+    /**
+     * Handle selected items in the cart.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function handleSelected(Request $request): JsonResponse
     {
         $response = $this->cartService->handleSelected($request);
 
         $data = new CartCollection($response);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
-    public function deleteCartSelected()
+    /**
+     * Delete selected items from the cart.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteCartSelected(): JsonResponse
     {
-
         $response = $this->cartService->deleteCartSelected();
 
         return handleResponse($response);
     }
 
-    public function addPaidProductsToCart(Request $request)
+    /**
+     * Add paid products to the cart.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addPaidProductsToCart(Request $request): JsonResponse
     {
-
         $response = $this->cartService->addPaidProductsToCart($request);
 
         if (is_array($response)) {
@@ -100,6 +127,6 @@ class CartController extends Controller
 
         $data = new CartCollection($response);
 
-        return successResponse(__('messages.cart.success.create'), $data);
+        return successResponse(__('messages.cart.success.create'), $data, true);
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Resources\ShippingMethod\ShippingMethodCollection;
 use App\Http\Resources\ShippingMethod\ShippingMethodResource;
 use App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface;
 use App\Services\Interfaces\ShippingMethod\ShippingMethodServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class ShippingMethodController extends Controller
 {
@@ -27,20 +28,25 @@ class ShippingMethodController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the shipping methods.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->shippingMethodService->paginate();
         $data = new ShippingMethodCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created shipping method in storage.
+     *
+     * @param \App\Http\Requests\ShippingMethod\StoreShippingMethodRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreShippingMethodRequest $request)
+    public function store(StoreShippingMethodRequest $request): JsonResponse
     {
         $response = $this->shippingMethodService->create();
 
@@ -48,19 +54,26 @@ class ShippingMethodController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified shipping method.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $shippingMethod = new ShippingMethodResource($this->shippingMethodRepository->findById($id));
 
-        return successResponse('', $shippingMethod);
+        return successResponse('', $shippingMethod, true);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified shipping method in storage.
+     *
+     * @param \App\Http\Requests\ShippingMethod\UpdateShippingMethodRequest $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateShippingMethodRequest $request, string $id)
+    public function update(UpdateShippingMethodRequest $request, string $id): JsonResponse
     {
         $response = $this->shippingMethodService->update($id);
 
@@ -69,22 +82,32 @@ class ShippingMethodController extends Controller
 
     // API CLIENT //
 
-    public function getAllShippingMethod()
+    /**
+     * Get all available shipping methods for clients.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllShippingMethod(): JsonResponse
     {
-
         $shippingMethods = $this->shippingMethodService->getAllShippingMethod();
 
         $data = new ClientShippingMethodCollection($shippingMethods);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
-    public function getShippingMethodByProductVariant(string $productVariantIds)
+    /**
+     * Get shipping methods available for the specified product variant.
+     *
+     * @param string $productVariantIds
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getShippingMethodByProductVariant(string $productVariantIds): JsonResponse
     {
         $shippingMethods = $this->shippingMethodService->getShippingMethodByProductVariant($productVariantIds);
 
         $data = new ClientShippingMethodCollection($shippingMethods);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 }
