@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('log.request.response', 'api')->group(function () {
 
     // ROUTE TEST
-    Route::get('test/index', [TestApiController::class, 'index']);
+    Route::post('test/index', [TestApiController::class, 'upload']);
 
     // CLIENT ROUTE
     Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
@@ -54,6 +54,8 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('getOrder/{orderCode}', [OrderController::class, 'getOrder']);
     Route::get('getOrderUser', [OrderController::class, 'getOrderByUser']);
+    Route::put('orders/update/completed/{id}', [OrderController::class, 'updateCompletedOrder']);
+    Route::put('orders/update/cancelled/{id}', [OrderController::class, 'updateCancelledOrder']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {

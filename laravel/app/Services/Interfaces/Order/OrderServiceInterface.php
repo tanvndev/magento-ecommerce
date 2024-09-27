@@ -17,4 +17,8 @@ interface OrderServiceInterface
     public function getOrderUserByCode(string $orderCode);
 
     public function getOrderByUser();
+
+    public function updateStatusOrderToCompleted(string $id);
+
+    public function updateStatusOrderToCancelled(string $id);
 }

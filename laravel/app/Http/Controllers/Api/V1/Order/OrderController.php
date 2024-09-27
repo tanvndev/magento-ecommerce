@@ -112,4 +112,19 @@ class OrderController extends Controller
 
         return successResponse('', $data);
     }
+
+    public function updateCompletedOrder(string $id)
+    {
+        $response = $this->orderService->updateStatusOrderToCompleted($id);
+
+        return handleResponse($response);
+    }
+
+    public function updateCancelledOrder(string $id)
+    {
+
+        $response = $this->orderService->updateStatusOrderToCancelled($id);
+
+        return handleResponse($response);
+    }
 }

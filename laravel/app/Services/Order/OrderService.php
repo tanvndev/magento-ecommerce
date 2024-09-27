@@ -3,6 +3,7 @@
 namespace App\Services\Order;
 
 use App\Models\Order;
+use App\Models\PaymentMethod;
 use App\Models\Voucher;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;
@@ -96,7 +97,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
             $request = request();
-            $payload = $request->except('_token', '_method');
+            $payload = $this->handlePayloadUpdate($request);
 
             $order = $this->orderRepository->findById($id);
 
@@ -113,6 +114,40 @@ class OrderService extends BaseService implements OrderServiceInterface
             $order->update($payload);
             return successResponse(__('messages.update.success'));
         }, __('messages.update.error'));
+    }
+
+    /**
+     * Handle the payload of the update request.
+     *
+     * This method takes the request and returns an array of the payload that can be used to update the order.
+     * The payload is filtered to only include the fields that are required for the update.
+     * The fields that are included in the payload are:
+     *  - ordered_at if the order status is being updated
+     *  - paid_at if the payment status is being updated
+     *  - delivered_at if the delivery status is being updated
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    private function handlePayloadUpdate($request): array
+    {
+        $payload = $request->except('_token', '_method');
+        $now = now();
+
+
+        if ($request->has('order_status')) {
+            $payload['ordered_at'] = $now;
+        }
+
+        if ($request->has('payment_status')) {
+            $payload['paid_at'] = $now;
+        }
+
+        if ($request->has('delivery_status')) {
+            $payload['delivered_at'] = $now;
+        }
+
+        return $payload;
     }
 
     /**
@@ -555,19 +590,14 @@ class OrderService extends BaseService implements OrderServiceInterface
         return $order;
     }
 
-
     /**
      * Get all orders of the current user.
      *
      * If the user is not logged in, return an empty array.
-     * If the user is logged in, return all orders of the user.
-     * If the user is logged in and the order status is 'unpaid', return all unpaid orders of the user.
-     * If the user is logged in and the order status is not 'unpaid' and not 'all', return all orders of the user with the given order status.
-     * If the user is logged in and the order status is 'all', return all orders of the user.
      *
-     * @return array
+     * @return \App\Models\Order[]
      */
-    public function getOrderByUser(): array
+    public function getOrderByUser()
     {
         if (! auth()->check()) {
             return [];
@@ -581,6 +611,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         ];
         if ($request->order_status == Order::PAYMENT_STATUS_UNPAID) {
             $conditionWhere['payment_status'] = Order::PAYMENT_STATUS_UNPAID;
+            $conditionWhere['payment_method_id'] = ['!=', PaymentMethod::COD_ID];
         }
 
         if (
@@ -592,25 +623,82 @@ class OrderService extends BaseService implements OrderServiceInterface
             $conditionWhere['order_status'] = $request->order_status;
         }
 
+
         $condition = [
             'search'       => addslashes($request->search),
             'searchFields' => ['code'],
             'where'        => $conditionWhere,
         ];
 
-        $cacheKey = 'orders_' . md5(json_encode($condition)) . '_page_' . $request->page ?? 5 . '_user_id_' . $userId;
+        return $this->orderRepository->pagination(
+            ['*'],
+            $condition,
+            5,
+            [],
+            [],
+            ['order_items'],
+        );
+    }
 
-        $data = Cache::remember($cacheKey, 600, function () use ($condition) { // 600 seconds
-            return $this->orderRepository->pagination(
-                ['*'],
-                $condition,
-                5,
-                [],
-                [],
-                ['order_items'],
+    public function updateStatusOrderToCompleted(string $id)
+    {
+        return $this->executeInTransaction(function () use ($id) {
+
+            if (!auth()->check()) {
+                return errorResponse(__('messages.order.error.status'));
+            }
+
+            $payload = request()->except('_token', '_method');
+            $payload['order_status'] = Order::ORDER_STATUS_COMPLETED;
+            $payload['ordered_at'] = now();
+
+            $order = $this->orderRepository->findByWhere(
+                [
+                    'id' => $id,
+                    'user_id' => auth()->user()->id
+                ]
             );
-        });
 
-        return $data;
+            if ($order->payment_status != Order::PAYMENT_STATUS_PAID) {
+                return errorResponse(__('messages.order.error.status'));
+            }
+
+            $order->update($payload);
+
+            return successResponse(__('messages.order.success.status'));
+        }, __('messages.order.error.status'));
+    }
+
+    public function updateStatusOrderToCancelled(string $id)
+    {
+        return $this->executeInTransaction(function () use ($id) {
+
+            if (!auth()->check()) {
+                return errorResponse(__('messages.order.error.status'));
+            }
+
+            $payload = request()->except('_token', '_method');
+            $payload['order_status'] = Order::ORDER_STATUS_CANCELED;
+            $payload['ordered_at'] = now();
+
+            $order = $this->orderRepository->findByWhere(
+                [
+                    'id' => $id,
+                    'user_id' => auth()->user()->id
+                ]
+            );
+
+            if (
+                $order->delivery_status == Order::DELYVERY_STATUS_DELIVERING
+                || $order->order_status == Order::ORDER_STATUS_DELIVERING
+            ) {
+                return errorResponse(__('messages.order.error.status'));
+            }
+
+
+            $order->update($payload);
+
+            return successResponse(__('messages.order.success.status'));
+        }, __('messages.order.error.status'));
     }
 }
