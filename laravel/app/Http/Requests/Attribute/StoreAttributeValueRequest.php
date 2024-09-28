@@ -22,7 +22,7 @@ class StoreAttributeValueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name'         => 'required',
             'attribute_id' => 'required',
         ];
     }
@@ -30,7 +30,7 @@ class StoreAttributeValueRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên giá trị thuộc tính',
+            'name'         => 'Tên giá trị thuộc tính',
             'attribute_id' => 'Thuộc tính',
         ];
     }
@@ -38,14 +38,5 @@ class StoreAttributeValueRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(
-            response()->json([
-                'messages' => $validator->errors(),
-            ], ResponseEnum::UNPROCESSABLE_ENTITY)
-        );
     }
 }

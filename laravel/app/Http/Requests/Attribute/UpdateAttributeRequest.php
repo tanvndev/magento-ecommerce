@@ -23,7 +23,7 @@ class UpdateAttributeRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required|unique:attributes,code,'.$this->attribute,
+            'code' => 'required|unique:attributes,code,' . $this->attribute,
         ];
     }
 

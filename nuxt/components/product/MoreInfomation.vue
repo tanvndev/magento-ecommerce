@@ -19,198 +19,7 @@
         :class="{ active: activeTab == 'description' }"
         v-show="activeTab == 'description'"
       >
-        <h4 class="title tab-pane-title font-weight-bold mb-2">Detail</h4>
-        <p class="mb-6">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Venenatis
-          tellus in metus vulputate eu scelerisque felis. Vel pretium lectus
-          quam id leo in vitae turpis massa. Nunc id cursus metus aliquam.
-          Libero id faucibus nisl tincidunt eget. Aliquam id diam maecenas
-          ultricies mi eget mauris.
-        </p>
-        <div class="row align-items-center mb-4">
-          <div class="col-md-6 mb-4">
-            <div class="banner banner-video product-video br-xs">
-              <figure class="banner-media">
-                <a href="#">
-                  <img
-                    src="assets/images/products/video-banner-610x300.jpg"
-                    alt="banner"
-                    width="610"
-                    height="300"
-                    style="background-color: #bebebe"
-                  />
-                </a>
-                <a
-                  class="btn-play-video btn-iframe"
-                  href="assets/video/memory-of-a-woman.mp4"
-                ></a>
-              </figure>
-            </div>
-          </div>
-          <div class="col-md-6 mb-4">
-            <h4 class="title tab-pane-title font-weight-bold mb-2">Features</h4>
-            <ul class="list-style-none list-type-check">
-              <li>
-                Nunc nec porttitor turpis. In eu risus enim. In vitae mollis
-                elit.
-              </li>
-              <li>Vivamus finibus vel mauris ut vehicula.</li>
-              <li>
-                Nullam a magna porttitor, dictum risus nec, faucibus sapien.
-              </li>
-              <li>
-                Ultrices eros in cursus turpis massa tincidunt ante in nibh
-                mauris.
-              </li>
-              <li>
-                Cras ornare arcu dui vivamus arcu felis bibendum ut tristique.
-              </li>
-              <li>Pulvinar elementum integer enim neque volutpat.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="row align-items-center mb-4">
-          <div class="col-md-6 mb-4">
-            <h4 class="title tab-pane-title font-weight-bold mb-2">
-              Product Education
-            </h4>
-            <p class="mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-            <p>
-              Venenatis tellus in metus vulputate eu scelerisque felis. Vel
-              pretium lectus quam id leo in vitae turpis massa. Nunc id cursus
-              metus aliquam. Libero id faucibus nisl tincidunt eget.
-            </p>
-          </div>
-          <div class="col-md-6 mb-4">
-            <figure>
-              <img
-                src="assets/images/products/banner-1.jpg"
-                alt="Banner"
-                width="455"
-                height="230"
-                style="background-color: #e6e6e6"
-                class="w-100"
-              />
-            </figure>
-          </div>
-        </div>
-        <div class="banner hotspot-banner mb-4">
-          <figure>
-            <img
-              src="assets/images/products/banner-2.jpg"
-              alt="Banner"
-              width="930"
-              height="450"
-            />
-          </figure>
-          <div class="hotspot-product hotspot-product-1 hotspot-right">
-            <a href="#" class="btn-hotspot btn-quickview"
-              ><i class="fas fa-circle"></i
-            ></a>
-            <div class="product text-center">
-              <figure class="product-media">
-                <a href="product-default.html">
-                  <img
-                    src="assets/images/products/extended/1.jpg"
-                    alt="Product"
-                    width="180"
-                    height="203"
-                  />
-                </a>
-                <div class="product-action-vertical">
-                  <a
-                    href="#"
-                    class="btn-product-icon btn-cart"
-                    title="Add To Cart"
-                  >
-                    <i class="w-icon-cart"></i
-                  ></a>
-                </div>
-              </figure>
-              <div class="product-details">
-                <h4 class="product-name">
-                  <a href="product-default.html">Alarm Clock With Lamp</a>
-                </h4>
-                <div class="product-price">
-                  <ins class="new-price">$30.00</ins
-                  ><del class="old-price">$60.00</del>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="hotspot-product hotspot-product-2 hotspot-top">
-            <a href="#" class="btn-hotspot btn-quickview"
-              ><i class="fas fa-circle"></i
-            ></a>
-            <div class="product text-center">
-              <figure class="product-media">
-                <a href="product-default.html">
-                  <img
-                    src="assets/images/products/extended/2.jpg"
-                    alt="Product"
-                    width="180"
-                    height="203"
-                  />
-                </a>
-                <div class="product-action-vertical">
-                  <a
-                    href="#"
-                    class="btn-product-icon btn-cart"
-                    title="Add To Cart"
-                  >
-                    <i class="w-icon-cart"></i
-                  ></a>
-                </div>
-              </figure>
-              <div class="product-details">
-                <h4 class="product-name">
-                  <a href="product-default.html">Table-tennis Shoes</a>
-                </h4>
-                <div class="product-price">
-                  <ins class="new-price">$65.00</ins>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="hotspot-product hotspot-product-3 hotspot-left">
-            <a href="#" class="btn-hotspot btn-quickview"
-              ><i class="fas fa-circle"></i
-            ></a>
-            <div class="product text-center">
-              <figure class="product-media">
-                <a href="product-default.html">
-                  <img
-                    src="assets/images/products/extended/3.jpg"
-                    alt="Product"
-                    width="180"
-                    height="203"
-                  />
-                </a>
-                <div class="product-action-vertical">
-                  <a
-                    href="#"
-                    class="btn-product-icon btn-cart"
-                    title="Add To Cart"
-                  >
-                    <i class="w-icon-cart"></i
-                  ></a>
-                </div>
-              </figure>
-              <div class="product-details">
-                <h4 class="product-name">
-                  <a href="product-default.html">Clean Cotten T-shirt</a>
-                </h4>
-                <div class="product-price">
-                  <ins class="new-price">$45.00</ins>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div v-html="product.description || 'Đang cập nhập mô tả...'"></div>
       </div>
       <div
         id="product-tab-specifications"
@@ -218,83 +27,29 @@
         :class="{ active: activeTab == 'specifications' }"
         v-show="activeTab == 'specifications'"
       >
-        <div class="row mb-3">
-          <div class="col-md-6 mb-4">
-            <figure class="vendor-banner br-sm">
-              <img
-                src="assets/images/products/vendor-banner.jpg"
-                alt="Vendor Banner"
-                width="610"
-                height="295"
-                style="background-color: #353b55"
-              />
-            </figure>
-          </div>
-          <div class="col-md-6 pl-2 pl-md-6 mb-4">
-            <div class="vendor-user">
-              <figure class="vendor-logo mr-4">
-                <a href="#">
-                  <img
-                    src="assets/images/products/vendor-logo.jpg"
-                    alt="Vendor Logo"
-                    width="80"
-                    height="80"
-                  />
-                </a>
-              </figure>
-              <div>
-                <div class="vendor-name"><a href="#">Jone Doe</a></div>
-                <div class="ratings-container">
-                  <div class="ratings-full">
-                    <span class="ratings" style="width: 90%"></span>
-                    <span class="tooltiptext tooltip-top"></span>
-                  </div>
-                  <a href="#" class="rating-reviews">(32 Reviews)</a>
-                </div>
-              </div>
-            </div>
-            <ul class="vendor-info list-style-none">
-              <li class="store-name">
-                <label>Store Name:</label>
-                <span class="detail">OAIO Store</span>
-              </li>
-              <li class="store-address">
-                <label>Address:</label>
-                <span class="detail"
-                  >Steven Street, El Carjon, CA 92020, United States (US)</span
-                >
-              </li>
-              <li class="store-phone">
-                <label>Phone:</label>
-                <a href="#tel:">1234567890</a>
-              </li>
-            </ul>
-            <a
-              href="vendor-dokan-store.html"
-              class="btn btn-dark btn-link btn-underline btn-icon-right"
-              >Visit Store<i class="w-icon-long-arrow-right"></i
-            ></a>
+        <div
+          class="specifications-list"
+          v-if="product?.attribute_not_enabled?.length > 0"
+        >
+          <div
+            class="specification"
+            v-for="(attribute, index) in product?.attribute_not_enabled"
+            :key="index"
+            :class="{ odd: index % 2 !== 0, even: index % 2 === 0 }"
+          >
+            <strong>{{ attribute.attribute_name }}:</strong>
+
+            <span
+              v-for="(value, index) in attribute.attribute_value_ids"
+              :key="value.id"
+            >
+              {{ value.name }}
+              <span v-if="index < attribute.attribute_value_ids.length - 1"
+                >,
+              </span>
+            </span>
           </div>
         </div>
-        <p class="mb-5">
-          <strong class="text-dark">L</strong>orem ipsum dolor sit amet,
-          consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-          labore et dolore magna aliqua. Venenatis tellus in metus vulputate eu
-          scelerisque felis. Vel pretium lectus quam id leo in vitae turpis
-          massa. Nunc id cursus metus aliquam. Libero id faucibus nisl tincidunt
-          eget. Aliquam id diam maecenas ultricies mi eget mauris. Volutpat ac
-          tincidunt vitae semper quis lectus. Vestibulum mattis ullamcorper
-          velit sed. A arcu cursus vitae congue mauris.
-        </p>
-        <p class="mb-2">
-          <strong class="text-dark">A</strong> arcu cursus vitae congue mauris.
-          Sagittis id consectetur purus ut. Tellus rutrum tellus pellentesque eu
-          tincidunt tortor aliquam nulla. Diam in arcu cursus euismod quis. Eget
-          sit amet tellus cras adipiscing enim eu. In fermentum et sollicitudin
-          ac orci phasellus. A condimentum vitae sapien pellentesque habitant
-          morbi tristique senectus et. In dictum non consectetur a erat. Nunc
-          scelerisque viverra mauris in aliquam sem fringilla.
-        </p>
       </div>
       <div
         id="product-tab-reviews"
@@ -526,7 +281,12 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+const props = defineProps({
+  product: {
+    type: [Object, Array],
+    default: () => [],
+  },
+})
 
 const tabs = reactive([
   { name: 'description', label: 'Mô tả' },
@@ -534,9 +294,34 @@ const tabs = reactive([
   { name: 'reviews', label: 'Đánh giá' },
 ])
 
-const activeTab = ref('reviews')
+const activeTab = ref('specifications')
 
 const selectTab = (tabName) => {
   activeTab.value = tabName
 }
 </script>
+
+<style scoped>
+.specifications-list {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.specification {
+  padding: 8px 16px;
+}
+
+.specification.odd {
+  background-color: #ffffff;
+}
+
+.specification.even {
+  background-color: #f5f6f7;
+}
+
+.specification strong {
+  color: #333;
+  min-width: 160px;
+  display: inline-block;
+}
+</style>

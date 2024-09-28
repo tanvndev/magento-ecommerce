@@ -22,10 +22,10 @@ class AttributeCollection extends ResourceCollection
                 'data' => $this->collection->map(function ($attribute) {
                     return new AttributeResource($attribute);
                 }),
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
+                'total'        => $this->total(),
+                'per_page'     => $this->perPage(),
                 'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
+                'last_page'    => $this->lastPage(),
             ];
         }
 

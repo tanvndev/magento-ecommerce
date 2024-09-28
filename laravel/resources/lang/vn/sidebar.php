@@ -3,22 +3,22 @@
 return [
     'module' => [
         [
-            'icon' => 'ti-home',
-            'name' => 'Dashboard',
-            'route' => 'dashboard',
+            'icon'    => 'ti-home',
+            'name'    => 'Dashboard',
+            'route'   => 'dashboard',
             'subMenu' => [],
         ],
         [
-            'icon' => 'ti-harddrives',
-            'name' => 'QL Thành viên',
-            'route' => '',
+            'icon'    => 'ti-harddrives',
+            'name'    => 'QL Thành viên',
+            'route'   => '',
             'subMenu' => [
                 [
-                    'name' => 'QL Thành viên',
+                    'name'  => 'QL Thành viên',
                     'route' => 'user.index',
                 ],
                 [
-                    'name' => 'QL Nhóm thành viên',
+                    'name'  => 'QL Nhóm thành viên',
                     'route' => 'user.index',
                 ],
             ],

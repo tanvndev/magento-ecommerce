@@ -4,9 +4,11 @@
 
 namespace App\Services\User;
 
+use App\Models\User;
 use App\Repositories\Interfaces\User\UserCatalogueRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\User\UserCatalogueServiceInterface;
+use Exception;
 
 class UserCatalogueService extends BaseService implements UserCatalogueServiceInterface
 {
@@ -22,14 +24,17 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
 
     public function paginate()
     {
+        $request = request();
+
         $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
+            'search'  => addslashes($request->search),
+            'publish' => $request->publish,
+            'archive' => $request->boolean('archive'),
         ];
         $select = ['id', 'name', 'description', 'publish', 'code'];
-        $pageSize = request('pageSize');
+        $pageSize = $request->pageSize;
 
-        $data = $pageSize && request('page')
+        $data = $pageSize && $request->page
             ? $this->userCatalogueRepository->pagination(
                 $select,
                 $condition,
@@ -68,6 +73,9 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
+
+            $this->checkUserInCatalogue($id);
+
             $this->userCatalogueRepository->delete($id);
 
             return successResponse(__('messages.delete.success'));
@@ -89,5 +97,89 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
 
             return successResponse(__('messages.update.success'));
         }, __('messages.update.error'));
+    }
+
+    public function handleArchiveMultiple()
+    {
+        return $this->executeInTransaction(function () {
+            $request = request();
+
+            $this->userCatalogueRepository->restoreByWhereIn('id', $request->modelIds);
+
+            return successResponse(__('messages.action.success'));
+        }, __('messages.action.error'));
+    }
+
+    public function deleteMultiple()
+    {
+        return $this->executeInTransaction(function () {
+            $request = request();
+
+            $this->checkUserInCatalogues($request->modelIds);
+
+            $forceDelete = ($request->has('forceDelete') && $request->forceDelete == '1')
+                ? 'forceDeleteByWhereIn'
+                : 'deleteByWhereIn';
+
+            $this->userCatalogueRepository->{$forceDelete}('id', $request->modelIds);
+
+            return successResponse(__('messages.action.success'));
+        }, __('messages.action.error'));
+    }
+
+    public function updateStatus()
+    {
+        return $this->executeInTransaction(function () {
+            $request = request();
+
+            $this->checkUserInCatalogue($request->value);
+
+            $payload[$request->field] = $request->value;
+
+            $this->userCatalogueRepository->update($request->id, $payload);
+
+            return successResponse(__('messages.publish.success'));
+        }, __('messages.publish.error'));
+    }
+
+    public function updateStatusMultiple()
+    {
+        return $this->executeInTransaction(function () {
+            $request = request();
+
+            $this->checkUserInCatalogues($request->modelIds);
+
+            $payload[$request->field] = $request->value;
+
+            $this->userCatalogueRepository->updateByWhereIn('id', $request->modelIds, $payload);
+
+            return successResponse(__('messages.publish.success'));
+        }, __('messages.publish.error'));
+    }
+
+    private function checkUserInCatalogue($id)
+    {
+        $catalogues = $this->userCatalogueRepository->findById($id, ['users']);
+
+        if ($catalogues->users->count() > 0) {
+            throw new Exception(__('messages.delete.error'));
+        }
+
+        if ($id == User::ROLE_ADMIN || $id == User::ROLE_CUSTOMER) {
+            throw new Exception(__('messages.delete.error'));
+        }
+    }
+
+    private function checkUserInCatalogues($ids)
+    {
+        $catalogues = $this->userCatalogueRepository->findByWhereIn($ids, 'id', ['users']);
+
+        if ($catalogues->users->count() > 0) {
+            throw new Exception(__('messages.delete.error'));
+        }
+
+        if (in_array(User::ROLE_ADMIN, $ids) || in_array(User::ROLE_CUSTOMER, $ids)) {
+            throw new Exception(__('messages.delete.error'));
+        }
     }
 }

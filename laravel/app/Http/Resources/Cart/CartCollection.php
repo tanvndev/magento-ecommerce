@@ -10,25 +10,27 @@ class CartCollection extends ResourceCollection
     /**
      * Transform the resource collection into an array.
      *
-     * @return array<int|string, mixed>
+     * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
-        if (
-            $this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator ||
-            $this->resource instanceof \Illuminate\Pagination\Paginator
-        ) {
-            return [
-                'data' => $this->collection->map(function ($cart) {
-                    return new CartResource($cart);
-                }),
-                'total' => $this->total(),
-                'per_page' => $this->perPage(),
-                'current_page' => $this->currentPage(),
-                'last_page' => $this->lastPage(),
-            ];
-        }
+        $totalAmount = $this->calculateTotalAmount();
 
-        return parent::toArray($request);
+        return [
+            'items'        => CartResource::collection($this->collection),
+            'total_amount' => $totalAmount ?? 0,
+        ];
+    }
+
+    private function calculateTotalAmount()
+    {
+
+        return $this->collection
+            ->filter(function ($cartItem) {
+                return $cartItem->is_selected == true;
+            })
+            ->sum(function ($cartItem) {
+                return $cartItem->getSubTotal();
+            });
     }
 }

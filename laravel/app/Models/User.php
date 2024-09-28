@@ -16,6 +16,10 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, MustVerifyEmail, Notifiable, QueryScopes;
 
+    const ROLE_ADMIN = 1;
+
+    const ROLE_CUSTOMER = 2;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -27,8 +31,8 @@ class User extends Authenticatable implements JWTSubject
         'phone',
         'province_id',
         'district_id',
-        'google_id',
         'ward_id',
+        'google_id',
         'address',
         'birthday',
         'description',
@@ -60,7 +64,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
     ];
 
     public function getJWTIdentifier()
@@ -97,5 +101,20 @@ class User extends Authenticatable implements JWTSubject
     public function cart()
     {
         return $this->hasOne(Cart::class);
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_id', 'code');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id', 'code');
+    }
+
+    public function ward()
+    {
+        return $this->belongsTo(Ward::class, 'ward_id', 'code');
     }
 }

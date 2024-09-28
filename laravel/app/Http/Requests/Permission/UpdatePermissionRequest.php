@@ -22,15 +22,15 @@ class UpdatePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'canonical' => 'required|string|unique:permissions,canonical,'.$this->permission,
+            'name'      => 'required|string',
+            'canonical' => 'required|string|unique:permissions,canonical,' . $this->permission,
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên quyền',
+            'name'      => 'Tên quyền',
             'canonical' => 'Canonical',
         ];
     }

@@ -31,11 +31,21 @@
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.dataIndex === 'image'">
-                <img
-                  class="w-20 object-contain"
-                  :src="resizeImage(record.image)"
-                  :alt="record.name"
-                />
+                <div class="rounded border p-1 inline-block">
+                  <img
+                    class="h-[50px] w-[50px] object-cover"
+                    :src="resizeImage(record.image, 100)"
+                    :alt="record.name"
+                  />
+                </div>
+              </template>
+
+              <template v-if="column.dataIndex === 'name'">
+                <RouterLink
+                  :to="{ name: 'brand.update', params: { id: record.id } }"
+                  class="text-blue-500"
+                  >{{ record.name }}
+                </RouterLink>
               </template>
 
               <template v-if="column.dataIndex === 'publish'">
@@ -51,15 +61,6 @@
                   :record="record"
                   :modelName="state.modelName"
                   :field="column.dataIndex"
-                />
-              </template>
-
-              <template v-if="column.dataIndex === 'action'">
-                <ActionComponent
-                  @onDelete="onDelete"
-                  :id="record.id"
-                  :routeUpdate="state.routeUpdate"
-                  :endpoint="state.endpoint"
                 />
               </template>
             </template>
@@ -78,11 +79,11 @@ import {
   MasterLayout,
   FilterComponent,
   StatusSwitchComponent,
-  ToolboxComponent,
-  ActionComponent
+  ToolboxComponent
 } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
-import { resizeImage } from '@/utils/helpers';
+import { debounce, resizeImage } from '@/utils/helpers';
+import { useRoute } from 'vue-router';
 
 // STATE
 const state = reactive({
@@ -102,7 +103,7 @@ const columns = [
     title: 'Ảnh',
     dataIndex: 'image',
     key: 'image',
-    width: '10%'
+    width: '7%'
   },
   {
     title: 'Tên thương hiệu',
@@ -127,16 +128,11 @@ const columns = [
     dataIndex: 'publish',
     key: 'publish',
     width: '7%'
-  },
-  {
-    title: 'Thực thi',
-    dataIndex: 'action',
-    key: 'action',
-    width: '6%'
   }
 ];
 
 const { getAll, loading } = useCRUD();
+const route = useRoute();
 
 // Pagination
 const {
@@ -162,12 +158,23 @@ const fetchData = async () => {
   pagination.pageSize = response.per_page;
 };
 
+const deboucedFetchData = debounce(fetchData, 500);
+
 // Watchers
 watch(onChangePagination, () => fetchData());
 watch(selectedRows, () => {
   state.isShowToolbox = selectedRows.value.length > 0;
   state.modelIds = selectedRowKeys.value;
 });
+watch(
+  () => route.query.archive,
+  (newValue) => {
+    state.filterOptions.archive = newValue === 'true' ? true : false;
+    state.pageTitle =
+      newValue === 'true' ? 'Danh sách lưu trữ thương hiệu' : 'Danh sách thương hiệu';
+    deboucedFetchData();
+  }
+);
 
 const onFilterOptions = (filterValue) => {
   state.filterOptions = filterValue;
@@ -176,10 +183,6 @@ const onFilterOptions = (filterValue) => {
 
 const onChangeToolbox = () => {
   fetchData();
-};
-
-const onDelete = (key) => {
-  state.dataSource = state.dataSource.filter((item) => item.key !== key);
 };
 
 // Lifecycle hook

@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     {
 
         return [
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required',
         ];
     }
@@ -32,7 +32,7 @@ class LoginRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email' => 'Email',
+            'email'    => 'Email',
             'password' => 'Mật khẩu',
         ];
     }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\Interfaces\BaseServiceInterface;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -36,10 +37,12 @@ class BaseService implements BaseServiceInterface
     public function updateStatus()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
+            $request = request();
 
-            $payload[request('field')] = request('value');
-            $this->{$repositoryName}->update(request('modelId'), $payload);
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
+            $payload[$request->field] = $request->value;
+
+            $this->{$repositoryName}->update($request->value, $payload);
 
             return successResponse(__('messages.publish.success'));
         }, __('messages.publish.error'));
@@ -48,10 +51,12 @@ class BaseService implements BaseServiceInterface
     public function updateStatusMultiple()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
+            $request = request();
 
-            $payload[request('field')] = request('value');
-            $this->{$repositoryName}->updateByWhereIn('id', request('modelIds'), $payload);
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
+            $payload[$request->field] = $request->value;
+
+            $this->{$repositoryName}->updateByWhereIn('id', $request->modelIds, $payload);
 
             return successResponse(__('messages.publish.success'));
         }, __('messages.publish.error'));
@@ -60,11 +65,17 @@ class BaseService implements BaseServiceInterface
     public function deleteMultiple()
     {
         return $this->executeInTransaction(function () {
-            $repositoryName = lcfirst(request('modelName')).'Repository';
-            $this->{$repositoryName}->deleteByWhereIn('id', request('modelIds'));
+            $request = request();
 
-            return successResponse(__('messages.delete.success'));
-        }, __('messages.delete.error'));
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
+            $forceDelete = ($request->has('forceDelete') && $request->forceDelete == '1')
+                ? 'forceDeleteByWhereIn'
+                : 'deleteByWhereIn';
+
+            $this->{$repositoryName}->{$forceDelete}('id', $request->modelIds);
+
+            return successResponse(__('messages.action.success'));
+        }, __('messages.action.error'));
     }
 
     protected function executeInTransaction($callback, string $messageError = '')
@@ -75,18 +86,31 @@ class BaseService implements BaseServiceInterface
             DB::commit();
 
             return $result;
-        } catch (\Exception $e) {
-            // getError($e);
+        } catch (Exception $e) {
+            getError($e);
 
             Log::error('>>Transaction failed<<', [
                 'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
                 // 'trace' => $e->getTraceAsString(),
             ]);
             DB::rollBack();
 
             return errorResponse($messageError);
         }
+    }
+
+    public function handleArchiveMultiple()
+    {
+        return $this->executeInTransaction(function () {
+            $request = request();
+
+            $repositoryName = lcfirst($request->modelName) . 'Repository';
+
+            $this->{$repositoryName}->restoreByWhereIn('id', $request->modelIds);
+
+            return successResponse(__('messages.action.success'));
+        }, __('messages.action.error'));
     }
 }

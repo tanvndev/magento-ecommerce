@@ -12,9 +12,7 @@ interface WidgetServiceInterface
 
     public function destroy($id);
 
-    public function updateStatus();
+    public function getWidgetByCode(string $code);
 
-    public function updateStatusMultiple();
-
-    public function getWidget();
+    public function getAllWidgetCode();
 }

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\QueryScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Ward extends Model
 {
-    use HasFactory;
+    use HasFactory, QueryScopes;
 
     protected $table = 'wards';
 
@@ -26,5 +27,15 @@ class Ward extends Model
     public function districts()
     {
         return $this->belongsTo(District::class, 'district_code', 'code');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'ward_id', 'code');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'ward_id', 'code');
     }
 }

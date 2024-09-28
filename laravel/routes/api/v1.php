@@ -1,24 +1,28 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\TestApiController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\DashboardController;
-use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V1\Brand\BrandController;
-use App\Http\Controllers\Api\V1\Widget\WidgetController;
-use App\Http\Controllers\Api\V1\Product\ProductController;
-use App\Http\Controllers\Api\V1\Upload\{UploadController};
-use App\Http\Controllers\Api\V1\Auth\VerificationController;
-use App\Http\Controllers\Api\V1\User\UserCatalogueController;
-use App\Http\Controllers\Api\V1\Attribute\AttributeController;
-use App\Http\Controllers\Api\V1\Location\{LocationController};
-use App\Http\Controllers\Api\V1\Permission\PermissionController;
-use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
-use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
-use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
+use App\Http\Controllers\Api\V1\Location\LocationController;
+use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
+use App\Http\Controllers\Api\V1\Permission\PermissionController;
+use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
+use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
+use App\Http\Controllers\Api\V1\Slider\SliderController;
+use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
+use App\Http\Controllers\Api\V1\Upload\UploadController;
+use App\Http\Controllers\Api\V1\User\UserCatalogueController;
+use App\Http\Controllers\Api\V1\User\UserController;
+use App\Http\Controllers\Api\V1\Voucher\VoucherController;
+use App\Http\Controllers\Api\V1\Widget\WidgetController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,11 +35,29 @@ use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 |
 */
 
-Route::middleware('log.request.response')->group(function () {
+Route::middleware('log.request.response', 'api')->group(function () {
+
+    // ROUTE TEST
+    Route::post('test/index', [TestApiController::class, 'upload']);
 
     // CLIENT ROUTE
     Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
-    Route::get('getWidget', [WidgetController::class, 'getWidget']);
+    Route::get('getAllWidgetCode', [WidgetController::class, 'getAllWidgetCode']);
+    Route::get('getWidget/{code}', [WidgetController::class, 'getWidget']);
+    Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
+    Route::get('getAllVouchers', [VoucherController::class, 'getAllVoucher']);
+    Route::get('getAllSlider', [SliderController::class, 'getAllSlider']);
+    Route::get('getAllPaymentMethods', [PaymentMethodController::class, 'getAllPaymentMethod']);
+    Route::get('getShippingMethodByProductVariant/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
+    Route::post('applyVoucher/{code}', [VoucherController::class, 'applyVoucher']);
+
+    // Order
+    Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('getOrder/{orderCode}', [OrderController::class, 'getOrder']);
+    Route::get('getOrderUser', [OrderController::class, 'getOrderByUser']);
+    Route::get('orderPayment/{orderCode}', [OrderController::class, 'handleOrderPayment']);
+    Route::put('orders/update/completed/{id}', [OrderController::class, 'updateCompletedOrder']);
+    Route::put('orders/update/cancelled/{id}', [OrderController::class, 'updateCancelledOrder']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
@@ -50,6 +72,7 @@ Route::middleware('log.request.response')->group(function () {
     Route::prefix('location')->group(function () {
         Route::get('provinces', [LocationController::class, 'getProvinces']);
         Route::get('getLocation', [LocationController::class, 'getLocation']);
+        Route::post('getLocationByAddress', [LocationController::class, 'getLocationByAddress']);
     });
 
     // Routes with JWT Middleware
@@ -64,6 +87,7 @@ Route::middleware('log.request.response')->group(function () {
             Route::put('changeStatus', [DashboardController::class, 'changeStatus'])->name('changeStatus');
             Route::put('changeStatusMultiple', [DashboardController::class, 'changeStatusMultiple'])->name('changeStatusMultiple');
             Route::delete('deleteMultiple', [DashboardController::class, 'deleteMultiple'])->name('deleteMultiple');
+            Route::put('archiveMultiple', [DashboardController::class, 'archiveMultiple'])->name('archiveMultiple');
             Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
 
@@ -107,15 +131,32 @@ Route::middleware('log.request.response')->group(function () {
         Route::apiResource('payment-methods', PaymentMethodController::class);
 
         // SYSTEM CONFIG ROUTE
-        Route::apiResource('system-configs', SystemConfigController::class);
+        Route::get('system-configs', [SystemConfigController::class, 'index']);
+        Route::put('system-configs', [SystemConfigController::class, 'update']);
 
-        // CART ROUTE
-        Route::controller(CartController::class)->name('cart.')->group(function () {
-            Route::get('carts', 'index')->name('index');
-            Route::post('carts', 'createOrUpdate')->name('store-or-update');
-            Route::delete('carts/{id}/destroy', 'destroy')->name('destroy');
-            Route::delete('carts/clean', 'forceDestroy')->name('force-destroy');
-            Route::put('carts/handleSelected', 'handleSelected')->name('handle-selected');
-        });
+        // WIDGET ROUTE
+        Route::apiResource('widgets', WidgetController::class);
+
+        // VOUCHER ROUTE
+        Route::apiResource('vouchers', VoucherController::class);
+
+        // SLIDER ROUTE
+        Route::apiResource('sliders', SliderController::class);
+
+        // ORDER ROUTE
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
+        Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
+    });
+
+    // CART ROUTE
+    Route::controller(CartController::class)->name('cart.')->group(function () {
+        Route::get('carts', 'index')->name('index');
+        Route::post('carts', 'createOrUpdate')->name('store-or-update');
+        Route::delete('carts/clean', 'forceDestroy')->name('force-destroy');
+        Route::delete('carts/{id}', 'destroy')->name('destroy');
+        Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
+        Route::delete('carts/deleteCartSelected', 'deleteCartSelected')->name('deleteCartSelected');
+        Route::get('carts/addPaidProducts', 'addPaidProductsToCart')->name('addPaidProducts');
     });
 });

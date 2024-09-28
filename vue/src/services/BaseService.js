@@ -3,10 +3,10 @@ import axios from '@/configs/axios';
 class BaseService {
   async changeStatus(payload) {
     try {
-      const response = await axios.put('/dashboard/changeStatus', payload);
+      const response = await axios.put('/dashboard/changeStatus?_method=PUT', payload);
 
       return {
-        success: true,
+        success: response.status == 'success' ? true : false,
         messages: response.messages
       };
     } catch (error) {
@@ -21,10 +21,10 @@ class BaseService {
   }
   async changeStatusAll(payload) {
     try {
-      const response = await axios.put('/dashboard/changeStatusMultiple', payload);
+      const response = await axios.put('/dashboard/changeStatusMultiple?_method=PUT', payload);
 
       return {
-        success: true,
+        success: response.status == 'success' ? true : false,
         messages: response.messages
       };
     } catch (error) {
@@ -43,7 +43,7 @@ class BaseService {
       const response = await axios.get(`${endpoint}/${id}`);
 
       return {
-        success: true,
+        success: response.status == 'success' ? true : false,
         messages: response.messages,
         data: response.data
       };
@@ -65,7 +65,7 @@ class BaseService {
       });
 
       return {
-        success: true,
+        success: response.status == 'success' ? true : false,
         messages: response.messages,
         data: response.data
       };
@@ -89,7 +89,7 @@ class BaseService {
 
       return {
         data: response.data ?? [],
-        success: true,
+        success: response.status == 'success' ? true : false,
         messages: response.messages
       };
     } catch (error) {
@@ -115,7 +115,7 @@ class BaseService {
       });
 
       return {
-        success: true,
+        success: response.status == 'success' ? true : false,
         messages: response.messages
       };
     } catch (error) {
@@ -136,7 +136,7 @@ class BaseService {
 
       return {
         data: response.data ?? [],
-        success: true,
+        success: response.status == 'success' ? true : false,
         messages: response.messages
       };
     } catch (error) {
@@ -154,7 +154,24 @@ class BaseService {
     try {
       const response = await axios.delete('/dashboard/deleteMultiple', { data: payload });
       return {
-        success: true,
+        success: response.status == 'success' ? true : false,
+        messages: response.messages
+      };
+    } catch (error) {
+      let messages = error.response
+        ? error.response.data.messages
+        : 'Có lỗi từ máy chủ vui lòng liên hệ quản trị viên để được hỗ trợ.';
+      return {
+        success: false,
+        messages: messages
+      };
+    }
+  }
+  async archiveMultiple(payload) {
+    try {
+      const response = await axios.put('/dashboard/archiveMultiple', payload);
+      return {
+        success: response.status == 'success' ? true : false,
         messages: response.messages
       };
     } catch (error) {

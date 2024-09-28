@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests\Cart;
 
-use App\Enums\ResponseEnum;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CreateAndUpdateRequest extends FormRequest
 {
@@ -24,12 +21,12 @@ class CreateAndUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-
         $rules = [];
 
-        if (!request()->plus && !request()->minus) {
-            $rules['quantity'] = 'required|integer|min:1';
+        if (request()->quantity) {
+            $rules['quantity'] = 'integer|min:1';
         }
+
         return $rules;
     }
 
@@ -43,12 +40,5 @@ class CreateAndUpdateRequest extends FormRequest
     public function messages()
     {
         return __('request.messages');
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'messages' => $validator->errors(),
-        ], ResponseEnum::UNPROCESSABLE_ENTITY));
     }
 }

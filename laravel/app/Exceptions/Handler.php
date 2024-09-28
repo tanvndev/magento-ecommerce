@@ -6,7 +6,6 @@ use App\Enums\ResponseEnum;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -32,23 +31,21 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        $this->reportable(function (Throwable $e) {});
     }
 
     public function report(Throwable $exception)
     {
         Log::error('>>Exception occurred<<', [
             'message' => $exception->getMessage(),
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
+            'file'    => $exception->getFile(),
+            'line'    => $exception->getLine(),
         ]);
 
         parent::report($exception);
     }
 
-    public function render($request, Throwable $exception): JsonResponse
+    public function render($request, Throwable $exception)
     {
         if ($request->is('api/*')) {
             if ($exception instanceof ModelNotFoundException) {
@@ -61,7 +58,7 @@ class Handler extends ExceptionHandler
 
             if ($exception instanceof ValidationException) {
                 return response()->json([
-                    'error' => 'Validation Error',
+                    'error'    => 'Validation Error',
                     'messages' => $exception->errors(),
                 ], 422);
             }

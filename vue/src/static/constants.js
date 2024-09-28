@@ -1,4 +1,5 @@
 const LARAVEL_URL = import.meta.env.VITE_LARAVEL_URL;
+const NUXT_URL = import.meta.env.VITE_NUXT_URL;
 
 const PUBLISH = [
   {
@@ -91,6 +92,32 @@ const WIDGET_TYPE = [
   }
 ];
 
+const DISCOUNT_TYPE = [
+  {
+    value: 'fixed',
+    label: 'Số tiền (₫)'
+  },
+  {
+    value: 'percentage',
+    label: 'Phần chăm (%)'
+  }
+];
+
+const DISCOUNT_CONDITION_APPLY = [
+  {
+    value: 'all',
+    label: 'Không có'
+  },
+  {
+    value: 'subtotal_price',
+    label: 'Tổng giá trị đơn hàng tối thiểu'
+  },
+  {
+    value: 'min_quantity',
+    label: 'Tổng số lượng sản phẩm được khuyến mại tối thiểu'
+  }
+];
+
 export {
   PUBLISH,
   PAGESIZE,
@@ -100,5 +127,8 @@ export {
   STOCK_STATUS,
   LARAVEL_URL,
   WIDGET_MODEL,
-  WIDGET_TYPE
+  WIDGET_TYPE,
+  NUXT_URL,
+  DISCOUNT_TYPE,
+  DISCOUNT_CONDITION_APPLY
 };

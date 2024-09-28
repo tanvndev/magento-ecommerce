@@ -5,6 +5,7 @@ namespace App\Services\Upload;
 use App\Classes\Upload;
 use App\Services\BaseService;
 use App\Services\Interfaces\Upload\UploadServiceInterface;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -13,8 +14,10 @@ class UploadService extends BaseService implements UploadServiceInterface
 {
     public function paginate()
     {
-        $page = request('page', 1);
-        $pageSize = request('pageSize', 30);
+        $request = request();
+
+        $page = $request->page ?? 1;
+        $pageSize = $request->pageSize ?? 30;
         $images = $this->getAllImages();
 
         if (empty($images)) {
@@ -29,7 +32,7 @@ class UploadService extends BaseService implements UploadServiceInterface
             count($images),         // Tổng số mục trong mảng ban đầu
             $pageSize,               // Số lượng mục trên mỗi trang
             $currentPage,           // Trang hiện tại
-            ['path' => request()->url()]   // Các tham số yêu cầu bổ sung cho URL phân trang
+            ['path' => $request->url()]   // Các tham số yêu cầu bổ sung cho URL phân trang
         );
 
         return successResponse('', $paginator);
@@ -57,24 +60,24 @@ class UploadService extends BaseService implements UploadServiceInterface
 
             // Xây dựng dữ liệu cho từng ảnh và thêm vào mảng images
             $imageInfo = [
-                'id' => 'ID_'.$lastModified + $size,
-                'url' => asset($storedPath),
-                'link' => asset($newPath),
-                'name' => $filename,
-                'size' => $size,
+                'id'           => 'ID_' . $lastModified + $size,
+                'url'          => asset($storedPath),
+                'link'         => asset($newPath),
+                'name'         => $filename,
+                'size'         => $size,
                 'lastModified' => $lastModified,
-                'sizes' => [
-                    'thumbnail' => asset($newPath.$thumbnail),
-                    'medium' => asset($newPath.$medium),
-                    'large' => asset($newPath.$large),
-                    'original' => asset($newPath),
+                'sizes'        => [
+                    'thumbnail' => asset($newPath . $thumbnail),
+                    'medium'    => asset($newPath . $medium),
+                    'large'     => asset($newPath . $large),
+                    'original'  => asset($newPath),
                 ],
             ];
 
             $images[] = $imageInfo;
         }
         // Sắp xếp mảng theo thời gian sửa đổi cuối cùng (lastModified), giảm dần
-        if (! empty($images)) {
+        if ( ! empty($images)) {
             usort($images, function ($a, $b) {
                 return $b['lastModified'] - $a['lastModified'];
             });
@@ -101,11 +104,11 @@ class UploadService extends BaseService implements UploadServiceInterface
             $data = $this->paginate();
 
             return [
-                'status' => 'success',
+                'status'   => 'success',
                 'messages' => $messages ?? [],
-                'data' => $data['data'],
+                'data'     => $data['data'],
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return errorResponse(__('messages.upload.create.error'));
         }
     }
@@ -123,8 +126,8 @@ class UploadService extends BaseService implements UploadServiceInterface
             }
             $data = $this->paginate();
 
-            return successResponse(__('messages.upload.delete.sucess'), $data['data']);
-        } catch (\Exception $e) {
+            return successResponse(__('messages.upload.delete.success'), $data['data']);
+        } catch (Exception $e) {
             return errorResponse(__('messages.upload.delete.error'));
         }
     }

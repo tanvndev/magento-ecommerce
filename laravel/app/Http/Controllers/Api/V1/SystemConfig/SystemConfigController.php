@@ -6,6 +6,7 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\SystemConfig\SystemConfigRepositoryInterface;
 use App\Services\Interfaces\SystemConfig\SystemConfigServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class SystemConfigController extends Controller
 {
@@ -21,14 +22,20 @@ class SystemConfigController extends Controller
         $this->systemConfigService = $systemConfigService;
     }
 
-    public function index()
+    /**
+     * Display a listing of the system configurations.
+     */
+    public function index(): JsonResponse
     {
         $data = $this->systemConfigService->all();
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
-    public function update()
+    /**
+     * Update the system configurations.
+     */
+    public function update(): JsonResponse
     {
         $response = $this->systemConfigService->update();
 

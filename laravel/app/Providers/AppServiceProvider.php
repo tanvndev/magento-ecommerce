@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use League\Glide\Responses\LaravelResponseFactory;
 use League\Glide\ServerFactory;
@@ -47,6 +50,16 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Cart\CartServiceInterface' => 'App\Services\Cart\CartService',
         // Widget
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
+        // Voucher
+        'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
+        // Slider
+        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
+        // Order
+        'App\Services\Interfaces\Order\OrderServiceInterface' => 'App\Services\Order\OrderService',
+        // Location
+        'App\Services\Interfaces\Location\LocationServiceInterface' => 'App\Services\Location\LocationService',
+        // Slider
+        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
     ];
 
     public function register(): void
@@ -62,17 +75,52 @@ class AppServiceProvider extends ServiceProvider
             $fileSystem = $app->make(Filesystem::class);
 
             return ServerFactory::create([
-                'response' => new LaravelResponseFactory(app('request')),
-                'source' => $fileSystem->getDriver(),
-                'cache' => $fileSystem->getDriver(),
+                'response'           => new LaravelResponseFactory(app('request')),
+                'source'             => $fileSystem->getDriver(),
+                'cache'              => $fileSystem->getDriver(),
                 'source_path_prefix' => env('IMAGE_SOURCE_PATH'),
-                'cache_path_prefix' => '.cache',
+                'cache_path_prefix'  => '.cache',
             ]);
         });
+
+        // $this->printLogSql();
     }
 
     /**
      * Bootstrap any application services.
      */
     public function boot(): void {}
+
+    private function printLogSql()
+    {
+        DB::listen(function ($query) {
+            $logPath = storage_path('logs/sql/' . Carbon::now()->format('Y-m-d') . '-slow-log.sql');
+
+            $sqlWithBindings = $this->interpolateQuery($query->sql, $query->bindings);
+
+            $logContent = sprintf(
+                "/*==================================================================*/\n" .
+                    "/* Origin (request): %s\n" .
+                    "   Query %d - %s [%sms] */\n\n" .
+                    "%s\n\n",
+                request()->fullUrl() ?? 'N/A',
+                $query->time, // Số thứ tự truy vấn
+                Carbon::now()->toDateTimeString(),
+                number_format($query->time, 2), // Thời gian thực thi
+                $sqlWithBindings
+            );
+
+            File::append($logPath, $logContent);
+        });
+    }
+
+    private function interpolateQuery($sql, $bindings)
+    {
+        foreach ($bindings as $binding) {
+            $value = is_numeric($binding) ? $binding : "'{$binding}'";
+            $sql = preg_replace('/\?/', $value, $sql, 1);
+        }
+
+        return $sql;
+    }
 }

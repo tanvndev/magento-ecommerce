@@ -20,15 +20,18 @@ class BrandService extends BaseService implements BrandServiceInterface
 
     public function paginate()
     {
+        $request = request();
+
         $condition = [
-            'search' => addslashes(request('search')),
-            'publish' => request('publish'),
-
+            'search'  => addslashes($request->search),
+            'publish' => $request->publish,
+            'archive' => $request->boolean('archive'),
         ];
-        $select = ['id', 'name', 'publish', 'description', 'canonical', 'image', 'is_featured'];
-        $pageSize = request('pageSize');
 
-        $data = $pageSize && request('page')
+        $select = ['id', 'name', 'publish', 'description', 'canonical', 'image', 'is_featured'];
+        $pageSize = $request->pageSize;
+
+        $data = $pageSize && $request->page
             ? $this->brandRepository->pagination($select, $condition, $pageSize)
             : $this->brandRepository->findByWhere(['publish' => 1], $select, [], true);
 

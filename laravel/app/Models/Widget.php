@@ -5,16 +5,17 @@ namespace App\Models;
 use App\Traits\QueryScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Widget extends Model
 {
-    use HasFactory, QueryScopes;
+    use HasFactory, QueryScopes, SoftDeletes;
 
     protected $fillable = ['name', 'code', 'type', 'description', 'publish', 'advertisement_banners', 'model_ids', 'model', 'order'];
 
     protected $casts = [
-        'model_ids' => 'json',
+        'model_ids'             => 'json',
         'advertisement_banners' => 'json',
     ];
 
@@ -41,7 +42,7 @@ class Widget extends Model
             ->where('id', '!=', $excludeId)
             ->exists()
         ) {
-            $code = "{$originalCode}-".$count++;
+            $code = "{$originalCode}-" . $count++;
         }
 
         return $code;

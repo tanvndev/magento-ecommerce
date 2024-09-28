@@ -23,6 +23,7 @@ const getters = {
 const actions = {
   async login({ commit }, payload) {
     const response = await AuthService.login(payload);
+
     if (!response.success) {
       return commit('loginFailure', response.messages);
     }
@@ -46,10 +47,13 @@ const mutations = {
   setUser(state, user) {
     state.user = user;
   },
-  loginSuccess(state, token) {
+  loginSuccess(state, data) {
     state.status.loggedIn = true;
-    state.accessToken = token;
+    state.accessToken = data?.token;
     state.messages = '';
+    state.user = {
+      user_catalogue: data?.catalogue
+    };
   },
   loginFailure(state, message) {
     state.status.loggedIn = false;
@@ -66,10 +70,13 @@ const mutations = {
     state.accessToken = null;
     state.user = null;
   },
-  logout(state) {
+  async logout(state) {
+    await AuthService.logout();
+
     state.status.loggedIn = false;
     state.accessToken = null;
     state.messages = '';
+
     Cookies.remove('token');
     router.push('/login');
   }

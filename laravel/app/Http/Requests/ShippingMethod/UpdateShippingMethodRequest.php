@@ -22,19 +22,19 @@ class UpdateShippingMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required',
-            'code' => 'string|unique:shipping_methods,code,'.$this->shipping_method,
+            'name'      => 'string|required',
+            'code'      => 'string|unique:shipping_methods,code,' . $this->shipping_method,
             'base_cost' => 'required|numeric',
-            'image' => 'string',
+            'image'     => 'string',
         ];
     }
 
     public function attributes()
     {
         return [
-            'name' => 'Tên phương thức vận chuyển',
-            'code' => 'Mã phương thức vận chuyển',
-            'image' => 'Ảnh phương thức vận chuyển',
+            'name'      => 'Tên phương thức vận chuyển',
+            'code'      => 'Mã phương thức vận chuyển',
+            'image'     => 'Ảnh phương thức vận chuyển',
             'base_cost' => 'Giá cố định của phương thức vận chuyển',
         ];
     }

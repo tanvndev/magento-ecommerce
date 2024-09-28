@@ -4,19 +4,17 @@
 
 namespace App\Services\ShippingMethod;
 
+use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\ShippingMethod\ShippingMethodServiceInterface;
 
 class ShippingMethodService extends BaseService implements ShippingMethodServiceInterface
 {
-    protected $shippingMethodRepository;
-
     public function __construct(
-        ShippingMethodRepositoryInterface $shippingMethodRepository,
-    ) {
-        $this->shippingMethodRepository = $shippingMethodRepository;
-    }
+        protected ShippingMethodRepositoryInterface $shippingMethodRepository,
+        protected ProductVariantRepositoryInterface $productVariantRepository
+    ) {}
 
     public function paginate()
     {
@@ -60,5 +58,66 @@ class ShippingMethodService extends BaseService implements ShippingMethodService
         $payload = request()->except('_token', '_method');
 
         return $payload;
+    }
+
+    // API CLIENT //
+
+    public function getAllShippingMethod()
+    {
+        $shippingMethods = $this->shippingMethodRepository->findByWhere(
+            ['publish' => 1],
+            ['*'],
+            [],
+            true
+        );
+
+        return $shippingMethods;
+    }
+
+    public function getShippingMethodByProductVariant(string $productVariantIds)
+    {
+
+        $productVariantIds = explode(',', $productVariantIds);
+
+        $productVariants = $this->productVariantRepository->findByWhereIn(
+            $productVariantIds,
+            'id',
+            ['id', 'product_id'],
+            [
+                'product' => function ($q) {
+                    $q->select('id', 'shipping_ids');
+                },
+            ]
+        );
+
+        if (empty($productVariants)) {
+            return [];
+        }
+
+        $shippingIds = $productVariants
+            ->pluck('product.shipping_ids')
+            ->filter()
+            ->unique()
+            ->flatten()
+            ->values()
+            ->toArray();
+
+        if (empty($shippingIds)) {
+            return [];
+        }
+
+        $shippingMethods = $this->shippingMethodRepository->findByWhere(
+            ['publish' => 1],
+            ['*'],
+            [],
+            true,
+            [],
+            [
+                'field' => 'id',
+                'value' => $shippingIds,
+            ]
+        );
+
+        return $shippingMethods;
     }
 }

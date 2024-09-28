@@ -10,6 +10,7 @@ use App\Http\Resources\Attribute\AttributeCollection;
 use App\Http\Resources\Attribute\AttributeResource;
 use App\Repositories\Interfaces\Attribute\AttributeRepositoryInterface;
 use App\Services\Interfaces\Attribute\AttributeServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class AttributeController extends Controller
 {
@@ -28,18 +29,18 @@ class AttributeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->attributeService->paginate();
         $data = new AttributeCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAttributeRequest $request)
+    public function store(StoreAttributeRequest $request): JsonResponse
     {
         $response = $this->attributeService->create();
 
@@ -49,17 +50,17 @@ class AttributeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $response = new AttributeResource($this->attributeRepository->findById($id));
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAttributeRequest $request, string $id)
+    public function update(UpdateAttributeRequest $request, string $id): JsonResponse
     {
         $response = $this->attributeService->update($id);
 
@@ -69,7 +70,7 @@ class AttributeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->attributeService->destroy($id);
 

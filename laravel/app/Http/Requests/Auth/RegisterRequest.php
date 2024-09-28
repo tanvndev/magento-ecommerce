@@ -23,7 +23,7 @@ class RegisterRequest extends FormRequest
     {
 
         return [
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'fullname' => 'required',
             'password' => 'required',
         ];
@@ -32,7 +32,7 @@ class RegisterRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email' => 'Email',
+            'email'    => 'Email',
             'fullname' => 'Họ và tên',
             'password' => 'Mật khẩu',
         ];

@@ -6,10 +6,12 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentMethod\StorePaymentMethodRequest;
 use App\Http\Requests\PaymentMethod\UpdatePaymentMethodRequest;
+use App\Http\Resources\PaymentMethod\Client\ClientPaymentMethodCollection;
 use App\Http\Resources\PaymentMethod\PaymentMethodCollection;
 use App\Http\Resources\PaymentMethod\PaymentMethodResource;
 use App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface;
 use App\Services\Interfaces\PaymentMethod\PaymentMethodServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class PaymentMethodController extends Controller
 {
@@ -26,20 +28,20 @@ class PaymentMethodController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the payment methods.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->paymentMethodService->paginate();
         $data = new PaymentMethodCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created payment method in storage.
      */
-    public function store(StorePaymentMethodRequest $request)
+    public function store(StorePaymentMethodRequest $request): JsonResponse
     {
         $response = $this->paymentMethodService->create();
 
@@ -47,22 +49,34 @@ class PaymentMethodController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified payment method.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $paymentMethod = new PaymentMethodResource($this->paymentMethodRepository->findById($id));
 
-        return successResponse('', $paymentMethod);
+        return successResponse('', $paymentMethod, true);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified payment method in storage.
      */
-    public function update(UpdatePaymentMethodRequest $request, string $id)
+    public function update(UpdatePaymentMethodRequest $request, string $id): JsonResponse
     {
         $response = $this->paymentMethodService->update($id);
 
         return handleResponse($response);
+    }
+
+    /**
+     * Retrieve all payment methods for the client.
+     */
+    public function getAllPaymentMethod(): JsonResponse
+    {
+        $paymentMethods = $this->paymentMethodService->getAllPaymentMethod();
+
+        $data = new ClientPaymentMethodCollection($paymentMethods);
+
+        return successResponse('', $data, true);
     }
 }

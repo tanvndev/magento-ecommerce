@@ -10,7 +10,7 @@ interface ShippingMethodServiceInterface
 
     public function update($id);
 
-    public function updateStatus();
+    public function getAllShippingMethod();
 
-    public function updateStatusMultiple();
+    public function getShippingMethodByProductVariant(string $productVariantIds);
 }

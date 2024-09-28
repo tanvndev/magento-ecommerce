@@ -22,7 +22,7 @@ class StoreBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name'      => 'required',
             'canonical' => 'unique:brands',
         ];
     }
@@ -30,7 +30,7 @@ class StoreBrandRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tên thương hiệu',
+            'name'      => 'Tên thương hiệu',
             'canonical' => 'Đường dẫn',
         ];
     }

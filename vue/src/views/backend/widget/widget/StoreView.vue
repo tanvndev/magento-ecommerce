@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto pb-[100px] min-h-screen">
+      <div class="container mx-auto min-h-screen pb-[100px]">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
@@ -45,25 +45,8 @@
                   </a-col>
                 </a-row>
                 <a-row :gutter="[16, 16]" class="mt-6" v-if="state.type == 'product'">
-                  <a-col :span="24">
-                    <SelectComponent
-                      name="model"
-                      label="Module"
-                      :required="true"
-                      :options="WIDGET_MODEL"
-                      @on-change="handleModel"
-                      placeholder="Chọn module"
-                    />
-                  </a-col>
-
-                  <a-col span="24" v-if="state.model == 'Product'">
+                  <a-col span="24">
                     <SearchProductView :old-value="state.modelIds" />
-                  </a-col>
-                  <a-col
-                    span="24"
-                    v-if="state.model == 'Brand' || state.model == 'ProductCatalogue'"
-                  >
-                    <SearchCatalogueView :model="state.model" :modelIdOld="state.modelIds" />
                   </a-col>
                 </a-row>
 
@@ -105,7 +88,6 @@ import router from '@/router';
 import { useCRUD } from '@/composables';
 import { WIDGET_MODEL, WIDGET_TYPE } from '@/static/constants';
 import SearchProductView from './partials/SearchProductView.vue';
-import SearchCatalogueView from './partials/SearchCatalogueView.vue';
 import AdvertisementView from './partials/AdvertisementView.vue';
 
 // VARIABLES
@@ -119,8 +101,7 @@ const state = reactive({
   endpoint: 'widgets',
   pageTitle: 'Thêm mới widget',
   errors: {},
-  type: '',
-  model: '',
+  type: 'product',
   advertisementBanners: [],
   modelIds: []
 });
@@ -182,6 +163,7 @@ const setOldValueForAdvertisementBanner = () => {
       setFieldValue(`image[][${index}]`, advertisementBanner.image || '');
       setFieldValue(`url[][${index}]`, advertisementBanner.url || '');
       setFieldValue(`content[][${index}]`, advertisementBanner.content || '');
+      setFieldValue(`button[][${index}]`, advertisementBanner.button || '');
     });
   }
 };

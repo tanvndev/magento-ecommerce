@@ -22,14 +22,14 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => 'string|required',
-            'image' => 'string|required',
-            'album' => 'string|required',
+            'name'                 => 'string|required',
+            'image'                => 'string|required',
+            'album'                => 'string|required',
             'product_catalogue_id' => 'required',
-            'product_type' => 'required',
-            'cost_price' => 'required|numeric',
-            'price' => 'required|numeric',
-            'sale_price' => 'nullable|numeric|lt:price',
+            'product_type'         => 'required',
+            'cost_price'           => 'required|numeric',
+            'price'                => 'required|numeric',
+            'sale_price'           => 'nullable|numeric|lt:price',
         ];
 
         if ($this->product_type == 'variable') {
@@ -39,9 +39,13 @@ class StoreProductRequest extends FormRequest
                 $price = $item['price'] ?? null;
                 $sale_price = $item['sale_price'] ?? null;
                 if ($price && $sale_price) {
-                    $rules['variable.'.$key.'.sale_price'] = 'numeric|lt:variable.'.$key.'.price';
+                    $rules['variable.' . $key . '.sale_price'] = 'numeric|lt:variable.' . $key . '.price';
                 }
             }
+        }
+
+        if ($this->has('upsell_ids') && count($this->upsell_ids)) {
+            $rules['upsell_ids'] = 'array|min:4|max:50';
         }
 
         return $rules;
@@ -50,16 +54,17 @@ class StoreProductRequest extends FormRequest
     public function attributes()
     {
         return [
-            'name' => 'Tiêu đề sản phẩm',
-            'image' => 'Ảnh sản phẩm',
-            'album' => 'Thư viện ảnh',
-            'product_type' => 'Loại sản phẩm',
-            'product_catalogue_id' => 'Nhóm sản phẩm',
-            'cost_price' => 'Giá nhập',
-            'price' => 'Giá bán',
-            'sale_price' => 'Giá khuyến mãi',
+            'name'                  => 'Tiêu đề sản phẩm',
+            'image'                 => 'Ảnh sản phẩm',
+            'album'                 => 'Thư viện ảnh',
+            'product_type'          => 'Loại sản phẩm',
+            'product_catalogue_id'  => 'Nhóm sản phẩm',
+            'cost_price'            => 'Giá nhập',
+            'price'                 => 'Giá bán',
+            'sale_price'            => 'Giá khuyến mãi',
             'variable.*.sale_price' => 'Giá khuyến mãi biến thể',
-            'variable.*.price' => 'Giá gốc biến thể',
+            'variable.*.price'      => 'Giá gốc biến thể',
+            'upsell_ids'            => 'Sản phẩm liên kết',
         ];
     }
 

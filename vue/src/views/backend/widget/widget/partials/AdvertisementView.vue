@@ -35,6 +35,14 @@
               tooltip-text="Alt là nội dung sẽ hiện khi ảnh lỗi."
             />
           </a-col>
+          <a-col :span="24">
+            <SwitchComponent
+              :name="`button[][${index}]`"
+              label="Nút chuyển hướng"
+              placeholder="Nút chuyển hướng"
+              tooltip-text="Nút chuyển hướng của của banner."
+            />
+          </a-col>
         </a-row>
       </a-col>
       <a-col :span="1" class="mt-7" v-if="itemCount > 2">
@@ -53,7 +61,12 @@
   </div>
 </template>
 <script setup>
-import { EditorComponent, InputComponent, InputFinderComponent } from '@/components/backend';
+import {
+  EditorComponent,
+  InputComponent,
+  InputFinderComponent,
+  SwitchComponent
+} from '@/components/backend';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -77,8 +90,9 @@ const handleDeleteRow = () => {
 
 watch(
   () => props.advertisementBanners,
-  () => {
-    itemCount.value = props.advertisementBanners.length;
-  }
+  (newValue) => {
+    itemCount.value = newValue.length || 2;
+  },
+  { immediate: true }
 );
 </script>

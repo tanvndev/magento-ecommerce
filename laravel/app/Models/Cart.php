@@ -10,7 +10,7 @@ class Cart extends Model
 {
     use HasFactory, QueryScopes;
 
-    protected $fillable = ['user_id', 'total_amount'];
+    protected $fillable = ['user_id', 'session_id'];
 
     public function user()
     {
@@ -21,6 +21,4 @@ class Cart extends Model
     {
         return $this->hasMany(CartItem::class);
     }
-
-
 }

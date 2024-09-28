@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1\Cart;
 
-use Attribute;
-use App\Enums\ResponseEnum;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cart\CreateAndUpdateRequest;
 use App\Http\Resources\Cart\CartCollection;
-use App\Http\Resources\Cart\CartResource;
-use App\Services\Interfaces\Cart\CartServiceInterface;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
+use App\Services\Interfaces\Cart\CartServiceInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -27,49 +25,90 @@ class CartController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display the user's cart.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        $cartItems = $this->cartService->getCart();
+        $response = $this->cartService->getCart();
 
-        $response = new CartCollection($cartItems);
+        $data = new CartCollection($response);
 
-        return successResponse('', $response);
+        return successResponse('', $data, true);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create or update an item in the cart.
      */
-    public function createOrUpdate(CreateAndUpdateRequest $request)
+    public function createOrUpdate(CreateAndUpdateRequest $request): JsonResponse
     {
         $response = $this->cartService->createOrUpdate($request);
 
-        return handleResponse($response, ResponseEnum::CREATED);
+        if (is_array($response)) {
+            return $response;
+        }
+
+        $data = new CartCollection($response);
+
+        return successResponse(__('messages.cart.success.create'), $data, true);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified item from the cart.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->cartService->deleteOneItem($id);
 
-        return handleResponse($response);
+        $data = new CartCollection($response);
+
+        return successResponse('', $data, true);
     }
 
-    public function forceDestroy()
+    /**
+     * Clean the entire cart.
+     */
+    public function forceDestroy(): JsonResponse
     {
-
-        $response = $this->cartService->clearCart();
+        $response = $this->cartService->cleanCart();
 
         return handleResponse($response);
     }
 
-    public function handleSelected(Request $request)
+    /**
+     * Handle selected items in the cart.
+     */
+    public function handleSelected(Request $request): JsonResponse
     {
         $response = $this->cartService->handleSelected($request);
 
+        $data = new CartCollection($response);
+
+        return successResponse('', $data, true);
+    }
+
+    /**
+     * Delete selected items from the cart.
+     */
+    public function deleteCartSelected(): JsonResponse
+    {
+        $response = $this->cartService->deleteCartSelected();
+
         return handleResponse($response);
+    }
+
+    /**
+     * Add paid products to the cart.
+     */
+    public function addPaidProductsToCart(Request $request): JsonResponse
+    {
+        $response = $this->cartService->addPaidProductsToCart($request);
+
+        if (is_array($response)) {
+            return $response;
+        }
+
+        $data = new CartCollection($response);
+
+        return successResponse(__('messages.cart.success.create'), $data, true);
     }
 }
