@@ -85,7 +85,7 @@ class CartService extends BaseService implements CartServiceInterface
     {
         $cart = $this->cartRepository->findByWhere($conditions);
 
-        if (! $cart) {
+        if ( ! $cart) {
             return;
         }
 
@@ -280,7 +280,7 @@ class CartService extends BaseService implements CartServiceInterface
         $newQuantity = $cartItem->quantity + $additionalQuantity;
 
         $cartItem->update([
-            'quantity' => $newQuantity,
+            'quantity'   => $newQuantity,
             'updated_at' => now(),
         ]);
     }

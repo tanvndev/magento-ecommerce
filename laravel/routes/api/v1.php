@@ -39,7 +39,7 @@ use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 Route::middleware('log.request.response', 'api')->group(function () {
 
     // ROUTE TEST
-    Route::get('test/index', [TestApiController::class, 'index']);
+    Route::post('test/index', [TestApiController::class, 'upload']);
 
     // CLIENT ROUTE
     Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
@@ -50,11 +50,15 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('getAllSlider', [SliderController::class, 'getAllSlider']);
     Route::get('getAllPaymentMethods', [PaymentMethodController::class, 'getAllPaymentMethod']);
     Route::get('getShippingMethodByProductVariant/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
+    Route::post('applyVoucher/{code}', [VoucherController::class, 'applyVoucher']);
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('getOrder/{orderCode}', [OrderController::class, 'getOrder']);
     Route::get('getOrderUser', [OrderController::class, 'getOrderByUser']);
+    Route::get('orderPayment/{orderCode}', [OrderController::class, 'handleOrderPayment']);
+    Route::put('orders/update/completed/{id}', [OrderController::class, 'updateCompletedOrder']);
+    Route::put('orders/update/cancelled/{id}', [OrderController::class, 'updateCancelledOrder']);
 
     // AUTH ROUTE
     Route::prefix('auth')->group(function () {
@@ -140,6 +144,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
         // SLIDER ROUTE
         Route::apiResource('sliders', SliderController::class);
 
+
         // Product Review Route
         Route::controller(ProductReviewController::class)->name('productReviews.')->group(function () {
             // Route::get('reviews', 'index')->name('index');
@@ -147,6 +152,12 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::post('product-reviews/{parentId}/reply', 'update')->name('reply');
             Route::put('product-reviews/reply/{replyId}', 'destroy')->name('updateReply');
         });
+
+        // ORDER ROUTE
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
+        Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
+
     });
 
     // CART ROUTE
@@ -157,6 +168,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::delete('carts/{id}', 'destroy')->name('destroy');
         Route::put('carts/handle-selected', 'handleSelected')->name('handle-selected');
         Route::delete('carts/deleteCartSelected', 'deleteCartSelected')->name('deleteCartSelected');
-        Route::get('carts/add-paid-products', 'addPaidProductsToCart')->name('add-paid-products');
+        Route::get('carts/addPaidProducts', 'addPaidProductsToCart')->name('addPaidProducts');
     });
 });

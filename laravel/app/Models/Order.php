@@ -23,7 +23,7 @@ class Order extends Model
         'unpaid' => 'Chưa thanh toán',
     ];
 
-    const SHIPPING_STATUS = [
+    const DELYVERY_STATUS = [
         'pending'    => 'Chờ giao',
         'delivering' => 'Đang giao',
         'delivered'  => 'Đã giao hàng',
@@ -44,13 +44,13 @@ class Order extends Model
 
     const PAYMENT_STATUS_UNPAID = 'unpaid';
 
-    const SHIPPING_STATUS_PENDING = 'pending';
+    const DELYVERY_STATUS_PENDING = 'pending';
 
-    const SHIPPING_STATUS_DELIVERING = 'delivering';
+    const DELYVERY_STATUS_DELIVERING = 'delivering';
 
-    const SHIPPING_STATUS_DELIVERED = 'delivered';
+    const DELYVERY_STATUS_DELIVERED = 'delivered';
 
-    const SHIPPING_STATUS_FAILED = 'failed';
+    const DELYVERY_STATUS_FAILED = 'failed';
 
     protected $fillable = [
         'code',

@@ -10,6 +10,7 @@ use App\Http\Resources\User\UserCatalogueCollection;
 use App\Http\Resources\User\UserCatalogueResource;
 use App\Repositories\Interfaces\User\UserCatalogueRepositoryInterface;
 use App\Services\Interfaces\User\UserCatalogueServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class UserCatalogueController extends Controller
 {
@@ -28,20 +29,20 @@ class UserCatalogueController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         // $this->authorize('modules', 'users.catalogues.index');
 
         $paginator = $this->userCatalogueService->paginate();
         $data = new UserCatalogueCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserCatalogueRequest $request)
+    public function store(StoreUserCatalogueRequest $request): JsonResponse
     {
         // $this->authorize('modules', 'users.catalogues.store');
 
@@ -53,19 +54,19 @@ class UserCatalogueController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         // $this->authorize('modules', 'users.catalogues.show');
 
         $response = new UserCatalogueResource($this->userCatalogueRepository->findById($id));
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserCatalogueRequest $request, string $id)
+    public function update(UpdateUserCatalogueRequest $request, string $id): JsonResponse
     {
         // $this->authorize('modules', 'users.catalogues.update');
 
@@ -77,7 +78,7 @@ class UserCatalogueController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         // $this->authorize('modules', 'users.catalogues.destroy');
 
@@ -86,7 +87,10 @@ class UserCatalogueController extends Controller
         return handleResponse($response);
     }
 
-    public function updatePermissions(string $id)
+    /**
+     * Update permissions for the specified resource.
+     */
+    public function updatePermissions(string $id): JsonResponse
     {
         // $this->authorize('modules', 'users.catalogues.updatePermissions');
 

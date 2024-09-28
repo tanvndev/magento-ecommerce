@@ -215,11 +215,11 @@ onMounted(async () => {
     return navigateTo('/')
   }
 
+  await getOrder()
+
   if (!order.value) {
     return navigateTo('/')
   }
-
-  await getOrder()
 })
 </script>
 

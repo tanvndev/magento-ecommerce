@@ -62,17 +62,23 @@ return [
     'voucher' => [
         'error' => [
             'create' => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
+            'apply'  => 'Đơn hàng chưa đủ điều kiện áp dụng mã giảm giá.',
         ],
-        'success' => 'Ma giam gia da duoc ap dung thanh cong',
+        'success' => [
+            'apply' => 'Áp dụng giảm giá thành công.',
+        ],
     ],
     'order' => [
         'error' => [
-            'create'  => 'Tạo đơn hàng thất bại vui lòng thử lại.',
-            'payment' => 'Thanh toán đơn hàng thất bại vui lòng thử lại.',
+            'create'   => 'Tạo đơn hàng thất bại vui lòng thử lại.',
+            'payment'  => 'Thanh toán đơn hàng thất bại vui lòng thử lại.',
+            'status'   => 'Cập nhập trạng thái đơn hàng thất bại.',
+            'invalid'  => 'Bạn không thể hoàn tất đơn hàng khi các trạng thái khác chưa hoàn thành.',
         ],
         'success' => [
-            'create'  => 'Tạo đơn hàng thành công vui lòng kiểm tra email.',
-            'payment' => 'Thanh toán đơn hàng thành công.',
+            'create'   => 'Tạo đơn hàng thành công vui lòng kiểm tra email.',
+            'payment'  => 'Thanh toán đơn hàng thành công.',
+            'status'   => 'Cập nhập trạng thái đơn hàng thành công.',
         ],
     ],
     'auth' => [
@@ -82,8 +88,8 @@ return [
             'email_verified' => 'Email đã xác nhận đăng ký vui lòng đăng nhập.',
         ],
         'reset_password' => [
-            'success' => 'Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.',
-            'error'   => 'Đặt lại mật khẩu thất bại.',
+            'success'    => 'Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.',
+            'error'      => 'Đặt lại mật khẩu thất bại.',
         ],
     ],
 ];

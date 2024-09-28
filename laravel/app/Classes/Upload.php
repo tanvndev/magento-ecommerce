@@ -66,9 +66,12 @@ class Upload
                 // Remove temporary file
                 unlink($temporaryPath);
 
+                $newPath = Str::replaceFirst($imageSrc, 'images/', $storedPath);
+
                 return [
                     'status'  => 'success',
                     'message' => __('messages.upload.create.success'),
+                    'data'    => asset($newPath),
                 ];
             } else {
                 return [
