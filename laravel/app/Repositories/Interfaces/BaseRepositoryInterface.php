@@ -7,10 +7,10 @@ interface BaseRepositoryInterface
     /**
      * Get all records.
      *
-     * @param  array|string  $column
+     * @param  array  $column
      * @return mixed
      */
-    public function all($column = ['*'], array $relation = [], ?string $orderBy = null);
+    public function all(array $column = ['*'], array $relation = [], array $orderBy = []);
 
     /**
      * Find a record by its ID.
@@ -29,10 +29,10 @@ interface BaseRepositoryInterface
      */
     public function findByWhere(
         array $conditions = [],
-        $column = ['*'],
+        array $column = ['*'],
         array $relation = [],
         bool $all = false,
-        ?string $orderBy = null,
+        array $orderBy = [],
         array $whereInParams = [],
         array $withWhereHas = [],
         array $withCount = []

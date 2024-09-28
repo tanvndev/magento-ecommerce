@@ -23,15 +23,15 @@ class BaseRepository implements BaseRepositoryInterface
      * @param  array|string  $column
      * @return mixed
      */
-    public function all($column = ['*'], array $relation = [], ?string $orderBy = null)
+    public function all(array $column = ['*'], array $relation = [], array $orderBy = [])
     {
         $query = $this->model->select($column);
 
-        if ( ! is_null($orderBy)) {
+        if (! is_null($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if ( ! empty($relation)) {
+        if (! empty($relation)) {
             return $query->relation($relation)->get();
         }
 
@@ -50,43 +50,56 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
+
+
     /**
      * Find records by specified conditions.
      *
-     * @param  array|string  $column
+     * @param  array  $conditions  Specify field, operator and value as an array.
+     *                             Example: ['name' => 'John Doe', 'age' => ['>', 18]]
+     * @param  array|string  $column  Columns to be selected.
+     * @param  array  $relation  Relations to be eager-loaded.
+     * @param  bool  $all  Return all records if true.
+     * @param  array  $orderBy  Fields to be sorted by.
+     * @param  array  $whereInParams  Specify field and values as an array.
+     *                               Example: ['field' => 'id', 'value' => [1, 2, 3]]
+     * @param  array  $withWhereHas  Apply constraints to eager-loaded relationships.
+     *                               Example: ['relation_name' => [['field', 'operator', 'value']]]
+     * @param  array  $withCount  Apply constraints to eager-loaded relationships with count.
+     *                               Example: ['relation_name' => [['field', 'operator', 'value']]]
      * @return mixed
      */
     public function findByWhere(
         array $conditions = [],
-        $column = ['*'],
+        array $column = ['*'],
         array $relation = [],
         bool $all = false,
-        ?string $orderBy = null,
+        array $orderBy = [],
         array $whereInParams = [],
         array $withWhereHas = [],
         array $withCount = []
     ) {
         $query = $this->model->select($column);
 
-        if ( ! empty($relation)) {
+        if (! empty($relation)) {
             $query->relation($relation);
         }
 
         $query->customWhere($conditions);
 
-        if ( ! empty($whereInParams)) {
+        if (! empty($whereInParams)) {
             $query->whereIn($whereInParams['field'], $whereInParams['value']);
         }
 
-        if ( ! is_null($orderBy)) {
+        if (! is_null($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if ( ! empty($withCount)) {
+        if (! empty($withCount)) {
             $query->withCount($withCount);
         }
 
-        if ( ! empty($withWhereHas)) {
+        if (! empty($withWhereHas)) {
             // 'relation_name' => [
             //     ['field', 'operator', 'value'],
             // ]
@@ -96,10 +109,16 @@ class BaseRepository implements BaseRepositoryInterface
         return $all ? $query->get() : $query->first();
     }
 
+
     /**
      * Find records where the specified field is in a given array of values.
      *
-     * @return mixed
+     * @param  array  $values
+     * @param  string  $field
+     * @param  array  $columns
+     * @param  array  $relations
+     * @param  array  $relationConditions
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
     public function findByWhereIn(
         array $values,
@@ -110,15 +129,15 @@ class BaseRepository implements BaseRepositoryInterface
     ) {
         $query = $this->model->newQuery()->whereIn($field, $values);
 
-        if ( ! empty($columns)) {
+        if (! empty($columns)) {
             $query->select($columns);
         }
 
-        if ( ! empty($relations)) {
+        if (! empty($relations)) {
             $query->with($relations);
         }
 
-        if ( ! empty($relationConditions)) {
+        if (! empty($relationConditions)) {
             // 'relation_name' => [
             //     ['field', 'operator', 'value'],
             // ]
@@ -128,10 +147,16 @@ class BaseRepository implements BaseRepositoryInterface
         return $query->get();
     }
 
+
     /**
      * Find records by conditions with relationships.
      *
-     * @param  array|string  $column
+     * @param  array  $condition  Specify field and value as an array.
+     *                            Example: ['name' => 'John Doe', 'age' => ['>', 18]]
+     * @param  array|string  $column  Columns to be selected.
+     * @param  array  $relation  Relations to be eager-loaded.
+     * @param  string  $alias  Alias of the relation.
+     * @param  bool  $all  Return all records if true.
      * @return mixed
      */
     public function findByWhereHas(array $condition = [], $column = ['*'], array $relation = [], string $alias = '', bool $all = false)
@@ -175,14 +200,14 @@ class BaseRepository implements BaseRepositoryInterface
             ->customGroupBy($groupBy ?? null)
             ->customOrderBy($orderBy ?? null);
 
-        if ( ! empty($withWhereHas)) {
+        if (! empty($withWhereHas)) {
             // Apply constraints to eager-loaded relationships
             foreach ($withWhereHas as $relation => $callback) {
                 $query->whereHas($relation, $callback);
             }
         }
 
-        if ( ! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
+        if (! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
             $query->onlyTrashed();
         }
 
