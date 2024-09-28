@@ -21,17 +21,28 @@ class UpdateOrderRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name'      => 'required',
-            'canonical' => 'unique:brands,canonical,' . $this->brand,
-        ];
+        $rules = [];
+        if ($this->has('order_status')) {
+            $rules['order_status'] = 'required';
+        }
+
+        if ($this->has('payment_status')) {
+            $rules['payment_status'] = 'required';
+        }
+
+        if ($this->has('delivery_status')) {
+            $rules['delivery_status'] = 'required';
+        }
+
+        return $rules;
     }
 
     public function attributes()
     {
         return [
-            'name'      => 'Tên thương hiệu',
-            'canonical' => 'Đường dẫn',
+            'order_status'      => 'Trạng thái đơn hàng',
+            'payment_status'    => 'Trạng thái thanh toán',
+            'delivery_status'   => 'Trạng thái giao hàng',
         ];
     }
 

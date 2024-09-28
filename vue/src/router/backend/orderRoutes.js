@@ -1,5 +1,6 @@
 import OrderIndexView from '@/views/backend/order/order/IndexView.vue';
 import OrderStoreView from '@/views/backend/order/order/StoreView.vue';
+import OrderUpdateView from '@/views/backend/order/order/UpdateView.vue';
 import { isLoggedIn } from '@/middlewares/authenticate';
 
 const orderRoutes = [
@@ -16,9 +17,9 @@ const orderRoutes = [
     beforeEnter: [isLoggedIn]
   },
   {
-    path: '/order/update/:id(\\d+)',
+    path: '/order/update/:code',
     name: 'order.update',
-    component: OrderStoreView,
+    component: OrderUpdateView,
     beforeEnter: [isLoggedIn]
   }
 ];

@@ -97,7 +97,7 @@
                         <div class="variant">
                           Phân loại: {{ item.attribute_values }}
                         </div>
-                        <div class="quantity">x1</div>
+                        <div class="quantity">x{{ item.quantity }}</div>
                       </div>
                       <div>
                         <div class="product-price">
@@ -118,15 +118,55 @@
                 <div class="d-flex w-100 justify-between items-center">
                   <div class="order-footer">
                     <v-row align="center" justify="end" no-gutters>
-                      <v-col cols="auto" class="mr-2">
+                      <v-col
+                        cols="auto"
+                        class="mr-2"
+                        v-if="
+                          ORDER_STATUS[2].value == order.order_status_code &&
+                          order.payment_status_code ==
+                            PAYMENT_STATUS[1].value &&
+                          DELYVERY_STATUS[2].value == order.delivery_status_code
+                        "
+                      >
                         <v-btn
                           size="large"
                           class="text-capitalize"
                           color="primary"
+                          @click="openReviewDialog(order.id)"
                           >Đánh giá</v-btn
                         >
                       </v-col>
-                      <v-col cols="auto">
+
+                      <v-col
+                        cols="auto"
+                        class="mr-2"
+                        v-if="
+                          (DELYVERY_STATUS[0].value ==
+                            order.delivery_status_code &&
+                            ORDER_STATUS[0].value == order.order_status_code) ||
+                          (DELYVERY_STATUS[0].value ==
+                            order.delivery_status_code &&
+                            ORDER_STATUS[1].value == order.order_status_code)
+                        "
+                      >
+                        <v-btn
+                          size="large"
+                          variant="text"
+                          class="text-capitalize border"
+                          @click="
+                            () => {
+                              confirmCancelOrder = true
+                              orderIdToUpdateStatus = order.id
+                            }
+                          "
+                          >Hủy đơn hàng</v-btn
+                        >
+                      </v-col>
+                      <v-col
+                        cols="auto"
+                        class="mr-2"
+                        v-if="ORDER_STATUS[2].value == order.order_status_code"
+                      >
                         <v-btn
                           @click="addToCart(order.id)"
                           size="large"
@@ -135,12 +175,55 @@
                           >Mua lại</v-btn
                         >
                       </v-col>
-                      <v-col cols="auto" class="ml-2">
+                      <v-col cols="auto" class="mr-2">
                         <v-btn
                           size="large"
                           variant="text"
                           class="text-capitalize border"
                           >Liên hệ người bán</v-btn
+                        >
+                      </v-col>
+                      <v-col
+                        cols="auto"
+                        class="mr-2"
+                        v-if="
+                          ORDER_STATUS[1].value == order.order_status_code &&
+                          PAYMENT_STATUS[1].value ==
+                            order.payment_status_code &&
+                          (DELYVERY_STATUS[1].value ==
+                            order.delivery_status_code ||
+                            DELYVERY_STATUS[2].value ==
+                              order.delivery_status_code)
+                        "
+                      >
+                        <v-btn
+                          size="large"
+                          color="primary"
+                          class="text-capitalize border"
+                          @click="
+                            () => {
+                              confirmCompleteOrder = true
+                              orderIdToUpdateStatus = order.id
+                            }
+                          "
+                          >Đã nhận hàng</v-btn
+                        >
+                      </v-col>
+                      <v-col
+                        cols="auto"
+                        class="mr-2"
+                        v-if="
+                          PAYMENT_STATUS[0].value ==
+                            order.payment_status_code &&
+                          order.payment_method_id != COD_ID
+                        "
+                      >
+                        <v-btn
+                          size="large"
+                          color="primary"
+                          class="text-capitalize border"
+                          @click="handleOrderPayment(order.code)"
+                          >Thanh toán</v-btn
                         >
                       </v-col>
                     </v-row>
@@ -157,30 +240,270 @@
               </v-card>
             </v-col>
 
-        </v-row>
-        <div v-if="!orders?.length">
-          <v-empty-state
-            icon="mdi-magnify"
-            text="Chúng tôi không thể tìm thấy đơn hàng của bạn vui lòng thử lại."
-            title="Không có dữ liệu."
-          ></v-empty-state>
-        </div>
+            <v-dialog v-model="confirmCompleteOrder" max-width="500" persistent>
+              <v-card
+                text="Nếu đã nhận được hàng và thanh toán hàng thì vui lòng nhấn xác nhận."
+                title="Bạn có chắc chắn muốn thực hiện thao tác?"
+              >
+                <template v-slot:actions>
+                  <v-spacer></v-spacer>
+
+                  <v-btn @click="confirmCompleteOrder = false"> Hủy bỏ </v-btn>
+
+                  <v-btn @click="handleConfirmCompleteOrder"> Đồng ý </v-btn>
+                </template>
+              </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="confirmCancelOrder" max-width="500" persistent>
+              <v-card
+                text="Nếu bạn nhấn hủy đơn hàng bạn và bạn không thể hoàn tác lại đơn hàng đã đặt."
+                title="Bạn có chắc chắn muốn thực hiện thao tác?"
+              >
+                <template v-slot:actions>
+                  <v-spacer></v-spacer>
+
+                  <v-btn @click="confirmCancelOrder = false"> Hủy bỏ </v-btn>
+
+                  <v-btn @click="handleConfirmCancelOrder"> Đồng ý </v-btn>
+                </template>
+              </v-card>
+            </v-dialog>
+
+            <!-- Modal review -->
+            <v-dialog v-model="isReview" max-width="800" persistent>
+              <v-card v-if="orderItemRating">
+                <v-card-title class="d-flex justify-space-between align-center">
+                  <div class="text-h5 text-medium-emphasis ps-2">
+                    Đánh giá sản phẩm
+                  </div>
+
+                  <v-btn
+                    icon="mdi-close"
+                    variant="text"
+                    @click="isReview = false"
+                  ></v-btn>
+                </v-card-title>
+
+                <v-divider class="mb-4 border-opacity-100"></v-divider>
+
+                <v-card-text>
+                  <div>
+                    <h4 class="mb-5">CHỌN SẢN PHẨM ĐÁNH GIÁ</h4>
+
+                    <div
+                      class="order-purchase-wrapper d-flex border-b mb-3 pb-3"
+                      v-for="item in orderItemRating"
+                      :key="item"
+                    >
+                      <div class="order-product-image">
+                        <img class="object-contain" :src="item.image" />
+                      </div>
+
+                      <div class="order-product-info">
+                        <div class="px-2 pt-1 product-title">
+                          <div class="title">
+                            <NuxtLink
+                              :to="`/product/${item.slug}-${item.product_id}`"
+                            >
+                              {{ item.product_variant_name }} toi laa con ga
+                              nami anasu chang ai co aisdkj asd
+                            </NuxtLink>
+                          </div>
+                          <div class="variant">
+                            Phân loại: {{ item.attribute_values }}
+                          </div>
+                        </div>
+
+                        <div class="w-50">
+                          <v-checkbox
+                            v-model="chooseProductReview"
+                            label="Chọn sản phẩm"
+                            :value="item.product_id"
+                          ></v-checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-center">
+                    <v-rating
+                      v-model="rating"
+                      :item-labels="RATING_LABLE"
+                      color="yellow-darken-3"
+                      class="mx-auto"
+                      item-label-position="bottom"
+                      size="x-large"
+                    ></v-rating>
+                  </div>
+
+                  <div class="mt-5">
+                    <v-textarea
+                      v-model="comment"
+                      clearable
+                      label="Cảm nhận của bạn"
+                      variant="outlined"
+                      auto-grow
+                      counter
+                      autofocus
+                      maxlength="255"
+                    ></v-textarea>
+                  </div>
+                </v-card-text>
+
+                <template v-slot:actions>
+                  <v-spacer></v-spacer>
+
+                  <v-btn @click="isReview = false"> Hủy bỏ </v-btn>
+
+                  <v-btn @click="handleProductReview"> Hoàn thành </v-btn>
+                </template>
+              </v-card>
+            </v-dialog>
+          </v-row>
+          <div v-if="!orders?.length">
+            <v-empty-state
+              icon="mdi-magnify"
+              text="Chúng tôi không thể tìm thấy đơn hàng của bạn vui lòng thử lại."
+              title="Không có dữ liệu."
+            ></v-empty-state>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { ORDER_STATUS_TABS } from '~/static/order'
+import {
+  ORDER_STATUS_TABS,
+  ORDER_STATUS,
+  PAYMENT_STATUS,
+  DELYVERY_STATUS,
+} from '~/static/order'
+import { COD_ID } from '~/static/paymentMethod'
 import { useLoadingStore, useCartStore, useOrderStore } from '#imports'
+import { RATING_LABLE } from '~/static/rating'
+import _ from 'lodash'
 
-const tab = ref(ORDER_STATUS_TABS[0].value)
 const { $axios } = useNuxtApp()
+const tab = ref(ORDER_STATUS_TABS[0].value)
 const loadingStore = useLoadingStore()
 const orderStore = useOrderStore()
 const cartStore = useCartStore()
 const orders = ref([])
 const search = ref('')
+const rating = ref(5)
+const isReview = ref(false)
+const chooseProductReview = ref([])
+const orderItemRating = ref(null)
+const confirmCancelOrder = ref(false)
+const confirmCompleteOrder = ref(false)
+const orderIdToUpdateStatus = ref(null)
+const comment = ref('')
+
+const handleOrderPayment = async (orderCode) => {
+  if (!orderCode) {
+    return toast('Có lỗi vui lòng tải lại trang.')
+  }
+
+  console.log(orderCode)
+
+  try {
+    const response = await $axios.get(`/orderPayment/${orderCode}`)
+
+    return (location.href = response?.url)
+  } catch (error) {
+    return toast('Có lỗi vui lòng tải lại trang.')
+  }
+}
+const openReviewDialog = (orderId) => {
+  const order = orders.value.find((order) => order.id === orderId)
+
+  if (!order) {
+    return
+  }
+
+  const addedProductIds = new Set()
+
+  orderItemRating.value = _.filter(order.order_items, (item) => {
+    if (addedProductIds.has(item.product_id)) {
+      return false
+    } else {
+      addedProductIds.add(item.product_id)
+      return true
+    }
+  })
+
+  if (_.isEmpty(orderItemRating.value)) {
+    return
+  }
+  orderIdToUpdateStatus.value = orderId
+  isReview.value = true
+}
+const handleConfirmCancelOrder = async () => {
+  if (!orderIdToUpdateStatus.value) {
+    return
+  }
+
+  try {
+    const response = await $axios.put(
+      `/orders/update/cancelled/${orderIdToUpdateStatus.value}`
+    )
+
+    if (response.status == 'success') {
+      toast(response.messages)
+      getAllOrder()
+    }
+  } catch (error) {
+    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
+  }
+
+  confirmCancelOrder.value = false
+}
+
+const handleConfirmCompleteOrder = async () => {
+  if (!orderIdToUpdateStatus.value) {
+    return
+  }
+
+  try {
+    const response = await $axios.put(
+      `/orders/update/completed/${orderIdToUpdateStatus.value}`
+    )
+
+    if (response.status == 'success') {
+      toast(response.messages)
+      getAllOrder()
+    }
+  } catch (error) {
+    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
+  }
+  confirmCompleteOrder.value = false
+}
+
+const handleProductReview = () => {
+  if (!rating.value) {
+    return toast('Vui lý chọn điểm đánh giá.', 'error')
+  }
+  if (chooseProductReview.value?.length == 0) {
+    return toast('Vui lòng chọn sản phẩm cần đánh giá.', 'error')
+  }
+  if (!orderIdToUpdateStatus.value) {
+    return toast('Vui lòng tải lại trang.', 'error')
+  }
+
+  const payload = {
+    rating: rating.value,
+    comment: comment.value,
+    product_id: chooseProductReview.value,
+    order_id: orderIdToUpdateStatus.value,
+  }
+
+  console.log(payload)
+
+  try {
+  } catch (error) {}
+}
 
 const getAllOrder = async () => {
   try {
@@ -235,4 +558,13 @@ onMounted(async () => {
 })
 </script>
 
-<style></style>
+<style scoped>
+.product-title a {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+</style>
