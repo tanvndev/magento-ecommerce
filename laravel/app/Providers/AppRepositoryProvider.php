@@ -56,6 +56,8 @@ class AppRepositoryProvider extends ServiceProvider
         // 'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
         // Product Review
         'App\Repositories\Interfaces\ProductReview\ProductReviewRepositoryInterface' => 'App\Repositories\ProductReview\ProductReviewRepository',
+        // PRODUCT REVIEW
+        'App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface' => 'App\Repositories\Product\ProductReviewRepository',
 
     ];
 

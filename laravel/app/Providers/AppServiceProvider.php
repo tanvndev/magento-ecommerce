@@ -62,6 +62,8 @@ class AppServiceProvider extends ServiceProvider
         // 'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
         // Product Review
         'App\Services\Interfaces\ProductReview\ProductReviewServiceInterface' => 'App\Services\ProductReview\ProductReviewService',
+        // PRODUCT REVIEW
+        'App\Services\Interfaces\Product\ProductReviewServiceInterface' => 'App\Services\Product\ProductReviewService',
     ];
 
     public function register(): void

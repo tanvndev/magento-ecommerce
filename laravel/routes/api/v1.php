@@ -22,7 +22,7 @@ use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
 use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
 use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
-use App\Http\Controllers\Api\V1\ProductReview\ProductReviewController;
+use App\Http\Controllers\Api\V1\Product\ProductReviewController;
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 
 /*
@@ -158,6 +158,16 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
         Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
 
+
+
+        // PRODUCT REVIEW ROUTE
+        Route::controller(ProductReviewController::class)->name('product-reviews.')->group(function () {
+            Route::get('productReviewsAll', 'getAllProductReviews')->name('getAllProductReviews');
+            Route::get('productReviews/{productId}', 'getReviewByProductId')->name('getReviewByProductId');
+            Route::post('productReviews', 'store')->name('store');
+            Route::post('productReviews/{parentId}/reply', 'adminReply')->name('reply');
+            Route::put('productReviews/reply/{replyId}', 'adminUpdateReply')->name('updateReply');
+        });
     });
 
     // CART ROUTE
