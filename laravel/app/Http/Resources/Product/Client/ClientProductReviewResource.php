@@ -17,7 +17,9 @@ class ClientProductReviewResource extends JsonResource
         return [
             'product_id' => $this->product_id,
             'fullname' => $this->user->fullname,
+            'image' => $this->user->image,
             'rating' => $this->rating,
+            'percent_rate' => starsToPercent($this->rating),
             'comment' => $this->comment,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'replies' => $this->whenLoaded('replies', function () {

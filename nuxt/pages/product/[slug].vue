@@ -244,7 +244,6 @@ import {
   removeLastSegment,
   handleSocialIconClick,
   handlePrice,
-  toast,
 } from '#imports'
 import { useLoadingStore, useCartStore } from '#imports'
 

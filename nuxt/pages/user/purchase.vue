@@ -349,6 +349,33 @@
                       maxlength="255"
                     ></v-textarea>
                   </div>
+                  <div>
+                    <a
+                      href="#"
+                      class="lh-1"
+                      @click.prevent="handleProductReviewImage"
+                    >
+                      <i class="mdi mdi-camera fs-19 lh-1"></i> Gửi ảnh thực tế
+                      <span class="text-black">(Tối đa 3 ảnh)</span>
+                    </a>
+                    <div class="mt-1 d-flex align-items-center">
+                      <div
+                        class="position-relative me-3"
+                        v-for="i in 3"
+                        :key="i"
+                      >
+                        <img
+                          src="https://cdn.cosmicjs.com/5fe795a0-3eda-11ef-a504-63e081e4680f-snips.png"
+                          class="img-thumnail"
+                          style="width: 50px; height: 50px; border-radius: 5px"
+                          alt=""
+                        />
+                        <div class="image-icon">
+                          <v-btn icon="mdi-close" size="x-small"> </v-btn>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </v-card-text>
 
                 <template v-slot:actions>
@@ -400,6 +427,13 @@ const confirmCancelOrder = ref(false)
 const confirmCompleteOrder = ref(false)
 const orderIdToUpdateStatus = ref(null)
 const comment = ref('')
+const images = ref([])
+
+const handleProductReviewImage = () => {
+  if (images.value.length >= 3) {
+    return
+  }
+}
 
 const handleOrderPayment = async (orderCode) => {
   if (!orderCode) {
@@ -498,15 +532,13 @@ const handleProductReview = async () => {
     product_id: chooseProductReview.value,
     order_id: orderIdToUpdateStatus.value,
   }
-
-  const response = await $axios.post('/product-reviews', payload)
-
-  if (response.status == 'success') {
-    toast(response.messages)
-    getAllOrder()
-  }
-
   try {
+    const response = await $axios.post('/product-reviews', payload)
+
+    if (response.status == 'success') {
+      toast(response.messages)
+      getAllOrder()
+    }
   } catch (error) {
     toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
   }
@@ -573,5 +605,15 @@ onMounted(async () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+}
+.image-icon {
+  position: absolute;
+  top: -10px;
+  left: 40px;
+}
+.image-icon .v-btn--icon.v-btn--density-default {
+  width: 18px;
+  height: 18px;
+  font-size: 8px;
 }
 </style>
