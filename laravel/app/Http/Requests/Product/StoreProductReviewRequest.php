@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductReviewRequest extends FormRequest
@@ -21,7 +22,7 @@ class StoreProductReviewRequest extends FormRequest
      */
     public function rules(): array
     {
-        $isCatalogueUser = request()->user()->user_catalogue_id === 1;
+        $isCatalogueUser = request()->user()->user_catalogue_id === User::ROLE_ADMIN;
 
         return [
             'rating' => $isCatalogueUser ? 'nullable' : 'required|integer|min:1|max:5',
