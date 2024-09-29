@@ -176,7 +176,7 @@ const isLoading = ref(false)
 const getAllWidgetCode = async () => {
   loadingStore.setLoading(true)
   try {
-    const response = await $axios.get('/getAllWidgetCode')
+    const response = await $axios.get('/widgets/codes')
     widgetCodes.value = response.data
   } catch (error) {
     console.error('Error fetching widget codes:', error)
@@ -189,7 +189,7 @@ const getWidgetByCode = async (code) => {
   if (isLoading.value) return
   isLoading.value = true
   try {
-    const response = await $axios.get('/getWidget/' + code)
+    const response = await $axios.get(`widgets/${code}/detail`)
     widgets.value = [...widgets.value, ...response.data]
   } catch (error) {
     console.error('Error fetching widget:', error)

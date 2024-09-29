@@ -192,7 +192,7 @@ const getProvinces = async () => {
 }
 
 const getLocationByAddress = async (address) => {
-  const response = await $axios.post('location/getLocationByAddress', {
+  const response = await $axios.post('location/by-address', {
     addressData: address,
   })
 

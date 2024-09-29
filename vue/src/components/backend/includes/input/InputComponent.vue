@@ -10,7 +10,7 @@
       <a href="#" class="text-blue-500" @click.prevent="handleGenerate">Tạo mã tự động</a>
     </div>
 
-    <div>
+    <div v-if="props.showAI">
       <a href="#" class="text-blue-500" @click.prevent="openModalAI = true">
         <i class="fas fa-robot mr-1"></i>
         <span> Tạo nội dung với AI </span>
@@ -68,13 +68,21 @@
     }}</span>
   </div>
 
-  <a-modal v-model:open="openModalAI" title="Tạo nội dung với AI" width="1000px" style="top: 20px">
+  <a-modal
+    v-if="showAI"
+    v-model:open="openModalAI"
+    title="Tạo nội dung với AI"
+    width="1000px"
+    style="top: 20px"
+  >
     <div class="py-5">
-      <a-input
+      <a-textarea
         v-model:value="prompt"
         size="large"
         placeholder="Tạo cho tôi nội dung cho tiêu đề iPhone 16 promax chuẩn SEO"
-        @keyup.enter="handleGenerateAI"
+        @pressEnter="handleGenerateAI"
+        allowClear
+        :autoSize="{ minRows: 2, maxRows: 10 }"
       />
     </div>
 
@@ -83,9 +91,29 @@
     </div>
 
     <template #footer>
-      <a-button @click="openModalAI = false"> Hủy bỏ </a-button>
+      <a-button
+        @click="
+          () => {
+            (streamingContent = ''), (prompt = '');
+          }
+        "
+        v-if="streamingContent"
+      >
+        Làm mới
+      </a-button>
+      <a-button @click="openModalAI = false" v-else> Hủy bỏ </a-button>
 
-      <a-button type="primary" :loading="isLoading" @click="handleGenerateAI"> Tạo ngay </a-button>
+      <a-button
+        type="primary"
+        :loading="isLoading"
+        v-if="streamingContent"
+        @click="handleApplyGenerateAI"
+      >
+        Áp dụng ngay
+      </a-button>
+      <a-button type="primary" :loading="isLoading" v-else @click="handleGenerateAI">
+        Tạo ngay
+      </a-button>
     </template>
   </a-modal>
 </template>
@@ -156,6 +184,10 @@ const props = defineProps({
   showGenerate: {
     type: Boolean,
     default: false
+  },
+  showAI: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -187,8 +219,11 @@ const handleGenerate = () => {
 };
 
 const handleGenerateAI = async () => {
-  console.log(prompt.value);
   const endpoint = import.meta.env.VITE_API_AI_GENERATE_TEXT;
+
+  if (!prompt.value || prompt.value.length == 0 || prompt.value == '') {
+    return message.warn('Vui lòng không để trống.');
+  }
 
   try {
     isLoading.value = true;
@@ -226,10 +261,14 @@ const handleGenerateAI = async () => {
 };
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const handleApplyGenerateAI = () => {
+  value.value = streamingContent.value;
+  openModalAI.value = false;
+};
 </script>
 
 <style scoped>
-
 ol,
 ul,
 menu {
@@ -239,7 +278,6 @@ menu {
   margin-left: 30px;
 }
 
-/* mt-4 h-[740px] overflow-y-auto */
 .text-generate-wrap {
   position: relative;
   max-height: 755px;

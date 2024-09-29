@@ -152,7 +152,7 @@ const order = ref([])
 const orderDetail = computed(() => orderStore.getOrderDetail)
 
 const getOrderByCode = async () => {
-  const response = await $axios.get(`/getOrder/${route.params.code}`)
+  const response = await $axios.get(`/orders/${route.params.code}/detail`)
   order.value = response.data
 }
 

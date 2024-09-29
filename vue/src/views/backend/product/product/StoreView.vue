@@ -16,10 +16,11 @@
                       :required="true"
                       name="name"
                       placeholder="Tiêu đề sản phẩm"
+                      :showAI="true"
                     />
                   </a-col>
                   <a-col :span="24">
-                    <EditorComponent name="description" label="Mô tả sản phẩm" />
+                    <EditorComponent name="description" label="Mô tả sản phẩm" :showAI="true" />
                   </a-col>
                 </a-row>
               </a-card>
@@ -39,6 +40,7 @@
                   typeInput="textarea"
                   placeholder="Mô tả ngắn của sản phẩm"
                   label="Mô tả ngắn của sản phẩm"
+                  :showAI="true"
                 />
               </a-card>
 
