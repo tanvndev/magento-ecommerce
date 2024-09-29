@@ -188,7 +188,7 @@
 </template>
 <script setup>
 import { ORDER_STATUS, PAYMENT_STATUS, DELYVERY_STATUS } from '@/static/order';
-import { defineProps, ref, defineEmits, onMounted, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { formatCurrency } from '@/utils/format';
 import { AleartError } from '@/components/backend';
 import axios from '@/configs/axios';

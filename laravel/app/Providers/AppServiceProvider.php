@@ -58,8 +58,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Order\OrderServiceInterface' => 'App\Services\Order\OrderService',
         // Location
         'App\Services\Interfaces\Location\LocationServiceInterface' => 'App\Services\Location\LocationService',
-        // Slider
-        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
+        // PRODUCT REVIEW
+        'App\Services\Interfaces\Product\ProductReviewServiceInterface' => 'App\Services\Product\ProductReviewService',
     ];
 
     public function register(): void
