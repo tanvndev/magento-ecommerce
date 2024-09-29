@@ -481,7 +481,7 @@ const handleConfirmCompleteOrder = async () => {
   confirmCompleteOrder.value = false
 }
 
-const handleProductReview = () => {
+const handleProductReview = async () => {
   if (!rating.value) {
     return toast('Vui lý chọn điểm đánh giá.', 'error')
   }
@@ -499,10 +499,17 @@ const handleProductReview = () => {
     order_id: orderIdToUpdateStatus.value,
   }
 
-  console.log(payload)
+  const response = await $axios.post('/product-reviews', payload)
+
+  if (response.status == 'success') {
+    toast(response.messages)
+    getAllOrder()
+  }
 
   try {
-  } catch (error) {}
+  } catch (error) {
+    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
+  }
 }
 
 const getAllOrder = async () => {

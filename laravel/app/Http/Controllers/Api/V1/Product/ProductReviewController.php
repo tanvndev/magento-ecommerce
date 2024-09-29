@@ -9,6 +9,7 @@ use App\Http\Requests\Product\StoreProductReviewRequest;
 use App\Http\Resources\Product\Client\ClientProductReviewCollection;
 use App\Services\Interfaces\Product\ProductReviewServiceInterface;
 use App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 
 class ProductReviewController extends Controller
 {
@@ -23,7 +24,13 @@ class ProductReviewController extends Controller
         $this->productReviewService = $productReviewService;
         $this->productReviewRepository = $productReviewRepository;
     }
-    public function getReviewByProductId($productId)
+    /**
+     * Get all reviews for a product by product id
+     *
+     * @param string $productId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getReviewByProductId(string $productId): JsonResponse
     {
 
         $productReviews = $this->productReviewService->getReviewByProductId($productId);
@@ -33,7 +40,12 @@ class ProductReviewController extends Controller
         return successResponse('', $data, true);
     }
 
-    public function getAllProductReviews()
+    /**
+     * Get all product reviews
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllProductReviews(): JsonResponse
     {
 
         $productReviews = $this->productReviewService->getAllProductReviews();
@@ -43,21 +55,41 @@ class ProductReviewController extends Controller
         return successResponse('', $data, true);
     }
 
-    public function store(StoreProductReviewRequest $request)
+    /**
+     * Create a new product review.
+     *
+     * @param StoreProductReviewRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(StoreProductReviewRequest $request): JsonResponse
     {
         $response = $this->productReviewService->createReview($request->all());
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
-    public function adminReply(StoreProductReviewRequest $request, $parentId)
+    /**
+     * Admin reply a product review.
+     *
+     * @param StoreProductReviewRequest $request
+     * @param string $parentId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function adminReply(StoreProductReviewRequest $request, string $parentId): JsonResponse
     {
         $response = $this->productReviewService->adminReply($request->all(), $parentId);
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
-    public function adminupdateReply(StoreProductReviewRequest $request, $replyId)
+    /**
+     * Update a reply product review as admin.
+     *
+     * @param StoreProductReviewRequest $request
+     * @param string $replyId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function adminUpdateReply(StoreProductReviewRequest $request, string $replyId): JsonResponse
     {
         $response = $this->productReviewService->adminUpdateReply($request->all(), $replyId);
 

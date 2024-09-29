@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Product\Client;
 
+use App\Http\Resources\Product\ProductReviewResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -14,21 +15,18 @@ class ClientProductReviewCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        if (
-            $this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator ||
-            $this->resource instanceof \Illuminate\Pagination\Paginator
-        ) {
-            return [
-                'data' => $this->collection->map(function ($product) {
-                    return new ClientProductReviewResource($product);
-                }),
-                'total'        => $this->total(),
-                'per_page'     => $this->perPage(),
-                'current_page' => $this->currentPage(),
-                'last_page'    => $this->lastPage(),
-            ];
-        }
+        $avgRating = $this->collection->avg('rating');
 
-        return parent::toArray($request);
+        return [
+            'data' => ProductReviewResource::collection($this->collection),
+            'avg_rating' => $avgRating,
+
+            'one_star' => $this->collection->where('rating', 1)->count(),
+            'two_star' => $this->collection->where('rating', 2)->count(),
+            'three_star' => $this->collection->where('rating', 3)->count(),
+            'four_star' => $this->collection->where('rating', 4)->count(),
+            'five_star' => $this->collection->where('rating', 5)->count(),
+            'avg_rating_percentage' => ($avgRating / 5) * 100,
+        ];
     }
 }
