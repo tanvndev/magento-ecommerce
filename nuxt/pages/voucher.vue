@@ -73,7 +73,7 @@ const getAllVouchers = async (page) => {
     }
 
     const res = await $axios.get(
-      '/getAllVouchers' + (page ? '?page=' + page : '')
+      '/vouchers/all' + (page ? '?page=' + page : '')
     )
 
     vouchers.value = [...vouchers.value, ...res?.data.data]

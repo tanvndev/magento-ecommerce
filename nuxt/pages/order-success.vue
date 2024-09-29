@@ -206,7 +206,7 @@ const order = ref(null)
 const orderCode = route.query.code
 
 const getOrder = async () => {
-  const response = await $axios.get(`/getOrder/${orderCode}`)
+  const response = await $axios.get(`/orders/${orderCode}/detail`)
   order.value = response.data
 }
 

@@ -409,7 +409,7 @@ const handleOrderPayment = async (orderCode) => {
   console.log(orderCode)
 
   try {
-    const response = await $axios.get(`/orderPayment/${orderCode}`)
+    const response = await $axios.get(`/orders/${orderCode}/payment`)
 
     return (location.href = response?.url)
   } catch (error) {
@@ -447,7 +447,7 @@ const handleConfirmCancelOrder = async () => {
 
   try {
     const response = await $axios.put(
-      `/orders/update/cancelled/${orderIdToUpdateStatus.value}`
+      `/orders/${orderIdToUpdateStatus.value}/cancel`
     )
 
     if (response.status == 'success') {
@@ -468,7 +468,7 @@ const handleConfirmCompleteOrder = async () => {
 
   try {
     const response = await $axios.put(
-      `/orders/update/completed/${orderIdToUpdateStatus.value}`
+      `/orders/${orderIdToUpdateStatus.value}/complete`
     )
 
     if (response.status == 'success') {
@@ -508,7 +508,7 @@ const handleProductReview = () => {
 const getAllOrder = async () => {
   try {
     loadingStore.setLoading(true)
-    const response = await $axios.get('/getOrderUser', {
+    const response = await $axios.get('/orders/user', {
       params: {
         order_status: tab.value,
         search: search.value,

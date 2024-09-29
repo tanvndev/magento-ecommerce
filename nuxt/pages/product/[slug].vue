@@ -278,7 +278,7 @@ const showImg = (index) => {
 const getProduct = async () => {
   try {
     loadingStore.setLoading(true)
-    const response = await $axios(`/getProduct/${route.params.slug}`)
+    const response = await $axios(`/products/${route.params.slug}/detail`)
 
     if (response.data) {
       attributeEnables.value = response.data?.attribute_enabled

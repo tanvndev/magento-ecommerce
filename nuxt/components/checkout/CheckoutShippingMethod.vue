@@ -64,7 +64,7 @@ const getAllShippingMethods = async (productVariantIds) => {
   try {
     loadingStore.setLoading(true)
     const response = await $axios.get(
-      '/getShippingMethodByProductVariant/' + productVariantIds
+      `/shipping-methods/products/${productVariantIds}`
     )
 
     shippingMethods.value = response?.data

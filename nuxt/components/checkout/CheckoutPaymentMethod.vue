@@ -45,7 +45,7 @@ const handleSelected = (id) => {
 }
 
 const getAllPaymentMethods = async () => {
-  const response = await $axios.get('/getAllPaymentMethods')
+  const response = await $axios.get('/payment-methods/all')
 
   paymentMethods.value = response?.data
   isSelected.value = response?.data[0]?.id

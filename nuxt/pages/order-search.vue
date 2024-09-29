@@ -204,7 +204,7 @@ const getOrderByCode = async () => {
     return
   }
 
-  const response = await $axios.get(`/getOrder/${search.value}`)
+  const response = await $axios.get(`/orders/${search.value}/detail`)
   order.value = response.data
 }
 
