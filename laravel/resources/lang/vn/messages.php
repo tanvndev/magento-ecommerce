@@ -53,6 +53,22 @@ return [
             'cart_not_found' => 'Người dùng chưa có giỏ hàng.',
         ],
     ],
+
+
+    'product_review' => [
+        'error' => [
+            'already_exists' => 'Sản phẩm trong đơn hàng đã được đánh giá!',
+            'order_not_found' => 'Đơn hàng không tồn tại trên hệ thống!',
+            'order_item_not_found' => 'Sản phẩm này không có trong đơn hàng!',
+            'parent_not_found' => 'Không tìm thấy đánh giá gốc!',
+            'admin_reply_already_exists' => 'Đánh giá đã được hồi rồi!',
+            'admin_reply_not_found' => 'Không tìm thấy đánh giá của bạn!',
+            'not_admin' => 'Bạn không có thẩm quyền thực hiện chức năng này!',
+            'admin_not_allowed' => 'Quản trị viên không được phép đánh giá sản phẩm!'
+        ]
+
+    ],
+
     'voucher' => [
         'error' => [
             'create' => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',

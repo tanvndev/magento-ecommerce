@@ -53,7 +53,11 @@ class AppRepositoryProvider extends ServiceProvider
         // Order
         'App\Repositories\Interfaces\Order\OrderRepositoryInterface' => 'App\Repositories\Order\OrderRepository',
         // Slider
-        'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
+        // 'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
+        // Product Review
+        'App\Repositories\Interfaces\ProductReview\ProductReviewRepositoryInterface' => 'App\Repositories\ProductReview\ProductReviewRepository',
+        // PRODUCT REVIEW
+        'App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface' => 'App\Repositories\Product\ProductReviewRepository',
 
     ];
 
