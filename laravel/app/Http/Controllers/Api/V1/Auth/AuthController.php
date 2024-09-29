@@ -26,7 +26,7 @@ class AuthController extends Controller
     /**
      * Register a new user.
      *
-     * @param  \App\Http\Requests\RegisterRequest  $request
+     * @param  \App\Http\Requests\Auth\RegisterRequest  $request
      */
     public function register(RegisterRequest $request): JsonResponse
     {

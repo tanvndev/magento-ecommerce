@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\QueryScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductReview extends Model
 {
-    use HasFactory;
+    use HasFactory, QueryScopes;
 
     protected $fillable = [
         'product_id',
@@ -17,7 +18,7 @@ class ProductReview extends Model
         'parent_id',
         'comment',
         'images',
-        'is_published',
+        'publish',
     ];
 
     public function product()
@@ -40,13 +41,12 @@ class ProductReview extends Model
         return $this->belongsTo(ProductReview::class, 'parent_id');
     }
 
-    public function children()
+    public function replies()
     {
         return $this->hasMany(ProductReview::class, 'parent_id');
     }
 
     protected $cats = [
         'images' => 'array',
-        'is_published' => 'boolean',
     ];
 }
