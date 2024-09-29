@@ -15,18 +15,36 @@ class ClientProductReviewCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        $avgRating = $this->collection->avg('rating');
+        $totalReviews = $this->collection->count();
+
+        if ($totalReviews > 0) {
+            $oneStarCount = $this->collection->where('rating', 1)->count();
+            $twoStarCount = $this->collection->where('rating', 2)->count();
+            $threeStarCount = $this->collection->where('rating', 3)->count();
+            $fourStarCount = $this->collection->where('rating', 4)->count();
+            $fiveStarCount = $this->collection->where('rating', 5)->count();
+
+            return [
+                'data' => ProductReviewResource::collection($this->collection),
+                'avg_rating' => $this->collection->avg('rating'),
+
+                'one_star' => ($oneStarCount / $totalReviews) * 100,
+
+                'two_star' => ($twoStarCount / $totalReviews) * 100,
+                'three_star' => ($threeStarCount / $totalReviews) * 100,
+                'four_star' => ($fourStarCount / $totalReviews) * 100,
+                'five_star' => ($fiveStarCount / $totalReviews) * 100,
+            ];
+        }
 
         return [
-            'data' => ProductReviewResource::collection($this->collection),
-            'avg_rating' => $avgRating,
-
-            'one_star' => $this->collection->where('rating', 1)->count(),
-            'two_star' => $this->collection->where('rating', 2)->count(),
-            'three_star' => $this->collection->where('rating', 3)->count(),
-            'four_star' => $this->collection->where('rating', 4)->count(),
-            'five_star' => $this->collection->where('rating', 5)->count(),
-            'avg_rating_percentage' => ($avgRating / 5) * 100,
+            'data' => [],
+            'avg_rating' => 0,
+            'one_star' => 0,
+            'two_star' => 0,
+            'three_star' => 0,
+            'four_star' => 0,
+            'five_star' => 0,
         ];
     }
 }
