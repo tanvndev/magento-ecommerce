@@ -38,7 +38,7 @@ class AuthController extends Controller
     /**
      * Log in an existing user.
      *
-     * @param  \App\Http\Requests\LoginRequest  $request
+     * @param  \App\Http\Requests\Auth\LoginRequest  $request
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -64,7 +64,7 @@ class AuthController extends Controller
     /**
      * Handle password reset for a user.
      *
-     * @param  \App\Http\Requests\ForgotRequest  $request
+     * @param  \App\Http\Requests\Auth\ForgotRequest  $request
      */
     public function forgotPassword(ForgotRequest $request): JsonResponse
     {

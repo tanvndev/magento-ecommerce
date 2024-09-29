@@ -75,6 +75,7 @@
         size="large"
         placeholder="Tạo cho tôi nội dung cho tiêu đề iPhone 16 promax chuẩn SEO"
         @keyup.enter="handleGenerateAI"
+        allowClear
       />
     </div>
 
@@ -86,6 +87,7 @@
       <a-button @click="openModalAI = false"> Hủy bỏ </a-button>
 
       <a-button type="primary" :loading="isLoading" @click="handleGenerateAI"> Tạo ngay </a-button>
+      <a-button type="primary" v-if="streamingContent" @click="handleGenerateAI"> Áp dụng ngay </a-button>
     </template>
   </a-modal>
 </template>
