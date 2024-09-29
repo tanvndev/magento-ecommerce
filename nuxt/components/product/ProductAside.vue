@@ -75,7 +75,7 @@
                     <div class="product product-widget">
                       <figure class="product-media">
                         <NuxtLink
-                          :to="`product/${item.slug}-${item.product_id}`"
+                          :to="`/product/${item.slug}-${item.product_id}`"
                           :title="item?.name"
                         >
                           <img
@@ -89,7 +89,7 @@
                         <h4 class="product-name">
                           <NuxtLink
                             :title="item?.name"
-                            :to="`product/${item.slug}-${item.product_id}`"
+                            :to="`/product/${item.slug}-${item.product_id}`"
                             >{{ item.name }}</NuxtLink
                           >
                         </h4>

@@ -217,10 +217,6 @@
 
             <!-- End of Product Details -->
           </div>
-
-          <!-- Start of MoreInfomation -->
-          <ProductMoreInfomation :product="product" />
-          <!-- End of MoreInfomation -->
         </div>
         <!-- End of Main Content -->
 
@@ -228,6 +224,16 @@
         <ProductAside :product="product" />
         <!-- End of Sidebar -->
       </div>
+      <!-- Product Suggestions -->
+      <ProductSuggestion :product="product" />
+
+      <!-- Start of MoreInfomation -->
+      <ProductMoreInfomation :product="product" />
+      <!-- End of MoreInfomation -->
+
+      <!-- Start of MoreInfomation -->
+      <ProductRecent :product="product" />
+      <!-- End of MoreInfomation -->
     </div>
   </div>
   <!-- End of Page Content -->
@@ -246,6 +252,7 @@ import {
   handlePrice,
 } from '#imports'
 import { useLoadingStore, useCartStore } from '#imports'
+import ProductRecent from '~/components/product/ProductRecent.vue'
 
 const modules = [Navigation, Autoplay]
 

@@ -147,7 +147,7 @@
           <div class="tab-content">
             <div class="tab-pane active" id="show-all">
               <ul class="comments list-style-none">
-                <li class="comment" v-for="review in reviews" :key="n">
+                <li class="comment" v-for="review in reviews" :key="review">
                   <div class="comment-body">
                     <figure class="comment-avatar">
                       <img
@@ -227,6 +227,7 @@ watch(
 </script>
 
 <style scoped>
+
 .specifications-list {
   font-family: Arial, sans-serif;
   line-height: 1.6;
