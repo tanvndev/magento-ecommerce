@@ -8,6 +8,7 @@ use App\Services\BaseService;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Interfaces\Product\ProductReviewServiceInterface;
 use App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class ProductReviewService extends BaseService implements ProductReviewServiceInterface
 {
@@ -19,7 +20,13 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
         $this->productReviewRepository = $productReviewRepository;
     }
 
-    public function getReviewByProductId($productId)
+    /**
+     * Get all reviews for a product by product id
+     *
+     * @param int $productId
+     * @return \Illuminate\Support\Collection
+     */
+    public function getReviewByProductId(string $productId): Collection
     {
 
         $productReviews = $this->productReviewRepository->findByWhere(
@@ -35,7 +42,12 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
         return $productReviews ?? collect();
     }
 
-    public function getAllProductReviews()
+    /**
+     * Get all product reviews without replies
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllProductReviews(): Collection
     {
 
         $reviews = $this->productReviewRepository->findByWhere(
@@ -49,6 +61,13 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
 
         return $reviews;
     }
+
+    /**
+     * Create a product review.
+     *
+     * @param array $data
+     * @return \Illuminate\Http\Response
+     */
 
     public function createReview(array $data)
     {
@@ -103,12 +122,12 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
                 ]);
 
                 if ($existing) {
-                    return errorResponse(__('messages.product_review.error.already_exists', ['product_id' => $productId]));
+                    return errorResponse(__('messages.product_review.error.already_exists'));
                 }
 
                 $reviewData = array_merge($data, [
                     'product_id' => $productId,
-                    'images' => json_encode($uploadedImages),
+                    'images' => $uploadedImages,
                 ]);
 
                 $this->productReviewRepository->create($reviewData);
@@ -120,11 +139,18 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
 
 
 
-    public function adminReply(array $data, $parentId)
+    /**
+     * Admin reply a product review.
+     *
+     * @param array $data
+     * @param string $parentId
+     * @return \Illuminate\Http\Response
+     */
+    public function adminReply(array $data, string $parentId)
     {
         return $this->executeInTransaction(function () use ($data, $parentId) {
 
-            if (auth()->user()->user_catalogue_id  !== 1) {
+            if (auth()->user()->user_catalogue_id  !== User::ROLE_ADMIN) {
 
                 return errorResponse(__('messages.product_review.error.not_admin'));
             }
@@ -160,20 +186,27 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
             $data['order_id']       = $parentReview->order_id;
             $data['user_id']        = auth()->user()->id;
             $data['parent_id']      = $parentReview->id;
-            $data['images']         = json_encode($uploadedImages);
+            $data['images']         = $uploadedImages;
 
             $this->productReviewRepository->create($data);
 
             return successResponse(__('messages.create.success'));
-        });
+        }, __('messages.create.error'));
     }
 
-    public function adminUpdateReply(array $data, $replyId)
+    /**
+     * Update a reply product review as admin.
+     *
+     * @param array $data
+     * @param string $replyId
+     * @return \Illuminate\Http\Response
+     */
+    public function adminUpdateReply(array $data, string $replyId)
     {
 
         return $this->executeInTransaction(function () use ($data, $replyId) {
 
-            if (auth()->user()->user_catalogue_id  !== 1) {
+            if (auth()->user()->user_catalogue_id  !== User::ROLE_ADMIN) {
 
                 return errorResponse(__('messages.product_review.error.not_admin'));
             }
@@ -206,14 +239,14 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
         foreach ($images as $image) {
             $uploadResponse = Upload::uploadImage($image);
 
-            if ($uploadResponse['status'] === 'success') {
-                $uploadedImages[] = $uploadResponse['data'];
-            } else {
+            if (!$uploadResponse['status'] === 'success') {
                 return [
                     'status'  => 'error',
                     'message' => $uploadResponse['message'],
                 ];
             }
+
+            $uploadedImages[] = $uploadResponse['data'];
         }
 
         return [

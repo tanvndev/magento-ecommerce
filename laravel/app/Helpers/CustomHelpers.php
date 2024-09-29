@@ -316,7 +316,7 @@ if (! function_exists('abbreviateName')) {
 }
 
 if (! function_exists('errorResponse')) {
-    function errorResponse(string $message, $isResponse = false)
+    function errorResponse(string $message, bool $isResponse = false)
     {
         $response = [
             'status'   => 'success',
@@ -342,7 +342,7 @@ if (! function_exists('successResponse')) {
 }
 
 if (! function_exists('handleResponse')) {
-    function handleResponse($response, $successCode = 200)
+    function handleResponse(array $response, int $successCode = 200)
     {
         $status = $response['status'] ?? '';
 
