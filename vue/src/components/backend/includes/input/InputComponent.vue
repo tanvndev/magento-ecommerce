@@ -9,6 +9,13 @@
     <div v-if="props.showGenerate">
       <a href="#" class="text-blue-500" @click.prevent="handleGenerate">Tạo mã tự động</a>
     </div>
+
+    <div>
+      <a href="#" class="text-blue-500" @click.prevent="openModalAI = true">
+        <i class="fas fa-robot mr-1"></i>
+        <span> Tạo nội dung với AI </span>
+      </a>
+    </div>
   </div>
   <div>
     <!-- INPUT TEXT -->
@@ -60,13 +67,37 @@
       errorMessage
     }}</span>
   </div>
+
+  <a-modal v-model:open="openModalAI" title="Tạo nội dung với AI" width="1000px" style="top: 20px">
+    <div class="py-5">
+      <a-input
+        v-model:value="prompt"
+        size="large"
+        placeholder="Tạo cho tôi nội dung cho tiêu đề iPhone 16 promax chuẩn SEO"
+        @keyup.enter="handleGenerateAI"
+      />
+    </div>
+
+    <div v-if="streamingContent" class="text-generate-wrap">
+      <div v-html="streamingContent"></div>
+    </div>
+
+    <template #footer>
+      <a-button @click="openModalAI = false"> Hủy bỏ </a-button>
+
+      <a-button type="primary" :loading="isLoading" @click="handleGenerateAI"> Tạo ngay </a-button>
+    </template>
+  </a-modal>
 </template>
 
 <script setup>
 import { useField } from 'vee-validate';
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 import { TooltipComponent } from '@/components/backend';
 import { generateRandomString } from '@/utils/helpers';
+import { message } from 'ant-design-vue';
+import axios from 'axios';
+import { marked } from 'marked';
 
 const props = defineProps({
   typeInput: {
@@ -128,6 +159,11 @@ const props = defineProps({
   }
 });
 
+const openModalAI = ref(false);
+const isLoading = ref(false);
+const prompt = ref('');
+const streamingContent = ref('');
+
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
 
@@ -149,4 +185,67 @@ const handleGenerate = () => {
     value.value = str;
   }
 };
+
+const handleGenerateAI = async () => {
+  console.log(prompt.value);
+  const endpoint = import.meta.env.VITE_API_AI_GENERATE_TEXT;
+
+  try {
+    isLoading.value = true;
+    streamingContent.value = ''; // Reset content before starting
+
+    const response = await axios.get(`${endpoint}`, {
+      params: { prompt: prompt.value }
+    });
+
+    const dataLines = response.data.split('\n').filter(Boolean);
+    let result = '';
+
+    for (const line of dataLines) {
+      try {
+        const cleanedLine = line.startsWith('data: ') ? line.slice(6) : line;
+        const json = JSON.parse(cleanedLine);
+
+        if (json.response) {
+          for (const char of json.response) {
+            result += char;
+            streamingContent.value = marked(result);
+            await delay(10);
+          }
+        }
+      } catch (e) {
+        // console.error('Error parsing JSON:', e);
+      }
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    message.error('Có lỗi xin vui lòng thử lại.');
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 </script>
+
+<style scoped>
+
+ol,
+ul,
+menu {
+  /* list-style: none; */
+  margin: 0;
+  padding: 0;
+  margin-left: 30px;
+}
+
+/* mt-4 h-[740px] overflow-y-auto */
+.text-generate-wrap {
+  position: relative;
+  max-height: 755px;
+  overflow-y: auto;
+  background-color: #f3f5f7;
+  border-radius: 10px;
+  padding: 20px;
+}
+</style>
