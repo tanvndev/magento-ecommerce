@@ -281,6 +281,17 @@ if (! function_exists('sortAttributeId')) {
     }
 }
 
+if (! function_exists('starsToPercent')) {
+    function starsToPercent($stars, $maxStars = 5)
+    {
+        if ($maxStars <= 0) {
+            throw new \InvalidArgumentException("Max stars must be greater than zero.");
+        }
+
+        return ($stars / $maxStars) * 100;
+    }
+}
+
 if (! function_exists('convertVndTo')) {
 
     function convertVndTo($amountVnd, $currency = 'USD')
@@ -319,7 +330,7 @@ if (! function_exists('errorResponse')) {
     function errorResponse(string $message, bool $isResponse = false)
     {
         $response = [
-            'status'   => 'success',
+            'status'   => 'error',
             'messages' => $message,
             'data'     => null,
         ];

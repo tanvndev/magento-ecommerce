@@ -611,3 +611,165 @@
   font-size: 15px;
   color: rgba(0, 0, 0, 0.54);
 }
+
+/* Product detail */
+
+.ql-align-justify a img {
+  display: block !important;
+  margin: 0 auto;
+  border-radius: 6px;
+}
+
+.combo-detail .checkbox-wrapper {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  z-index: 2;
+}
+
+.combo-detail .list-access {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  list-style: none;
+}
+.combo-detail .bunbled {
+  text-align: center;
+}
+
+.combo-detail .bunbled small {
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 20px;
+  color: #323232;
+  text-align: center;
+}
+
+.combo-detail .list-access li {
+  width: 100%;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 13px 15px 14px;
+  margin: 0 20px 0 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.combo-detail .list-access li .img-access {
+  display: block;
+  overflow: hidden;
+  width: 150px;
+  margin: auto;
+  height: 170px;
+  position: relative;
+}
+
+.list-access li h3 {
+  display: block;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 20px;
+  text-align: center;
+  padding: 10px 0;
+  margin-bottom: 8px;
+  max-height: 53px;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+}
+
+.combo-detail .list-access li strong {
+  display: block;
+  overflow: hidden;
+  font-size: 20px;
+  line-height: 25px;
+  color: #101010;
+  text-align: center;
+}
+.combo-detail .list-access li small {
+  display: block;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 20px;
+  color: #323232;
+  text-align: center;
+}
+
+.combo-detail .buy-access .bunbled .img-sp {
+  display: block;
+  overflow: hidden;
+  width: 170px;
+  margin: auto;
+}
+
+.combo-detail .buy-access .bunbled h3 {
+  display: block;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 20px;
+  padding: 10px 0;
+  text-align: center;
+  margin-bottom: 2px;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+}
+
+.combo-detail .buy-access .bunbled strong {
+  display: block;
+  overflow: hidden;
+  font-size: 20px;
+  line-height: 25px;
+  color: #101010;
+}
+.combo-detail .buy-access .plus {
+  padding: 8px;
+}
+.combo-detail .buy-access .plus i {
+  display: block;
+  margin: auto;
+}
+.combo-detail .buy-access .total-bill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.combo-detail .buy-access .total-bill strong {
+  display: block;
+  overflow: hidden;
+  font-size: 20px;
+  line-height: 25px;
+  padding: 5px 0 0;
+  text-align: center;
+  color: #171d29;
+}
+.combo-detail .buy-access .total-bill span {
+  display: block;
+  overflow: hidden;
+  font-size: 18px;
+  line-height: 23px;
+  color: #171d29;
+  text-align: center;
+}
+.combo-detail .buy-access .total-bill a {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  background-color: #3c78b4;
+  border-radius: 6px;
+  padding: 18px 0;
+  text-align: center;
+  color: #fff;
+  font-size: 18px;
+  line-height: 25px;
+  margin: 20px 0 0;
+  text-decoration: none;
+  transition: all 0.1s linear;
+  text-transform: uppercase;
+}
+.combo-detail .buy-access .total-bill a:hover {
+  opacity: 0.9;
+}

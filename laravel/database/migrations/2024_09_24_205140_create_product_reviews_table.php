@@ -19,11 +19,11 @@ return new class extends Migration
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Order::class)->constrained()->cascadeOnDelete();
-            $table->unsignedBigInteger('rating');
+            $table->unsignedTinyInteger('rating');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->text('comment')->nullable();
             $table->json('images')->nullable();
-            $table->boolean('is_published')->default(false);
+            $table->tinyInteger('publish')->default(2)->comment('1:Active, 2: Inactive');
             $table->timestamps();
         });
     }

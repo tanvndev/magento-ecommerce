@@ -56,15 +56,18 @@ return [
 
 
     'product_review' => [
+        'success' => [
+            'create'  => 'Cảm ơn bạn đã đánh giá sản phẩm.',
+        ],
         'error' => [
-            'already_exists' => 'Sản phẩm trong đơn hàng đã được đánh giá!',
-            'order_not_found' => 'Đơn hàng không tồn tại trên hệ thống!',
-            'order_item_not_found' => 'Sản phẩm này không có trong đơn hàng!',
-            'parent_not_found' => 'Không tìm thấy đánh giá gốc!',
-            'admin_reply_already_exists' => 'Đánh giá đã được hồi rồi!',
-            'admin_reply_not_found' => 'Không tìm thấy đánh giá của bạn!',
-            'not_admin' => 'Bạn không có thẩm quyền thực hiện chức năng này!',
-            'admin_not_allowed' => 'Quản trị viên không được phép đánh giá sản phẩm!'
+            'already_exists' => 'Sản phẩm trong đơn hàng đã được đánh giá.',
+            'order_not_found' => 'Đơn hàng không tồn tại trên hệ thống.',
+            'order_item_not_found' => 'Sản phẩm này không có trong đơn hàng.',
+            'parent_not_found' => 'Không tìm thấy đánh giá gốc.',
+            'admin_reply_already_exists' => 'Đánh giá đã được hồi rồi.',
+            'admin_reply_not_found' => 'Không tìm thấy đánh giá của bạn.',
+            'not_admin' => 'Bạn không có thẩm quyền thực hiện chức năng này.',
+            'admin_not_allowed' => 'Quản trị viên không được phép đánh giá sản phẩm.'
         ]
 
     ],
