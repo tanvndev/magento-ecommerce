@@ -33,7 +33,7 @@ class AuthService {
 
   async refreshToken() {
     try {
-      const response = await axios.post('/auth/refreshToken', {});
+      const response = await axios.post('/auth/refreshToken');
 
       if (response.status !== 200) {
         return {

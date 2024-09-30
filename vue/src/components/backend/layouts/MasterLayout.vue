@@ -21,17 +21,20 @@ import { useStore } from 'vuex';
 import { useAntToast } from '@/utils/antToast';
 import { computed, onMounted, watchEffect } from 'vue';
 import { AuthService } from '@/services';
+import Cookies from 'js-cookie';
+Cookies;
 
 const { showMessage } = useAntToast();
 const store = useStore();
 const isShowToast = computed(() => store.getters['antStore/getIsShow']);
 const isLoading = computed(() => store.getters['loadingStore/getIsLoading']);
-const token = computed(() => store.getters['authStore/getToken']);
+const token = Cookies.get('token') ?? null;
 
 const setUserCurrent = async () => {
-  if (token.value) {
+  if (token) {
     const user = await AuthService.me();
     store.commit('authStore/setUser', user.data);
+    store.commit('authStore/setIsLoggedIn', token);
   }
 };
 

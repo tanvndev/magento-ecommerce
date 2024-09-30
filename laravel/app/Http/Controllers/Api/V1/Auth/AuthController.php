@@ -46,11 +46,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if ( ! $user) {
+        if (! $user) {
             return errorResponse('Email hoặc mật khẩu không chính xác.', true);
         }
 
-        if ( ! $user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.', true);
         }
 
@@ -88,7 +88,12 @@ class AuthController extends Controller
      */
     public function refreshToken(): JsonResponse
     {
-        return $this->respondWithToken(auth()->refresh(), 'Token đã được thay đổi');
+        try {
+            // Pass true as the first param to force the token to be blacklisted "forever".
+            return $this->respondWithToken(auth()->refresh(true, true), 'Token đã được thay đổi');
+        } catch (\Exception $e) {
+            return errorResponse('Token is Invalid', true);
+        }
     }
 
     private function respondWithToken(string $token, string $message, ?User $user = null): JsonResponse
@@ -100,17 +105,9 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type'   => 'bearer',
                 'catalogue'    => $user->user_catalogue->code ?? null,
-                'expires_in'   => auth()->factory()->getTTL() * 60,
+                'expires_in'   => auth()->factory()->getTTL(),
             ],
-        ], ResponseEnum::OK)->cookie(
-            'access_token',
-            $token,
-            config('jwt.ttl'),
-            '/',
-            '127.0.0.1',
-            false,
-            true
-        );
+        ], ResponseEnum::OK);
     }
 
     /**
@@ -118,7 +115,7 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        auth()->logout();
+        auth()->logout(true);
 
         return successResponse('Đăng xuất thành công.', [], true);
     }
