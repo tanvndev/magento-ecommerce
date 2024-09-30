@@ -1,3 +1,11 @@
+<script setup>
+const props = defineProps({
+  product: {
+    type: [Object, Array],
+    default: () => [],
+  },
+})
+</script>
 <template>
   <section class="vendor-product-section">
     <div class="title-link-wrapper mb-4">
@@ -471,11 +479,3 @@
     </div>
   </section>
 </template>
-<script setup>
-const props = defineProps({
-  product: {
-    type: [Object, Array],
-    default: () => [],
-  },
-})
-</script>

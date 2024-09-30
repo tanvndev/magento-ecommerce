@@ -1,3 +1,10 @@
+<script setup>
+const comboItem = ref(['3', '2', '1'])
+
+watch(comboItem, () => {
+  console.log(comboItem.value)
+})
+</script>
 <template>
   <section class="vendor-product-section combo-detail">
     <div class="title-link-wrapper mb-4">
@@ -113,11 +120,3 @@
     </div>
   </section>
 </template>
-<script setup>
-const comboItem = ref(['3', '2', '1'])
-
-watch(comboItem, () => {
-  console.log(comboItem.value)
-})
-</script>
-<style scoped></style>

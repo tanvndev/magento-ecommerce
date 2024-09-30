@@ -1,3 +1,137 @@
+<script setup>
+import { onMounted, watch } from 'vue'
+import { formatCurrency } from '#imports'
+import QuantityComponent from '~/components/includes/QuantityComponent.vue'
+import { debounce, resizeImage, toast } from '#imports'
+import { useCartStore, useAuthStore } from '#imports'
+import Cookies from 'js-cookie'
+
+const { $axios } = useNuxtApp()
+const cartStore = useCartStore()
+const authStore = useAuthStore()
+
+const carts = computed(() => cartStore.getCart)
+const cartSelected = computed(() => cartStore.getCartSelected)
+const checkedItems = ref([])
+const allChecked = ref(false)
+const openClearCart = ref(false)
+const totalAmout = computed(() => cartStore.getTotalAmount)
+
+const handleAllCheckboxChange = () => {
+  if (allChecked.value) {
+    carts.value.forEach((cart, index) => {
+      checkedItems.value[index] = cart.product_variant_id
+    })
+  } else {
+    checkedItems.value = []
+  }
+  updateAllSelectedCarts(allChecked.value)
+}
+
+const handleCheckboxChange = (event, index) => {
+  if (event.target.checked === false) {
+    delete checkedItems.value[index]
+  }
+  updateOneSelectedCarts(event.target.value)
+}
+
+const getCarts = async () => {
+  await cartStore.getAllCarts()
+  handleSelectCart()
+}
+
+const handleSelectCart = () => {
+  carts.value?.forEach((cart, index) => {
+    if (cart.is_selected) {
+      checkedItems.value[index] = cart.product_variant_id
+    }
+  })
+}
+
+const checkSelectedAll = () => {
+  if (Object.keys(checkedItems.value)?.length === carts.value.length) {
+    allChecked.value = true
+  } else {
+    allChecked.value = false
+  }
+}
+
+const updateAllSelectedCarts = async () => {
+  const endpoint = getEndpointSelectedCart()
+
+  const response = await $axios.put(endpoint, {
+    select_all: allChecked.value,
+  })
+  setCartToStore(response.data)
+}
+
+const updateOneSelectedCarts = async (variantId) => {
+  const endpoint = getEndpointSelectedCart()
+
+  const response = await $axios.put(endpoint, {
+    product_variant_id: variantId,
+  })
+  setCartToStore(response.data)
+}
+
+const getEndpointSelectedCart = () => {
+  const endpoint = authStore.isSignedIn
+    ? '/carts/handle-selected'
+    : '/carts/handle-selected?session_id=' + Cookies.get('session_id')
+  return endpoint
+}
+
+const setCartToStore = (data) => {
+  cartStore.setTotalAmount(data?.total_amount)
+  cartStore.setCarts(data?.items)
+}
+
+const handleClearCart = async () => {
+  const endpoint = authStore.isSignedIn
+    ? `/carts/clean`
+    : `/carts/clean?session_id=` + Cookies.get('session_id')
+
+  const response = await $axios.delete(endpoint)
+  openClearCart.value = false
+
+  cartStore.removeAllCarts()
+  toast(response.messages, response.status)
+}
+
+const handleRemove = async (variantId) => {
+  const endpoint = authStore.isSignedIn
+    ? `/carts/${variantId}`
+    : `/carts/${variantId}?session_id=` + Cookies.get('session_id')
+
+  const response = await $axios.delete(endpoint)
+
+  setCartToStore(response.data)
+  checkedItems.value = []
+  handleSelectCart()
+}
+
+const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
+  const endpoint = authStore.isSignedIn
+    ? `/carts`
+    : `/carts?session_id=` + Cookies.get('session_id')
+
+  const response = await $axios.post(endpoint, {
+    product_variant_id: variantId,
+    quantity: quantity,
+  })
+
+  if (response.status == 'success') {
+    setCartToStore(response.data)
+  }
+}, 1000)
+
+onMounted(() => {
+  getCarts()
+})
+
+watch(checkedItems, checkSelectedAll, { deep: true })
+</script>
+
 <template>
   <!-- Start of Main -->
   <main class="main cart">
@@ -211,140 +345,6 @@
   </main>
   <!-- End of Main -->
 </template>
-
-<script setup>
-import { onMounted, watch } from 'vue'
-import { formatCurrency } from '#imports'
-import QuantityComponent from '~/components/includes/QuantityComponent.vue'
-import { debounce, resizeImage, toast } from '#imports'
-import { useCartStore, useAuthStore } from '#imports'
-import Cookies from 'js-cookie'
-
-const { $axios } = useNuxtApp()
-const cartStore = useCartStore()
-const authStore = useAuthStore()
-
-const carts = computed(() => cartStore.getCart)
-const cartSelected = computed(() => cartStore.getCartSelected)
-const checkedItems = ref([])
-const allChecked = ref(false)
-const openClearCart = ref(false)
-const totalAmout = computed(() => cartStore.getTotalAmount)
-
-const handleAllCheckboxChange = () => {
-  if (allChecked.value) {
-    carts.value.forEach((cart, index) => {
-      checkedItems.value[index] = cart.product_variant_id
-    })
-  } else {
-    checkedItems.value = []
-  }
-  updateAllSelectedCarts(allChecked.value)
-}
-
-const handleCheckboxChange = (event, index) => {
-  if (event.target.checked === false) {
-    delete checkedItems.value[index]
-  }
-  updateOneSelectedCarts(event.target.value)
-}
-
-const getCarts = async () => {
-  await cartStore.getAllCarts()
-  handleSelectCart()
-}
-
-const handleSelectCart = () => {
-  carts.value?.forEach((cart, index) => {
-    if (cart.is_selected) {
-      checkedItems.value[index] = cart.product_variant_id
-    }
-  })
-}
-
-const checkSelectedAll = () => {
-  if (Object.keys(checkedItems.value)?.length === carts.value.length) {
-    allChecked.value = true
-  } else {
-    allChecked.value = false
-  }
-}
-
-const updateAllSelectedCarts = async () => {
-  const endpoint = getEndpointSelectedCart()
-
-  const response = await $axios.put(endpoint, {
-    select_all: allChecked.value,
-  })
-  setCartToStore(response.data)
-}
-
-const updateOneSelectedCarts = async (variantId) => {
-  const endpoint = getEndpointSelectedCart()
-
-  const response = await $axios.put(endpoint, {
-    product_variant_id: variantId,
-  })
-  setCartToStore(response.data)
-}
-
-const getEndpointSelectedCart = () => {
-  const endpoint = authStore.isSignedIn
-    ? '/carts/handle-selected'
-    : '/carts/handle-selected?session_id=' + Cookies.get('session_id')
-  return endpoint
-}
-
-const setCartToStore = (data) => {
-  cartStore.setTotalAmount(data?.total_amount)
-  cartStore.setCarts(data?.items)
-}
-
-const handleClearCart = async () => {
-  const endpoint = authStore.isSignedIn
-    ? `/carts/clean`
-    : `/carts/clean?session_id=` + Cookies.get('session_id')
-
-  const response = await $axios.delete(endpoint)
-  openClearCart.value = false
-
-  cartStore.removeAllCarts()
-  toast(response.messages, response.status)
-}
-
-const handleRemove = async (variantId) => {
-  const endpoint = authStore.isSignedIn
-    ? `/carts/${variantId}`
-    : `/carts/${variantId}?session_id=` + Cookies.get('session_id')
-
-  const response = await $axios.delete(endpoint)
-
-  setCartToStore(response.data)
-  checkedItems.value = []
-  handleSelectCart()
-}
-
-const debouncedHandleQuantityChange = debounce(async (variantId, quantity) => {
-  const endpoint = authStore.isSignedIn
-    ? `/carts`
-    : `/carts?session_id=` + Cookies.get('session_id')
-
-  const response = await $axios.post(endpoint, {
-    product_variant_id: variantId,
-    quantity: quantity,
-  })
-
-  if (response.status == 'success') {
-    setCartToStore(response.data)
-  }
-}, 1000)
-
-onMounted(() => {
-  getCarts()
-})
-
-watch(checkedItems, checkSelectedAll, { deep: true })
-</script>
 
 <style scoped>
 .btn-checkout.disabled {

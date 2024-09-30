@@ -1,3 +1,40 @@
+<script setup>
+const props = defineProps({
+  product: {
+    type: [Object, Array],
+    default: () => [],
+  },
+})
+
+const { $axios } = useNuxtApp()
+const reviews = ref([])
+const tabs = reactive([
+  { name: 'description', label: 'Mô tả' },
+  { name: 'specifications', label: 'Thông số kĩ thuật' },
+  { name: 'reviews', label: 'Đánh giá' },
+])
+
+const activeTab = ref('reviews')
+
+const selectTab = (tabName) => {
+  activeTab.value = tabName
+}
+
+const getAllReviews = async () => {
+  const response = await $axios.get(`/product-reviews/${props.product.id}`)
+
+  reviews.value = response.data
+  console.log(reviews.value.data)
+}
+
+watch(
+  () => props.product,
+  () => {
+    getAllReviews()
+  }
+)
+</script>
+
 <template>
   <div class="tab tab-nav-boxed tab-nav-underline product-tabs">
     <ul class="nav nav-tabs" role="tablist">
@@ -263,43 +300,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-const props = defineProps({
-  product: {
-    type: [Object, Array],
-    default: () => [],
-  },
-})
-
-const { $axios } = useNuxtApp()
-const reviews = ref([])
-const tabs = reactive([
-  { name: 'description', label: 'Mô tả' },
-  { name: 'specifications', label: 'Thông số kĩ thuật' },
-  { name: 'reviews', label: 'Đánh giá' },
-])
-
-const activeTab = ref('reviews')
-
-const selectTab = (tabName) => {
-  activeTab.value = tabName
-}
-
-const getAllReviews = async () => {
-  const response = await $axios.get(`/product-reviews/${props.product.id}`)
-
-  reviews.value = response.data
-  console.log(reviews.value.data)
-}
-
-watch(
-  () => props.product,
-  () => {
-    getAllReviews()
-  }
-)
-</script>
 
 <style scoped>
 .specifications-list {

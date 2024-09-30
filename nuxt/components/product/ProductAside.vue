@@ -1,3 +1,23 @@
+<script setup>
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Navigation, Autoplay, Grid } from 'swiper/modules'
+import 'swiper/css'
+import { resizeImage, handleRenderPrice } from '#imports'
+const modules = [Navigation, Autoplay, Grid]
+const slider = ref(null)
+
+const props = defineProps({
+  product: {
+    type: [Object, Array],
+    default: () => [],
+  },
+})
+
+const onSwiper = (swiper) => {
+  slider.value = swiper
+}
+</script>
+
 <template>
   <aside
     class="sidebar product-sidebar sidebar-fixed right-sidebar sticky-sidebar-wrapper"
@@ -112,25 +132,7 @@
     </div>
   </aside>
 </template>
-<script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation, Autoplay, Grid } from 'swiper/modules'
-import 'swiper/css'
-import { resizeImage, handleRenderPrice } from '#imports'
-const modules = [Navigation, Autoplay, Grid]
-const slider = ref(null)
 
-const props = defineProps({
-  product: {
-    type: [Object, Array],
-    default: () => [],
-  },
-})
-
-const onSwiper = (swiper) => {
-  slider.value = swiper
-}
-</script>
 <style scoped>
 .product-image {
   width: 100px;
