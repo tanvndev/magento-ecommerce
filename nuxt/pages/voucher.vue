@@ -1,62 +1,3 @@
-<template>
-  <section class="coupon-area">
-    <v-infinite-scroll :onLoad="load">
-      <div class="container">
-        <div class="row">
-          <template v-for="(voucher, index) in vouchers" :key="voucher.id">
-            <div class="col-lg-6">
-              <div class="coupon-area-wrap">
-                <div class="coupon">
-                  <div class="coupon-left">
-                    <figure class="thumb">
-                      <img :src="voucher.image" :alt="voucher.name" />
-                    </figure>
-                    <div class="content">
-                      <h4 class="title-coupon">
-                        {{ voucher.name }}
-                      </h4>
-
-                      <p class="value" v-if="voucher.value_type == 'fixed'">
-                        - {{ formatCurrency(voucher.value) }}
-                      </p>
-                      <p class="value" v-else>
-                        - {{ parseFloat(+voucher.value).toFixed(0) }}%
-                      </p>
-
-                      <div class="expired">
-                        Thời hạn: <span> {{ voucher.expired }} </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="coupon-right">
-                    <div class="status">
-                      Ưu đãi
-                      <span :class="voucher?.status?.color">{{
-                        voucher?.status?.text
-                      }}</span>
-                    </div>
-
-                    <button
-                      type="button"
-                      @click="handleCopyCode(voucher.code)"
-                      class="code code-coupon w-100"
-                    >
-                      Sao chép mã
-                    </button>
-                    <p class="condition">* {{ voucher.text_description }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </template>
-        </div>
-      </div>
-      <template v-slot:empty>
-        <div>Không có dữ liệu!</div>
-      </template>
-    </v-infinite-scroll>
-  </section>
-</template>
 <script setup>
 import { useLoadingStore } from '#imports'
 import { formatCurrency, toast } from '#imports'
@@ -109,4 +50,67 @@ const load = async ({ done }) => {
   }
 }
 </script>
+<template>
+  <section class="coupon-area">
+    <v-infinite-scroll :onLoad="load">
+      <div class="container">
+        <div class="row">
+          <template v-for="(voucher, index) in vouchers" :key="voucher.id">
+            <div class="col-lg-6">
+              <div class="coupon-area-wrap">
+                <div class="coupon">
+                  <div class="coupon-left">
+                    <figure class="thumb">
+                      <img
+                        :src="resizeImage(voucher.image, 200)"
+                        :alt="voucher.name"
+                      />
+                    </figure>
+                    <div class="content">
+                      <h4 class="title-coupon">
+                        {{ voucher.name }}
+                      </h4>
+
+                      <p class="value" v-if="voucher.value_type == 'fixed'">
+                        - {{ formatCurrency(voucher.value) }}
+                      </p>
+                      <p class="value" v-else>
+                        - {{ parseFloat(+voucher.value).toFixed(0) }}%
+                      </p>
+
+                      <div class="expired">
+                        Thời hạn: <span> {{ voucher.expired }} </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="coupon-right">
+                    <div class="status">
+                      Ưu đãi
+                      <span :class="voucher?.status?.color">{{
+                        voucher?.status?.text
+                      }}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      @click="handleCopyCode(voucher.code)"
+                      class="code code-coupon w-100"
+                    >
+                      Sao chép mã
+                    </button>
+                    <p class="condition">* {{ voucher.text_description }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+      <template v-slot:empty>
+        <div>Không có dữ liệu!</div>
+      </template>
+    </v-infinite-scroll>
+  </section>
+</template>
+
 <style scoped></style>

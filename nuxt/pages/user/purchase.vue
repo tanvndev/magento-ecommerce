@@ -1,3 +1,199 @@
+<script setup>
+import {
+  ORDER_STATUS_TABS,
+  ORDER_STATUS,
+  PAYMENT_STATUS,
+  DELYVERY_STATUS,
+} from '~/static/order'
+import { COD_ID } from '~/static/paymentMethod'
+import { useLoadingStore, useCartStore, useOrderStore } from '#imports'
+import { RATING_LABLE } from '~/static/rating'
+import _ from 'lodash'
+
+const { $axios } = useNuxtApp()
+const tab = ref(ORDER_STATUS_TABS[0].value)
+const loadingStore = useLoadingStore()
+const orderStore = useOrderStore()
+const cartStore = useCartStore()
+const orders = ref([])
+const search = ref('')
+const rating = ref(5)
+const isReview = ref(false)
+const chooseProductReview = ref([])
+const orderItemRating = ref(null)
+const confirmCancelOrder = ref(false)
+const confirmCompleteOrder = ref(false)
+const orderIdToUpdateStatus = ref(null)
+const comment = ref('')
+const images = ref([])
+
+const handleProductReviewImage = () => {
+  if (images.value.length >= 3) {
+    return
+  }
+}
+
+const handleOrderPayment = async (orderCode) => {
+  if (!orderCode) {
+    return toast('Có lỗi vui lòng tải lại trang.')
+  }
+
+  console.log(orderCode)
+
+  try {
+    const response = await $axios.get(`/orders/${orderCode}/payment`)
+
+    return (location.href = response?.url)
+  } catch (error) {
+    return toast('Có lỗi vui lòng tải lại trang.')
+  }
+}
+const openReviewDialog = (orderId) => {
+  const order = orders.value.find((order) => order.id === orderId)
+
+  if (!order) {
+    return
+  }
+
+  const addedProductIds = new Set()
+
+  orderItemRating.value = _.filter(order.order_items, (item) => {
+    if (addedProductIds.has(item.product_id)) {
+      return false
+    } else {
+      addedProductIds.add(item.product_id)
+      return true
+    }
+  })
+
+  if (_.isEmpty(orderItemRating.value)) {
+    return
+  }
+  orderIdToUpdateStatus.value = orderId
+  isReview.value = true
+}
+const handleConfirmCancelOrder = async () => {
+  if (!orderIdToUpdateStatus.value) {
+    return
+  }
+
+  try {
+    const response = await $axios.put(
+      `/orders/${orderIdToUpdateStatus.value}/cancel`
+    )
+
+    if (response.status == 'success') {
+      toast(response.messages)
+      getAllOrder()
+    }
+  } catch (error) {
+    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
+  }
+
+  confirmCancelOrder.value = false
+}
+
+const handleConfirmCompleteOrder = async () => {
+  if (!orderIdToUpdateStatus.value) {
+    return
+  }
+
+  try {
+    const response = await $axios.put(
+      `/orders/${orderIdToUpdateStatus.value}/complete`
+    )
+
+    if (response.status == 'success') {
+      toast(response.messages)
+      getAllOrder()
+    }
+  } catch (error) {
+    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
+  }
+  confirmCompleteOrder.value = false
+}
+
+const handleProductReview = async () => {
+  if (!rating.value) {
+    return toast('Vui lý chọn điểm đánh giá.', 'error')
+  }
+  if (chooseProductReview.value?.length == 0) {
+    return toast('Vui lòng chọn sản phẩm cần đánh giá.', 'error')
+  }
+  if (!orderIdToUpdateStatus.value) {
+    return toast('Vui lòng tải lại trang.', 'error')
+  }
+
+  const payload = {
+    rating: rating.value,
+    comment: comment.value,
+    product_id: chooseProductReview.value,
+    order_id: orderIdToUpdateStatus.value,
+  }
+  try {
+    const response = await $axios.post('/product-reviews', payload)
+
+    if (response.status == 'success') {
+      toast(response.messages)
+      getAllOrder()
+    }
+  } catch (error) {
+    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
+  }
+}
+
+const getAllOrder = async () => {
+  try {
+    loadingStore.setLoading(true)
+    const response = await $axios.get('/orders/user', {
+      params: {
+        order_status: tab.value,
+        search: search.value,
+      },
+    })
+    orders.value = response.data?.data
+  } catch (error) {
+  } finally {
+    loadingStore.setLoading(false)
+  }
+}
+
+const debounceHandleSearch = debounce(getAllOrder, 500)
+
+const debounceHandleChangeTab = debounce(getAllOrder, 500)
+
+const getOrderDetail = async (orderId) => {
+  const order = orders.value.find((order) => order.id === orderId)
+  if (!order) {
+    return
+  }
+  orderStore.setOrderDetail(order)
+}
+
+const addToCart = async (orderId) => {
+  const order = orders.value.find((order) => order.id === orderId)
+  const variantIds = order.order_items
+    .map((item) => item.product_variant_id)
+    .join(',')
+
+  if (!variantIds) {
+    return toast('Có lỗi vui lòng thử lại.', 'error')
+  }
+
+  const payload = {
+    product_variant_id: variantIds,
+  }
+
+  const response = await $axios.post('/carts/comming-soon', payload)
+
+  cartStore.setCartCount(response.data?.items.length)
+  toast(response.messages, response.status)
+}
+
+onMounted(async () => {
+  await getAllOrder()
+})
+</script>
 <template>
   <div class="page-content order-purchase-wrapper pt-2 mt-6 pb-50">
     <div class="container">
@@ -80,7 +276,7 @@
                     <div class="order-product-image">
                       <img
                         class="object-contain"
-                        :src="item.image"
+                        :src="resizeImage(item.image, 100)"
                         :alt="item.product_variant_name"
                       />
                     </div>
@@ -297,7 +493,10 @@
                       :key="item"
                     >
                       <div class="order-product-image">
-                        <img class="object-contain" :src="item.image" />
+                        <img
+                          class="object-contain"
+                          :src="resizeImage(item.image, 100)"
+                        />
                       </div>
 
                       <div class="order-product-info">
@@ -400,202 +599,7 @@
     </div>
   </div>
 </template>
-<script setup>
-import {
-  ORDER_STATUS_TABS,
-  ORDER_STATUS,
-  PAYMENT_STATUS,
-  DELYVERY_STATUS,
-} from '~/static/order'
-import { COD_ID } from '~/static/paymentMethod'
-import { useLoadingStore, useCartStore, useOrderStore } from '#imports'
-import { RATING_LABLE } from '~/static/rating'
-import _ from 'lodash'
 
-const { $axios } = useNuxtApp()
-const tab = ref(ORDER_STATUS_TABS[0].value)
-const loadingStore = useLoadingStore()
-const orderStore = useOrderStore()
-const cartStore = useCartStore()
-const orders = ref([])
-const search = ref('')
-const rating = ref(5)
-const isReview = ref(false)
-const chooseProductReview = ref([])
-const orderItemRating = ref(null)
-const confirmCancelOrder = ref(false)
-const confirmCompleteOrder = ref(false)
-const orderIdToUpdateStatus = ref(null)
-const comment = ref('')
-const images = ref([])
-
-const handleProductReviewImage = () => {
-  if (images.value.length >= 3) {
-    return
-  }
-}
-
-const handleOrderPayment = async (orderCode) => {
-  if (!orderCode) {
-    return toast('Có lỗi vui lòng tải lại trang.')
-  }
-
-  console.log(orderCode)
-
-  try {
-    const response = await $axios.get(`/orders/${orderCode}/payment`)
-
-    return (location.href = response?.url)
-  } catch (error) {
-    return toast('Có lỗi vui lòng tải lại trang.')
-  }
-}
-const openReviewDialog = (orderId) => {
-  const order = orders.value.find((order) => order.id === orderId)
-
-  if (!order) {
-    return
-  }
-
-  const addedProductIds = new Set()
-
-  orderItemRating.value = _.filter(order.order_items, (item) => {
-    if (addedProductIds.has(item.product_id)) {
-      return false
-    } else {
-      addedProductIds.add(item.product_id)
-      return true
-    }
-  })
-
-  if (_.isEmpty(orderItemRating.value)) {
-    return
-  }
-  orderIdToUpdateStatus.value = orderId
-  isReview.value = true
-}
-const handleConfirmCancelOrder = async () => {
-  if (!orderIdToUpdateStatus.value) {
-    return
-  }
-
-  try {
-    const response = await $axios.put(
-      `/orders/${orderIdToUpdateStatus.value}/cancel`
-    )
-
-    if (response.status == 'success') {
-      toast(response.messages)
-      getAllOrder()
-    }
-  } catch (error) {
-    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
-  }
-
-  confirmCancelOrder.value = false
-}
-
-const handleConfirmCompleteOrder = async () => {
-  if (!orderIdToUpdateStatus.value) {
-    return
-  }
-
-  try {
-    const response = await $axios.put(
-      `/orders/${orderIdToUpdateStatus.value}/complete`
-    )
-
-    if (response.status == 'success') {
-      toast(response.messages)
-      getAllOrder()
-    }
-  } catch (error) {
-    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
-  }
-  confirmCompleteOrder.value = false
-}
-
-const handleProductReview = async () => {
-  if (!rating.value) {
-    return toast('Vui lý chọn điểm đánh giá.', 'error')
-  }
-  if (chooseProductReview.value?.length == 0) {
-    return toast('Vui lòng chọn sản phẩm cần đánh giá.', 'error')
-  }
-  if (!orderIdToUpdateStatus.value) {
-    return toast('Vui lòng tải lại trang.', 'error')
-  }
-
-  const payload = {
-    rating: rating.value,
-    comment: comment.value,
-    product_id: chooseProductReview.value,
-    order_id: orderIdToUpdateStatus.value,
-  }
-  try {
-    const response = await $axios.post('/product-reviews', payload)
-
-    if (response.status == 'success') {
-      toast(response.messages)
-      getAllOrder()
-    }
-  } catch (error) {
-    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
-  }
-}
-
-const getAllOrder = async () => {
-  try {
-    loadingStore.setLoading(true)
-    const response = await $axios.get('/orders/user', {
-      params: {
-        order_status: tab.value,
-        search: search.value,
-      },
-    })
-    orders.value = response.data?.data
-  } catch (error) {
-  } finally {
-    loadingStore.setLoading(false)
-  }
-}
-
-const debounceHandleSearch = debounce(getAllOrder, 500)
-
-const debounceHandleChangeTab = debounce(getAllOrder, 500)
-
-const getOrderDetail = async (orderId) => {
-  const order = orders.value.find((order) => order.id === orderId)
-  if (!order) {
-    return
-  }
-  orderStore.setOrderDetail(order)
-}
-
-const addToCart = async (orderId) => {
-  const order = orders.value.find((order) => order.id === orderId)
-  const variantIds = order.order_items
-    .map((item) => item.product_variant_id)
-    .join(',')
-
-  if (!variantIds) {
-    return toast('Có lỗi vui lòng thử lại.', 'error')
-  }
-
-  const payload = {
-    product_variant_id: variantIds,
-  }
-
-  const response = await $axios.post('/carts/comming-soon', payload)
-
-  cartStore.setCartCount(response.data?.items.length)
-  toast(response.messages, response.status)
-}
-
-onMounted(async () => {
-  await getAllOrder()
-})
-</script>
 
 <style scoped>
 .product-title a {

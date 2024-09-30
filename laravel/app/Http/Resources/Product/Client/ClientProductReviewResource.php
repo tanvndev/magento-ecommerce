@@ -14,10 +14,12 @@ class ClientProductReviewResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = $this->user;
+
         return [
             'product_id' => $this->product_id,
-            'fullname' => $this->user->fullname,
-            'image' => $this->user->image,
+            'fullname' => $user->fullname,
+            'image' => $user->image,
             'rating' => $this->rating,
             'percent_rate' => starsToPercent($this->rating),
             'comment' => $this->comment,

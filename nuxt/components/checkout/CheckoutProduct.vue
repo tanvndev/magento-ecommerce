@@ -1,3 +1,10 @@
+<script setup>
+import { useCartStore } from '#imports'
+
+const cartStore = useCartStore()
+const carts = computed(() => cartStore.getCartSelected)
+
+</script>
 <template>
   <div class="mt-7">
     <h3 class="title text-uppercase ls-10 mb-3">
@@ -47,10 +54,3 @@
     </v-table>
   </div>
 </template>
-<script setup>
-import { useCartStore } from '#imports'
-
-const cartStore = useCartStore()
-const carts = computed(() => cartStore.getCartSelected)
-
-</script>

@@ -232,7 +232,7 @@
       <!-- End of MoreInfomation -->
 
       <!-- Start of MoreInfomation -->
-      <ProductRecent :product="product" />
+      <!-- <ProductRecent :product="product" /> -->
       <!-- End of MoreInfomation -->
     </div>
   </div>

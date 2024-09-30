@@ -178,6 +178,9 @@ class VnpController extends Controller
             return redirect()->away(env('NUXT_APP_URL') . '/order-success?code=' . $orderCode);
         }
 
+        return redirect()->away(env('NUXT_APP_URL') . '/payment-fail');
+
+
         //Trả lại VNPAY theo định dạng JSON
         // echo json_encode($returnData);
     }

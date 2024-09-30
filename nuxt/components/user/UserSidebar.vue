@@ -1,3 +1,13 @@
+<script setup>
+import SIDEBAR_PROFILE from '~/static/sidebarProfile'
+const route = useRoute()
+const currentRoute = computed(() => route.path)
+const handleChangeRoute = (route) => {
+  if (route) {
+    navigateTo(route)
+  }
+}
+</script>
 <template>
   <v-card class="mx-auto pa-2" max-width="300">
     <v-list>
@@ -33,14 +43,3 @@
     </v-list>
   </v-card>
 </template>
-
-<script setup>
-import SIDEBAR_PROFILE from '~/static/sidebarProfile'
-const route = useRoute()
-const currentRoute = computed(() => route.path)
-const handleChangeRoute = (route) => {
-  if (route) {
-    navigateTo(route)
-  }
-}
-</script>

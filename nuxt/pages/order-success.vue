@@ -1,3 +1,27 @@
+<script setup>
+const { $axios } = useNuxtApp()
+const route = useRoute()
+
+const order = ref(null)
+const orderCode = route.query.code
+
+const getOrder = async () => {
+  const response = await $axios.get(`/orders/${orderCode}/detail`)
+  order.value = response.data
+}
+
+onMounted(async () => {
+  if (!orderCode) {
+    return navigateTo('/')
+  }
+
+  await getOrder()
+
+  if (!order.value) {
+    return navigateTo('/')
+  }
+})
+</script>
 <template>
   <!-- Start of Main -->
   <main class="main order" v-if="order">
@@ -198,30 +222,7 @@
   <!-- End of Main -->
 </template>
 
-<script setup>
-const { $axios } = useNuxtApp()
-const route = useRoute()
 
-const order = ref(null)
-const orderCode = route.query.code
-
-const getOrder = async () => {
-  const response = await $axios.get(`/orders/${orderCode}/detail`)
-  order.value = response.data
-}
-
-onMounted(async () => {
-  if (!orderCode) {
-    return navigateTo('/')
-  }
-
-  await getOrder()
-
-  if (!order.value) {
-    return navigateTo('/')
-  }
-})
-</script>
 
 <style scoped>
 .product-price .new-price {

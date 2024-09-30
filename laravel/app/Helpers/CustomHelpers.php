@@ -288,7 +288,7 @@ if (! function_exists('starsToPercent')) {
             throw new \InvalidArgumentException("Max stars must be greater than zero.");
         }
 
-        return ($stars / $maxStars) * 100;
+        return round(($stars / $maxStars) * 100, 2);
     }
 }
 

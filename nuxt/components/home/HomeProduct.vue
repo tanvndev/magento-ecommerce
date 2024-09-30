@@ -1,3 +1,41 @@
+<script setup>
+import { resizeImage, handleRenderPrice, toast } from '#imports'
+import { ref } from 'vue'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Navigation, Autoplay, Grid } from 'swiper/modules'
+import 'swiper/css'
+import { useCartStore } from '#imports'
+
+const props = defineProps({
+  items: {
+    type: [Array, Object],
+    default: () => [],
+  },
+  title: {
+    type: String,
+    default: () => '',
+  },
+})
+
+const cartStore = useCartStore()
+const modules = [Navigation, Grid, Autoplay]
+const slider = ref(null)
+const onSwiper = (swiper) => {
+  slider.value = swiper
+}
+
+const addToCart = async (variantId) => {
+  if (!variantId) {
+    return toast('Có lỗi vui lòng thử lại.', 'error')
+  }
+
+  const payload = {
+    product_variant_id: variantId,
+  }
+
+  await cartStore.addToCart(payload)
+}
+</script>
 <template>
   <v-lazy
     :min-height="600"
@@ -108,45 +146,7 @@
     </div>
   </v-lazy>
 </template>
-<script setup>
-import { resizeImage, handleRenderPrice, toast } from '#imports'
-import { ref } from 'vue'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation, Autoplay, Grid } from 'swiper/modules'
-import 'swiper/css'
-import { useCartStore } from '#imports'
 
-const props = defineProps({
-  items: {
-    type: [Array, Object],
-    default: () => [],
-  },
-  title: {
-    type: String,
-    default: () => '',
-  },
-})
-
-const { $axios } = useNuxtApp()
-const cartStore = useCartStore()
-const modules = [Navigation, Grid, Autoplay]
-const slider = ref(null)
-const onSwiper = (swiper) => {
-  slider.value = swiper
-}
-
-const addToCart = async (variantId) => {
-  if (!variantId) {
-    return toast('Có lỗi vui lòng thử lại.', 'error')
-  }
-
-  const payload = {
-    product_variant_id: variantId,
-  }
-
-  await cartStore.addToCart(payload)
-}
-</script>
 <style scoped>
 .product-media {
   background-color: #f5f6f7;
