@@ -49,9 +49,4 @@ class ProductReview extends Model
     {
         return $this->hasMany(ProductReview::class, 'parent_id');
     }
-  
-    protected $casts = [
-        'images' => 'array',
-    ];
-
 }

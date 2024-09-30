@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Product\Client;
 
-use App\Http\Resources\Product\ProductReviewResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -17,34 +16,18 @@ class ClientProductReviewCollection extends ResourceCollection
     {
         $totalReviews = $this->collection->count();
 
-        if ($totalReviews > 0) {
-            $oneStarCount = $this->collection->where('rating', 1)->count();
-            $twoStarCount = $this->collection->where('rating', 2)->count();
-            $threeStarCount = $this->collection->where('rating', 3)->count();
-            $fourStarCount = $this->collection->where('rating', 4)->count();
-            $fiveStarCount = $this->collection->where('rating', 5)->count();
+        $starCounts = $this->collection->groupBy('rating')->map->count();
+        $avgRating = $totalReviews > 0 ? round($this->collection->avg('rating'), 2) : 0;
 
-            return [
-                'data' => ProductReviewResource::collection($this->collection),
-                'avg_rating' => $this->collection->avg('rating'),
-
-                'one_star' => ($oneStarCount / $totalReviews) * 100,
-
-                'two_star' => ($twoStarCount / $totalReviews) * 100,
-                'three_star' => ($threeStarCount / $totalReviews) * 100,
-                'four_star' => ($fourStarCount / $totalReviews) * 100,
-                'five_star' => ($fiveStarCount / $totalReviews) * 100,
-            ];
+        $percentages = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $percentages["_{$i}_star"] = $totalReviews > 0 ? round(($starCounts->get($i, 0) / $totalReviews) * 100, 2) : 0;
         }
 
         return [
-            'data' => [],
-            'avg_rating' => 0,
-            'one_star' => 0,
-            'two_star' => 0,
-            'three_star' => 0,
-            'four_star' => 0,
-            'five_star' => 0,
-        ];
+            'items' => ClientProductReviewResource::collection($this->collection),
+            'avg_rating' => $avgRating,
+            'avg_rating_percent' => starsToPercent($avgRating),
+        ] + $percentages;
     }
 }

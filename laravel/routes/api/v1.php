@@ -51,6 +51,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('payment-methods/all', [PaymentMethodController::class, 'getAllPaymentMethod']);
     Route::get('shipping-methods/products/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
     Route::post('vouchers/{code}/apply', [VoucherController::class, 'applyVoucher']);
+    Route::get('product-reviews', [ProductReviewController::class, 'getAllProductReviews'])->name('index');
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
@@ -152,7 +153,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // PRODUCT REVIEW ROUTE
         Route::controller(ProductReviewController::class)->name('product-reviews.')->group(function () {
-            Route::get('product-reviews', 'getAllProductReviews')->name('index');
             Route::get('product-reviews/{productId}', 'getReviewByProductId')->name('show');
             Route::post('product-reviews', 'store')->name('store');
             Route::post('product-reviews/{parentId}/replies', 'adminReply')->name('reply');

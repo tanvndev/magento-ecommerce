@@ -61,15 +61,22 @@
           <div class="col-xl-12 col-lg-5">
             <div class="ratings-wrapper d-flex justify-between">
               <div class="avg-rating-container mr-10">
-                <h4 class="avg-mark font-weight-bolder ls-50">3.3</h4>
+                <h4 class="avg-mark font-weight-bolder ls-50">
+                  {{ reviews?.avg_rating }}
+                </h4>
                 <div class="avg-rating">
                   <p class="text-dark mb-1">Đánh giá trung bình</p>
                   <div class="ratings-container">
                     <div class="ratings-full">
-                      <span class="ratings" style="width: 60%"></span>
+                      <span
+                        class="ratings"
+                        :style="`width: ${reviews?.avg_rating_percent}%`"
+                      ></span>
                       <span class="tooltiptext tooltip-top"></span>
                     </div>
-                    <a href="#" class="rating-reviews">(3 Đánh giá)</a>
+                    <a href="#" class="rating-reviews"
+                      >({{ reviews?.items?.length }} Đánh giá)</a
+                    >
                   </div>
                 </div>
               </div>
@@ -81,10 +88,10 @@
                     <span class="tooltiptext tooltip-top">5</span>
                   </div>
                   <div class="progress-bar progress-bar-sm">
-                    <span></span>
+                    <span :style="`width: ${reviews?._5_star}%`"></span>
                   </div>
                   <div class="progress-value">
-                    <mark>70%</mark>
+                    <mark>{{ reviews?._5_star }}%</mark>
                   </div>
                 </div>
                 <div class="ratings-container">
@@ -93,10 +100,10 @@
                     <span class="tooltiptext tooltip-top">4</span>
                   </div>
                   <div class="progress-bar progress-bar-sm">
-                    <span></span>
+                    <span :style="`width: ${reviews?._4_star}%`"></span>
                   </div>
                   <div class="progress-value">
-                    <mark>30%</mark>
+                    <mark>{{ reviews?._4_star }}%</mark>
                   </div>
                 </div>
                 <div class="ratings-container">
@@ -105,10 +112,10 @@
                     <span class="tooltiptext tooltip-top">3</span>
                   </div>
                   <div class="progress-bar progress-bar-sm">
-                    <span></span>
+                    <span :style="`width: ${reviews?._3_star}%`"></span>
                   </div>
                   <div class="progress-value">
-                    <mark>40%</mark>
+                    <mark>{{ reviews?._3_star }}%</mark>
                   </div>
                 </div>
                 <div class="ratings-container">
@@ -117,10 +124,10 @@
                     <span class="tooltiptext tooltip-top">2</span>
                   </div>
                   <div class="progress-bar progress-bar-sm">
-                    <span></span>
+                    <span :style="`width: ${reviews?._2_star}%`"></span>
                   </div>
                   <div class="progress-value">
-                    <mark>0%</mark>
+                    <mark>{{ reviews?._2_star }}%</mark>
                   </div>
                 </div>
                 <div class="ratings-container">
@@ -129,10 +136,10 @@
                     <span class="tooltiptext tooltip-top">1</span>
                   </div>
                   <div class="progress-bar progress-bar-sm">
-                    <span></span>
+                    <span :style="`width: ${reviews?._1_star}%`"></span>
                   </div>
                   <div class="progress-value">
-                    <mark>0%</mark>
+                    <mark>{{ reviews?._1_star }}%</mark>
                   </div>
                 </div>
               </div>
@@ -142,28 +149,47 @@
 
         <div
           class="tab tab-nav-boxed tab-nav-outline tab-nav-center"
-          v-if="reviews?.length > 0"
+          v-if="reviews?.items?.length > 0"
         >
           <div class="tab-content">
             <div class="tab-pane active" id="show-all">
               <ul class="comments list-style-none">
-                <li class="comment" v-for="review in reviews" :key="review">
+                <li
+                  class="comment"
+                  v-for="review in reviews?.items"
+                  :key="review"
+                >
                   <div class="comment-body">
                     <figure class="comment-avatar">
                       <img
-                        :src="review.image"
+                        :src="resizeImage(review.image, '200')"
                         :alt="review.fullname"
                         width="90"
                         height="90"
                       />
                     </figure>
-                    <div class="comment-content">
-                      <h4 class="comment-author">
-                        <span>{{ review.fullname }}</span>
-                        <span class="comment-date ms-3">{{
-                          review.created_at
-                        }}</span>
-                      </h4>
+                    <div class="comment-content w-100">
+                      <div class="d-flex align-items-center justify-between">
+                        <h4 class="comment-author">
+                          <span>{{ review.fullname }}</span>
+                          <span class="comment-date ms-3">{{
+                            review.created_at
+                          }}</span>
+                        </h4>
+                        <div class="comment-rating-check">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              d="M21.856 10.303c.086.554.144 1.118.144 1.697 0 6.075-4.925 11-11 11s-11-4.925-11-11 4.925-11 11-11c2.347 0 4.518.741 6.304 1.993l-1.422 1.457c-1.408-.913-3.082-1.45-4.882-1.45-4.962 0-9 4.038-9 9s4.038 9 9 9c4.894 0 8.879-3.928 8.99-8.795l1.866-1.902zm-.952-8.136l-9.404 9.639-3.843-3.614-3.095 3.098 6.938 6.71 12.5-12.737-3.096-3.096z"
+                            />
+                          </svg>
+                          <span>Đã mua hàng</span>
+                        </div>
+                      </div>
                       <div class="ratings-container comment-rating">
                         <div class="ratings-full">
                           <span
@@ -178,8 +204,56 @@
                       <p>
                         {{ review.comment }}
                       </p>
+
+                      <div class="d-flex pb-6">
+                        <v-img
+                          v-for="n in 3"
+                          :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+                          class="bg-grey-lighten-2 mr-3"
+                          max-width="150"
+                          max-height="100"
+                          rounded
+                          cover
+                        >
+                        </v-img>
+                      </div>
                     </div>
                   </div>
+
+                  <ul class="comments list-style-none children">
+                    <li class="comment">
+                      <div class="comment-body">
+                        <figure class="comment-avatar">
+                          <img
+                            :src="review.image"
+                            :alt="review.fullname"
+                            width="90"
+                            height="90"
+                          />
+                        </figure>
+                        <div class="comment-content">
+                          <h4 class="comment-author">
+                            <span>Admin</span>
+                            <span class="comment-date ms-3">11-22-33</span>
+                          </h4>
+                          <div class="ratings-container comment-rating">
+                            <div class="ratings-full">
+                              <span
+                                class="ratings"
+                                :style="`width: ${20}%`"
+                              ></span>
+                              <span class="tooltiptext tooltip-top">{{
+                                3
+                              }}</span>
+                            </div>
+                          </div>
+                          <p>
+                            {{ 'Cam on quy khach' }}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
                 </li>
               </ul>
             </div>
@@ -216,6 +290,7 @@ const getAllReviews = async () => {
   const response = await $axios.get(`/product-reviews/${props.product.id}`)
 
   reviews.value = response.data
+  console.log(reviews.value.data)
 }
 
 watch(
@@ -227,7 +302,6 @@ watch(
 </script>
 
 <style scoped>
-
 .specifications-list {
   font-family: Arial, sans-serif;
   line-height: 1.6;
@@ -249,5 +323,9 @@ watch(
   color: #333;
   min-width: 160px;
   display: inline-block;
+}
+
+.progress-bar span {
+  background-color: #f77c29;
 }
 </style>

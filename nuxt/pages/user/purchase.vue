@@ -80,7 +80,7 @@
                     <div class="order-product-image">
                       <img
                         class="object-contain"
-                        :src="item.image"
+                        :src="resizeImage(item.image, 100)"
                         :alt="item.product_variant_name"
                       />
                     </div>
@@ -297,7 +297,10 @@
                       :key="item"
                     >
                       <div class="order-product-image">
-                        <img class="object-contain" :src="item.image" />
+                        <img
+                          class="object-contain"
+                          :src="resizeImage(item.image, 100)"
+                        />
                       </div>
 
                       <div class="order-product-info">

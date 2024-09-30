@@ -9,7 +9,10 @@
                 <div class="coupon">
                   <div class="coupon-left">
                     <figure class="thumb">
-                      <img :src="voucher.image" :alt="voucher.name" />
+                      <img
+                        :src="resizeImage(voucher.image, 200)"
+                        :alt="voucher.name"
+                      />
                     </figure>
                     <div class="content">
                       <h4 class="title-coupon">

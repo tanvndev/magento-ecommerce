@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Order::class)->constrained()->cascadeOnDelete();
-            $table->unsignedTinyInteger('rating');
+            $table->unsignedTinyInteger('rating')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->text('comment')->nullable();
             $table->json('images')->nullable();
