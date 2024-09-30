@@ -561,7 +561,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         $condition = [
             'code'    => $orderCode,
-            'user_id' => auth()->check() ? auth()->user()->id : null,
+            // 'user_id' => auth()->check() ? auth()->user()->id : null,
         ];
 
         $order = $this->orderRepository->findByWhere(
