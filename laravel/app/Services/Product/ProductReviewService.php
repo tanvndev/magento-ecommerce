@@ -133,7 +133,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
                 $this->productReviewRepository->create($reviewData);
             }
 
-            return successResponse(__('messages.create.success'));
+            return successResponse(__('messages.product_review.success.create'));
         }, __('messages.create.error'));
     }
 

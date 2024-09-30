@@ -21,6 +21,10 @@ class ProductReview extends Model
         'publish',
     ];
 
+    protected $casts = [
+        'images' => 'array',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class);
@@ -45,8 +49,4 @@ class ProductReview extends Model
     {
         return $this->hasMany(ProductReview::class, 'parent_id');
     }
-
-    protected $cats = [
-        'images' => 'array',
-    ];
 }

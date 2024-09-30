@@ -66,6 +66,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::post('login', [AuthController::class, 'login']);
         Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('refreshToken', [AuthController::class, 'refreshToken']);
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');
 
@@ -81,7 +82,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // AUTH
         Route::get('auth/me', [AuthController::class, 'me']);
-        Route::post('auth/refreshToken', [AuthController::class, 'refreshToken']);
 
         // DASHBOARD ROUTE
         Route::prefix('dashboard')->name('dashboard.')->group(function () {

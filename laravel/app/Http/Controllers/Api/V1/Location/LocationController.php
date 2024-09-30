@@ -22,7 +22,7 @@ class LocationController extends Controller
      *
      * @return JsonResponse
      */
-    public function getProvinces()
+    public function getProvinces(): JsonResponse
     {
         $data = $this->provinceRepository->all();
 
@@ -30,7 +30,10 @@ class LocationController extends Controller
     }
 
     /**
-     * Get location by id.
+     * Get districts or wards by location id.
+     *
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function getLocation(Request $request): JsonResponse
     {
@@ -57,15 +60,18 @@ class LocationController extends Controller
         return successResponse('Get province successfully.', $response, true);
     }
 
+
     /**
      * Get location by address.
+     *
+     * @param  Request  $request
+     * @return JsonResponse
      */
     public function getLocationByAddress(Request $request): JsonResponse
     {
         $addressData = $request->addressData;
-
         if (empty($addressData)) {
-            return errorResponse('Get location failed.');
+            return errorResponse('Get location failed.', true);
         }
 
         $response = $this->locationService->getLocationByAddress($addressData['address']);
