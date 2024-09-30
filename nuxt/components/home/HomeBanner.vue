@@ -1,19 +1,33 @@
+<script setup>
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Autoplay, Pagination, Navigation } from 'swiper/modules'
+import 'swiper/css'
+
+const modules = [Autoplay, Pagination, Navigation]
+
+const slider = ref(null)
+const onSwiper = (swiper) => {
+  slider.value = swiper
+}
+</script>
+
 <template>
   <v-lazy
     :min-height="200"
     :options="{ threshold: 0.5 }"
     transition="fade-transition"
   >
-    <section class="intro-section">
+    <section class="intro-section position-relative">
       <div class="nav-inner pg-inner pg-xxl-hide nav-xxl-show nav-hide">
         <swiper
+          @swiper="onSwiper"
           :modules="modules"
           :slides-per-view="1"
           :autoplay="true"
           :loop="true"
           :infinite="true"
           :pagination="{ clickable: true }"
-          :navigation="true"
+          :navigation="false"
         >
           <swiper-slide>
             <div
@@ -144,15 +158,32 @@
             <!-- End of .intro-slide3 -->
           </swiper-slide>
         </swiper>
+
+        <div>
+          <button class="button-slide prev" @click.stop="slider.slidePrev()">
+            <i class="w-icon-angle-left"></i>
+          </button>
+          <button class="button-slide next" @click.stop="slider.slideNext()">
+            <i class="w-icon-angle-right"></i>
+          </button>
+        </div>
       </div>
       <!-- End of . -->
     </section>
   </v-lazy>
 </template>
-<script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Autoplay, Pagination, Navigation } from 'swiper/modules'
-import 'swiper/css'
+<style scoped>
+.intro-section:hover .button-slide {
+  visibility: visible;
+  opacity: 1;
+}
 
-const modules = [Autoplay, Pagination, Navigation]
-</script>
+.button-slide.next {
+  right: 5px;
+  left: auto;
+}
+.button-slide.prev {
+  left: 5px;
+  right: auto;
+}
+</style>
