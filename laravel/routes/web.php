@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\V1\User\UserAddressController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\Payment\MomoController;
 use App\Http\Controllers\Payment\PaypalController;
 use App\Http\Controllers\Payment\VnpController;
@@ -31,6 +33,23 @@ Route::get('return/vnpay_ipn', [VnpController::class, 'handleVnpIpn'])->name('re
 Route::get('return/momo', [MomoController::class, 'handleReturnUrl'])->name('return.momo');
 Route::get('return/momo_ipn', [MomoController::class, 'handleMomoIpn'])->name('return.momo_ipn');
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+// Route::get('/test', [TestController::class, 'index']);
+// Route::get('/emails', function () {
+//     return view('emails.forgot-email');
+// });
+
+// Route::get('/notification/{boolean}/{messages}', function ($boolean, $messages) {
+//     return view('auth.notification', compact(
+//         'boolean',
+//         'messages'
+//     ));
+// })->name('notifications');
+
+Route::get('test/', [UserAddressController::class, 'getByUserId']);
 // PAYPAL
 Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal.success');
 Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');

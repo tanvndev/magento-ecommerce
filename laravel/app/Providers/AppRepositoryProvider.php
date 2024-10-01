@@ -48,10 +48,16 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Widget\WidgetRepositoryInterface' => 'App\Repositories\Widget\WidgetRepository',
         // Voucher
         'App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface' => 'App\Repositories\Voucher\VoucherRepository',
+        // WishList
+        'App\Repositories\Interfaces\WishList\WishListRepositoryInterface' => 'App\Repositories\WishList\WishListRepository',
         // Slider
         'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
         // Order
         'App\Repositories\Interfaces\Order\OrderRepositoryInterface' => 'App\Repositories\Order\OrderRepository',
+        // Slider
+        'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
+        // UserAddress
+        'App\Repositories\Interfaces\User\UserAddressRepositoryInterface' => 'App\Repositories\User\UserAddressRepository',
         // PRODUCT REVIEW
         'App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface' => 'App\Repositories\Product\ProductReviewRepository',
 
@@ -67,5 +73,7 @@ class AppRepositoryProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void {}
+    public function boot(): void
+    {
+    }
 }

@@ -52,14 +52,24 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
         // Voucher
         'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
+
+        // WishList
+        'App\Services\Interfaces\WishList\WishListServiceInterface' => 'App\Services\WishList\WishListService',
+
         // Slider
         'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
         // Order
         'App\Services\Interfaces\Order\OrderServiceInterface' => 'App\Services\Order\OrderService',
         // Location
         'App\Services\Interfaces\Location\LocationServiceInterface' => 'App\Services\Location\LocationService',
+        // Slider
+        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
+        // UserAddress
+        'App\Services\Interfaces\User\UserAddressServiceInterface' => 'App\Services\User\UserAddressService',
+
         // PRODUCT REVIEW
         'App\Services\Interfaces\Product\ProductReviewServiceInterface' => 'App\Services\Product\ProductReviewService',
+
     ];
 
     public function register(): void
@@ -75,11 +85,11 @@ class AppServiceProvider extends ServiceProvider
             $fileSystem = $app->make(Filesystem::class);
 
             return ServerFactory::create([
-                'response'           => new LaravelResponseFactory(app('request')),
-                'source'             => $fileSystem->getDriver(),
-                'cache'              => $fileSystem->getDriver(),
+                'response' => new LaravelResponseFactory(app('request')),
+                'source' => $fileSystem->getDriver(),
+                'cache' => $fileSystem->getDriver(),
                 'source_path_prefix' => env('IMAGE_SOURCE_PATH'),
-                'cache_path_prefix'  => '.cache',
+                'cache_path_prefix' => '.cache',
             ]);
         });
 
@@ -89,7 +99,9 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void {}
+    public function boot(): void
+    {
+    }
 
     private function printLogSql()
     {
@@ -100,9 +112,9 @@ class AppServiceProvider extends ServiceProvider
 
             $logContent = sprintf(
                 "/*==================================================================*/\n" .
-                    "/* Origin (request): %s\n" .
-                    "   Query %d - %s [%sms] */\n\n" .
-                    "%s\n\n",
+                "/* Origin (request): %s\n" .
+                "   Query %d - %s [%sms] */\n\n" .
+                "%s\n\n",
                 request()->fullUrl() ?? 'N/A',
                 $query->time, // Số thứ tự truy vấn
                 Carbon::now()->toDateTimeString(),

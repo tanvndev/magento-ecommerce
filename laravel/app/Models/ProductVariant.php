@@ -36,9 +36,9 @@ class ProductVariant extends Model
     ];
 
     protected $casts = [
-        'album'            => 'json',
+        'album' => 'json',
         'is_discount_time' => 'boolean',
-        'is_used'          => 'boolean',
+        'is_used' => 'boolean',
     ];
 
     protected static function boot()
@@ -63,9 +63,10 @@ class ProductVariant extends Model
         $originalSlug = $slug;
         $count = 1;
 
-        while (self::where('slug', $slug)
-            ->where('id', '!=', $excludeId)
-            ->exists()
+        while (
+            self::where('slug', $slug)
+                ->where('id', '!=', $excludeId)
+                ->exists()
         ) {
             $slug = "{$originalSlug}-" . $count++;
         }
@@ -87,7 +88,11 @@ class ProductVariant extends Model
     {
         return $this->hasMany(CartItem::class);
     }
-
+    //relationship Wishlist
+    public function wishLists()
+    {
+        return $this->hasMany(WishList::class);
+    }
     public function order_items()
     {
         return $this->hasMany(OrderItem::class);

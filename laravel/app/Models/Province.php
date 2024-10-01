@@ -38,4 +38,9 @@ class Province extends Model
     {
         return $this->hasMany(User::class, 'province_id', 'code');
     }
+
+    public function user_addresses()
+    {
+        return $this->hasMany(UserAddress::class, 'province_code', 'code');
+    }
 }
