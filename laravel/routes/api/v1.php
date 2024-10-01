@@ -20,7 +20,7 @@ use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
 use App\Http\Controllers\Api\V1\Upload\UploadController;
 use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V1\UserAddress\UserAddressController;
+use App\Http\Controllers\Api\V1\User\UserAddressController;
 use App\Http\Controllers\Api\V1\Voucher\VoucherController;
 use App\Http\Controllers\Api\V1\Widget\WidgetController;
 use App\Http\Controllers\Api\V1\WishList\WishListController;
@@ -152,11 +152,11 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('wishlists/send-mail/', [WishListController::class, 'sendWishListMail']);
 
         // USERADDRESSES
-        Route::get('users/addresses/list', [UserAddressController::class, 'index']);
-        Route::get('users/addresses', [UserAddressController::class, 'getByUserId']);
-        Route::post('users/addresses', [UserAddressController::class, 'store']);
-        Route::put('users/addresses/{id}', [UserAddressController::class, 'update']);
-        Route::delete('users/addresses/{id}', [UserAddressController::class, 'destroy']);
+        Route::get('addresses/list', [UserAddressController::class, 'index']);
+        Route::get('addresses', [UserAddressController::class, 'getByUserId']);
+        Route::post('addresses', [UserAddressController::class, 'store']);
+        Route::put('addresses/{id}', [UserAddressController::class, 'update']);
+        Route::delete('addresses/{id}', [UserAddressController::class, 'destroy']);
     });
 
     // CART ROUTE

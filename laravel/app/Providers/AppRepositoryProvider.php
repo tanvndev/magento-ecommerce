@@ -59,7 +59,7 @@ class AppRepositoryProvider extends ServiceProvider
         // Slider
         'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
         // UserAddress
-        'App\Repositories\Interfaces\UserAddress\UserAddressRepositoryInterface' => 'App\Repositories\UserAddress\UserAddressRepository',
+        'App\Repositories\Interfaces\User\UserAddressRepositoryInterface' => 'App\Repositories\User\UserAddressRepository',
 
     ];
 

@@ -27,14 +27,10 @@ class WishListController extends Controller
     public function __construct(
         WishListServiceInterface $wishListService,
         WishListRepositoryInterface $wishListRepository,
-        CartServiceInterface $cartService,
-        CartRepositoryInterface $cartRepository,
 
     ) {
         $this->wishListService = $wishListService;
         $this->wishListRepository = $wishListRepository;
-        $this->cartService = $cartService;
-        $this->cartRepository = $cartRepository;
     }
 
     /**
@@ -86,7 +82,7 @@ class WishListController extends Controller
     public function createOrUpdateCart(CreateAndUpdateRequest $request)
     {
 
-        $response = $this->cartService->createOrUpdate($request);
+        $response = $this->wishListService->createOrUpdate($request);
 
         if (is_array($response)) {
             return $response;

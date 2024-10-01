@@ -2,11 +2,12 @@
 
 // Trong Laravel, Service Pattern thường được sử dụng để tạo các lớp service, giúp tách biệt logic của ứng dụng khỏi controller.
 
-namespace App\Services\UserAddress;
+namespace App\Services\User;
 
-use App\Repositories\Interfaces\UserAddress\UserAddressRepositoryInterface;
+use App\Models\User;
+use App\Repositories\Interfaces\User\UserAddressRepositoryInterface;
 use App\Services\BaseService;
-use App\Services\Interfaces\UserAddress\UserAddressServiceInterface;
+use App\Services\Interfaces\User\UserAddressServiceInterface;
 
 class UserAddressService extends BaseService implements UserAddressServiceInterface
 {
@@ -64,12 +65,14 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
     private function preparePayload(): array
     {
         $payload = request()->except('_token', '_method');
+
         if (auth()->check()) {
             $payload['user_id'] = auth()->user()->id;
             $payload['is_primary'] = $payload['is_primary'] ?? 0;
         } else {
             return [];
         }
+
 
         return $payload;
     }
@@ -104,7 +107,6 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
             return successResponse(__('messages.update.success'));
         }, __('messages.update.error'));
     }
-
     public function getAddressByUserId()
     {
         $user = auth()->user();

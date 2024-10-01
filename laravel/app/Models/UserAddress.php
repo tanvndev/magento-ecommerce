@@ -23,7 +23,7 @@ class UserAddress extends Model
         'is_primary',
     ];
 
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

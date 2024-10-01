@@ -15,4 +15,6 @@ interface WishListServiceInterface
     public function getWishListByUserId();
 
     public function sendWishListMail();
+
+    public function createOrUpdate($request);
 }

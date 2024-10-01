@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
         // Slider
         'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
         // UserAddress
-        'App\Services\Interfaces\UserAddress\UserAddressServiceInterface' => 'App\Services\UserAddress\UserAddressService',
+        'App\Services\Interfaces\User\UserAddressServiceInterface' => 'App\Services\User\UserAddressService',
     ];
 
     public function register(): void

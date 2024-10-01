@@ -8,6 +8,7 @@ use App\Events\WishListEvent;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Repositories\Interfaces\WishList\WishListRepositoryInterface;
 use App\Services\BaseService;
+use App\Services\Interfaces\Cart\CartServiceInterface;
 use App\Services\Interfaces\WishList\WishListServiceInterface;
 
 class WishListService extends BaseService implements WishListServiceInterface
@@ -17,12 +18,17 @@ class WishListService extends BaseService implements WishListServiceInterface
 
     protected $userRepository;
 
+    protected $cartService;
+
     public function __construct(
         WishListRepositoryInterface $wishListRepository,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        CartServiceInterface $cartService,
+
     ) {
         $this->wishListRepository = $wishListRepository;
         $this->userRepository = $userRepository;
+        $this->cartService = $cartService;
     }
 
     public function paginate()
@@ -134,6 +140,7 @@ class WishListService extends BaseService implements WishListServiceInterface
             return successResponse(__('messages.wishlist.success.clean'));
         }, __('messages.wishlist.error.delete'));
     }
+
     public function sendWishListMail()
     {
         return $this->executeInTransaction(function () {
@@ -153,5 +160,10 @@ class WishListService extends BaseService implements WishListServiceInterface
 
             return successResponse(__('messages.wishlist.success.mail'));
         }, __('messages.wishlist.error.mail'));
+    }
+
+    public function createOrUpdate($request)
+    {
+        return $this->cartService->createOrUpdate($request);
     }
 }

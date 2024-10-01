@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Interfaces\UserAddress;
+namespace App\Services\Interfaces\User;
 
 interface UserAddressServiceInterface
 {

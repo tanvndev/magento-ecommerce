@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\UserAddress;
+namespace App\Http\Controllers\Api\V1\User;
 
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UserAddress\StoreUserAddressRequest;
-use App\Http\Requests\UserAddress\UpdateUserAddressRequest;
+use App\Http\Requests\User\StoreUserAddressRequest;
+use App\Http\Requests\User\UpdateUserAddressRequest;
 use App\Http\Resources\UserAddress\UserAddressCollection;
 use App\Http\Resources\UserAddress\UserAddressResource;
-use App\Repositories\Interfaces\UserAddress\UserAddressRepositoryInterface;
-use App\Services\Interfaces\UserAddress\UserAddressServiceInterface;
+use App\Repositories\Interfaces\User\UserAddressRepositoryInterface;
+use App\Services\Interfaces\User\UserAddressServiceInterface;
 
 class UserAddressController extends Controller
 {
