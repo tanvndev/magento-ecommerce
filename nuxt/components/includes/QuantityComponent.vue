@@ -1,27 +1,3 @@
-<template>
-  <div class="product-qty-form">
-    <div class="input-group">
-      <input
-        class="quantity form-control"
-        type="number"
-        :value="localQuantity"
-        :min="min"
-        :max="max"
-        @input="handleInputChange"
-        @blur="validateInput"
-      />
-      <button
-        class="quantity-plus w-icon-plus"
-        @click="increaseQuantity"
-      ></button>
-      <button
-        class="quantity-minus w-icon-minus"
-        @click="decreaseQuantity"
-      ></button>
-    </div>
-  </div>
-</template>
-
 <script setup>
 const props = defineProps({
   oldQuantity: {
@@ -94,3 +70,27 @@ const validateInput = () => {
   }
 }
 </script>
+
+<template>
+  <div class="product-qty-form">
+    <div class="input-group">
+      <input
+        class="quantity form-control"
+        type="number"
+        :value="localQuantity"
+        :min="min"
+        :max="max"
+        @input="handleInputChange"
+        @blur="validateInput"
+      />
+      <button
+        class="quantity-plus w-icon-plus"
+        @click="increaseQuantity"
+      ></button>
+      <button
+        class="quantity-minus w-icon-minus"
+        @click="decreaseQuantity"
+      ></button>
+    </div>
+  </div>
+</template>

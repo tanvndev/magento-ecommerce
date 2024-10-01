@@ -1,3 +1,81 @@
+<script setup>
+import '~/assets/css/main.min.css'
+import { useLoadingStore } from '#imports'
+
+useSeoMeta({
+  title: 'Trang chủ',
+  ogTitle: 'Trang chủ',
+  description: 'This is my amazing site, let me tell you all about it.',
+  ogDescription: 'This is my amazing site, let me tell you all about it.',
+  ogImage: 'https://example.com/image.png',
+  twitterCard: 'summary_large_image',
+})
+
+const widgetCodes = ref([])
+const widgets = ref([])
+const { $axios } = useNuxtApp()
+const loadingStore = useLoadingStore()
+const currentWidgetIndex = ref(0)
+const isLoading = ref(false)
+
+const getAllWidgetCode = async () => {
+  loadingStore.setLoading(true)
+  try {
+    const response = await $axios.get('/widgets/codes')
+    widgetCodes.value = response.data
+  } catch (error) {
+    console.error('Error fetching widget codes:', error)
+  } finally {
+    loadingStore.setLoading(false)
+  }
+}
+
+const getWidgetByCode = async (code) => {
+  if (isLoading.value) return
+  isLoading.value = true
+  try {
+    const response = await $axios.get(`widgets/${code}/detail`)
+    widgets.value = [...widgets.value, ...response.data]
+  } catch (error) {
+    console.error('Error fetching widget:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleScroll = () => {
+  const mainElement = document.querySelector('.main')
+  if (!mainElement) return
+
+  const mainElementHeight = mainElement.clientHeight
+  const mainElementTop =
+    mainElement.getBoundingClientRect().top + window.scrollY
+  const scrollPosition = window.innerHeight + window.scrollY
+
+  if (scrollPosition + 500 >= mainElementTop + mainElementHeight) {
+    if (
+      currentWidgetIndex.value < widgetCodes.value.length &&
+      widgets.value.length < widgetCodes.value.length &&
+      !isLoading.value
+    ) {
+      getWidgetByCode(widgetCodes.value[currentWidgetIndex.value].code)
+      currentWidgetIndex.value++
+    } else if (currentWidgetIndex.value >= widgetCodes.value.length) {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }
+}
+
+onMounted(async () => {
+  await getAllWidgetCode()
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
+</script>
+
 <template>
   <!-- Home Banner -->
   <HomeBanner />
@@ -153,83 +231,7 @@
   </div>
 </template>
 
-<script setup>
-import '~/assets/css/main.min.css'
-import { useLoadingStore } from '#imports'
 
-useSeoMeta({
-  title: 'Trang chủ',
-  ogTitle: 'Trang chủ',
-  description: 'This is my amazing site, let me tell you all about it.',
-  ogDescription: 'This is my amazing site, let me tell you all about it.',
-  ogImage: 'https://example.com/image.png',
-  twitterCard: 'summary_large_image',
-})
-
-const widgetCodes = ref([])
-const widgets = ref([])
-const { $axios } = useNuxtApp()
-const loadingStore = useLoadingStore()
-const currentWidgetIndex = ref(0)
-const isLoading = ref(false)
-
-const getAllWidgetCode = async () => {
-  loadingStore.setLoading(true)
-  try {
-    const response = await $axios.get('/getAllWidgetCode')
-    widgetCodes.value = response.data
-  } catch (error) {
-    console.error('Error fetching widget codes:', error)
-  } finally {
-    loadingStore.setLoading(false)
-  }
-}
-
-const getWidgetByCode = async (code) => {
-  if (isLoading.value) return
-  isLoading.value = true
-  try {
-    const response = await $axios.get('/getWidget/' + code)
-    widgets.value = [...widgets.value, ...response.data]
-  } catch (error) {
-    console.error('Error fetching widget:', error)
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const handleScroll = () => {
-  const mainElement = document.querySelector('.main')
-  if (!mainElement) return
-
-  const mainElementHeight = mainElement.clientHeight
-  const mainElementTop =
-    mainElement.getBoundingClientRect().top + window.scrollY
-  const scrollPosition = window.innerHeight + window.scrollY
-
-  if (scrollPosition + 500 >= mainElementTop + mainElementHeight) {
-    if (
-      currentWidgetIndex.value < widgetCodes.value.length &&
-      widgets.value.length < widgetCodes.value.length &&
-      !isLoading.value
-    ) {
-      getWidgetByCode(widgetCodes.value[currentWidgetIndex.value].code)
-      currentWidgetIndex.value++
-    } else if (currentWidgetIndex.value >= widgetCodes.value.length) {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }
-}
-
-onMounted(async () => {
-  await getAllWidgetCode()
-  window.addEventListener('scroll', handleScroll)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
-</script>
 
 <style scoped>
 .loader {

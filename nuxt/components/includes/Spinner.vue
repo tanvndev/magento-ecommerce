@@ -1,3 +1,20 @@
+<script setup>
+import { computed, watchEffect } from 'vue'
+import { useLoadingStore } from '~/stores/loading'
+
+// Lấy store để kiểm tra trạng thái loading
+const loadingStore = useLoadingStore()
+const isVisible = computed(() => loadingStore.getLoading)
+
+// Chặn scroll khi loading
+watchEffect(() => {
+  if (isVisible.value) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
+})
+</script>
 <template>
   <Transition name="fade">
     <div v-if="isVisible" class="spinner-overlay">
@@ -52,24 +69,6 @@
     </div>
   </Transition>
 </template>
-
-<script setup>
-import { computed, watchEffect } from 'vue'
-import { useLoadingStore } from '~/stores/loading'
-
-// Lấy store để kiểm tra trạng thái loading
-const loadingStore = useLoadingStore()
-const isVisible = computed(() => loadingStore.getLoading)
-
-// Chặn scroll khi loading
-watchEffect(() => {
-  if (isVisible.value) {
-    document.body.style.overflow = 'hidden'
-  } else {
-    document.body.style.overflow = ''
-  }
-})
-</script>
 
 <style scoped>
 .spinner-overlay {

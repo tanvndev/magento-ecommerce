@@ -10,6 +10,7 @@ use App\Http\Resources\Brand\BrandCollection;
 use App\Http\Resources\Brand\BrandResource;
 use App\Repositories\Interfaces\Brand\BrandRepositoryInterface;
 use App\Services\Interfaces\Brand\BrandServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class BrandController extends Controller
 {
@@ -26,20 +27,20 @@ class BrandController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the brands.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->brandService->paginate();
         $data = new BrandCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created brand in storage.
      */
-    public function store(StoreBrandRequest $request)
+    public function store(StoreBrandRequest $request): JsonResponse
     {
         $response = $this->brandService->create();
 
@@ -47,19 +48,19 @@ class BrandController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified brand.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $brand = new BrandResource($this->brandRepository->findById($id));
 
-        return successResponse('', $brand);
+        return successResponse('', $brand, true);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified brand in storage.
      */
-    public function update(UpdateBrandRequest $request, string $id)
+    public function update(UpdateBrandRequest $request, string $id): JsonResponse
     {
         $response = $this->brandService->update($id);
 
@@ -67,9 +68,9 @@ class BrandController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified brand from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->brandService->destroy($id);
 

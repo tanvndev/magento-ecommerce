@@ -1,3 +1,13 @@
+<script setup>
+import { resizeImage } from '#imports'
+const props = defineProps({
+  items: {
+    type: [Array, Object],
+    default: () => [],
+  },
+})
+</script>
+
 <template>
   <div class="row category-banner-wrapper pt-6 pb-8">
     <div class="col-md-6 mb-4" v-for="item in items" :key="item.url">
@@ -27,24 +37,13 @@
   </div>
 </template>
 
-<script setup>
-import { resizeImage } from '#imports'
-const props = defineProps({
-  items: {
-    type: [Array, Object],
-    default: () => [],
-  },
-})
-</script>
-
 <style scoped>
 .banner.banner-fixed {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   border-radius: 15px !important;
   overflow: hidden;
 }
-.banner.banner-fixed img{
+.banner.banner-fixed img {
   border-radius: 15px !important;
-
 }
 </style>

@@ -1,3 +1,30 @@
+<script setup>
+import { useField } from 'vee-validate'
+import { ref } from 'vue'
+
+const { $axios } = useNuxtApp()
+const paymentMethods = ref([])
+const isSelected = ref()
+const { value, errorMessage } = useField('payment_method_id')
+
+const handleSelected = (id) => {
+  isSelected.value = id
+
+  value.value = id
+}
+
+const getAllPaymentMethods = async () => {
+  const response = await $axios.get('/payment-methods/all')
+
+  paymentMethods.value = response?.data
+  isSelected.value = response?.data[0]?.id
+  value.value = response?.data[0]?.id
+}
+
+onMounted(() => {
+  getAllPaymentMethods()
+})
+</script>
 <template>
   <div class="payment-method">
     <h3 class="title text-uppercase ls-10 mb-5">Phương thức thanh toán</h3>
@@ -29,30 +56,3 @@
     </div>
   </div>
 </template>
-<script setup>
-import { useField } from 'vee-validate'
-import { ref } from 'vue'
-
-const { $axios } = useNuxtApp()
-const paymentMethods = ref([])
-const isSelected = ref()
-const { value, errorMessage } = useField('payment_method_id')
-
-const handleSelected = (id) => {
-  isSelected.value = id
-
-  value.value = id
-}
-
-const getAllPaymentMethods = async () => {
-  const response = await $axios.get('/getAllPaymentMethods')
-
-  paymentMethods.value = response?.data
-  isSelected.value = response?.data[0]?.id
-  value.value = response?.data[0]?.id
-}
-
-onMounted(() => {
-  getAllPaymentMethods()
-})
-</script>

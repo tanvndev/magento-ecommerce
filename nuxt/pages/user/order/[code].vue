@@ -1,3 +1,26 @@
+<script setup>
+import { useOrderStore } from '#imports'
+
+const orderStore = useOrderStore()
+const { $axios } = useNuxtApp()
+const route = useRoute()
+const order = ref([])
+const orderDetail = computed(() => orderStore.getOrderDetail)
+
+const getOrderByCode = async () => {
+  const response = await $axios.get(`/orders/${route.params.code}/detail`)
+  order.value = response.data
+}
+
+watch(orderDetail, () => {})
+
+onMounted(() => {
+  order.value = orderDetail.value
+  if (!orderDetail.value?.length) {
+    getOrderByCode()
+  }
+})
+</script>
 <template>
   <div class="page-content order-purchase-wrapper pt-2 mt-6">
     <div class="container">
@@ -142,29 +165,7 @@
     </div>
   </div>
 </template>
-<script setup>
-import { useOrderStore } from '#imports'
 
-const orderStore = useOrderStore()
-const { $axios } = useNuxtApp()
-const route = useRoute()
-const order = ref([])
-const orderDetail = computed(() => orderStore.getOrderDetail)
-
-const getOrderByCode = async () => {
-  const response = await $axios.get(`/getOrder/${route.params.code}`)
-  order.value = response.data
-}
-
-watch(orderDetail, () => {})
-
-onMounted(() => {
-  order.value = orderDetail.value
-  if (!orderDetail.value?.length) {
-    getOrderByCode()
-  }
-})
-</script>
 <style scoped>
 .fw-bold {
   font-weight: bold !important;

@@ -53,11 +53,33 @@ return [
             'cart_not_found' => 'Người dùng chưa có giỏ hàng.',
         ],
     ],
+
+
+    'product_review' => [
+        'success' => [
+            'create'  => 'Cảm ơn bạn đã đánh giá sản phẩm.',
+        ],
+        'error' => [
+            'already_exists' => 'Sản phẩm trong đơn hàng đã được đánh giá.',
+            'order_not_found' => 'Đơn hàng không tồn tại trên hệ thống.',
+            'order_item_not_found' => 'Sản phẩm này không có trong đơn hàng.',
+            'parent_not_found' => 'Không tìm thấy đánh giá gốc.',
+            'admin_reply_already_exists' => 'Đánh giá đã được hồi rồi.',
+            'admin_reply_not_found' => 'Không tìm thấy đánh giá của bạn.',
+            'not_admin' => 'Bạn không có thẩm quyền thực hiện chức năng này.',
+            'admin_not_allowed' => 'Quản trị viên không được phép đánh giá sản phẩm.'
+        ]
+
+    ],
+
     'voucher' => [
         'error' => [
             'create' => 'Mã giảm giá chỉ nhận một trong hai là giá trị đơn hàng hoặc số lượng tối thiểu',
+            'apply'  => 'Đơn hàng chưa đủ điều kiện áp dụng mã giảm giá.',
         ],
-        'success' => 'Ma giam gia da duoc ap dung thanh cong',
+        'success' => [
+            'apply' => 'Áp dụng giảm giá thành công.',
+        ],
     ],
     'order' => [
         'error' => [
@@ -67,6 +89,15 @@ return [
         'success' => [
             'create' => 'Tạo đơn hàng thành công vui lòng kiểm tra email.',
             'payment' => 'Thanh toán đơn hàng thành công.',
+            'create'   => 'Tạo đơn hàng thất bại vui lòng thử lại.',
+            'payment'  => 'Thanh toán đơn hàng thất bại vui lòng thử lại.',
+            'status'   => 'Cập nhập trạng thái đơn hàng thất bại.',
+            'invalid'  => 'Bạn không thể hoàn tất đơn hàng khi các trạng thái khác chưa hoàn thành.',
+        ],
+        'success' => [
+            'create'   => 'Tạo đơn hàng thành công vui lòng kiểm tra email.',
+            'payment'  => 'Thanh toán đơn hàng thành công.',
+            'status'   => 'Cập nhập trạng thái đơn hàng thành công.',
         ],
     ],
     'auth' => [
@@ -76,8 +107,8 @@ return [
             'email_verified' => 'Email đã xác nhận đăng ký vui lòng đăng nhập.',
         ],
         'reset_password' => [
-            'success' => 'Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.',
-            'error' => 'Đặt lại mật khẩu thất bại.',
+            'success'    => 'Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.',
+            'error'      => 'Đặt lại mật khẩu thất bại.',
         ],
     ],
     'wishlist' => [

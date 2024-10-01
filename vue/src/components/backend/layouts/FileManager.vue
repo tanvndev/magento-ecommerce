@@ -141,9 +141,8 @@ import { ref, watch, reactive } from 'vue';
 import { useCRUD } from '@/composables';
 import { formatTimestampToDate, formatBytesToKBMB, formatMessages } from '@/utils/format';
 import { resizeImage } from '@/utils/helpers';
-import { useStore } from 'vuex';
+import { message } from 'ant-design-vue';
 
-const store = useStore();
 const errors = ref({});
 const dragging = ref(false);
 const top = ref(window.innerHeight / 2);
@@ -280,7 +279,7 @@ const handleDeleteFile = async (url) => {
   };
   await deleteOne('uploads', 1, payload);
   dataImage.value = data.value.data;
-  store.dispatch('antStore/showMessage', { type: 'success', message: messages.value });
+  message.success(messages.value);
 };
 
 const fetchData = async (payload = null) => {

@@ -88,6 +88,18 @@ const sidebar = [
         route: 'product.catalogue.index'
       }
     ]
+  },
+  {
+    id: 'order_sidebar',
+    icon: 'fas fa-pallet-alt',
+    name: 'Đơn hàng',
+    active: ['order'],
+    subMenu: [
+      {
+        name: 'Danh sách đơn hàng',
+        route: 'order.index'
+      }
+    ]
   }
 ];
 export default sidebar;

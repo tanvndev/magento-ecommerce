@@ -188,7 +188,7 @@ const handleArchive = async () => {
 };
 
 const removeRouteHide = () => {
-  const routeHide = ['permission.index', 'attribute.index'];
+  const routeHide = ['permission.index', 'attribute.index', 'order.index'];
   if (routeHide.includes(route.name)) {
     return false;
   }
@@ -196,7 +196,7 @@ const removeRouteHide = () => {
 };
 
 const hideArchive = () => {
-  const routeHide = ['attribute.index', 'permission.index'];
+  const routeHide = ['attribute.index', 'permission.index', 'order.index'];
   if (routeHide.includes(route.name)) {
     return false;
   }

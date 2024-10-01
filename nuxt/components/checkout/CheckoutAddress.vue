@@ -1,3 +1,117 @@
+<script setup>
+import { formatDataToSelect } from '#imports'
+import _ from 'lodash'
+
+const emits = defineEmits(['onLocation'])
+const { $axios } = useNuxtApp()
+
+const provinces = ref([])
+const districts = ref([])
+const wards = ref([])
+const isLoading = ref(false)
+const location = reactive({
+  province_id: '',
+  district_id: '',
+  ward_id: '',
+  shipping_address: '',
+})
+
+const getGeolocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords
+        getCityAndSetShippingAddress(latitude, longitude)
+      },
+      (err) => {
+        console.log(err)
+
+        return alert('Có lỗi khi lấy vị trí vui lòng thử lại.')
+      }
+    )
+  } else {
+    return alert('Geolocation is not supported by this browser.')
+  }
+}
+
+const getCityAndSetShippingAddress = async (lat, lon) => {
+  try {
+    isLoading.value = true
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+    )
+
+    if (!response.ok) {
+      throw new Error('Không thể lấy vị trí từ API.')
+    }
+
+    const data = await response.json()
+
+    location.shipping_address = data?.display_name
+    await getLocationByAddress(data)
+  } catch (err) {
+    return alert('Có lỗi khi lấy vị trí vui lòng thử lại.')
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const handleLocationChange = async (target, location_id) => {
+  const response = await $axios.get('location/getLocation', {
+    params: { target, location_id },
+  })
+
+  const responseFormat = formatDataToSelect(
+    response.data[target],
+    'code',
+    'name'
+  )
+
+  emits('onLocation', target)
+
+  if (target === 'districts') {
+    districts.value = responseFormat
+  } else if (target === 'wards') {
+    wards.value = responseFormat
+  }
+}
+
+const getProvinces = async () => {
+  const response = await $axios.get('location/provinces')
+  provinces.value = formatDataToSelect(response.data || [], 'code', 'name')
+}
+
+const getLocationByAddress = async (address) => {
+  const response = await $axios.post('location/by-address', {
+    addressData: address,
+  })
+
+  const locations = _.get(response, 'data', [])
+
+  _.forEach(locations, (item) => {
+    const { target, code, data } = item
+    const responseFormat = formatDataToSelect(data, 'code', 'name')
+
+    switch (target) {
+      case 'provinces':
+        location.province_id = code
+        break
+      case 'districts':
+        districts.value = responseFormat
+        location.district_id = code
+        break
+      case 'wards':
+        wards.value = responseFormat
+        location.ward_id = code
+        break
+    }
+  })
+}
+
+onMounted(async () => {
+  getProvinces()
+})
+</script>
 <template>
   <div class="checkout-address">
     <div class="d-flex items-center justify-between pb-4">
@@ -108,117 +222,3 @@
     </div>
   </div>
 </template>
-<script setup>
-import { formatDataToSelect } from '#imports'
-import _ from 'lodash'
-
-const emits = defineEmits(['onLocation'])
-const { $axios } = useNuxtApp()
-
-const provinces = ref([])
-const districts = ref([])
-const wards = ref([])
-const isLoading = ref(false)
-const location = reactive({
-  province_id: '',
-  district_id: '',
-  ward_id: '',
-  shipping_address: '',
-})
-
-const getGeolocation = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords
-        getCityAndSetShippingAddress(latitude, longitude)
-      },
-      (err) => {
-        console.log(err)
-
-        return alert('Có lỗi khi lấy vị trí vui lòng thử lại.')
-      }
-    )
-  } else {
-    return alert('Geolocation is not supported by this browser.')
-  }
-}
-
-const getCityAndSetShippingAddress = async (lat, lon) => {
-  try {
-    isLoading.value = true
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
-    )
-
-    if (!response.ok) {
-      throw new Error('Không thể lấy vị trí từ API.')
-    }
-
-    const data = await response.json()
-
-    location.shipping_address = data?.display_name
-    await getLocationByAddress(data)
-  } catch (err) {
-    return alert('Có lỗi khi lấy vị trí vui lòng thử lại.')
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const handleLocationChange = async (target, location_id) => {
-  const response = await $axios.get('location/getLocation', {
-    params: { target, location_id },
-  })
-
-  const responseFormat = formatDataToSelect(
-    response.data[target],
-    'code',
-    'name'
-  )
-
-  emits('onLocation', target)
-
-  if (target === 'districts') {
-    districts.value = responseFormat
-  } else if (target === 'wards') {
-    wards.value = responseFormat
-  }
-}
-
-const getProvinces = async () => {
-  const response = await $axios.get('location/provinces')
-  provinces.value = formatDataToSelect(response.data || [], 'code', 'name')
-}
-
-const getLocationByAddress = async (address) => {
-  const response = await $axios.post('location/getLocationByAddress', {
-    addressData: address,
-  })
-
-  const locations = _.get(response, 'data', [])
-
-  _.forEach(locations, (item) => {
-    const { target, code, data } = item
-    const responseFormat = formatDataToSelect(data, 'code', 'name')
-
-    switch (target) {
-      case 'provinces':
-        location.province_id = code
-        break
-      case 'districts':
-        districts.value = responseFormat
-        location.district_id = code
-        break
-      case 'wards':
-        wards.value = responseFormat
-        location.ward_id = code
-        break
-    }
-  })
-}
-
-onMounted(async () => {
-  getProvinces()
-})
-</script>
