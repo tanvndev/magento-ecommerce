@@ -20,6 +20,7 @@
     "marked": "^14.1.2",
     "vee-validate": "^4.13.1",
     "vue": "^3.4.29",
+    "vue-recaptcha-v3": "^2.0.1",
     "vue-router": "^4.3.3",
     "vuex": "^4.0.2",
     "yup": "^1.4.0"
