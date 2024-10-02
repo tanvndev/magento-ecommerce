@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Enums\ResponseEnum;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\ForgotRequest;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Resources\User\UserResource;
 use App\Models\User;
-use App\Services\Interfaces\Auth\AuthServiceInterface;
+use App\Enums\ResponseEnum;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\ForgotRequest;
+use App\Http\Resources\User\UserResource;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Services\Interfaces\Auth\AuthServiceInterface;
 
 class AuthController extends Controller
 {
@@ -42,6 +43,12 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
+        $response = $this->verifyRecaptcha($request->input('g-recaptcha-response'));
+
+        if (!$response) {
+            return errorResponse('Xác minh captcha không thành công', true);
+        }
+
         $credentials = $request->only('email', 'password');
 
         $user = User::where('email', $credentials['email'])->first();
@@ -59,6 +66,15 @@ class AuthController extends Controller
         }
 
         return errorResponse('Email hoặc mật khẩu không chính xác.', true);
+    }
+
+    protected function verifyRecaptcha($token)
+    {
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        return Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $token,
+        ])->json();
     }
 
     /**
