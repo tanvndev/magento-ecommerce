@@ -13,16 +13,13 @@ use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Repositories\Interfaces\WishList\WishListRepositoryInterface;
 use App\Services\Interfaces\Cart\CartServiceInterface;
 use App\Services\Interfaces\WishList\WishListServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class WishListController extends Controller
 {
     protected $wishListService;
 
     protected $wishListRepository;
-
-    protected $cartService;
-
-    protected $cartRepository;
 
     public function __construct(
         WishListServiceInterface $wishListService,
@@ -35,51 +32,80 @@ class WishListController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-
-    public function index()
+    public function index(): JsonResponse
     {
         $paginator = $this->wishListService->paginate();
         $data = new WishListCollection($paginator);
 
-        return $paginator;
+        return successResponse('', $data, true);
     }
-    public function getByUserId()
+
+
+    /**
+     * Get all wishlists by user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getByUser(): JsonResponse
     {
         $response = $this->wishListService->getWishListByUserId();
 
         $data = new WishListCollection($response);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
+
+
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\WishList\StoreWishListRequest  $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreWishListRequest $request)
+    public function store(StoreWishListRequest $request): JsonResponse
     {
         $response = $this->wishListService->create();
 
-        return handleResponse($response, ResponseEnum::CREATED);
+        if (isset($response['status']) && $response['status'] == 'error') {
+            return handleResponse($response);
+        }
+
+        $data = new WishListCollection($response);
+
+        return successResponse(__('messages.wishlist.success.create'), $data, true);
     }
+
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->wishListService->destroy($id);
 
-        return handleResponse($response);
+        if (isset($response['status']) && $response['status'] == 'error') {
+            return handleResponse($response);
+        }
+
+        $data = new WishListCollection($response);
+
+        return successResponse('', $data, true);
     }
 
-    public function destroyAll()
+    public function destroyAll(): JsonResponse
     {
         $response = $this->wishListService->destroyAll();
 
         return handleResponse($response);
     }
 
-    public function createOrUpdateCart(CreateAndUpdateRequest $request)
+    public function createOrUpdateCart(CreateAndUpdateRequest $request): JsonResponse
     {
 
         $response = $this->wishListService->createOrUpdate($request);
@@ -90,9 +116,9 @@ class WishListController extends Controller
 
         $data = new CartCollection($response);
 
-        return successResponse(__('messages.cart.success.create'), $data);
+        return successResponse(__('messages.cart.success.create'), $data, true);
     }
-    public function sendWishListMail()
+    public function sendWishListMail(): JsonResponse
     {
         $response = $this->wishListService->sendWishListMail();
 

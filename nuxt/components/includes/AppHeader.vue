@@ -7,10 +7,12 @@ import { useProductCatalogueStore } from '~/stores/productCatalogue'
 const { $axios } = useNuxtApp()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
 const productCatalogueStore = useProductCatalogueStore()
 const headerMain = ref(null)
 const productCatalogues = ref([])
 const cartCount = computed(() => cartStore.getCartCount)
+const wishlistCount = computed(() => wishlistStore.getWishlistCount)
 const config = useRuntimeConfig()
 
 let lastScrollPosition = 0
@@ -152,11 +154,16 @@ onMounted(() => {
                 <span class="cart-label">Tin nhắn</span>
               </NuxtLink>
             </div>
-            <div class="dropdown cart-dropdown cart-offcanvas mr-2 mr-lg-2">
+            <div
+              class="dropdown cart-dropdown cart-offcanvas mr-2 mr-lg-2"
+              v-if="authStore.isSignedIn"
+            >
               <div class="cart-overlay"></div>
               <NuxtLink to="wishlist" class="cart-toggle label-down link">
                 <i class="w-icon-heart">
-                  <span class="cart-count">2</span>
+                  <span class="cart-count" v-if="wishlistCount">{{
+                    wishlistCount
+                  }}</span>
                 </i>
                 <span class="cart-label">Ưa thích</span>
               </NuxtLink>
