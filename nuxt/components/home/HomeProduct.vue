@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Autoplay, Grid } from 'swiper/modules'
 import 'swiper/css'
-import { useCartStore } from '#imports'
+import { useCartStore, useWishlistStore } from '#imports'
 
 const props = defineProps({
   items: {
@@ -18,6 +18,7 @@ const props = defineProps({
 })
 
 const cartStore = useCartStore()
+const wishlistStore = useWishlistStore()
 const modules = [Navigation, Grid, Autoplay]
 const slider = ref(null)
 const onSwiper = (swiper) => {
@@ -34,6 +35,18 @@ const addToCart = async (variantId) => {
   }
 
   await cartStore.addToCart(payload)
+}
+
+const addToWishlist = async (variantId) => {
+  if (!variantId) {
+    return toast('Có lỗi vui lòng thử lại.', 'error')
+  }
+
+  const payload = {
+    product_variant_id: variantId,
+  }
+
+  await wishlistStore.addToWishlist(payload)
 }
 </script>
 <template>
@@ -92,7 +105,7 @@ const addToCart = async (variantId) => {
                           title="Thêm vào giỏ hàng"
                         ></a>
                         <a
-                          @click.prevent="'Hello'"
+                          @click.prevent="addToWishlist(item?.id)"
                           :href="item.slug"
                           class="btn-product-icon btn-wishlist w-icon-heart"
                           title="Thêm vào ưa thích"
