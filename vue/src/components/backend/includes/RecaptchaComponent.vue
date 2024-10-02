@@ -1,5 +1,5 @@
 <template>
-  <div id="recaptcha" class="g-recaptcha" :data-sitekey="siteKey"></div>
+  <div id="recaptcha" class="g-recaptcha mt-[16px]" :data-sitekey="siteKey"></div>
 </template>
 
 <script setup>
@@ -13,7 +13,7 @@ onMounted(() => {
     grecaptcha.ready(() => {
       // eslint-disable-next-line no-undef
       grecaptcha.render('recaptcha', {
-        sitekey: siteKey,
+        sitekey: siteKey
       });
     });
   } else {
@@ -22,12 +22,4 @@ onMounted(() => {
 });
 </script>
 
-
-<style scope>
-#recaptcha {
-margin-top: 10px;
-display: flex;
-justify-content: center;
-align-items: center;
-}
-</style>
+<style scope></style>

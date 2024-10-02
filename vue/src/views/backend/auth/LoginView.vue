@@ -60,7 +60,7 @@
 </template>
 <script setup>
 import { InputComponent, AleartError } from '@/components/backend';
-import RecaptchaComponent from '@/components/backend/includes/RecaptchaComponent.vue'; 
+import RecaptchaComponent from '@/components/backend/includes/RecaptchaComponent.vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { ref } from 'vue';
@@ -94,7 +94,7 @@ const onSubmit = handleSubmit(async (values) => {
 
   // eslint-disable-next-line no-undef
   const recaptchaResponse = grecaptcha.getResponse();
-  
+
   if (!recaptchaResponse) {
     errors.value = { recaptcha: 'Vui lòng xác nhận bạn không phải là robot.' };
     return;
