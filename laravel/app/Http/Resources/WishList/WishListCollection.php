@@ -19,13 +19,14 @@ class WishListCollection extends ResourceCollection
             $this->resource instanceof \Illuminate\Pagination\Paginator
         ) {
             return [
-                'data' => $this->collection->map(function ($wishList) {
+                'items' => $this->collection->map(function ($wishList) {
                     return new WishListResource($wishList);
                 }),
                 'total' => $this->total(),
                 'per_page' => $this->perPage(),
                 'current_page' => $this->currentPage(),
                 'last_page' => $this->lastPage(),
+                'next_page'    => $this->currentPage() + 1,
             ];
         }
 

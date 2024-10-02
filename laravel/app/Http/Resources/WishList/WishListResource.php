@@ -25,6 +25,7 @@ class WishListResource extends JsonResource
             'slug' => $this->product_variant->slug,
             'price' => $this->product_variant->price,
             'stock' => $this->product_variant->stock,
+            'attributes'         => implode(', ', $this->product_variant->attribute_values->pluck('name')->toArray()) ?? 'Mặc định',
             'sale_price' => $this->handleSalePrice(),
         ];
     }
@@ -35,10 +36,14 @@ class WishListResource extends JsonResource
             return null;
         }
 
-        if ($productVariant->is_discount_time && $productVariant->sale_price_time) {
-            $now = new \DateTime;
-            $start = new \DateTime($productVariant->sale_price_start_at);
-            $end = new \DateTime($productVariant->sale_price_end_at);
+        if (
+            $productVariant->is_discount_time
+            && $productVariant->sale_price_start_at
+            && $productVariant->sale_price_end_at
+        ) {
+            $now = new DateTime;
+            $start = new DateTime($productVariant->sale_price_start_at);
+            $end = new DateTime($productVariant->sale_price_end_at);
 
             if ($now < $start || $now > $end) {
                 return null;

@@ -79,5 +79,6 @@ lerna-debug.log*
 /laravel/package-lock.json
 /nuxt/package-lock.json
 /laravel/composer-lock
+/laravel/composer.lock
 
 /vue/.env

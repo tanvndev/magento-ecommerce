@@ -149,17 +149,17 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::apiResource('sliders', SliderController::class);
 
         // WISHLIST ROUTE
-        Route::get('wishlists/list', [WishListController::class, 'index']);
-        Route::get('wishlists', [WishListController::class, 'getByUserId']);
+        Route::get('wishlists', [WishListController::class, 'index']);
+        Route::get('wishlists/user', [WishListController::class, 'getByUser']);
         Route::post('wishlists', [WishListController::class, 'store']);
         Route::post('wishlists/carts', [WishListController::class, 'createOrUpdateCart']);
         Route::delete('wishlists/clean', [WishListController::class, 'destroyAll']);
         Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
-        Route::get('wishlists/send-mail/', [WishListController::class, 'sendWishListMail']);
+        Route::get('wishlists/send-mail', [WishListController::class, 'sendWishListMail']);
 
-        // USERADDRESSES
-        Route::get('addresses/list', [UserAddressController::class, 'index']);
-        Route::get('addresses', [UserAddressController::class, 'getByUserId']);
+        // USER ADDRESSES ROUTE
+        Route::get('addresses', [UserAddressController::class, 'index']);
+        Route::get('addresses/user', [UserAddressController::class, 'getByUserId']);
         Route::post('addresses', [UserAddressController::class, 'store']);
         Route::put('addresses/{id}', [UserAddressController::class, 'update']);
         Route::delete('addresses/{id}', [UserAddressController::class, 'destroy']);
@@ -189,4 +189,3 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('carts/add-paid-products', 'addPaidProductsToCart')->name('addPaidProducts');
     });
 });
-
