@@ -41,6 +41,9 @@
             <div>
               <InputComponent label="Mật khẩu" name="password" type="password" placeholder="************" />
             </div>
+
+            <RecaptchaComponent />
+
             <a-button
               :loading="state.loading"
               type="primary"
@@ -58,6 +61,7 @@
 </template>
 <script setup>
 import { InputComponent, AleartError } from '@/components/backend';
+import RecaptchaComponent from '@/components/backend/includes/RecaptchaComponent.vue';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { reactive } from 'vue';
@@ -95,7 +99,16 @@ const { handleSubmit } = useForm({
 // SUBMIT FORM HANDLE
 const onSubmit = handleSubmit(async (values) => {
   state.errors = {};
-  state.loading = true;
+  state.loading = true;  
+
+  // eslint-disable-next-line no-undef
+  const recaptchaResponse = grecaptcha.getResponse();
+  if (!recaptchaResponse) {
+    state.loading = false;
+    return (state.errors = { recaptcha: 'Vui đã xác nhận không phải là robot.' });
+  }
+
+  values['g-recaptcha-response'] = recaptchaResponse;
 
   const response = await AuthService.register(values);
 
