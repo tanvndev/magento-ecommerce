@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Classes\Upload;
 use Illuminate\Http\Request;
 
-
 class TestController extends Controller
 {
-
     // public function index()
-    
+
     // {
 
     //     $product = Product::query()
@@ -48,7 +46,6 @@ class TestController extends Controller
 
     //     return view('test');
     // }
-
 
     public function upload(Request $request)
     {

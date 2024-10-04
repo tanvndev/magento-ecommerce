@@ -5,13 +5,12 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Traits\QueryScopes;
-use App\Models\ProductReview;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Auth\MustVerifyEmail;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -109,6 +108,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(WishList::class);
     }
+
     public function province()
     {
         return $this->belongsTo(Province::class, 'province_id', 'code');
@@ -124,12 +124,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Ward::class, 'ward_id', 'code');
     }
 
-
     public function user_addresses()
     {
         return $this->hasMany(UserAddress::class);
     }
-  
+
     public function product_reviews()
     {
         return $this->hasMany(ProductReview::class);

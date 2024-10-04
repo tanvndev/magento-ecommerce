@@ -17,13 +17,12 @@ class WishListService extends BaseService implements WishListServiceInterface
         protected WishListRepositoryInterface $wishListRepository,
         protected UserRepositoryInterface $userRepository,
         protected CartServiceInterface $cartService,
-
     ) {}
 
     public function paginate()
     {
 
-        $select = ['id', 'user_id', 'product_variant_id',];
+        $select = ['id', 'user_id', 'product_variant_id'];
 
         $pageSize = request('pageSize');
 
@@ -62,12 +61,12 @@ class WishListService extends BaseService implements WishListServiceInterface
 
             $exists = $this->wishListRepository->findByWhere(
                 [
-                    'user_id' => $payload['user_id'],
-                    'product_variant_id' => $payload['product_variant_id']
+                    'user_id'            => $payload['user_id'],
+                    'product_variant_id' => $payload['product_variant_id'],
                 ]
             );
 
-            if (!empty($exists)) {
+            if ( ! empty($exists)) {
                 return errorResponse(__('messages.wishlist.error.existed'));
             }
 
@@ -120,9 +119,9 @@ class WishListService extends BaseService implements WishListServiceInterface
             $withWhereHas
         );
 
-
         return $wishLists ?? collect();
     }
+
     public function destroyAll()
     {
         return $this->executeInTransaction(function () {
@@ -136,7 +135,7 @@ class WishListService extends BaseService implements WishListServiceInterface
                 true
             );
 
-            if (!$user->wishList) {
+            if ( ! $user->wishList) {
                 return errorResponse(__('messages.wishlist.error.wishlist_not_found'));
             }
             foreach ($user->wishList as $item) {

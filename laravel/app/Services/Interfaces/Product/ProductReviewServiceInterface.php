@@ -4,7 +4,6 @@ namespace App\Services\Interfaces\Product;
 
 interface ProductReviewServiceInterface
 {
-
     public function getReviewByProductId(string $productId);
 
     public function getAllProductReviews();

@@ -44,6 +44,7 @@ class UserAddressController extends Controller
 
         return successResponse('', $data);
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -83,6 +84,4 @@ class UserAddressController extends Controller
 
         return handleResponse($response);
     }
-
-
 }

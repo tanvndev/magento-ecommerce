@@ -2,17 +2,15 @@
 
 namespace App\Services\Product;
 
-use App\Models\User;
 use App\Classes\Upload;
-use App\Services\BaseService;
-use Illuminate\Support\Facades\Storage;
-use App\Services\Interfaces\Product\ProductReviewServiceInterface;
+use App\Models\User;
 use App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface;
+use App\Services\BaseService;
+use App\Services\Interfaces\Product\ProductReviewServiceInterface;
 use Illuminate\Support\Collection;
 
 class ProductReviewService extends BaseService implements ProductReviewServiceInterface
 {
-
     protected $productReviewRepository;
 
     public function __construct(ProductReviewRepositoryInterface $productReviewRepository)
@@ -23,8 +21,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
     /**
      * Get all reviews for a product by product id
      *
-     * @param int $productId
-     * @return \Illuminate\Support\Collection
+     * @param  int  $productId
      */
     public function getReviewByProductId(string $productId): Collection
     {
@@ -32,7 +29,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
         $productReviews = $this->productReviewRepository->findByWhere(
             [
                 'product_id' => $productId,
-                'parent_id'  => null
+                'parent_id'  => null,
             ],
             ['*'],
             ['replies', 'user'],
@@ -44,15 +41,13 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
 
     /**
      * Get all product reviews without replies
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getAllProductReviews(): Collection
     {
 
         $reviews = $this->productReviewRepository->findByWhere(
             [
-                'parent_id' => null
+                'parent_id' => null,
             ],
             ['*'],
             ['replies', 'user'],
@@ -65,10 +60,8 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
     /**
      * Create a product review.
      *
-     * @param array $data
      * @return \Illuminate\Http\Response
      */
-
     public function createReview(array $data)
     {
         return $this->executeInTransaction(function () use ($data) {
@@ -83,7 +76,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
 
             $order = $user->orders()->where('id', $data['order_id'])->first();
 
-            if (!$order) {
+            if ( ! $order) {
                 return errorResponse(__('messages.product_review.error.order_not_found'));
             }
 
@@ -94,7 +87,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
             $data['user_id'] = $user->id;
 
             $uploadedImages = [];
-            if (!empty($data['images']) && is_array($data['images'])) {
+            if ( ! empty($data['images']) && is_array($data['images'])) {
                 $uploadResponse = $this->handleImageUploads($data['images']);
 
                 if ($uploadResponse['status'] === 'error') {
@@ -111,14 +104,14 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
                         $query->where('product_id', $productId);
                     })->exists();
 
-                if (!$orderItems) {
+                if ( ! $orderItems) {
                     return errorResponse(__('messages.product_review.error.order_item_not_found'));
                 }
 
                 $existing = $this->productReviewRepository->findByWhere([
                     'product_id' => $productId,
-                    'user_id' => $data['user_id'],
-                    'order_id' => $data['order_id']
+                    'user_id'    => $data['user_id'],
+                    'order_id'   => $data['order_id'],
                 ]);
 
                 if ($existing) {
@@ -127,7 +120,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
 
                 $reviewData = array_merge($data, [
                     'product_id' => $productId,
-                    'images' => json_encode($uploadedImages),
+                    'images'     => json_encode($uploadedImages),
                 ]);
 
                 $this->productReviewRepository->create($reviewData);
@@ -137,34 +130,30 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
         }, __('messages.create.error'));
     }
 
-
-
     /**
      * Admin reply a product review.
      *
-     * @param array $data
-     * @param string $parentId
      * @return \Illuminate\Http\Response
      */
     public function adminReply(array $data, string $parentId)
     {
         return $this->executeInTransaction(function () use ($data, $parentId) {
 
-            if (auth()->user()->user_catalogue_id  !== User::ROLE_ADMIN) {
+            if (auth()->user()->user_catalogue_id !== User::ROLE_ADMIN) {
 
                 return errorResponse(__('messages.product_review.error.not_admin'));
             }
 
             $parentReview = $this->productReviewRepository->findByWhere([
-                'id' => $parentId
+                'id' => $parentId,
             ]);
 
-            if (!$parentReview) {
+            if ( ! $parentReview) {
                 return errorResponse(__('messages.product_review.error.parent_not_found'));
             }
 
             $existingReply = $this->productReviewRepository->findByWhere([
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ]);
 
             if ($existingReply) {
@@ -172,7 +161,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
             }
 
             $uploadedImages = [];
-            if (!empty($data['images']) && is_array($data['images'])) {
+            if ( ! empty($data['images']) && is_array($data['images'])) {
                 $uploadResponse = $this->handleImageUploads($data['images']);
 
                 if ($uploadResponse['status'] === 'error') {
@@ -182,11 +171,11 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
                 $uploadedImages = $uploadResponse['data'];
             }
 
-            $data['product_id']     = $parentReview->product_id;
-            $data['order_id']       = $parentReview->order_id;
-            $data['user_id']        = auth()->user()->id;
-            $data['parent_id']      = $parentReview->id;
-            $data['images']         = json_encode($uploadedImages);
+            $data['product_id'] = $parentReview->product_id;
+            $data['order_id'] = $parentReview->order_id;
+            $data['user_id'] = auth()->user()->id;
+            $data['parent_id'] = $parentReview->id;
+            $data['images'] = json_encode($uploadedImages);
 
             $this->productReviewRepository->create($data);
 
@@ -197,8 +186,6 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
     /**
      * Update a reply product review as admin.
      *
-     * @param array $data
-     * @param string $replyId
      * @return \Illuminate\Http\Response
      */
     public function adminUpdateReply(array $data, string $replyId)
@@ -206,16 +193,16 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
 
         return $this->executeInTransaction(function () use ($data, $replyId) {
 
-            if (auth()->user()->user_catalogue_id  !== User::ROLE_ADMIN) {
+            if (auth()->user()->user_catalogue_id !== User::ROLE_ADMIN) {
 
                 return errorResponse(__('messages.product_review.error.not_admin'));
             }
 
             $parentReview = $this->productReviewRepository->findByWhere([
-                'id' => $replyId
+                'id' => $replyId,
             ]);
 
-            if (!$parentReview) {
+            if ( ! $parentReview) {
                 return errorResponse(__('messages.product_review.error.parent_not_found'));
             }
 
@@ -225,12 +212,8 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
         }, __('messages.update.error'));
     }
 
-
     /**
      * Handles the image uploads for product reviews.
-     *
-     * @param array $images
-     * @return array
      */
     protected function handleImageUploads(array $images): array
     {
@@ -239,7 +222,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
         foreach ($images as $image) {
             $uploadResponse = Upload::uploadImage($image);
 
-            if (!$uploadResponse['status'] === 'success') {
+            if ( ! $uploadResponse['status'] === 'success') {
                 return [
                     'status'  => 'error',
                     'message' => $uploadResponse['message'],

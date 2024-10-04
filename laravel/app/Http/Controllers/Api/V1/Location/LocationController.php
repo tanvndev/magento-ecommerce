@@ -19,8 +19,6 @@ class LocationController extends Controller
 
     /**
      * Get all provinces.
-     *
-     * @return JsonResponse
      */
     public function getProvinces(): JsonResponse
     {
@@ -31,9 +29,6 @@ class LocationController extends Controller
 
     /**
      * Get districts or wards by location id.
-     *
-     * @param  Request  $request
-     * @return JsonResponse
      */
     public function getLocation(Request $request): JsonResponse
     {
@@ -60,12 +55,8 @@ class LocationController extends Controller
         return successResponse('Get province successfully.', $response, true);
     }
 
-
     /**
      * Get location by address.
-     *
-     * @param  Request  $request
-     * @return JsonResponse
      */
     public function getLocationByAddress(Request $request): JsonResponse
     {

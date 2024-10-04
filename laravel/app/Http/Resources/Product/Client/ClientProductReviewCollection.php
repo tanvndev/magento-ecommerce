@@ -25,8 +25,8 @@ class ClientProductReviewCollection extends ResourceCollection
         }
 
         return [
-            'items' => ClientProductReviewResource::collection($this->collection),
-            'avg_rating' => $avgRating,
+            'items'              => ClientProductReviewResource::collection($this->collection),
+            'avg_rating'         => $avgRating,
             'avg_rating_percent' => starsToPercent($avgRating),
         ] + $percentages;
     }

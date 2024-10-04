@@ -7,7 +7,6 @@ interface BaseRepositoryInterface
     /**
      * Get all records.
      *
-     * @param  array  $column
      * @return mixed
      */
     public function all(array $column = ['*'], array $relation = [], array $orderBy = []);

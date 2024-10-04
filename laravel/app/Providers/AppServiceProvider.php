@@ -85,11 +85,11 @@ class AppServiceProvider extends ServiceProvider
             $fileSystem = $app->make(Filesystem::class);
 
             return ServerFactory::create([
-                'response' => new LaravelResponseFactory(app('request')),
-                'source' => $fileSystem->getDriver(),
-                'cache' => $fileSystem->getDriver(),
+                'response'           => new LaravelResponseFactory(app('request')),
+                'source'             => $fileSystem->getDriver(),
+                'cache'              => $fileSystem->getDriver(),
                 'source_path_prefix' => env('IMAGE_SOURCE_PATH'),
-                'cache_path_prefix' => '.cache',
+                'cache_path_prefix'  => '.cache',
             ]);
         });
 
@@ -99,9 +99,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 
     private function printLogSql()
     {

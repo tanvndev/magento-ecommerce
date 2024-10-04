@@ -19,7 +19,7 @@ class WishListEvent
     public function __construct(User $user, $data)
     {
         $this->user = $user;
-        
+
         $this->data = $data;
     }
 

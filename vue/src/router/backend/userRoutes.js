@@ -1,72 +1,64 @@
-import UserIndexView from '@/views/backend/user/user/IndexView.vue';
-import UserStoreView from '@/views/backend/user/user/StoreView.vue';
-import UserCatalogueIndexView from '@/views/backend/user/catalogue/IndexView.vue';
-import UserCatalogueStoreView from '@/views/backend/user/catalogue/StoreView.vue';
-import UserCataloguePermissionView from '@/views/backend/user/catalogue/PermissionVue.vue';
-import PermissionCatalogueIndexView from '@/views/backend/user/permission/IndexView.vue';
-import PermissionCatalogueStoreView from '@/views/backend/user/permission/StoreView.vue';
-
 import { isLoggedIn } from '@/middlewares/authenticate';
 
 const userRoutes = [
   {
     path: '/user/index',
     name: 'user.index',
-    component: UserIndexView,
+    component: () => import('@/views/backend/user/user/IndexView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/user/store',
     name: 'user.store',
-    component: UserStoreView,
+    component: () => import('@/views/backend/user/user/StoreView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/user/update/:id(\\d+)',
     name: 'user.update',
-    component: UserStoreView,
+    component: () => import('@/views/backend/user/user/StoreView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/user/catalogue/index',
     name: 'user.catalogue.index',
-    component: UserCatalogueIndexView,
+    component: () => import('@/views/backend/user/catalogue/IndexView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/user/catalogue/store',
     name: 'user.catalogue.store',
-    component: UserCatalogueStoreView,
+    component: () => import('@/views/backend/user/catalogue/StoreView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/user/catalogue/update/:id(\\d+)',
     name: 'user.catalogue.update',
-    component: UserCatalogueStoreView,
+    component: () => import('@/views/backend/user/catalogue/StoreView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/user/catalogue/permission',
     name: 'user.catalogue.permission',
-    component: UserCataloguePermissionView,
+    component: () => import('@/views/backend/user/catalogue/PermissionVue.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/permission/index',
     name: 'permission.index',
-    component: PermissionCatalogueIndexView,
+    component: () => import('@/views/backend/user/permission/IndexView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/permission/store',
     name: 'permission.store',
-    component: PermissionCatalogueStoreView,
+    component: () => import('@/views/backend/user/permission/StoreView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/permission/update/:id(\\d+)',
     name: 'permission.update',
-    component: PermissionCatalogueStoreView,
+    component: () => import('@/views/backend/user/permission/StoreView.vue'),
     beforeEnter: [isLoggedIn]
   }
 ];

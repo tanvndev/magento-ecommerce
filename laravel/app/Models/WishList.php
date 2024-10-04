@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\QueryScopes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class WishList extends Model
 {
@@ -15,7 +14,7 @@ class WishList extends Model
 
     protected $fillable = [
         'user_id',
-        'product_variant_id'
+        'product_variant_id',
     ];
 
     public function user()

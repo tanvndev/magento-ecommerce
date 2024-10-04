@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Models\User;
 use App\Enums\ResponseEnum;
-use Illuminate\Http\JsonResponse;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ForgotRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\User\UserResource;
+use App\Models\User;
+use App\Services\Interfaces\Auth\AuthServiceInterface;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\ForgotRequest;
-use App\Http\Resources\User\UserResource;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Services\Interfaces\Auth\AuthServiceInterface;
+use Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -27,8 +29,6 @@ class AuthController extends Controller
 
     /**
      * Register a new user.
-     *
-     * @param  \App\Http\Requests\Auth\RegisterRequest  $request
      */
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -38,22 +38,21 @@ class AuthController extends Controller
             $response = $this->authService->register();
 
             return handleResponse($response, ResponseEnum::CREATED);
-        } catch (\Exception $e) {
-          \Log::info($e->getMessage());
-          return errorResponse($e->getMessage(), true);
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+
+            return errorResponse($e->getMessage(), true);
         }
     }
 
     /**
      * Log in an existing user.
-     *
-     * @param  \App\Http\Requests\Auth\LoginRequest  $request
      */
     public function login(LoginRequest $request): JsonResponse
     {
         $response = $this->verifyRecaptcha($request->input('g-recaptcha-response'));
 
-        if (!$response) {
+        if ( ! $response) {
             return errorResponse('Xác minh captcha không thành công', true);
         }
 
@@ -61,11 +60,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (! $user) {
+        if ( ! $user) {
             return errorResponse('Email hoặc mật khẩu không chính xác.', true);
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if ( ! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.', true);
         }
 
@@ -79,16 +78,15 @@ class AuthController extends Controller
     protected function verifyRecaptcha($token)
     {
         $secretKey = env('RECAPTCHA_SECRET_KEY');
+
         return Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret' => $secretKey,
+            'secret'   => $secretKey,
             'response' => $token,
         ])->json();
     }
 
     /**
      * Handle password reset for a user.
-     *
-     * @param  \App\Http\Requests\Auth\ForgotRequest  $request
      */
     public function forgotPassword(ForgotRequest $request): JsonResponse
     {
@@ -115,7 +113,7 @@ class AuthController extends Controller
         try {
             // Pass true as the first param to force the token to be blacklisted "forever".
             return $this->respondWithToken(Auth::refresh(true, true), 'Token đã được thay đổi');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return errorResponse('Token is Invalid', true);
         }
     }

@@ -18,12 +18,12 @@ class MomoController extends Controller
 
     public function handleReturnUrl(Request $request)
     {
-        $configMomo = config('apps.payment-config')['momo'];;
+        $configMomo = config('apps.payment-config')['momo'];
         $secretKey = $configMomo['secretKey'];
         $accessKey = $configMomo['accessKey'];
         $inputData = $request->query();
 
-        if (! empty($inputData)) {
+        if ( ! empty($inputData)) {
             $rawHash = 'accessKey=' . $accessKey;
             $rawHash .= '&amount=' . $inputData['amount'];
             $rawHash .= '&extraData=' . $inputData['extraData'];
@@ -47,17 +47,18 @@ class MomoController extends Controller
                 }
             }
         }
+
         return redirect()->away(env('NUXT_APP_URL') . '/payment-fail');
     }
 
     private function handleMomoIpn($get)
     {
         // Tam thoi de private khi nao chuyen qua thanh toan live se chuyen thanh public va cau hinh kieu khac
-        $configMomo = config('apps.payment-config')['momo'];;
+        $configMomo = config('apps.payment-config')['momo'];
         $secretKey = $configMomo['secretKey'];
         $accessKey = $configMomo['accessKey'];
 
-        if (! empty($get)) {
+        if ( ! empty($get)) {
             $response = [];
             try {
                 $rawHash = 'accessKey=' . $accessKey;

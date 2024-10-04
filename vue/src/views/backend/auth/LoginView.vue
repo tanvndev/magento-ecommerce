@@ -1,7 +1,9 @@
 <template>
   <a-row>
     <a-col span="10">
-      <div class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]">
+      <div
+        class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]"
+      >
         <img :src="'src/assets/images/loginpng.webp'" alt="" class="imig-fluid" />
       </div>
     </a-col>
@@ -14,7 +16,10 @@
               <h3 class="text-2xl font-bold text-gray-800 sm:text-3xl">Đăng nhập tài khoản</h3>
               <p>
                 Bạn chưa có tài khoản?
-                <RouterLink :to="{ name: 'register' }" class="font-medium text-blue-600 hover:text-blue-500">
+                <RouterLink
+                  :to="{ name: 'register' }"
+                  class="font-medium text-blue-600 hover:text-blue-500"
+                >
                   Đăng ký
                 </RouterLink>
               </p>
@@ -51,7 +56,9 @@
           </form>
 
           <div class="text-center">
-            <RouterLink class="text-blue-600 hover:text-blue-500" :to="{ name: 'forgot' }">Quên mật khẩu?</RouterLink>
+            <RouterLink class="text-blue-600 hover:text-blue-500" :to="{ name: 'forgot' }"
+              >Quên mật khẩu?</RouterLink
+            >
           </div>
         </div>
       </div>
@@ -59,8 +66,7 @@
   </a-row>
 </template>
 <script setup>
-import { InputComponent, AleartError } from '@/components/backend';
-import RecaptchaComponent from '@/components/backend/includes/RecaptchaComponent.vue';
+import { InputComponent, AleartError, RecaptchaComponent } from '@/components/backend';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { ref } from 'vue';

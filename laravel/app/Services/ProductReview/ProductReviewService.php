@@ -3,12 +3,11 @@
 namespace App\Repositories\ProductReview;
 
 use App\Services\BaseService;
-use Illuminate\Support\Facades\Storage;
 use App\Services\Interfaces\ProductReview\ProductReviewServiceInterface;
+use Illuminate\Support\Facades\Storage;
 
 class ProductReviewService extends BaseService implements ProductReviewServiceInterface
 {
-
     protected $productReviewRepository;
 
     public function __construct(ProductReviewRepository $productReviewRepository)
@@ -20,7 +19,7 @@ class ProductReviewService extends BaseService implements ProductReviewServiceIn
     {
         return $this->executeInTransaction(function () use ($data) {
 
-            if (! auth()->check()) {
+            if ( ! auth()->check()) {
                 return;
             }
 

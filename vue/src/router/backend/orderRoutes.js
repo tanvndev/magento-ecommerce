@@ -1,25 +1,22 @@
-import OrderIndexView from '@/views/backend/order/order/IndexView.vue';
-import OrderStoreView from '@/views/backend/order/order/StoreView.vue';
-import OrderUpdateView from '@/views/backend/order/order/UpdateView.vue';
 import { isLoggedIn } from '@/middlewares/authenticate';
 
 const orderRoutes = [
   {
     path: '/order/index',
     name: 'order.index',
-    component: OrderIndexView,
+    component: () => import('@/views/backend/order/order/IndexView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/order/store',
     name: 'order.store',
-    component: OrderStoreView,
+    component: () => import('@/views/backend/order/order/StoreView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
     path: '/order/update/:code',
     name: 'order.update',
-    component: OrderUpdateView,
+    component: () => import('@/views/backend/order/order/UpdateView.vue'),
     beforeEnter: [isLoggedIn]
   }
 ];
