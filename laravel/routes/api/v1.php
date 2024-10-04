@@ -155,7 +155,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('wishlists', [WishListController::class, 'index']);
         Route::get('wishlists/user', [WishListController::class, 'getByUser']);
         Route::post('wishlists', [WishListController::class, 'store']);
-        Route::post('wishlists/carts', [WishListController::class, 'createOrUpdateCart']);
+        Route::post('wishlists/carts', [WishListController::class, 'addWishlistToCart']);
         Route::delete('wishlists/clean', [WishListController::class, 'destroyAll']);
         Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
         Route::get('wishlists/send-mail', [WishListController::class, 'sendWishListMail']);

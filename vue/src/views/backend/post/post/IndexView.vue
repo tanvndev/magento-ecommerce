@@ -31,7 +31,7 @@
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.dataIndex === 'image'">
-                <div class="rounded border p-1 inline-block">
+                <div class="inline-block rounded border p-1">
                   <img
                     class="h-[50px] w-[50px] object-cover"
                     :src="resizeImage(record.image, 100)"
@@ -87,11 +87,11 @@ import { useRoute } from 'vue-router';
 
 // STATE
 const state = reactive({
-  pageTitle: 'Danh sách thương hiệu',
-  modelName: 'Brand',
-  routeCreate: 'brand.store',
-  routeUpdate: 'brand.update',
-  endpoint: 'brands',
+  pageTitle: 'Danh sách bài viết',
+  modelName: 'Post',
+  routeCreate: 'post.store',
+  routeUpdate: 'post.update',
+  endpoint: 'posts',
   isShowToolbox: false,
   modelIds: [],
   filterOptions: {},
