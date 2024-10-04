@@ -61,7 +61,7 @@ const setSession_id = () => {
   const session_id = generateUUID()
 
   Cookies.set('session_id', session_id, {
-    expires: parseInt(process.env.SESSION_ID_EXPIRES, 10)
+    expires: parseInt(process.env.SESSION_ID_EXPIRES, 10),
   })
 }
 
