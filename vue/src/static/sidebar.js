@@ -40,16 +40,28 @@ const sidebar = [
         route: 'user.index'
       },
       {
-        name: 'Danh sách khách hàng',
-        route: 'user.index'
-      },
-      {
         name: 'Nhóm thành viên',
         route: 'user.catalogue.index'
       },
       {
         name: 'Quyền thành viên',
         route: 'permission.index'
+      }
+    ]
+  },
+  {
+    id: 'post_sidebar',
+    icon: 'fas fa-newspaper',
+    name: 'Bài viết',
+    active: ['user'],
+    subMenu: [
+      {
+        name: 'Danh sách bài viết',
+        route: 'user.index'
+      },
+      {
+        name: 'Nhóm bài viết',
+        route: 'user.index'
       }
     ]
   },
