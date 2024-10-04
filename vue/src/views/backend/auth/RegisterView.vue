@@ -4,11 +4,7 @@
       <div
         class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]"
       >
-        <img
-          :src="`src/assets/images/registerpng.webp`"
-          alt=""
-          class="imig-fluid"
-        />
+        <img :src="`src/assets/images/registerpng.webp`" alt="" class="imig-fluid" />
       </div>
     </a-col>
     <a-col span="14">
@@ -33,13 +29,28 @@
           <form @submit.prevent="onSubmit">
             <AleartError :errors="state.errors" />
             <div class="mb-5">
-              <InputComponent label="Họ và tên" name="fullname" type="text" placeholder="Nhập họ và tên" />
+              <InputComponent
+                label="Họ và tên"
+                name="fullname"
+                type="text"
+                placeholder="Nhập họ và tên"
+              />
             </div>
             <div class="mb-5">
-              <InputComponent label="Địa chỉ email" name="email" type="text" placeholder="Nhập địa chỉ email" />
+              <InputComponent
+                label="Địa chỉ email"
+                name="email"
+                type="text"
+                placeholder="Nhập địa chỉ email"
+              />
             </div>
             <div>
-              <InputComponent label="Mật khẩu" name="password" type="password" placeholder="************" />
+              <InputComponent
+                label="Mật khẩu"
+                name="password"
+                type="password"
+                placeholder="************"
+              />
             </div>
 
             <RecaptchaComponent />
@@ -60,8 +71,7 @@
   </a-row>
 </template>
 <script setup>
-import { InputComponent, AleartError } from '@/components/backend';
-import RecaptchaComponent from '@/components/backend/includes/RecaptchaComponent.vue';
+import { InputComponent, AleartError, RecaptchaComponent } from '@/components/backend';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { reactive } from 'vue';
@@ -70,10 +80,8 @@ import router from '@/router';
 import { formatMessages } from '@/utils/format';
 import { AuthService } from '@/services';
 import { useAntToast } from '@/utils/antToast';
-import { LARAVEL_URL } from '@/static/constants';
 
 // STATE
-const laravelUrl = import.meta.env.VITE_LARAVEL_URL;
 const state = reactive({
   errors: {},
   loading: false
@@ -99,7 +107,7 @@ const { handleSubmit } = useForm({
 // SUBMIT FORM HANDLE
 const onSubmit = handleSubmit(async (values) => {
   state.errors = {};
-  state.loading = true;  
+  state.loading = true;
 
   // eslint-disable-next-line no-undef
   const recaptchaResponse = grecaptcha.getResponse();
