@@ -22,14 +22,14 @@ class StoreWishListRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_variant_id' => 'required'
+            'product_variant_id' => 'required',
         ];
     }
 
     public function attributes()
     {
         return [
-            'product_variant_id' => 'Sản phẩm'
+            'product_variant_id' => 'Sản phẩm',
         ];
     }
 

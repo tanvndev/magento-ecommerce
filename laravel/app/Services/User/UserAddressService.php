@@ -4,14 +4,12 @@
 
 namespace App\Services\User;
 
-use App\Models\User;
 use App\Repositories\Interfaces\User\UserAddressRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\User\UserAddressServiceInterface;
 
 class UserAddressService extends BaseService implements UserAddressServiceInterface
 {
-
     protected $userAddressRepository;
 
     public function __construct(
@@ -26,7 +24,6 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
         $select = ['id', 'user_id', 'province_code', 'district_code', 'ward_code', 'fullname', 'shipping_address', 'phone', 'is_primary'];
 
         $pageSize = request('pageSize');
-
 
         $data = $this->userAddressRepository->pagination(
             $select,
@@ -46,7 +43,7 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
 
             $payload = $this->preparePayload();
 
-            if (!auth()->check()) {
+            if ( ! auth()->check()) {
                 return errorResponse(__('messages.userAddress.error.auth'));
             } else {
                 if ($payload['is_primary'] == 1) {
@@ -56,6 +53,7 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
                     );
                 }
                 $this->userAddressRepository->create($payload);
+
                 return successResponse(__('messages.userAddress.success.create'));
             }
 
@@ -72,7 +70,6 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
         } else {
             return [];
         }
-
 
         return $payload;
     }
@@ -92,8 +89,7 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
 
             $payload = $this->preparePayload();
 
-
-            if (!auth()->check()) {
+            if ( ! auth()->check()) {
                 return errorResponse(__('messages.userAddress.error.auth'));
             } else {
                 if ($payload['is_primary']) {
@@ -104,9 +100,11 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
                 }
                 $this->userAddressRepository->update($id, $payload);
             }
+
             return successResponse(__('messages.update.success'));
         }, __('messages.update.error'));
     }
+
     public function getAddressByUserId()
     {
         $user = auth()->user();

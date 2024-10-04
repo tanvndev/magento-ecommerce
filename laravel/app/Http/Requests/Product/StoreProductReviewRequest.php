@@ -25,16 +25,15 @@ class StoreProductReviewRequest extends FormRequest
         $isCatalogueUser = request()->user()->user_catalogue_id === User::ROLE_ADMIN;
 
         return [
-            'rating' => $isCatalogueUser ? 'nullable' : 'required|integer|min:1|max:5',
+            'rating'  => $isCatalogueUser ? 'nullable' : 'required|integer|min:1|max:5',
             'comment' => $isCatalogueUser ? 'required' : 'nullable',
         ];
     }
 
-
     public function attributes(): array
     {
         return [
-            'rating' => 'Đánh giá',
+            'rating'  => 'Đánh giá',
             'comment' => 'Phản hồi',
         ];
     }

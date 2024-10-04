@@ -26,13 +26,14 @@ class BaseRepository implements BaseRepositoryInterface
     public function all(array $column = ['*'], array $relation = [], array $orderBy = [])
     {
         $query = $this->model->select($column);
-        if (! empty($orderBy)) {
+        if ( ! empty($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if (! empty($relation)) {
+        if ( ! empty($relation)) {
             return $query->relation($relation)->get();
         }
+
         return $query->get();
     }
 
@@ -48,8 +49,6 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
-
-
     /**
      * Find records by specified conditions.
      *
@@ -60,11 +59,11 @@ class BaseRepository implements BaseRepositoryInterface
      * @param  bool  $all  Return all records if true.
      * @param  array  $orderBy  Fields to be sorted by.
      * @param  array  $whereInParams  Specify field and values as an array.
-     *                               Example: ['field' => 'id', 'value' => [1, 2, 3]]
+     *                                Example: ['field' => 'id', 'value' => [1, 2, 3]]
      * @param  array  $withWhereHas  Apply constraints to eager-loaded relationships.
      *                               Example: ['relation_name' => [['field', 'operator', 'value']]]
      * @param  array  $withCount  Apply constraints to eager-loaded relationships with count.
-     *                               Example: ['relation_name' => [['field', 'operator', 'value']]]
+     *                            Example: ['relation_name' => [['field', 'operator', 'value']]]
      * @return mixed
      */
     public function findByWhere(
@@ -79,25 +78,25 @@ class BaseRepository implements BaseRepositoryInterface
     ) {
         $query = $this->model->select($column);
 
-        if (! empty($relation)) {
+        if ( ! empty($relation)) {
             $query->relation($relation);
         }
 
         $query->customWhere($conditions);
 
-        if (! empty($whereInParams)) {
+        if ( ! empty($whereInParams)) {
             $query->whereIn($whereInParams['field'], $whereInParams['value']);
         }
 
-        if (! empty($orderBy)) {
+        if ( ! empty($orderBy)) {
             $query->customOrderBy($orderBy);
         }
 
-        if (! empty($withCount)) {
+        if ( ! empty($withCount)) {
             $query->withCount($withCount);
         }
 
-        if (! empty($withWhereHas)) {
+        if ( ! empty($withWhereHas)) {
             // 'relation_name' => [
             //     ['field', 'operator', 'value'],
             // ]
@@ -107,15 +106,9 @@ class BaseRepository implements BaseRepositoryInterface
         return $all ? $query->get() : $query->first();
     }
 
-
     /**
      * Find records where the specified field is in a given array of values.
      *
-     * @param  array  $values
-     * @param  string  $field
-     * @param  array  $columns
-     * @param  array  $relations
-     * @param  array  $relationConditions
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
     public function findByWhereIn(
@@ -127,15 +120,15 @@ class BaseRepository implements BaseRepositoryInterface
     ) {
         $query = $this->model->newQuery()->whereIn($field, $values);
 
-        if (! empty($columns)) {
+        if ( ! empty($columns)) {
             $query->select($columns);
         }
 
-        if (! empty($relations)) {
+        if ( ! empty($relations)) {
             $query->with($relations);
         }
 
-        if (! empty($relationConditions)) {
+        if ( ! empty($relationConditions)) {
             // 'relation_name' => [
             //     ['field', 'operator', 'value'],
             // ]
@@ -144,7 +137,6 @@ class BaseRepository implements BaseRepositoryInterface
 
         return $query->get();
     }
-
 
     /**
      * Find records by conditions with relationships.
@@ -198,14 +190,14 @@ class BaseRepository implements BaseRepositoryInterface
             ->customGroupBy($groupBy ?? null)
             ->customOrderBy($orderBy ?? null);
 
-        if (! empty($withWhereHas)) {
+        if ( ! empty($withWhereHas)) {
             // Apply constraints to eager-loaded relationships
             foreach ($withWhereHas as $relation => $callback) {
                 $query->whereHas($relation, $callback);
             }
         }
 
-        if (! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
+        if ( ! empty($condition['archive'] ?? null) && $condition['archive'] == true) {
             $query->onlyTrashed();
         }
 

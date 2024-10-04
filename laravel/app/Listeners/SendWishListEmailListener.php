@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\WishListEvent;
-use App\Mail\OrderShippedMail;
 use App\Mail\WishListMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
@@ -13,9 +12,7 @@ class SendWishListEmailListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Handle the event.

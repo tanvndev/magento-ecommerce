@@ -32,7 +32,6 @@ class Momo
     {
         $configMomo = config('apps.payment-config')['momo'];
 
-
         $endpoint = $configMomo['endpoint'];
         $partnerCode = $configMomo['partnerCode'];
         $accessKey = $configMomo['accessKey'];
@@ -70,7 +69,6 @@ class Momo
         ];
         $result = self::execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true);  // decode json
-
 
         error_log(print_r($jsonResult, true));
 

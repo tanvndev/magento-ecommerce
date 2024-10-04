@@ -73,7 +73,5 @@ class AppRepositoryProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 }
