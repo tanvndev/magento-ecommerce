@@ -44,6 +44,7 @@ const getProductCatalogues = async () => {
 onMounted(() => {
   getProductCatalogues()
   cartStore.getAllCarts()
+  wishlistStore.getAllWishlists()
   window.addEventListener('scroll', debouncedHandleScroll)
 })
 </script>

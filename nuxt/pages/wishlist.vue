@@ -12,11 +12,12 @@ const debounceHandleChangePage = debounce(async () => {
   await wishlistStore.getAllWishlists(page.value)
 }, 300)
 
+const addWishlistToCart = async (product_variant_id) => {
+  await wishlistStore.addWishlistToCart(product_variant_id)
+}
+
 watch(page, () => {
   debounceHandleChangePage()
-})
-onMounted(async () => {
-  await wishlistStore.getAllWishlists()
 })
 </script>
 
@@ -95,6 +96,9 @@ onMounted(async () => {
               <td class="wishlist-action">
                 <div class="d-lg-flex justify-end">
                   <a
+                    @click.prevent="
+                      addWishlistToCart(wishlist.product_variant_id)
+                    "
                     href="#"
                     class="btn btn-dark btn-rounded btn-sm ml-lg-2 btn-cart"
                     >Thêm vào giỏ hàng</a
