@@ -53,15 +53,15 @@ const sidebar = [
     id: 'post_sidebar',
     icon: 'fas fa-newspaper',
     name: 'Bài viết',
-    active: ['user'],
+    active: ['post'],
     subMenu: [
       {
         name: 'Danh sách bài viết',
-        route: 'user.index'
+        route: 'post.index'
       },
       {
         name: 'Nhóm bài viết',
-        route: 'user.index'
+        route: 'post.catalogue.index'
       }
     ]
   },

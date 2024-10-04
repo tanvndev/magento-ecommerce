@@ -6,3 +6,4 @@ export { default as brandRoutes } from './brandRoutes';
 export { default as widgetRoutes } from './widgetRoutes';
 export { default as voucherRoutes } from './voucherRoutes';
 export { default as orderRoutes } from './orderRoutes';
+export { default as postRoutes } from './postRoutes';
