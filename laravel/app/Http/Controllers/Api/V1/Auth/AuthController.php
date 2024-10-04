@@ -7,6 +7,7 @@ use App\Enums\ResponseEnum;
 use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\ForgotRequest;
@@ -31,9 +32,16 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $response = $this->authService->register();
+        try {
+            $this->verifyRecaptcha($request->input('g-recaptcha-response'));
 
-        return handleResponse($response, ResponseEnum::CREATED);
+            $response = $this->authService->register();
+
+            return handleResponse($response, ResponseEnum::CREATED);
+        } catch (\Exception $e) {
+          \Log::info($e->getMessage());
+          return errorResponse($e->getMessage(), true);
+        }
     }
 
     /**
@@ -106,7 +114,7 @@ class AuthController extends Controller
     {
         try {
             // Pass true as the first param to force the token to be blacklisted "forever".
-            return $this->respondWithToken(auth()->refresh(true, true), 'Token đã được thay đổi');
+            return $this->respondWithToken(Auth::refresh(true, true), 'Token đã được thay đổi');
         } catch (\Exception $e) {
             return errorResponse('Token is Invalid', true);
         }

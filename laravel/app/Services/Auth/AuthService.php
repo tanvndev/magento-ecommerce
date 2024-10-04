@@ -4,12 +4,13 @@
 
 namespace App\Services\Auth;
 
+use App\Services\BaseService;
 use App\Events\AuthForgotEvent;
 use App\Events\AuthRegisteredEvent;
-use App\Repositories\Interfaces\User\UserRepositoryInterface;
-use App\Services\BaseService;
-use App\Services\Interfaces\Auth\AuthServiceInterface;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use App\Services\Interfaces\Auth\AuthServiceInterface;
+use App\Repositories\Interfaces\User\UserRepositoryInterface;
 
 class AuthService extends BaseService implements AuthServiceInterface
 {
