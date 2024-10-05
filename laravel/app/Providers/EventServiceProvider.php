@@ -31,6 +31,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\OrderShippedEvent' => [
             'App\Listeners\SendOrderShippedEmailListener',
         ],
+        'App\Events\WishListEvent' => [
+            'App\Listeners\SendWishListEmailListener',
+        ],
     ];
 
     /**

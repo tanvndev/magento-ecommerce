@@ -1,3 +1,55 @@
+<script setup>
+import { useLoadingStore } from '#imports'
+import { formatCurrency, toast } from '#imports'
+
+const { $axios } = useNuxtApp()
+const loadingStore = useLoadingStore()
+const vouchers = ref([])
+const nextPage = ref(null)
+
+const getAllVouchers = async (page) => {
+  try {
+    if (page == 1) {
+      loadingStore.setLoading(true)
+    }
+
+    const res = await $axios.get(
+      '/vouchers/all' + (page ? '?page=' + page : '')
+    )
+
+    vouchers.value = [...vouchers.value, ...res?.data.data]
+    nextPage.value = res?.data.next_page
+
+    return res?.data.data.length > 0
+  } catch (e) {
+    console.error('Error fetching vouchers:', e)
+    return false
+  } finally {
+    loadingStore.setLoading(false)
+  }
+}
+
+const handleCopyCode = (code) => {
+  navigator.clipboard
+    .writeText(code)
+    .then(() => {
+      toast('Đã sao chép mã thành công.')
+    })
+    .catch((err) => {
+      console.error('Không thể sao chép mã code: ', err)
+      toast('Không thể sao chép mã code. Vui lòng thử lại.', 'error')
+    })
+}
+
+const load = async ({ done }) => {
+  const hasMore = await getAllVouchers(nextPage.value)
+  if (hasMore) {
+    done('ok')
+  } else {
+    done('empty')
+  }
+}
+</script>
 <template>
   <section class="coupon-area">
     <v-infinite-scroll :onLoad="load">
@@ -9,7 +61,10 @@
                 <div class="coupon">
                   <div class="coupon-left">
                     <figure class="thumb">
-                      <img :src="voucher.image" :alt="voucher.name" />
+                      <img
+                        :src="resizeImage(voucher.image, 200)"
+                        :alt="voucher.name"
+                      />
                     </figure>
                     <div class="content">
                       <h4 class="title-coupon">
@@ -57,56 +112,5 @@
     </v-infinite-scroll>
   </section>
 </template>
-<script setup>
-import { useLoadingStore } from '#imports'
-import { formatCurrency, toast } from '#imports'
 
-const { $axios } = useNuxtApp()
-const loadingStore = useLoadingStore()
-const vouchers = ref([])
-const nextPage = ref(null)
-
-const getAllVouchers = async (page) => {
-  try {
-    if (page == 1) {
-      loadingStore.setLoading(true)
-    }
-
-    const res = await $axios.get(
-      '/getAllVouchers' + (page ? '?page=' + page : '')
-    )
-
-    vouchers.value = [...vouchers.value, ...res?.data.data]
-    nextPage.value = res?.data.next_page
-
-    return res?.data.data.length > 0
-  } catch (e) {
-    console.error('Error fetching vouchers:', e)
-    return false
-  } finally {
-    loadingStore.setLoading(false)
-  }
-}
-
-const handleCopyCode = (code) => {
-  navigator.clipboard
-    .writeText(code)
-    .then(() => {
-      toast('Đã sao chép mã thành công.')
-    })
-    .catch((err) => {
-      console.error('Không thể sao chép mã code: ', err)
-      toast('Không thể sao chép mã code. Vui lòng thử lại.', 'error')
-    })
-}
-
-const load = async ({ done }) => {
-  const hasMore = await getAllVouchers(nextPage.value)
-  if (hasMore) {
-    done('ok')
-  } else {
-    done('empty')
-  }
-}
-</script>
 <style scoped></style>

@@ -30,18 +30,19 @@ class Momo
 
     public static function payment($order)
     {
-        $configMomo = config('apps.paymentConfig.momo');
+        $configMomo = config('apps.payment-config')['momo'];
 
         $endpoint = $configMomo['endpoint'];
         $partnerCode = $configMomo['partnerCode'];
         $accessKey = $configMomo['accessKey'];
         $secretKey = $configMomo['secretKey'];
 
-        $orderAmount = $order['cart']['total'] - $order['promotion']['discount'];
+        $finalPrice = round($order->final_price, 0);
+        $code = $order->code;
 
-        $orderInfo = $order['description'] ?? 'Thanh toan don hang ' . $order['code'] . ' qua MOMO.';
-        $amount = $orderAmount . '';
-        $orderId = $order['code'] . '';
+        $orderInfo = $order->note ?? 'Thanh toán đơn hàng ' . $code . ' qua MOMO.';
+        $amount = $finalPrice . '';
+        $orderId = $code . '';
         $redirectUrl = $configMomo['redirectUrl'];
         $ipnUrl = $configMomo['ipnUrl'];
         $requestId = time() . '';
@@ -72,9 +73,9 @@ class Momo
         error_log(print_r($jsonResult, true));
 
         $returnData = [
-            'code'    => '00',
-            'message' => $jsonResult['message'],
-            'url'     => $jsonResult['payUrl'],
+            'status'   => 'success',
+            'messages' => $jsonResult['message'],
+            'url'      => $jsonResult['payUrl'],
         ];
 
         return $returnData;

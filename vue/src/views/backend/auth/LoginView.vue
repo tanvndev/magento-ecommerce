@@ -14,7 +14,7 @@
             <img src="https://floatui.com/logo.svg" width="150" class="mx-auto" />
             <div class="mt-5 space-y-2">
               <h3 class="text-2xl font-bold text-gray-800 sm:text-3xl">Đăng nhập tài khoản</h3>
-              <p class="">
+              <p>
                 Bạn chưa có tài khoản?
                 <RouterLink
                   :to="{ name: 'register' }"
@@ -43,6 +43,10 @@
                 placeholder="*************"
               />
             </div>
+
+            <!-- Thêm reCAPTCHA ở đây -->
+            <RecaptchaComponent />
+
             <button
               type="submit"
               class="mt-4 w-full rounded-lg bg-primary-600 px-4 py-2 font-medium text-white duration-150 hover:bg-primary-500 active:bg-primary-600"
@@ -62,7 +66,7 @@
   </a-row>
 </template>
 <script setup>
-import { InputComponent, AleartError } from '@/components/backend';
+import { InputComponent, AleartError, RecaptchaComponent } from '@/components/backend';
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 import { ref } from 'vue';
@@ -93,7 +97,21 @@ const { handleSubmit } = useForm({
 // SUBMIT FORM HANDLE
 const onSubmit = handleSubmit(async (values) => {
   errors.value = {};
-  await store.dispatch('authStore/login', values);
+
+  // eslint-disable-next-line no-undef
+  const recaptchaResponse = grecaptcha.getResponse();
+
+  if (!recaptchaResponse) {
+    errors.value = { recaptcha: 'Vui lòng xác nhận bạn không phải là robot.' };
+    return;
+  }
+
+  const formData = {
+    ...values,
+    'g-recaptcha-response': recaptchaResponse
+  };
+
+  await store.dispatch('authStore/login', formData);
   const authState = store.state.authStore;
   if (!authState.status.loggedIn) {
     return (errors.value = formatMessages(authState.messages));

@@ -1,3 +1,18 @@
+<script setup>
+import { useCartStore, useOrderStore } from '#imports'
+
+const cartStore = useCartStore()
+const orderStore = useOrderStore()
+
+const carts = computed(() => cartStore.getCartSelected)
+const totalAmount = computed(() => cartStore.getTotalAmount)
+const shippingFee = computed(() => orderStore.getShippingFee)
+const discount = computed(() => orderStore.getDiscount)
+const finalTotal = computed(() => {
+  return +totalAmount.value + +shippingFee.value - +discount.value
+})
+</script>
+
 <template>
   <div>
     <!-- Payment method -->
@@ -59,17 +74,3 @@
     </div>
   </div>
 </template>
-<script setup>
-import { useCartStore, useOrderStore } from '#imports'
-
-const cartStore = useCartStore()
-const orderStore = useOrderStore()
-
-const carts = computed(() => cartStore.getCartSelected)
-const totalAmount = computed(() => cartStore.getTotalAmount)
-const shippingFee = computed(() => orderStore.getShippingFee)
-const discount = computed(() => orderStore.getDiscount)
-const finalTotal = computed(() => {
-  return +totalAmount.value + +shippingFee.value - +discount.value
-})
-</script>

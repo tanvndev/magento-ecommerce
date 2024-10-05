@@ -24,9 +24,13 @@ class ClientOrderResource extends JsonResource
             'customer_email'             => $this->customer_email,
             'shipping_address'           => $this->shipping_address,
             'order_status'               => $this->getOrderStatus(),
+            'order_status_code'          => $this->order_status,
+            'delivery_status_code'       => $this->delivery_status,
+            'payment_status_code'        => $this->payment_status,
+            'payment_method_id'          => $this->payment_method_id,
             'order_status_color'         => $this->getOrderStatusColor(),
             'payment_status'             => Order::PAYMENT_STATUS[$this->payment_status],
-            'delivery_status'            => Order::SHIPPING_STATUS[$this->delivery_status],
+            'delivery_status'            => Order::DELYVERY_STATUS[$this->delivery_status],
             'total_price'                => $this->total_price,
             'shipping_fee'               => $this->shipping_fee,
             'discount'                   => $this->discount,
@@ -41,7 +45,13 @@ class ClientOrderResource extends JsonResource
         ];
     }
 
-    private function getOrderStatus()
+    /**
+     * Get the order status.
+     *
+     * If the payment method is not COD and the payment status is unpaid,
+     * return the payment status as unpaid. Otherwise, return the order status.
+     */
+    private function getOrderStatus(): string
     {
         if (
             $this->payment_method_id != PaymentMethod::COD_ID
@@ -50,17 +60,36 @@ class ClientOrderResource extends JsonResource
             return Order::PAYMENT_STATUS[Order::PAYMENT_STATUS_UNPAID];
         }
 
+        if (
+            $this->order_status == Order::ORDER_STATUS_CANCELED
+        ) {
+            return Order::ORDER_STATUS[Order::ORDER_STATUS_CANCELED];
+        }
+
+        if (
+            $this->delivery_status == Order::DELYVERY_STATUS_PENDING
+        ) {
+            return Order::DELYVERY_STATUS[Order::DELYVERY_STATUS_PENDING];
+        }
+
         return Order::ORDER_STATUS[$this->order_status];
     }
 
-    private function getOrderStatusColor()
+    /**
+     * Get the color of the order status.
+     *
+     * If the order status is canceled, return red. If the order status is completed, return green.
+     * If the payment method is not COD and the payment status is unpaid, return orange.
+     * Otherwise, return orange.
+     */
+    private function getOrderStatusColor(): string
     {
         switch ($this->order_status) {
             case Order::ORDER_STATUS_CANCELED:
                 return 'red';
 
-            case Order::ORDER_STATUS_PENDING:
-                return 'orange';
+            case Order::ORDER_STATUS_COMPLETED:
+                return 'green';
 
             default:
                 if (
@@ -70,7 +99,7 @@ class ClientOrderResource extends JsonResource
                     return 'orange';
                 }
 
-                return 'green';
+                return 'orange';
         }
     }
 }

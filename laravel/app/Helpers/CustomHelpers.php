@@ -281,6 +281,17 @@ if ( ! function_exists('sortAttributeId')) {
     }
 }
 
+if ( ! function_exists('starsToPercent')) {
+    function starsToPercent($stars, $maxStars = 5)
+    {
+        if ($maxStars <= 0) {
+            throw new \InvalidArgumentException('Max stars must be greater than zero.');
+        }
+
+        return round(($stars / $maxStars) * 100, 2);
+    }
+}
+
 if ( ! function_exists('convertVndTo')) {
 
     function convertVndTo($amountVnd, $currency = 'USD')
@@ -316,29 +327,33 @@ if ( ! function_exists('abbreviateName')) {
 }
 
 if ( ! function_exists('errorResponse')) {
-    function errorResponse(string $message): array
+    function errorResponse(string $message, bool $isResponse = false)
     {
-        return [
+        $response = [
             'status'   => 'error',
             'messages' => $message,
             'data'     => null,
         ];
+
+        return $isResponse ? response()->json($response, 500) : $response;
     }
 }
 
 if ( ! function_exists('successResponse')) {
-    function successResponse(string $message, $data = null): array
+    function successResponse(string $message, $data = null, bool $isResponse = false)
     {
-        return [
+        $response = [
             'status'   => 'success',
             'messages' => $message,
             'data'     => $data,
         ];
+
+        return $isResponse ? response()->json($response) : $response;
     }
 }
 
 if ( ! function_exists('handleResponse')) {
-    function handleResponse($response, $successCode = 200)
+    function handleResponse(array $response, int $successCode = 200)
     {
         $status = $response['status'] ?? '';
 

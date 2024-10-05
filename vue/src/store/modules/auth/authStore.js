@@ -3,6 +3,7 @@ import AuthService from '@/services/AuthService';
 import Cookies from 'js-cookie';
 
 const token = Cookies.get('token') ?? null;
+
 // state
 const state = {
   status: token ? { loggedIn: true } : { loggedIn: false },
@@ -46,6 +47,9 @@ const actions = {
 const mutations = {
   setUser(state, user) {
     state.user = user;
+  },
+  setIsLoggedIn(state, value) {
+    state.status.loggedIn = value;
   },
   loginSuccess(state, data) {
     state.status.loggedIn = true;

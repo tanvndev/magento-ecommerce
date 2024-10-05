@@ -38,4 +38,9 @@ class Ward extends Model
     {
         return $this->hasMany(User::class, 'ward_id', 'code');
     }
+
+    public function user_addresses()
+    {
+        return $this->hasMany(User::class, 'ward_code', 'code');
+    }
 }

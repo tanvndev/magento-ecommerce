@@ -9,9 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "anhskohbo/no-captcha": "^3.6",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
         "laravel/framework": "^10.10",
+        "laravel/octane": "^2.5",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "league/glide": "^2.3",
@@ -61,6 +63,7 @@
         ],
         "pint": "pint",
         "dev": "php artisan serve",
+        "octane": "php artisan octane:start --watch",
         "clear": "php artisan optimize:clear",
         "link": "php artisan storage:link",
         "route": "php artisan route:list"

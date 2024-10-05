@@ -1,27 +1,22 @@
-import ForgotView from '@/views/backend/auth/ForgotView.vue';
-import LoginView from '@/views/backend/auth/LoginView.vue';
-import RegisterView from '@/views/backend/auth/RegisterView.vue';
-
 const userRoutes = [
   {
     path: '/admin',
     redirect: '/login'
   },
-
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: () => import('@/views/backend/auth/LoginView.vue')
   },
   {
     path: '/register',
     name: 'register',
-    component: RegisterView
+    component: () => import('@/views/backend/auth/RegisterView.vue')
   },
   {
     path: '/forgot-password',
     name: 'forgot',
-    component: ForgotView
+    component: () => import('@/views/backend/auth/ForgotView.vue')
   }
 ];
 

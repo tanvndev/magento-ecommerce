@@ -52,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
         // Voucher
         'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
+        // WishList
+        'App\Services\Interfaces\WishList\WishListServiceInterface' => 'App\Services\WishList\WishListService',
         // Slider
         'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
         // Order
@@ -62,6 +64,10 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
         // Post
         'App\Services\Interfaces\Post\PostServiceInterface' => 'App\Services\Post\PostService',
+        // UserAddress
+        'App\Services\Interfaces\User\UserAddressServiceInterface' => 'App\Services\User\UserAddressService',
+        // PRODUCT REVIEW
+        'App\Services\Interfaces\Product\ProductReviewServiceInterface' => 'App\Services\Product\ProductReviewService',
     ];
 
     public function register(): void
@@ -102,9 +108,9 @@ class AppServiceProvider extends ServiceProvider
 
             $logContent = sprintf(
                 "/*==================================================================*/\n" .
-                    "/* Origin (request): %s\n" .
-                    "   Query %d - %s [%sms] */\n\n" .
-                    "%s\n\n",
+                "/* Origin (request): %s\n" .
+                "   Query %d - %s [%sms] */\n\n" .
+                "%s\n\n",
                 request()->fullUrl() ?? 'N/A',
                 $query->time, // Số thứ tự truy vấn
                 Carbon::now()->toDateTimeString(),

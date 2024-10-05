@@ -1,35 +1,3 @@
-<template>
-  <div class="payment-method">
-    <h3 class="title text-uppercase ls-10 mb-5">Hình thức vận chuyển</h3>
-
-    <div
-      class="card-container"
-      v-for="item in shippingMethods"
-      :key="item.id"
-      :class="{
-        selected: isSelected === item.id,
-        error: errorMessage,
-      }"
-      @click="handleSelected(item.id)"
-    >
-      <span class="checked-icon"></span>
-      <div class="card-main-content">
-        <img class="card-icon" :src="item.image" />
-        <div class="card-main-content-text-container">
-          <p class="card-title">{{ item.name }}</p>
-          <span class="base-cost">{{ formatCurrency(item.base_cost) }}</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-left">
-          <div class="card-complex-description-wrapper">
-            <p class="mb-0">{{ item.description }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
 <script setup>
 import { ref } from 'vue'
 import { useCartStore, useOrderStore, useLoadingStore } from '#imports'
@@ -64,7 +32,7 @@ const getAllShippingMethods = async (productVariantIds) => {
   try {
     loadingStore.setLoading(true)
     const response = await $axios.get(
-      '/getShippingMethodByProductVariant/' + productVariantIds
+      `/shipping-methods/products/${productVariantIds}`
     )
 
     shippingMethods.value = response?.data
@@ -99,3 +67,36 @@ onMounted(async () => {
   getProductVariantIds()
 })
 </script>
+
+<template>
+  <div class="payment-method">
+    <h3 class="title text-uppercase ls-10 mb-5">Hình thức vận chuyển</h3>
+
+    <div
+      class="card-container"
+      v-for="item in shippingMethods"
+      :key="item.id"
+      :class="{
+        selected: isSelected === item.id,
+        error: errorMessage,
+      }"
+      @click="handleSelected(item.id)"
+    >
+      <span class="checked-icon"></span>
+      <div class="card-main-content">
+        <img class="card-icon" :src="item.image" />
+        <div class="card-main-content-text-container">
+          <p class="card-title">{{ item.name }}</p>
+          <span class="base-cost">{{ formatCurrency(item.base_cost) }}</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-footer-left">
+          <div class="card-complex-description-wrapper">
+            <p class="mb-0">{{ item.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

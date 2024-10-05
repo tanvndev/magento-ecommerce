@@ -13,25 +13,20 @@ use Illuminate\Http\Client\Request;
 
 class LocationService extends BaseService implements LocationServiceInterface
 {
-    protected $provinceRepository;
-
-    protected $districtRepository;
-
-    protected $wardRepository;
-
     public function __construct(
-        ProvinceRepositoryInterface $provinceRepository,
-        DistrictRepositoryInterface $districtRepository,
-        WardRepositoryInterface $wardRepository
-    ) {
-        $this->provinceRepository = $provinceRepository;
-        $this->districtRepository = $districtRepository;
-        $this->wardRepository = $wardRepository;
-    }
+        protected ProvinceRepositoryInterface $provinceRepository,
+        protected DistrictRepositoryInterface $districtRepository,
+        protected WardRepositoryInterface $wardRepository
+    ) {}
 
+    /**
+     * Get location by address.
+     *
+     * @param  array  $address
+     * @return array
+     */
     public function getLocationByAddress($address)
     {
-
         $wardName = $address['quarter'] ?? $address['suburb'];
         $districtName = $address['city_district'] ?? $address['suburb'];
 
@@ -62,6 +57,12 @@ class LocationService extends BaseService implements LocationServiceInterface
         return $this->formatLocationData($ward);
     }
 
+    /**
+     * Format location data
+     *
+     * @param  array  $data
+     * @return array
+     */
     private function formatLocationData($data)
     {
         $districts = $this->provinceRepository->findByWhere(
@@ -100,6 +101,12 @@ class LocationService extends BaseService implements LocationServiceInterface
         ];
     }
 
+    /**
+     * Calculate distance between two points on the surface of a sphere using the Haversine formula
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function calculateDistance(Request $request)
     {
         $latFrom = $request->input('latFrom', 21.0148521);

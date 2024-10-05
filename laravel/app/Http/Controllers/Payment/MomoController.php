@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Exception;
@@ -10,21 +11,14 @@ use Illuminate\Http\Request;
 
 class MomoController extends Controller
 {
-    private $orderRepository;
-
-    private $orderService;
-
     public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        OrderServiceInterface $orderService
-    ) {
-        $this->orderRepository = $orderRepository;
-        $this->orderService = $orderService;
-    }
+        protected OrderRepositoryInterface $orderRepository,
+        protected OrderServiceInterface $orderService
+    ) {}
 
     public function handleReturnUrl(Request $request)
     {
-        $configMomo = config('apps.paymentConfig.momo');
+        $configMomo = config('apps.payment-config')['momo'];
         $secretKey = $configMomo['secretKey'];
         $accessKey = $configMomo['accessKey'];
         $inputData = $request->query();
@@ -49,26 +43,18 @@ class MomoController extends Controller
 
             if ($m2signature == $partnerSignature) {
                 if ($inputData['resultCode'] == '0') {
-
-                    $request->session()->put('paymentReturn',  $inputData);
-                    $request->session()->put('templatePayment',  'clients.includes.momo');
-
                     $this->handleMomoIpn($inputData);
-
-                    return redirect()->route('cart.success')->with('toast_success', 'Đặt hàng thành công.');
                 }
             }
         }
-        // Xoa orderSuccess
-        $request->session()->forget('orderSuccess');
 
-        return redirect()->route('checkout')->with('toast_error', 'Đặt hàng thất bại, vui lòng thử lại!');
+        return redirect()->away(env('NUXT_APP_URL') . '/payment-fail');
     }
 
     private function handleMomoIpn($get)
     {
         // Tam thoi de private khi nao chuyen qua thanh toan live se chuyen thanh public va cau hinh kieu khac
-        $configMomo = config('apps.paymentConfig.momo');
+        $configMomo = config('apps.payment-config')['momo'];
         $secretKey = $configMomo['secretKey'];
         $accessKey = $configMomo['accessKey'];
 
@@ -94,21 +80,23 @@ class MomoController extends Controller
 
                 $partnerSignature = hash_hmac('sha256', $rawHash, $secretKey);
 
-                $order = $this->orderRepository->findByWhere(['code' => ['=', $get['orderId']]]);
+                $order = $this->orderRepository->findByWhere(['code' => $get['orderId']]);
 
                 if ($m2signature == $partnerSignature) {
                     if ($get['resultCode'] == '0') {
                         $result = '<div class="alert alert-success">Capture Payment Success</div>';
-                        $payload['payment'] = 'paid';
+                        $payload['payment_status'] = Order::PAYMENT_STATUS_PAID;
                     } else {
-                        $payload['payment'] = 'unpaid';
+                        $payload['payment_status'] = Order::PAYMENT_STATUS_UNPAID;
                         $result = '<div class="alert alert-danger">' . $get['message'] . '</div>';
                     }
                 } else {
-                    $payload['payment'] = 'unpaid';
+                    $payload['payment_status'] = Order::PAYMENT_STATUS_UNPAID;
                     $result = '<div class="alert alert-danger">This transaction could be hacked, please check your signature and returned signature</div>';
                 }
-                $this->orderService->update($order->id, $payload);
+                $payload['payment_detail'] = $get;
+
+                $this->orderService->updatePayment($order->id, $payload);
             } catch (Exception $e) {
                 echo $response['message'] = $e;
             }
@@ -120,9 +108,14 @@ class MomoController extends Controller
 
             if ($m2signature == $partnerSignature) {
                 $response['message'] = 'Received payment result success';
+
+                return redirect()->away(env('NUXT_APP_URL') . '/order-success?code=' . $get['orderId']);
             } else {
                 $response['message'] = 'ERROR! Fail checksum';
+
+                return redirect()->away(env('NUXT_APP_URL') . '/payment-fail');
             }
+
             $response['debugger'] = $debugger;
             // echo json_encode($response);
         }

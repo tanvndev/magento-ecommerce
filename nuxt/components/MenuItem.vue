@@ -1,3 +1,8 @@
+<script setup>
+const props = defineProps({
+  item: Object,
+})
+</script>
 <!-- components/MenuItem.vue -->
 <template>
   <li :class="['menu-item', { 'menu-item-has-children': item.childrens }]">
@@ -28,12 +33,6 @@
     </ul>
   </li>
 </template>
-
-<script setup>
-const props = defineProps({
-  item: Object,
-})
-</script>
 
 <style scoped>
 .menu-item {

@@ -103,6 +103,12 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Cart::class);
     }
 
+    //relationship Wishlist
+    public function wishLists()
+    {
+        return $this->hasMany(WishList::class);
+    }
+
     public function province()
     {
         return $this->belongsTo(Province::class, 'province_id', 'code');
@@ -116,5 +122,20 @@ class User extends Authenticatable implements JWTSubject
     public function ward()
     {
         return $this->belongsTo(Ward::class, 'ward_id', 'code');
+    }
+
+    public function user_addresses()
+    {
+        return $this->hasMany(UserAddress::class);
+    }
+
+    public function product_reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

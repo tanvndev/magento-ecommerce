@@ -1,3 +1,20 @@
+<script setup>
+const order = ref(null)
+const search = ref('')
+
+const { $axios } = useNuxtApp()
+
+const getOrderByCode = async () => {
+  if (!search.value) {
+    return
+  }
+
+  const response = await $axios.get(`/orders/${search.value}/detail`)
+  order.value = response.data
+}
+
+const debounceHandleSearch = debounce(getOrderByCode, 500)
+</script>
 <template>
   <div class="page-content mb-10 pb-2 mt-10">
     <div class="container">
@@ -10,6 +27,7 @@
           hint="Bạn có thể tìm kiếm theo ID đơn hàng"
           variant="outlined"
           clearable
+          autofocus
           density="comfortable"
           placeholder="Bạn có thể tìm kiếm theo ID đơn hàng"
         ></v-text-field>
@@ -192,23 +210,7 @@
     </div>
   </div>
 </template>
-<script setup>
-const order = ref(null)
-const search = ref('')
 
-const { $axios } = useNuxtApp()
-
-const getOrderByCode = async () => {
-  if (!search.value) {
-    return
-  }
-
-  const response = await $axios.get(`/getOrder/${search.value}`)
-  order.value = response.data
-}
-
-const debounceHandleSearch = debounce(getOrderByCode, 500)
-</script>
 <style scoped>
 .product-price .new-price {
   font-weight: normal;

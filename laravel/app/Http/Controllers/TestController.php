@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use Gloudemans\Shoppingcart\Facades\Cart;
+use App\Classes\Upload;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
     // public function index()
+
     // {
 
     //     $product = Product::query()
@@ -47,25 +47,9 @@ class TestController extends Controller
     //     return view('test');
     // }
 
-    public function getAllCart()
+    public function upload(Request $request)
     {
-        if (auth()->check()) {
-            // $userId = auth()->user()->id;
-            // $cart = $this->cartRepository->findByWhere(["user_id" => $userId]);
-            // return response()->json($cart);
-        }
-
-        return response()->json(Cart::content());
-    }
-
-    public function createOrUpdateCart(Request $request)
-    {
-        if (auth()->check()) {
-            // $userId = auth()->user()->id;
-            // $cart = $this->cartRepository->findByWhere(["user_id" => $userId]);
-            // return response()->json($cart);
-        }
-
-        return response()->json(Cart::content());
+        $file = $request->file('file');
+        Upload::uploadImage($file);
     }
 }

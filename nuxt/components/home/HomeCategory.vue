@@ -1,8 +1,23 @@
+<script setup>
+import { resizeImage } from '#imports'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Navigation, Autoplay } from 'swiper/modules'
+import 'swiper/css'
+import { useProductCatalogueStore } from '~/stores/productCatalogue'
+
+const productCatalogueStore = useProductCatalogueStore()
+const modules = [Navigation, Autoplay]
+const productCatalogues = computed(
+  () => productCatalogueStore.getProductCatalogues
+)
+const slider = ref(null)
+
+const onSwiper = (swiper) => {
+  slider.value = swiper
+}
+</script>
 <template>
-  <v-lazy
-    :options="{ threshold: 0.5 }"
-    transition="fade-transition"
-  >
+  <v-lazy :options="{ threshold: 0.5 }" transition="fade-transition">
     <div class="container">
       <div class="icon-box-wrapper br-sm mt-6 mb-6">
         <div class="row cols-md-4 cols-sm-3 cols-1">
@@ -154,24 +169,6 @@
   </v-lazy>
 </template>
 
-<script setup>
-import { resizeImage } from '#imports'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation, Autoplay } from 'swiper/modules'
-import 'swiper/css'
-import { useProductCatalogueStore } from '~/stores/productCatalogue'
-
-const productCatalogueStore = useProductCatalogueStore()
-const modules = [Navigation, Autoplay]
-const productCatalogues = computed(
-  () => productCatalogueStore.getProductCatalogues
-)
-const slider = ref(null)
-
-const onSwiper = (swiper) => {
-  slider.value = swiper
-}
-</script>
 <style scoped>
 .category-media {
   background-color: #fff;
@@ -182,6 +179,6 @@ const onSwiper = (swiper) => {
   object-fit: contain;
   background-color: #fff;
   border-radius: 6px;
-  mix-blend-mode: darken
+  mix-blend-mode: darken;
 }
 </style>
