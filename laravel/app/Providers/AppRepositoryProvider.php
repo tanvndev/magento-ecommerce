@@ -54,6 +54,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Order\OrderRepositoryInterface' => 'App\Repositories\Order\OrderRepository',
         // Slider
         'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
+        // Post
+        'App\Repositories\Interfaces\Post\PostRepositoryInterface' => 'App\Repositories\Post\PostRepository',
 
     ];
 

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\Location\LocationController;
 use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
+use App\Http\Controllers\Api\V1\Post\PostController;
 use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
@@ -138,6 +139,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // SLIDER ROUTE
         Route::apiResource('sliders', SliderController::class);
+
+        // POST ROUTE
+        Route::apiResource('posts', PostController::class);
     });
 
     // CART ROUTE

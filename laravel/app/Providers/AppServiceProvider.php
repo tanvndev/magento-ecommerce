@@ -60,6 +60,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Location\LocationServiceInterface' => 'App\Services\Location\LocationService',
         // Slider
         'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
+        // Post
+        'App\Services\Interfaces\Post\PostServiceInterface' => 'App\Services\Post\PostService',
     ];
 
     public function register(): void
