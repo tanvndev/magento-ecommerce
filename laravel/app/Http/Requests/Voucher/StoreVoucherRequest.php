@@ -44,6 +44,10 @@ class StoreVoucherRequest extends FormRequest
             $rules['value'] = 'required|integer|min:1|max:100';
         }
 
+        if ($this->has('usage_limit')) {
+            $rules['usage_limit'] = 'required|integer|min:1';
+        }
+
         return $rules;
     }
 
@@ -59,6 +63,7 @@ class StoreVoucherRequest extends FormRequest
             'quantity'        => 'Số lượng',
             'subtotal_price'  => 'Tổng giá trị đơn hàng tối thiểu',
             'min_quantity'    => 'Tổng số lượng sản phẩm được khuyến mại tối thiểu',
+            'usage_limit'     => 'Giới hạn số lượng',
         ];
     }
 

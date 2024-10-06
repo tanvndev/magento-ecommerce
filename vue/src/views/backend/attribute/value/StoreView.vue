@@ -2,7 +2,7 @@
   <MasterLayout>
     <template #template>
       <div class="mx-10 h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
         <form @submit.prevent="onSubmit">
           <a-card class="mt-3" title="Dữ liệu thuộc tính">
             <AleartError :errors="state.errors" />

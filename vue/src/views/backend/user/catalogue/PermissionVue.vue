@@ -2,7 +2,7 @@
   <MasterLayout>
     <template #template>
       <div class="mx-10 h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
         <a-card class="mt-3">
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full border-collapse text-left text-sm text-gray-500">

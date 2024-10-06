@@ -2,7 +2,7 @@
   <MasterLayout>
     <template #template>
       <div class="container mx-auto min-h-screen pb-[100px]">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
             <a-col :span="24">

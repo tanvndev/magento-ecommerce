@@ -31,11 +31,12 @@ class VoucherResource extends JsonResource
             'condition_apply'    => $this->condition_apply,
             'status'             => $this->getStatus(),
             'voucher_time'       => [
-                Carbon::parse($this->start_at)->format('d/m/Y H:i'),
-                Carbon::parse($this->end_at)->format('d/m/Y H:i')
+                $this->start_at,
+                $this->end_at,
             ],
             'publish'          => $this->publish,
             'text_description' => $this->getTextDescription(),
+            'usage_limit'      => $this->usage_limit,
         ];
     }
 
@@ -59,11 +60,18 @@ class VoucherResource extends JsonResource
             ];
         }
 
-        if ($start && $end && ($now->lt($start) || $now->gt($end))) {
-            return [
-                'color' => 'red',
-                'text'  => 'Đã hết hạn',
-            ];
+        if ($start && $end) {
+            if ($now->lt($start)) {
+                return [
+                    'color' => 'orange',
+                    'text'  => 'Chưa đến hạn',
+                ];
+            } elseif ($now->gt($end)) {
+                return [
+                    'color' => 'red',
+                    'text'  => 'Đã hết hạn',
+                ];
+            }
         }
 
         return [

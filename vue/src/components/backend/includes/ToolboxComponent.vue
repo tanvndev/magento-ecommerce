@@ -93,6 +93,7 @@ const filterOptions = reactive({
   publish: 0,
   search: ''
 });
+
 const removeRouteHide = () => {
   const routeHide = ['permission.index', 'attribute.index', 'attribute.update', 'order.index'];
   if (routeHide.includes(route.name)) {
@@ -102,9 +103,11 @@ const removeRouteHide = () => {
 };
 
 const onSearch = (searchValue) => {
-  filterOptions.search = searchValue;
+  filterOptions.search = searchValue.target.value;
   emits('onFilter', filterOptions);
 };
+
+const handleDebounceSearch = debounce(onSearch, 500);
 
 const handleFilterChange = debounce(() => {
   emits('onFilter', filterOptions);
@@ -126,10 +129,10 @@ const handleFilterChange = debounce(() => {
 
         <a-input
           class="w-[400px]"
-          v-model:value="filterOptions.search"
           placeholder="Nhập để tìm kiếm..."
           size="large"
-          @input="onSearch"
+          :allowClear="true"
+          @change="handleDebounceSearch"
         >
           <template #suffix>
             <i class="fas fa-search pr-1 text-gray-500"></i>
@@ -138,7 +141,7 @@ const handleFilterChange = debounce(() => {
       </a-space>
       <a-space :size="7" class="flex">
         <div v-if="props.isShowToolbox">
-          <a-dropdown trigger="click" class="mr-2">
+          <a-dropdown trigger="click" class="mr-2" v-if="removeRouteHide()">
             <a-button size="large">
               <i class="far fa-tools mr-2 text-[14px]"></i>
               <span>Công cụ</span>
