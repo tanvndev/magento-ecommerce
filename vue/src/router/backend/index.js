@@ -7,3 +7,4 @@ export { default as widgetRoutes } from './widgetRoutes';
 export { default as voucherRoutes } from './voucherRoutes';
 export { default as orderRoutes } from './orderRoutes';
 export { default as postRoutes } from './postRoutes';
+export { default as liveChatRoutes } from './liveChatRoutes';

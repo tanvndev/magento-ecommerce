@@ -19,6 +19,7 @@
         "league/glide": "^2.3",
         "league/glide-laravel": "^1.0",
         "predis/predis": "^2.2",
+        "pusher/pusher-php-server": "^7.2",
         "ramsey/uuid": "^4.7",
         "spatie/image-optimizer": "^1.7",
         "tymon/jwt-auth": "^2.1"

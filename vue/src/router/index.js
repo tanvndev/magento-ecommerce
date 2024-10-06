@@ -9,8 +9,7 @@ import {
   attributeRoutes,
   widgetRoutes,
   voucherRoutes,
-  orderRoutes,
-  postRoutes
+  orderRoutes
 } from './backend';
 
 import { isLoggedIn } from '@/middlewares/authenticate';
@@ -46,8 +45,7 @@ const routes = [
   ...attributeRoutes,
   ...widgetRoutes,
   ...voucherRoutes,
-  ...orderRoutes,
-  ...postRoutes
+  ...orderRoutes
 ];
 
 const router = createRouter({

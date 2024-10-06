@@ -102,6 +102,13 @@ const sidebar = [
     ]
   },
   {
+    id: 'live_chat_sidebar',
+    icon: 'fas fa-comments',
+    name: 'Nhắn tin',
+    route: 'live-chat.index',
+    subMenu: []
+  },
+  {
     id: 'order_sidebar',
     icon: 'fas fa-pallet-alt',
     name: 'Đơn hàng',
