@@ -100,7 +100,6 @@ import {
 import { useCRUD, usePagination } from '@/composables';
 import { debounce, resizeImage } from '@/utils/helpers';
 import { useRoute } from 'vue-router';
-import { formatCurrency } from '@/utils/format';
 
 // STATE
 const state = reactive({
@@ -116,6 +115,13 @@ const state = reactive({
 });
 
 const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    sorter: (a, b) => a.id - b.id,
+    width: '5%'
+  },
   {
     title: 'Ảnh',
     dataIndex: 'image',

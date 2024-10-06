@@ -28,10 +28,10 @@ class UserService extends BaseService implements UserServiceInterface
         $condition = [
             'search'       => addslashes($request->search),
             'publish'      => $request->publish,
-            'searchFields' => ['fullname', 'email', 'phone', 'address'],
+            'searchFields' => ['fullname', 'email', 'phone'],
         ];
 
-        $select = ['id', 'fullname', 'email', 'phone', 'address', 'publish', 'user_catalogue_id'];
+        $select = ['id', 'fullname', 'email', 'phone', 'publish', 'user_catalogue_id'];
         $pageSize = $request->pageSize;
 
         $data = $pageSize && $request->page

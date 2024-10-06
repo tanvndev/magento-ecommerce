@@ -108,6 +108,13 @@ const state = reactive({
 
 const columns = [
   {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    sorter: (a, b) => a.id - b.id,
+    width: '5%'
+  },
+  {
     title: 'Tên widget',
     dataIndex: 'name',
     key: 'name'
@@ -177,7 +184,6 @@ watch(selectedRows, () => {
 watch(
   () => route.query.archive,
   (newValue) => {
-
     state.filterOptions.archive = newValue === 'true' ? true : false;
     state.pageTitle = newValue === 'true' ? 'Danh sách lưu trữ widget' : 'Danh sách widget';
     deboucedFetchData();

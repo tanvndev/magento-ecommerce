@@ -26,8 +26,8 @@ class UserResource extends JsonResource
             'publish'        => $this->publish,
             'catalogue_id'   => $this->user_catalogue_id,
             'catalogue_name' => $this->user_catalogue->name,
-            'hint_email'     => hintEmail($this->email),
-            'hint_phone'     => hintPhoneNumber($this->phone),
+            'hint_email'     => hintEmail($this->email, ''),
+            'hint_phone'     => hintPhoneNumber($this->phone, ''),
             'addresses'      => UserAddressResource::collection($this->user_addresses),
         ];
     }

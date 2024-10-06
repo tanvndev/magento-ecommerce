@@ -19,28 +19,29 @@
   object-fit: cover;
 }
 
-:where(.css-dev-only-do-not-override-19iuou).ant-select-single.ant-select-lg .ant-select-selector {
+:where(.css-dev-only-do-not-override-17yhhjv).ant-select-single.ant-select-lg .ant-select-selector {
   font-size: 15px;
 }
-:where(.css-dev-only-do-not-override-19iuou).ant-input-affix-wrapper-lg {
-  font-size: 15px;
-}
-
-:where(.css-dev-only-do-not-override-19iuou).ant-select-multiple.ant-select-lg {
+:where(.css-dev-only-do-not-override-17yhhjv).ant-input-affix-wrapper-lg {
   font-size: 15px;
 }
 
-:where(.css-dev-only-do-not-override-19iuou).ant-input-number-lg {
+:where(.css-dev-only-do-not-override-17yhhjv).ant-select-multiple.ant-select-lg {
   font-size: 15px;
 }
 
-:where(.css-dev-only-do-not-override-19iuou).ant-picker-large .ant-picker-input > input {
+:where(.css-dev-only-do-not-override-17yhhjv).ant-input-number-lg {
   font-size: 15px;
 }
 
-:where(.css-dev-only-do-not-override-19iuou).ant-input-lg {
+:where(.css-dev-only-do-not-override-17yhhjv).ant-picker-large .ant-picker-input > input {
   font-size: 15px;
 }
+
+:where(.css-dev-only-do-not-override-17yhhjv).ant-input-lg {
+  font-size: 15px;
+}
+
 /* Switch */
 /* The switch - the box around the slider */
 .switch {

@@ -22,23 +22,6 @@ class PostService extends BaseService implements PostServiceInterface
     {
         $request = request();
 
-        $select = [
-            'id',
-            'user_id',
-            'name',
-            'image',
-            'description',
-            'content',
-            'canonical',
-            'icon',
-            'order',
-            'meta_title',
-            'meta_keyword',
-            'meta_description',
-            'publish',
-        ];
-
-
         $orderBy = ['id' => 'desc'];
         $relations = ['user'];
         $condition = [
@@ -49,7 +32,7 @@ class PostService extends BaseService implements PostServiceInterface
 
         $pageSize = $request->pageSize;
 
-        $data = $this->postRepository->pagination($select, $condition, $pageSize, $orderBy, [], $relations);
+        $data = $this->postRepository->pagination(['*'], $condition, $pageSize, $orderBy, [], $relations);
 
         return $data;
     }
@@ -89,6 +72,9 @@ class PostService extends BaseService implements PostServiceInterface
     {
         $payload = request()->except('_token', '_method');
 
+        $payload['user_id'] = auth()->user()->id;
+        $payload = $this->createSEO($payload);
+
         return $payload;
     }
 
@@ -98,20 +84,28 @@ class PostService extends BaseService implements PostServiceInterface
     {
         $request = request();
 
-        $select = [
-            'id',
-            'name',
-            'code',
-            'items',
-            'setting',
-            'publish',
-        ];
-
         $condition = ['publish' => 1];
 
         $orderBy = ['id' => 'DESC'];
 
-        $data = $this->postRepository->findByWhere($condition, $select, [], true, $orderBy);
+        $data = $this->postRepository->findByWhere($condition, ['*'], [], true, $orderBy);
+
+        return $data;
+    }
+
+    public function getPost(array $conditions = [])
+    {
+        $request = request();
+
+        $condition = [
+            'publish' => 1,
+        ];
+
+        $condition = array_merge($condition, $conditions);
+
+        $orderBy = ['id' => 'DESC'];
+
+        $data = $this->postRepository->findByWhere($condition, ['*'], [], false, $orderBy);
 
         return $data;
     }

@@ -59,6 +59,8 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('shipping-methods/products/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
     Route::post('vouchers/{code}/apply', [VoucherController::class, 'applyVoucher']);
     Route::get('product-reviews', [ProductReviewController::class, 'getAllProductReviews'])->name('index');
+    Route::get('posts/all', [PostController::class, 'getAllPost']);
+    Route::get('posts/{canonical}/detail', [PostController::class, 'getPostByCanonical']);
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
@@ -173,7 +175,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::delete('wishlists/clean', [WishListController::class, 'destroyAll']);
         Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
         Route::get('wishlists/send-mail', [WishListController::class, 'sendWishListMail']);
-
 
         // ORDER ROUTE
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');

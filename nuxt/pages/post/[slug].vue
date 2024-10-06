@@ -1,15 +1,37 @@
 <script setup>
 const date = ref(new Date())
+const post = ref(null)
+const loadingStore = useLoadingStore()
+const { $axios } = useNuxtApp()
+
+const route = useRoute()
+const { slug } = route.params
+
+const getPost = async () => {
+  try {
+    loadingStore.setLoading(true)
+    const response = await $axios.get(`/posts/${slug}/detail`)
+
+    post.value = response.data
+  } catch (error) {
+  } finally {
+    loadingStore.setLoading(false)
+  }
+}
+
+onMounted(() => {
+  getPost()
+})
 </script>
 <template>
-  <div class="page-content mb-8 mt-5">
+  <div class="page-content mb-8 mt-5" v-if="post">
     <div class="container">
       <div class="row gutter-lg">
         <div class="main-content post-single-content">
           <div class="post post-grid post-single">
             <figure class="post-media br-sm">
-              <img
-                src="assets/images/blog/single/1.jpg"
+              <v-img
+                :src="resizeImage(post?.image, 930, 500)"
                 alt="Blog"
                 width="930"
                 height="500"
@@ -17,82 +39,19 @@ const date = ref(new Date())
             </figure>
             <div class="post-details">
               <div class="post-meta">
-                by <a href="#" class="post-author">John Doe</a> -
-                <a href="#" class="post-date">03.01.2021</a>
+                Tác giả
+                <a href="#" class="post-author">{{ post?.user_name }}</a> -
+                <a href="#" class="post-date">{{ post?.created_at }}</a>
                 <a href="#" class="post-comment"
                   ><i class="w-icon-comments"></i><span>0</span>Comments</a
                 >
               </div>
               <h2 class="post-title">
-                <a href="#"
-                  >Fashion tells about who you are from external point</a
-                >
+                <a href="#">{{ post?.name }}</a>
               </h2>
-              <div class="post-content">
-                <p>
-                  Sed pretium, ligula sollicitudin laoreet viverra, tortor
-                  libero sodales leo, eget blandit nunc tortor eu nibh.
-                  Suspendisse potenti. Sed egstas, ant at vulputate volutpat,
-                  uctus metus libero eu augue, vitae luctus metus libero eu
-                  augue.
-                </p>
-                <p>
-                  Morbi purus libero, faucibus adi piscing, com modo quis,
-                  gravida iest. Sed lectus. Praesent elementum hendrerit tortor.
-                  Sed semper lorem at felis. Vestibulum volutpat, lacus a
-                  ultrices sagittis, mi neque euismod dui, eu pulvinar nunc
-                  sapien ornare nisl. pede arcu, dapibus eu, fermen tum et,
-                  dapibus sed, urna.
-                  <a href="#">Morbi interdum mollis sapien.</a>
-                  Sed ac risus. Pha sellus lacinia, magna a laoreet, lect us
-                  arcu pulvinar risus, vitae fac ilisis libero dolor a purus.
-                </p>
-              </div>
+              <div class="post-content" v-html="post?.content"></div>
             </div>
           </div>
-          <!-- End Post -->
-          <blockquote class="text-center mb-8">
-            <i class="fas fa-quote-left"></i>
-            <p class="font-weight-bold text-dark mt-1 mb-2">
-              War and Marketing Have Many Similarities
-            </p>
-            <cite class="font-weight-normal text-dark">JELLY CRISTIANA</cite>
-          </blockquote>
-          <!-- End Blockquote -->
-          <p class="mb-10">
-            Morbi interdum mollis sapien. Sed ac risus. Pha sellus lacinia,
-            magna a laoreet, lect us arcu pulvinar risus, vitae fac ilisis libeo
-            dolor. Sed vel lacus. Mauris nibh felis, adipiscing varius,
-            adipiscing in, lacinia vel, tellus. Suspendisse ac urna.
-          </p>
-          <h4 class="title title-md font-weight-bold">
-            Defaulting to Mindfulness: The Third Person Effect
-          </h4>
-          <p class="mb-2">
-            Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi
-            neque, aliquet vel, da pibus id, mattis vel, nisi. Sed pretium,
-            ligula soll itudin laoreet viverra. Sed lectus. Praesent elementum
-            hendrerit tortor. Sed semper lorem at felis. Vestibulum volutpat,
-            lacus a ultric sagittis, mi neque euismod duin.
-          </p>
-          <ul class="list-style-none list-type-check">
-            <li>
-              Nunc nec porttitor turpis. In eu risus enim neque, aliquet ve In
-              vitae mollis elit.
-            </li>
-            <li>Vivamus finibus vel mauris eu risus enut vehicula.</li>
-            <li>
-              Nullam a magna porttitor, dictum risus nec, fauci eu risus enbus
-              sapien.
-            </li>
-            <li>
-              Ultrices eros in eu risus encursus turpis massa tincidunt ante.
-            </li>
-          </ul>
-          <p>
-            Nibh ipsum consequat nisl vel. Non arcu risus quis varius quam
-            quisque id diam vel. Eu turpis egestas pharetra.
-          </p>
 
           <div class="social-links-wrapper mb-7">
             <div class="social-links">
@@ -138,7 +97,7 @@ const date = ref(new Date())
             <figure class="author-media mr-4">
               <img
                 src="assets/images/blog/single/1.png"
-                alt="Author"
+                :alt="post?.user_name"
                 width="105"
                 height="105"
               />
@@ -146,8 +105,8 @@ const date = ref(new Date())
             <div class="author-details">
               <div class="author-name-wrapper flex-wrap mb-2">
                 <h4 class="author-name font-weight-bold mb-2 pr-4 mr-auto">
-                  John Doe
-                  <span class="font-weight-normal text-default">(AUTHOR)</span>
+                  {{ post?.user_name }}
+                  <span class="font-weight-normal text-default">(Tác giả)</span>
                 </h4>
               </div>
               <p class="mb-0">
@@ -337,12 +296,10 @@ const date = ref(new Date())
               </div>
 
               <div class="widget widget-custom-block">
-                <h3 class="widget-title bb-no">Custom Block</h3>
+                <h3 class="widget-title bb-no">Mô tả</h3>
                 <div class="widget-body">
                   <p class="text-default mb-0">
-                    Fringilla urna porttitor rhoncus dolor purus. Luctus
-                    veneneratis lectus magna fring. Suspendisse potenti. Sed
-                    egestas, ante et vulputate volutpat, uctus metus libero.
+                    {{ post.description }}
                   </p>
                 </div>
               </div>
