@@ -30,22 +30,24 @@
             @change="handleTableChange"
           >
             <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'image'">
-                <div class="inline-block rounded border p-1">
-                  <img
-                    class="h-[50px] w-[50px] object-cover"
-                    :src="resizeImage(record.image, 100)"
-                    :alt="record.name"
-                  />
+              <template v-if="column.key === 'name'">
+                <div class="flex items-center">
+                  <div class="rounded border p-1">
+                    <img
+                      class="h-[50px] w-[50px] object-cover"
+                      :src="resizeImage(record.image, 100)"
+                    />
+                  </div>
+                  <RouterLink
+                    :to="{
+                      name: 'product.update',
+                      params: { id: record.product_id },
+                      query: { variant_id: record.id }
+                    }"
+                    class="ml-2 text-blue-500"
+                    >{{ record.name }}</RouterLink
+                  >
                 </div>
-              </template>
-
-              <template v-if="column.dataIndex === 'name'">
-                <RouterLink
-                  :to="{ name: 'brand.update', params: { id: record.id } }"
-                  class="text-blue-500"
-                  >{{ record.name }}
-                </RouterLink>
               </template>
 
               <template v-if="column.dataIndex === 'publish'">
@@ -100,16 +102,9 @@ const state = reactive({
 
 const columns = [
   {
-    title: 'Ảnh',
-    dataIndex: 'image',
-    key: 'image',
-    width: '7%'
-  },
-  {
-    title: 'Tên thương hiệu',
+    title: 'Bài viết',
     dataIndex: 'name',
-    key: 'name',
-    sorter: (a, b) => a.name.localeCompare(b.name)
+    key: 'name'
   },
   {
     title: 'Đường dẫn',
