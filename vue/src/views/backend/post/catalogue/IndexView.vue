@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
+      <div class="mx-10 h-screen">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
 
         <!-- Toolbox -->
@@ -31,7 +31,7 @@
           >
             <template #bodyCell="{ column, record }">
               <template v-if="column.dataIndex === 'image'">
-                <div class="rounded border p-1 inline-block">
+                <div class="inline-block rounded border p-1">
                   <img
                     class="h-[50px] w-[50px] object-cover"
                     :src="resizeImage(record.image, 100)"

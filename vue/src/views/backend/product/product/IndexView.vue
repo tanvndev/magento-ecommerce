@@ -1,8 +1,8 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+      <div class="mx-10 h-screen">
+        <BreadcrumbComponent :titlePage="state.pageTitle" :routeCreate="state.routeCreate" />
 
         <!-- Toolbox -->
         <ToolboxComponent
@@ -10,112 +10,108 @@
           :modelName="state.modelName"
           :isShowToolbox="state.isShowToolbox"
           :modelIds="state.modelIds"
+          @onFilter="onFilterOptions"
           @onChangeToolbox="onChangeToolbox"
         />
         <!-- End toolbox -->
 
-        <!-- Filter -->
-        <FilterComponent @onFilter="onFilterOptions" />
-        <!-- End filter -->
-
         <!-- Table -->
-        <a-card class="mt-3">
-          <a-table
-            bordered
-            :columns="columns"
-            :data-source="state.dataSource"
-            :row-selection="rowSelection"
-            :pagination="pagination"
-            :loading="loading"
-            @change="handleTableChange"
-            class="components-table-demo-nested"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'product_type'">
-                {{ getProductTypeLabel(record.product_type) }}
-              </template>
-              <template v-if="column.dataIndex === 'total_stock'">
-                <a-tag :color="record.total_stock_color">{{ record.total_stock }}</a-tag>
-              </template>
-              <template v-if="column.dataIndex === 'brand_name'">
-                <a-tag color="cyan">{{ record.brand_name }}</a-tag>
-              </template>
-              <template v-if="column.dataIndex === 'name'">
-                <RouterLink
-                  :to="{ name: 'product.update', params: { id: record.id } }"
-                  class="text-blue-500"
-                  >{{ record.name }}</RouterLink
-                >
-              </template>
-              <template v-if="column.dataIndex === 'catalogues'">
-                <div v-html="renderCatalogues(record.catalogues)"></div>
-              </template>
-              <template v-if="column.dataIndex === 'publish'">
-                <StatusSwitchComponent
-                  :record="record"
-                  :modelName="state.modelName"
-                  :field="column.dataIndex"
-                />
-              </template>
+        <a-table
+          bordered
+          :columns="columns"
+          :data-source="state.dataSource"
+          :row-selection="rowSelection"
+          :pagination="pagination"
+          :loading="loading"
+          @change="handleTableChange"
+          class="components-table-demo-nested mt-2"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.dataIndex === 'product_type'">
+              {{ getProductTypeLabel(record.product_type) }}
             </template>
+            <template v-if="column.dataIndex === 'total_stock'">
+              <a-tag :color="record.total_stock_color">{{ record.total_stock }}</a-tag>
+            </template>
+            <template v-if="column.dataIndex === 'brand_name'">
+              <a-tag color="cyan">{{ record.brand_name }}</a-tag>
+            </template>
+            <template v-if="column.dataIndex === 'name'">
+              <RouterLink
+                :to="{ name: 'product.update', params: { id: record.id } }"
+                class="text-blue-500"
+                >{{ record.name }}</RouterLink
+              >
+            </template>
+            <template v-if="column.dataIndex === 'catalogues'">
+              <div v-html="renderCatalogues(record.catalogues)"></div>
+            </template>
+            <template v-if="column.dataIndex === 'publish'">
+              <StatusSwitchComponent
+                :record="record"
+                :modelName="state.modelName"
+                :field="column.dataIndex"
+              />
+            </template>
+          </template>
 
-            <template #expandedRowRender="{ record }">
-              <a-table :columns="innerColumns" :data-source="record.variants" :pagination="false">
-                <template #bodyCell="{ column, record }">
-                  <template v-if="column.key === 'name'">
-                    <div class="flex items-center">
-                      <div class="rounded border p-1">
-                        <img
-                          class="h-[50px] w-[50px] object-cover"
-                          :src="resizeImage(record.image, 100)"
-                        />
-                      </div>
-                      <RouterLink
-                        :to="{
-                          name: 'product.update',
-                          params: { id: record.product_id },
-                          query: { variant_id: record.id }
-                        }"
-                        class="ml-2 text-blue-500"
-                        >{{ record.name }}</RouterLink
-                      >
+          <template #expandedRowRender="{ record }">
+            <a-table :columns="innerColumns" :data-source="record.variants" :pagination="false">
+              <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'name'">
+                  <div class="flex items-center">
+                    <div class="rounded border p-1">
+                      <img
+                        class="h-[50px] w-[50px] object-cover"
+                        :src="resizeImage(record.image, 100)"
+                      />
                     </div>
-                  </template>
-                  <template v-if="column.key === 'stock'">
-                    <a-tag :color="record.stock_color">{{ record.stock }}</a-tag>
-                  </template>
-
-                  <template v-if="column.dataIndex === 'cost_price'">
-                    {{ formatCurrency(record.cost_price) }}
-                  </template>
-                  <template v-if="column.dataIndex === 'price'">
-                    {{ formatCurrency(record.price) }}
-                  </template>
-                  <template v-if="column.dataIndex === 'sale_price'">
-                    {{ formatCurrency(record.sale_price) }}
-                  </template>
-
-                  <template v-if="column.key === 'shipping'">
-                    <ul class="mb-0 list-disc">
-                      <li>
-                        Cân nặng: <span class="font-bold">{{ record.weight }} g</span>
-                      </li>
-                      <li>
-                        Cao: <span class="font-bold">{{ record.height }} cm</span>
-                      </li>
-                      <li>
-                        Dài: <span class="font-bold">{{ record.length }} cm</span>
-                      </li>
-                      <li>
-                        Rộng: <span class="font-bold">{{ record.width }} cm</span>
-                      </li>
-                    </ul>
-                  </template>
+                    <RouterLink
+                      :to="{
+                        name: 'product.update',
+                        params: { id: record.product_id },
+                        query: { variant_id: record.id }
+                      }"
+                      class="ml-2 text-blue-500"
+                      >{{ record.name }}</RouterLink
+                    >
+                  </div>
                 </template>
-              </a-table>
-            </template>
-          </a-table>
-        </a-card>
+                <template v-if="column.key === 'stock'">
+                  <a-tag :color="record.stock_color">{{ record.stock }}</a-tag>
+                </template>
+
+                <template v-if="column.dataIndex === 'cost_price'">
+                  {{ formatCurrency(record.cost_price) }}
+                </template>
+                <template v-if="column.dataIndex === 'price'">
+                  {{ formatCurrency(record.price) }}
+                </template>
+                <template v-if="column.dataIndex === 'sale_price'">
+                  {{ formatCurrency(record.sale_price) }}
+                </template>
+
+                <template v-if="column.key === 'shipping'">
+                  <ul class="mb-0 list-disc">
+                    <li>
+                      Cân nặng: <span class="font-bold">{{ record.weight }} g</span>
+                    </li>
+                    <li>
+                      Cao: <span class="font-bold">{{ record.height }} cm</span>
+                    </li>
+                    <li>
+                      Dài: <span class="font-bold">{{ record.length }} cm</span>
+                    </li>
+                    <li>
+                      Rộng: <span class="font-bold">{{ record.width }} cm</span>
+                    </li>
+                  </ul>
+                </template>
+              </template>
+            </a-table>
+          </template>
+        </a-table>
+
         <!-- End table -->
       </div>
     </template>
@@ -129,7 +125,6 @@ import { columns, innerColumns } from './columns';
 import {
   BreadcrumbComponent,
   MasterLayout,
-  FilterComponent,
   StatusSwitchComponent,
   ToolboxComponent
 } from '@/components/backend';

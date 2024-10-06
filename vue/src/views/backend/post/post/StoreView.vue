@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
+      <div class="mx-10 h-screen">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
@@ -60,8 +60,8 @@
           </a-row>
 
           <div class="fixed bottom-0 right-[19px] p-10">
-            <a-button html-type="submit" type="primary">
-              <i class="far fa-save mr-2"></i>
+            <a-button html-type="submit" type="primary" size="large">
+              <i class="fas fa-save mr-2"></i>
               <span>Lưu thông tin</span>
             </a-button>
           </div>

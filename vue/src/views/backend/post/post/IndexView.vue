@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
+      <div class="mx-10 h-screen">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
 
         <!-- Toolbox -->

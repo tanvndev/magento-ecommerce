@@ -1,7 +1,7 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
+      <div class="mx-10 h-screen">
         <BreadcrumbComponent :titlePage="state.pageTitle" />
 
         <!-- Toolbox -->
@@ -62,7 +62,7 @@
               </template>
               <template v-if="column.dataIndex === 'action'">
                 <RouterLink
-                  class="rounded-[6px] border border-yellow-500 px-[14px] py-[7px] text-yellow-500 hover:bg-yellow-500 hover:text-white"
+                  class="rounded-[6px] bg-primary-500 px-[8px] py-[7px] text-white hover:bg-primary-400 hover:text-white"
                   :to="{ name: 'order.update', params: { code: record.code } }"
                 >
                   <i class="fas fa-edit"></i

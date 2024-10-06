@@ -1,29 +1,86 @@
-<template>
-  <a-card class="my-4">
-    <a-breadcrumb class="mb-2">
-      <a-breadcrumb-item>
-        <RouterLink :to="{ name: 'dashboard' }">
-          <i class="fas fa-home-lg-alt mr-2"></i>
-          <span>Dashboard</span>
-        </RouterLink>
-      </a-breadcrumb-item>
-      <a-breadcrumb-item>
-        <span>
-          {{ props.titlePage }}
-        </span>
-      </a-breadcrumb-item>
-    </a-breadcrumb>
-    <a-page-header :title="props.titlePage" class="p-0" @back="() => router.back()" />
-  </a-card>
-</template>
 <script setup>
-import { RouterLink, useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import BaseService from '@/services/BaseService';
+import { message } from 'ant-design-vue';
 
+const emits = defineEmits(['onChangeToolbox']);
+
+const router = useRouter();
+const route = useRoute();
 const props = defineProps({
   titlePage: {
     type: String,
     required: true
+  },
+  isShowToolbox: {
+    type: Boolean
+  },
+  routeCreate: {
+    type: String,
+    required: true
+  },
+  modelName: {
+    type: String,
+    required: true
+  },
+  modelIds: {
+    type: [Object, Array]
   }
 });
-const router = useRouter();
+
+const handleChangePublish = async (value) => {
+  const payload = {
+    modelName: props.modelName,
+    modelIds: props.modelIds,
+    field: 'publish',
+    value
+  };
+
+  const response = await BaseService.changeStatusAll(payload);
+  const type = response.success ? 'success' : 'error';
+
+  emits('onChangeToolbox');
+  message[type](response.messages);
+};
+
+const removeRouteHide = () => {
+  const routeHide = ['permission.index', 'attribute.index', 'order.index'];
+  if (routeHide.includes(route.name)) {
+    return false;
+  }
+  return true;
+};
 </script>
+<template>
+  <a-card class="mb-2 mt-4">
+    <a-page-header class="p-0" @back="() => router.back()">
+      <template #title>
+        <span class="text-[18px] uppercase">
+          {{ titlePage }}
+        </span>
+      </template>
+
+      <template #extra>
+        <a-button
+          v-if="route.name == 'user.catalogue.index'"
+          size="large"
+          class="btn-warning"
+          @click="() => router.push({ name: 'user.catalogue.permission' })"
+        >
+          <i class="fas fa-key-skeleton mr-2 text-[13px]"></i>
+          <span>Phân Quyền</span>
+        </a-button>
+
+        <a-button
+          size="large"
+          type="primary"
+          class="btn-success"
+          @click="() => router.push({ name: routeCreate })"
+        >
+          <i class="far fa-plus mr-2 text-[14px]"></i>
+          Thêm mới
+        </a-button>
+      </template>
+    </a-page-header>
+  </a-card>
+</template>

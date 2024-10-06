@@ -1,131 +1,12 @@
-<template>
-  <a-card>
-    <a-space :size="12" class="flex justify-end">
-      <div v-if="props.isShowToolbox">
-        <a-dropdown trigger="click" class="mr-3" v-if="removeRouteHide()">
-          <a-button class="h-[37px]" v-if="!hasArchive">
-            <i class="far fa-tools mr-2"></i>
-            <span>Công cụ</span>
-          </a-button>
-          <template #overlay>
-            <a-menu>
-              <a-menu-item>
-                <a-popconfirm
-                  title="Bạn có chắc chắn muốn xuất bản toàn bộ không?"
-                  ok-text="Xác nhận"
-                  cancel-text="Hủy"
-                  @confirm="handleChangePublish(1)"
-                >
-                  <a-button type="link" class="block w-full text-left text-black">
-                    <span>Xuất bản toàn bộ</span>
-                  </a-button>
-                </a-popconfirm>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm
-                  title="Bạn có chắc chắn muốn hủy xuất bản toàn bộ không?"
-                  ok-text="Xác nhận"
-                  cancel-text="Hủy"
-                  @confirm="handleChangePublish(2)"
-                >
-                  <a-button type="link" class="block w-full text-left text-black">
-                    <span>Hủy xuất bản toàn bộ</span>
-                  </a-button>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-
-        <a-dropdown trigger="click" class="" v-if="removeRouteHide()">
-          <a-button danger class="h-[36px]">
-            <i class="fas fa-trash-alt mr-2"></i>
-            <span>Thùng rác</span>
-          </a-button>
-          <template #overlay>
-            <a-menu>
-              <a-menu-item v-if="hideArchive()">
-                <!-- Khôi phục Lưu trữ -->
-                <a-popconfirm
-                  v-if="hasArchive"
-                  title="Bạn có chắc chắn muốn hủy hủy lưu trữ toàn bộ không?"
-                  ok-text="Xác nhận"
-                  cancel-text="Hủy"
-                  @confirm="handleArchive()"
-                >
-                  <a-button type="link" class="block w-full text-left text-black">
-                    <span>Hủy lưu trữ toàn bộ</span>
-                  </a-button>
-                </a-popconfirm>
-
-                <!-- Luu trữ -->
-                <a-popconfirm
-                  v-else
-                  title="Bạn có chắc chắn muốn lưu trữ toàn bộ không?"
-                  ok-text="Xác nhận"
-                  cancel-text="Hủy"
-                  @confirm="handleDeleteMultiple(0)"
-                >
-                  <a-button type="link" class="block w-full text-left text-black">
-                    <span>Lưu trữ toàn bộ</span>
-                  </a-button>
-                </a-popconfirm>
-              </a-menu-item>
-              <a-menu-item>
-                <a-popconfirm
-                  title="Bạn có chắc chắn muốn xuất bản toàn bộ không?"
-                  ok-text="Xác nhận"
-                  cancel-text="Hủy"
-                  @confirm="handleDeleteMultiple(1)"
-                >
-                  <a-button type="link" class="block w-full text-left text-black">
-                    <span>Xóa toàn bộ</span>
-                  </a-button>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-      </div>
-
-      <a
-        v-if="hideArchive()"
-        href="#"
-        @click.prevent="handleChangeArchive"
-        class="rounded-[6px] border border-orange-500 px-[16px] py-[9px] text-orange-500 hover:bg-orange-500 hover:text-white"
-        :class="{ 'bg-orange-500 text-white': hasArchive }"
-      >
-        <i class="fas fa-archive mr-2"></i>
-        <span>Lưu trữ</span>
-      </a>
-
-      <RouterLink
-        :to="{ name: props.routeCreate }"
-        class="rounded-[6px] border border-emerald-500 px-[16px] py-[9px] text-emerald-500 hover:bg-emerald-500 hover:text-white"
-      >
-        <i class="fas fa-plus mr-2"></i>
-        <span>Thêm mới</span>
-      </RouterLink>
-
-      <RouterLink
-        v-if="route.name === 'user.catalogue.index'"
-        :to="{ name: 'user.catalogue.permission' }"
-        class="rounded-[6px] border border-orange-400 px-[16px] py-[9px] text-orange-400 hover:bg-orange-400 hover:text-white"
-      >
-        <i class="fas fa-key-skeleton mr-2"></i>
-        <span>Phân Quyền</span>
-      </RouterLink>
-    </a-space>
-  </a-card>
-</template>
-
 <script setup>
 import BaseService from '@/services/BaseService';
 import { useRoute, useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
+import { debounce } from '@/utils/helpers';
+import { PUBLISH as publishFilter } from '@/static/constants';
 
-const emits = defineEmits(['onChangeToolbox']);
+const emits = defineEmits(['onChangeToolbox', 'onFilter', 'onSearch']);
 const route = useRoute();
 const router = useRouter();
 const hasArchive = ref(false);
@@ -145,21 +26,6 @@ const props = defineProps({
     type: [Object, Array]
   }
 });
-
-const handleChangePublish = async (value) => {
-  const payload = {
-    modelName: props.modelName,
-    modelIds: props.modelIds,
-    field: 'publish',
-    value
-  };
-
-  const response = await BaseService.changeStatusAll(payload);
-  const type = response.success ? 'success' : 'error';
-
-  emits('onChangeToolbox');
-  message[type](response.messages);
-};
 
 const handleChangeArchive = () => {
   const currentQuery = { ...route.query };
@@ -187,20 +53,27 @@ const handleArchive = async () => {
   message[type](response.messages);
 };
 
-const removeRouteHide = () => {
-  const routeHide = ['permission.index', 'attribute.index', 'order.index'];
-  if (routeHide.includes(route.name)) {
-    return false;
-  }
-  return true;
-};
-
 const hideArchive = () => {
   const routeHide = ['attribute.index', 'permission.index', 'order.index'];
   if (routeHide.includes(route.name)) {
     return false;
   }
   return true;
+};
+
+const handleChangePublish = async (value) => {
+  const payload = {
+    modelName: props.modelName,
+    modelIds: props.modelIds,
+    field: 'publish',
+    value
+  };
+
+  const response = await BaseService.changeStatusAll(payload);
+  const type = response.success ? 'success' : 'error';
+
+  emits('onChangeToolbox');
+  message[type](response.messages);
 };
 
 const handleDeleteMultiple = async (force = 0) => {
@@ -215,4 +88,157 @@ const handleDeleteMultiple = async (force = 0) => {
   emits('onChangeToolbox');
   message[type](response.messages);
 };
+
+const filterOptions = reactive({
+  publish: 0,
+  search: ''
+});
+const removeRouteHide = () => {
+  const routeHide = ['permission.index', 'attribute.index', 'attribute.update', 'order.index'];
+  if (routeHide.includes(route.name)) {
+    return false;
+  }
+  return true;
+};
+
+const onSearch = (searchValue) => {
+  filterOptions.search = searchValue;
+  emits('onFilter', filterOptions);
+};
+
+const handleFilterChange = debounce(() => {
+  emits('onFilter', filterOptions);
+}, 500);
 </script>
+
+<template>
+  <a-card>
+    <div class="flex justify-between">
+      <a-space :size="12" class="flex justify-end">
+        <a-select
+          size="large"
+          @change="handleFilterChange"
+          v-model:value="filterOptions.publish"
+          class="w-[230px]"
+          :options="publishFilter"
+        >
+        </a-select>
+
+        <a-input
+          class="w-[400px]"
+          v-model:value="filterOptions.search"
+          placeholder="Nhập để tìm kiếm..."
+          size="large"
+          @input="onSearch"
+        >
+          <template #suffix>
+            <i class="fas fa-search pr-1 text-gray-500"></i>
+          </template>
+        </a-input>
+      </a-space>
+      <a-space :size="7" class="flex">
+        <div v-if="props.isShowToolbox">
+          <a-dropdown trigger="click" class="mr-2">
+            <a-button size="large">
+              <i class="far fa-tools mr-2 text-[14px]"></i>
+              <span>Công cụ</span>
+            </a-button>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item>
+                  <a-popconfirm
+                    title="Bạn có chắc chắn muốn xuất bản toàn bộ không?"
+                    ok-text="Xác nhận"
+                    cancel-text="Hủy"
+                    @confirm="handleChangePublish(1)"
+                  >
+                    <a-button type="link" class="block w-full text-left text-black">
+                      <span>Xuất bản toàn bộ</span>
+                    </a-button>
+                  </a-popconfirm>
+                </a-menu-item>
+                <a-menu-item>
+                  <a-popconfirm
+                    title="Bạn có chắc chắn muốn hủy xuất bản toàn bộ không?"
+                    ok-text="Xác nhận"
+                    cancel-text="Hủy"
+                    @confirm="handleChangePublish(2)"
+                  >
+                    <a-button type="link" class="block w-full text-left text-black">
+                      <span>Hủy xuất bản toàn bộ</span>
+                    </a-button>
+                  </a-popconfirm>
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+
+          <a-dropdown trigger="click" class="" v-if="removeRouteHide()">
+            <a-button size="large">
+              <i class="fas fa-trash-alt mr-2 text-[14px]"></i>
+              <span>Thùng rác</span>
+            </a-button>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item v-if="hideArchive()">
+                  <!-- Khôi phục Lưu trữ -->
+                  <a-popconfirm
+                    v-if="hasArchive"
+                    title="Bạn có chắc chắn muốn hủy hủy lưu trữ toàn bộ không?"
+                    ok-text="Xác nhận"
+                    cancel-text="Hủy"
+                    @confirm="handleArchive()"
+                  >
+                    <a-button type="link" class="block w-full text-left text-black">
+                      <span>Hủy lưu trữ toàn bộ</span>
+                    </a-button>
+                  </a-popconfirm>
+
+                  <!-- Luu trữ -->
+                  <a-popconfirm
+                    v-else
+                    title="Bạn có chắc chắn muốn lưu trữ toàn bộ không?"
+                    ok-text="Xác nhận"
+                    cancel-text="Hủy"
+                    @confirm="handleDeleteMultiple(0)"
+                  >
+                    <a-button type="link" class="block w-full text-left text-black">
+                      <span>Lưu trữ toàn bộ</span>
+                    </a-button>
+                  </a-popconfirm>
+                </a-menu-item>
+                <a-menu-item>
+                  <a-popconfirm
+                    title="Bạn có chắc chắn muốn xuất bản toàn bộ không?"
+                    ok-text="Xác nhận"
+                    cancel-text="Hủy"
+                    @confirm="handleDeleteMultiple(1)"
+                  >
+                    <a-button type="link" class="block w-full text-left text-black">
+                      <span>Xóa toàn bộ</span>
+                    </a-button>
+                  </a-popconfirm>
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+        </div>
+
+        <a-button size="large">
+          <i class="far fa-redo mr-2 text-[14px]"></i>
+          <span>Tải lại trang</span>
+        </a-button>
+        <a
+          v-if="hideArchive()"
+          href="#"
+          @click.prevent="handleChangeArchive"
+          class="rounded-[4px] border border-orange-500 px-[19px] py-[9px] text-[16px] text-orange-500 hover:bg-orange-500 hover:text-white"
+          :class="{ 'bg-orange-500 text-white': hasArchive }"
+        >
+          <i class="fas fa-archive mr-2 text-[14px]"></i>
+          <span>Lưu trữ</span>
+        </a>
+      </a-space>
+    </div>
+  </a-card>
+</template>
