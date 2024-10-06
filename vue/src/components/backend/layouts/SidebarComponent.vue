@@ -35,6 +35,13 @@
             </RouterLink>
           </a-menu-item>
         </a-sub-menu>
+
+        <a-menu-item key="setting_sidebar">
+          <RouterLink class="inline-flex cursor-pointer items-center" :to="{ name: 'setting' }">
+            <i class="fas fa-cog mr-3 text-[16px]"></i>
+            <span class="ml-1">Cấu hình</span>
+          </RouterLink>
+        </a-menu-item>
       </a-menu>
     </div>
   </aside>

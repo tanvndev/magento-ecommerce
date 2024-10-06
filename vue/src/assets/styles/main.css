@@ -1,6 +1,17 @@
 @import './normalize.css';
 @import './base.css';
 
+/* custom */
+
+.btn-success {
+  background-color: #10b981;
+  color: #fff;
+}
+.btn-success:hover {
+  background-color: #10b981 !important;
+  opacity: 0.8;
+}
+
 /* Ant custom css */
 .ant-card {
   border: none;
@@ -42,10 +53,25 @@
   font-size: 15px;
 }
 
+:where(.css-dev-only-do-not-override-17yhhjv).ant-card {
+  border-radius: 4px;
+}
+
+:where(.css-dev-only-do-not-override-17yhhjv).ant-card .ant-card-body {
+  padding: 18px 20px;
+}
+:where(.css-dev-only-do-not-override-17yhhjv).ant-btn.ant-btn-lg {
+  border-radius: 4px;
+}
+
+:where(.css-dev-only-do-not-override-17yhhjv).ant-select-single.ant-select-lg:not(.ant-select-customize-input) .ant-select-selector{
+    height: 38.5px;
+}
+
 /* Switch */
 /* The switch - the box around the slider */
 .switch {
-  font-size: 14px;
+  font-size: 12px;
   position: relative;
   display: inline-block;
   width: 3.5em;

@@ -6,28 +6,18 @@ const sidebar = [
     route: 'dashboard',
     subMenu: []
   },
+
   {
-    id: 'widget_sidebar',
-    icon: 'fas fa-shapes text-[16px]',
-    name: 'Widget',
-    route: 'widget.index',
-    active: ['widget'],
-    subMenu: []
-  },
-  {
-    id: 'voucher_sidebar',
-    icon: 'fas fa-badge-percent text-[16px]',
-    name: 'Khuyến mại',
-    route: 'voucher.index',
-    active: ['voucher'],
-    subMenu: []
-  },
-  {
-    id: 'setting_sidebar',
-    icon: 'fas fa-cog text-[16px]',
-    name: 'Cấu hình',
-    route: 'setting',
-    subMenu: []
+    id: 'order_sidebar',
+    icon: 'fas fa-pallet-alt',
+    name: 'Đơn hàng',
+    active: ['order'],
+    subMenu: [
+      {
+        name: 'Danh sách đơn hàng',
+        route: 'order.index'
+      }
+    ]
   },
   {
     id: 'user_sidebar',
@@ -50,43 +40,15 @@ const sidebar = [
     ]
   },
   {
-    id: 'post_sidebar',
-    icon: 'fas fa-newspaper',
-    name: 'Bài viết',
-    active: ['post'],
-    subMenu: [
-      {
-        name: 'Danh sách bài viết',
-        route: 'post.index'
-      },
-      {
-        name: 'Nhóm bài viết',
-        route: 'post.catalogue.index'
-      }
-    ]
-  },
-  {
-    id: 'attribute_sidebar',
-    icon: 'fab fa-buffer',
-    name: 'Thuộc tính',
-    active: ['attribute'],
+    id: 'product_sidebar',
+    icon: 'fas fa-box-check',
+    name: 'Sản phẩm',
+    active: ['product', 'brand', 'attribute'],
     subMenu: [
       {
         name: 'Danh sách thuộc tính',
         route: 'attribute.index'
       },
-      {
-        name: 'Thêm mới giá trị',
-        route: 'attribute.value.store'
-      }
-    ]
-  },
-  {
-    id: 'product_sidebar',
-    icon: 'fas fa-box-check',
-    name: 'Sản phẩm',
-    active: ['product', 'brand'],
-    subMenu: [
       {
         name: 'Danh sách thương hiệu',
         route: 'brand.index'
@@ -109,14 +71,34 @@ const sidebar = [
     subMenu: []
   },
   {
-    id: 'order_sidebar',
-    icon: 'fas fa-pallet-alt',
-    name: 'Đơn hàng',
-    active: ['order'],
+    id: 'marketing_sidebar',
+    icon: 'fas fa-bullhorn',
+    name: 'Marketing',
+    active: ['voucher', 'widget'],
     subMenu: [
       {
-        name: 'Danh sách đơn hàng',
-        route: 'order.index'
+        name: 'Danh sách khuyến mại',
+        route: 'voucher.index'
+      },
+      {
+        name: 'Danh sách widget',
+        route: 'widget.index'
+      }
+    ]
+  },
+  {
+    id: 'post_sidebar',
+    icon: 'fas fa-newspaper',
+    name: 'Bài viết',
+    active: ['post'],
+    subMenu: [
+      {
+        name: 'Danh sách bài viết',
+        route: 'post.index'
+      },
+      {
+        name: 'Nhóm bài viết',
+        route: 'post.catalogue.index'
       }
     ]
   }

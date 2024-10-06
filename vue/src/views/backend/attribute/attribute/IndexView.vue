@@ -1,8 +1,8 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+      <div class="mx-10 h-screen">
+        <BreadcrumbComponent :titlePage="state.pageTitle" :routeCreate="state.routeCreate" />
 
         <!-- Toolbox -->
         <ToolboxComponent
@@ -10,52 +10,48 @@
           :modelName="state.modelName"
           :isShowToolbox="state.isShowToolbox"
           :modelIds="state.modelIds"
+          @onFilter="onFilterOptions"
           @onChangeToolbox="onChangeToolbox"
         />
         <!-- End toolbox -->
 
-        <!-- Filter -->
-        <FilterComponent @onFilter="onFilterOptions" />
-        <!-- End filter -->
-
         <!-- Table -->
-        <a-card class="mt-3">
-          <a-table
-            bordered
-            :columns="columns"
-            :data-source="state.dataSource"
-            :row-selection="rowSelection"
-            :pagination="pagination"
-            :loading="loading"
-            @change="handleTableChange"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'name'">
-                <RouterLink
-                  class="text-primary-500"
-                  :to="{ name: 'attribute.update', params: { id: record.id } }"
-                >
-                  {{ record.name }}
-                </RouterLink>
-              </template>
-            </template>
-
-            <template #expandedRowRender="{ record }">
-              <h2>Giá trị thuộc tính</h2>
-              <ul
-                class="mb-0 ml-10 mt-3 flex list-disc flex-wrap gap-x-7 gap-y-3"
-                v-if="record.values.length"
+        <a-table
+          bordered
+          class="mt-2"
+          :columns="columns"
+          :data-source="state.dataSource"
+          :row-selection="rowSelection"
+          :pagination="pagination"
+          :loading="loading"
+          @change="handleTableChange"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.dataIndex === 'name'">
+              <RouterLink
+                class="text-primary-500"
+                :to="{ name: 'attribute.update', params: { id: record.id } }"
               >
-                <li class="text-primary-500" v-for="value in record.values" :key="value.id">
-                  <RouterLink :to="{ name: 'attribute.value.update', params: { id: value.id } }">
-                    {{ value.name }}
-                  </RouterLink>
-                </li>
-              </ul>
-              <div class="ml-10 text-red-500" v-else>Chưa có giá trị thuộc tính</div>
+                {{ record.name }}
+              </RouterLink>
             </template>
-          </a-table>
-        </a-card>
+          </template>
+
+          <template #expandedRowRender="{ record }">
+            <h2>Giá trị thuộc tính</h2>
+            <ul
+              class="mb-0 ml-10 mt-3 flex list-disc flex-wrap gap-x-7 gap-y-3"
+              v-if="record.values.length"
+            >
+              <li class="text-primary-500" v-for="value in record.values" :key="value.id">
+                <RouterLink :to="{ name: 'attribute.value.update', params: { id: value.id } }">
+                  {{ value.name }}
+                </RouterLink>
+              </li>
+            </ul>
+            <div class="ml-10 text-red-500" v-else>Chưa có giá trị thuộc tính</div>
+          </template>
+        </a-table>
         <!-- End table -->
       </div>
     </template>
@@ -64,12 +60,7 @@
 
 <script setup>
 import { onMounted, reactive, watch } from 'vue';
-import {
-  BreadcrumbComponent,
-  MasterLayout,
-  FilterComponent,
-  ToolboxComponent
-} from '@/components/backend';
+import { BreadcrumbComponent, MasterLayout, ToolboxComponent } from '@/components/backend';
 import { useCRUD, usePagination } from '@/composables';
 
 // STATE

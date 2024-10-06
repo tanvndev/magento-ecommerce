@@ -45,7 +45,7 @@
         </a-row>
       </form>
       <template #footer>
-        <a-button @click="onSubmit" type="primary">
+        <a-button @click="onSubmit" type="primary" size="large">
           <span>Lưu lại</span>
         </a-button>
 

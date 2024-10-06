@@ -1,8 +1,8 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+      <div class="mx-10 h-screen">
+        <BreadcrumbComponent :titlePage="state.pageTitle" :routeCreate="state.routeCreate" />
 
         <!-- Toolbox -->
         <ToolboxComponent
@@ -10,63 +10,59 @@
           :modelName="state.modelName"
           :isShowToolbox="state.isShowToolbox"
           :modelIds="state.modelIds"
+          @onFilter="onFilterOptions"
           @onChangeToolbox="onChangeToolbox"
         />
         <!-- End toolbox -->
 
-        <!-- Filter -->
-        <FilterComponent @onFilter="onFilterOptions" />
-        <!-- End filter -->
-
         <!-- Table -->
-        <a-card class="mt-3">
-          <a-table
-            bordered
-            :columns="columns"
-            :data-source="state.dataSource"
-            :row-selection="rowSelection"
-            :pagination="pagination"
-            :loading="loading"
-            @change="handleTableChange"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'catalogue_name'">
-                <a-tag color="blue">{{ record.catalogue_name }}</a-tag>
-              </template>
-
-              <template v-if="column.dataIndex === 'publish'">
-                <StatusSwitchComponent
-                  :record="record"
-                  :modelName="state.modelName"
-                  :field="column.dataIndex"
-                />
-              </template>
-
-              <template v-if="column.dataIndex === 'action'">
-                <ActionComponent
-                  @onDelete="onDelete"
-                  :id="record.id"
-                  :routeUpdate="state.routeUpdate"
-                  :endpoint="state.endpoint"
-                />
-              </template>
+        <a-table
+          bordered
+          class="mt-2"
+          :columns="columns"
+          :data-source="state.dataSource"
+          :row-selection="rowSelection"
+          :pagination="pagination"
+          :loading="loading"
+          @change="handleTableChange"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.dataIndex === 'catalogue_name'">
+              <a-tag color="blue">{{ record.catalogue_name }}</a-tag>
             </template>
 
-            <template #expandedRowRender="{ record }">
-              <h2>Địa chỉ giao hàng</h2>
-              <ul class="mb-0 ml-10 mt-3 list-disc" v-if="record?.addresses?.length">
-                <li class="mb-2" v-for="address in record.addresses" :key="address.id">
-                  <span class="capitalize"> {{ address.fullname }} - </span>
-                  <span class="text-primary-500"> {{ address.phone }} - </span>
-                  <span>
-                    {{ address.shipping_address }}
-                  </span>
-                </li>
-              </ul>
-              <div class="ml-10 text-red-500" v-else>Chưa có sẵn địa chỉ.</div>
+            <template v-if="column.dataIndex === 'publish'">
+              <StatusSwitchComponent
+                :record="record"
+                :modelName="state.modelName"
+                :field="column.dataIndex"
+              />
             </template>
-          </a-table>
-        </a-card>
+
+            <template v-if="column.dataIndex === 'action'">
+              <ActionComponent
+                @onDelete="onDelete"
+                :id="record.id"
+                :routeUpdate="state.routeUpdate"
+                :endpoint="state.endpoint"
+              />
+            </template>
+          </template>
+
+          <template #expandedRowRender="{ record }">
+            <h2>Địa chỉ giao hàng</h2>
+            <ul class="mb-0 ml-10 mt-3 list-disc" v-if="record?.addresses?.length">
+              <li class="mb-2" v-for="address in record.addresses" :key="address.id">
+                <span class="capitalize"> {{ address.fullname }} - </span>
+                <span class="text-primary-500"> {{ address.phone }} - </span>
+                <span>
+                  {{ address.shipping_address }}
+                </span>
+              </li>
+            </ul>
+            <div class="ml-10 text-red-500" v-else>Chưa có sẵn địa chỉ.</div>
+          </template>
+        </a-table>
         <!-- End table -->
       </div>
     </template>
@@ -78,7 +74,6 @@ import { onMounted, reactive, watch } from 'vue';
 import {
   BreadcrumbComponent,
   MasterLayout,
-  FilterComponent,
   StatusSwitchComponent,
   ToolboxComponent,
   ActionComponent
