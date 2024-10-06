@@ -5,6 +5,7 @@ namespace App\Http\Resources\Order;
 use App\Http\Resources\User\UserResource;
 use App\Models\Order;
 use App\Models\PaymentMethod;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,6 +20,7 @@ class OrderResource extends JsonResource
     {
         return [
             'id'                          => $this->id ?? '',
+            'key'                         => $this->id,
             'code'                        => $this->code,
             'customer_name'               => $this->customer_name,
             'customer_email'              => $this->customer_email,
@@ -40,7 +42,7 @@ class OrderResource extends JsonResource
             'shipping_fee'                => $this->shipping_fee,
             'discount'                    => $this->discount,
             'final_price'                 => $this->final_price,
-            'ordered_at'                  => $this->ordered_at,
+            'ordered_at'                  => Carbon::parse($this->ordered_at)->format('d/m/Y H:i'),
             'paid_at'                     => $this->paid_at,
             'delivered_at'                => $this->delivered_at,
             'additional_details'          => $this->additional_details,
