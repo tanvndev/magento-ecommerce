@@ -49,11 +49,19 @@ class ClientVoucherResource extends JsonResource
             ];
         }
 
-        if ($start && $end && ($now->lt($start) || $now->gt($end))) {
-            return [
-                'color' => 'inactive',
-                'text'  => 'Đã hết hạn',
-            ];
+        if ($start && $end) {
+
+            if ($now->lt($start)) {
+                return [
+                    'color' => 'orange',
+                    'text'  => 'Chưa đến hạn',
+                ];
+            } elseif ($now->gt($end)) {
+                return [
+                    'color' => 'red',
+                    'text'  => 'Đã hết hạn',
+                ];
+            }
         }
 
         return [

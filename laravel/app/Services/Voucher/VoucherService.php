@@ -90,6 +90,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      */
     public function update(string $id)
     {
+
         return $this->executeInTransaction(function () use ($id) {
 
             $payload = $this->preparePayload();
@@ -120,6 +121,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
     {
         $payload = request()->except('_token', '_method');
 
+        _log($payload);
         $payload['start_at'] = convertToYyyyMmDdHhMmSs($payload['voucher_time'][0] ?? null);
         $payload['end_at'] = convertToYyyyMmDdHhMmSs($payload['voucher_time'][1] ?? null);
 
@@ -192,7 +194,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if ( ! $cart) {
+        if (! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -216,7 +218,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
         $condition = $this->handleConditionVoucher($voucher, $cartItems, $totalPrice);
 
-        if ( ! $condition) {
+        if (! $condition) {
             return errorResponse(__('messages.voucher.error.apply'));
         }
 
@@ -268,6 +270,10 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         if ($voucher->quantity <= 0) {
             return false;
         }
+
+        if (!$voucher->canBeUsedByUser(auth()->user()->id)) {
+            return false;
+        };
 
         switch ($voucher->condition_apply) {
             case Voucher::SUBTOTAL_PRICE:
@@ -339,7 +345,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      */
     private function isSalePriceValid($productVariant): bool
     {
-        if ( ! $productVariant->sale_price || ! $productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 

@@ -2,7 +2,7 @@
   <MasterLayout>
     <template #template>
       <div class="mx-10 h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
 
         <!-- Toolbox -->
         <ToolboxComponent

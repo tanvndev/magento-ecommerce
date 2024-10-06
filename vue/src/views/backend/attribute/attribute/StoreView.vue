@@ -3,7 +3,7 @@
     <template #template>
       <div class="container mx-auto min-h-screen pb-24">
         <form>
-          <BreadcrumbComponent :titlePage="state.pageTitle" />
+          <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
           <a-card class="mt-3" title="Dữ liệu thuộc tính">
             <AleartError :errors="state.errors" />
             <a-row :gutter="[16, 16]">

@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 if (! function_exists('getServiceInstance')) {
     function getServiceInstance($modelName)
@@ -572,11 +573,20 @@ if (! function_exists('numberToWords')) {
         $words = [];
 
 
-        for ($i = 0; $i < strlen($numberStr); $i++) {   
+        for ($i = 0; $i < strlen($numberStr); $i++) {
             $digit = (int)$numberStr[$i];
             $words[] = $units[$digit];
         }
 
         return implode('. ', $words);
+    }
+}
+
+
+if (! function_exists('_log')) {
+
+    function _log($value)
+    {
+        Log::info('>>>> BỐ MÀY ĐANG KIỂM TRA GIÁ TRỊ TẠI ĐÂY ->>>>>> ' . json_encode($value, JSON_UNESCAPED_UNICODE));
     }
 }

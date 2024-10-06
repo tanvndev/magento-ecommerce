@@ -55,7 +55,7 @@ class VoucherController extends Controller
     {
         $Voucher = new VoucherResource($this->voucherRepository->findById($id));
 
-        return successResponse('', $Voucher);
+        return successResponse('', $Voucher, true);
     }
 
     /**
@@ -64,6 +64,8 @@ class VoucherController extends Controller
     public function update(UpdateVoucherRequest $request, string $id): JsonResponse
     {
         $response = $this->voucherService->update($id);
+        \Log::info('Update voucher: ' . json_encode($response));
+
 
         return handleResponse($response);
     }
