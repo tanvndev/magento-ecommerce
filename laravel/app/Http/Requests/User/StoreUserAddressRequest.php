@@ -21,23 +21,25 @@ class StoreUserAddressRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'fullname'         => 'required|string|max:255',
-            'province_code'    => 'required|exists:provinces,code',
-            'district_code'    => 'required|exists:districts,code',
-            'ward_code'        => 'required|exists:wards,code',
+            'province_id'      => 'required',
+            'district_id'      => 'required',
+            'ward_id'          => 'required',
             'shipping_address' => 'required|string|max:255',
-            'phone'            => 'required|string|max:15',
+            'phone'            => 'required|regex:/(0)[0-9]{9}/',
         ];
+
+        return $rules;
     }
 
     public function attributes()
     {
         return [
             'fullname'         => 'Họ và tên',
-            'province_code'    => 'Tỉnh / Thành phố',
-            'district_code'    => 'Quận / Huyện',
-            'ward_code'        => 'Phường / Xã',
+            'province_id'      => 'Tỉnh/ Thành phố',
+            'district_id'      => 'Quận/ Huyện',
+            'ward_id'          => 'Phường/ Xã',
             'shipping_address' => 'Địa chỉ giao hàng',
             'phone'            => 'Số điện thoại',
         ];
@@ -45,6 +47,8 @@ class StoreUserAddressRequest extends FormRequest
 
     public function messages()
     {
-        return __('request.messages');
+        return __('request.messages') + [
+            'phone.regex' => 'Số điện thoại không đúng dạng.',
+        ];
     }
 }
