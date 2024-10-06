@@ -61,6 +61,7 @@ onMounted(() => {
         <div class="header-right">
           <!-- End of Dropdown Menu -->
           <span class="d-lg-show"></span>
+          <NuxtLink to="/post/catalogue" class="d-lg-show">Bài viết</NuxtLink>
           <NuxtLink to="/contact" class="d-lg-show">Liên hệ</NuxtLink>
           <NuxtLink to="/user/profile" class="d-lg-show">Tài khoản</NuxtLink>
           <a
