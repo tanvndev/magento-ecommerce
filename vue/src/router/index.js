@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '@/store';
 
-import DashboardView from '@/views/backend/DashboardView.vue';
-
 import {
   userRoutes,
   authRoutes,
