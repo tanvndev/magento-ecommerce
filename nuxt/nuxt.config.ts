@@ -16,7 +16,6 @@ export default defineNuxtConfig({
       laravelUrl: process.env.LARAVEL_APP_URL,
     },
   },
-
   app: {
     head: {
       charset: 'utf-8',

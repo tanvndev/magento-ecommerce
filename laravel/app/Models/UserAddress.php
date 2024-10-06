@@ -15,9 +15,9 @@ class UserAddress extends Model
     protected $fillable = [
         'user_id',
         'fullname',
-        'province_code',
-        'district_code',
-        'ward_code',
+        'province_id',
+        'district_id',
+        'ward_id',
         'shipping_address',
         'phone',
         'is_primary',
@@ -30,16 +30,16 @@ class UserAddress extends Model
 
     public function province()
     {
-        return $this->belongsTo(Province::class, 'province_code', 'code');
+        return $this->belongsTo(Province::class, 'province_id', 'code');
     }
 
     public function district()
     {
-        return $this->belongsTo(District::class, 'district_code', 'code');
+        return $this->belongsTo(District::class, 'district_id', 'code');
     }
 
     public function ward()
     {
-        return $this->belongsTo(Ward::class, 'ward_code', 'code');
+        return $this->belongsTo(Ward::class, 'ward_id', 'code');
     }
 }

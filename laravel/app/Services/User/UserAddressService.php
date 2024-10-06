@@ -43,37 +43,38 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
 
             $payload = $this->preparePayload();
 
-            if ( ! auth()->check()) {
-                return errorResponse(__('messages.userAddress.error.auth'));
-            } else {
-                if ($payload['is_primary'] == 1) {
-                    $this->userAddressRepository->updateByWhere(
-                        ['user_id' => $payload['user_id'], 'is_primary' => 1],
-                        ['is_primary' => 0]
-                    );
-                }
-                $this->userAddressRepository->create($payload);
+            $this->removeIsPrimary();
 
-                return successResponse(__('messages.userAddress.success.create'));
-            }
+            $this->userAddressRepository->create($payload);
 
+            return successResponse(__('messages.userAddress.success.create'));
         }, __('messages.userAddress.error.create'));
     }
 
+    /**
+     * Prepare the payload for creating a new user address.
+     *
+     * This method takes the request payload, adds the current user ID to it if the user is authenticated,
+     * and sets is_primary to 0 if it is not provided.
+     *
+     * @return array
+     */
     private function preparePayload(): array
     {
         $payload = request()->except('_token', '_method');
 
-        if (auth()->check()) {
-            $payload['user_id'] = auth()->user()->id;
-            $payload['is_primary'] = $payload['is_primary'] ?? 0;
-        } else {
-            return [];
-        }
+        $payload['user_id'] = auth()->user()->id;
+        $payload['is_primary'] = $payload['is_primary'] ?? true;
 
         return $payload;
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy($id)
     {
         return $this->executeInTransaction(function () use ($id) {
@@ -83,28 +84,44 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
         }, __('messages.userAddress.error.delete'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id)
     {
         return $this->executeInTransaction(function () use ($id) {
 
             $payload = $this->preparePayload();
 
-            if ( ! auth()->check()) {
-                return errorResponse(__('messages.userAddress.error.auth'));
-            } else {
-                if ($payload['is_primary']) {
-                    $this->userAddressRepository->updateByWhere(
-                        ['user_id' => $payload['user_id'], 'is_primary' => 1],
-                        ['is_primary' => 0]
-                    );
-                }
-                $this->userAddressRepository->update($id, $payload);
+            if ($payload['is_primary']) {
+                $this->removeIsPrimary();
             }
 
-            return successResponse(__('messages.update.success'));
-        }, __('messages.update.error'));
+            $this->userAddressRepository->update($id, $payload);
+
+            return successResponse(__('messages.userAddress.success.update'));
+        }, __('messages.userAddress.success.error'));
     }
 
+    private function removeIsPrimary(): void
+    {
+        $this->userAddressRepository->updateByWhere(
+            [
+                'user_id' => auth()->user()->id,
+                'is_primary' => 1
+            ],
+            ['is_primary' => 0]
+        );
+    }
+
+    /**
+     * Get user addresses by user ID.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public function getAddressByUserId()
     {
         $user = auth()->user();

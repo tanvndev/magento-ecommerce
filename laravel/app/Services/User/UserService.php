@@ -7,6 +7,8 @@ namespace App\Services\User;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\User\UserServiceInterface;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService implements UserServiceInterface
@@ -82,5 +84,30 @@ class UserService extends BaseService implements UserServiceInterface
 
             return successResponse(__('messages.delete.success'));
         }, __('messages.delete.error'));
+    }
+
+    public function updateProfile()
+    {
+        return $this->executeInTransaction(function () {
+
+            $payload = request()->except('_token', '_method');
+            $user = Auth::user();
+
+
+            if (!request()->has('fullname') && !request()->has('birthday')) {
+                $verificationCode = Cache::get('verification_code_' . $user->phone);
+
+                if (!$verificationCode) {
+                    return errorResponse(__('messages.auth.invalid_code.error'));
+                }
+            }
+
+
+            $this->userRepository->update($user->id, $payload);
+
+            Cache::forget('verification_code_' . $user->phone);
+
+            return successResponse(__('messages.auth.update_profile.success'));
+        }, __('messages.auth.update_profile.error'));
     }
 }

@@ -109,6 +109,13 @@ return [
             'success'    => 'Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.',
             'error'      => 'Đặt lại mật khẩu thất bại.',
         ],
+        'update_profile' => [
+            'success' => 'Cập nhật hồ sơ thành công.',
+            'error'   => 'Cập nhật hồ sơ thất bại.',
+        ],
+        'invalid_code' => [
+            'error' => 'Mã xác nhận không hợp lệ hoặc đã hết hạn.',
+        ]
     ],
     'wishlist' => [
         'success' => [
@@ -128,15 +135,13 @@ return [
     ],
     'userAddress' => [
         'success' => [
-            'create' => 'Thêm địa chỉ thành công',
-            'delete' => 'Xóa địa chỉ thành công',
+            'create'             => 'Thêm địa chỉ thành công.',
+            'update'             => 'Cập nhật địa chỉ thành công.',
+            'delete'             => 'Xóa địa chỉ thành công.',
         ],
         'error' => [
-            'existed'               => 'Sản phẩm đã tồn tại trong danh mục ưa thích.',
-            'create'                => 'Thêm địa chỉ không thành công',
-            'delete'                => 'Xóa địa chỉ thành công',
-            'userAddress_not_found' => 'Bạn chưa có địa chỉ',
-            'auth'                  => 'Vui lòng đăng nhập',
+            'create'             => 'Thêm địa chỉ không thành công.',
+            'delete'             => 'Xóa địa chỉ không thành công.',
         ],
     ],
 

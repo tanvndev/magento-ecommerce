@@ -61,7 +61,7 @@ onMounted(() => {
         <div class="header-right">
           <!-- End of Dropdown Menu -->
           <span class="d-lg-show"></span>
-          <NuxtLink to="contact" class="d-lg-show">Liên hệ</NuxtLink>
+          <NuxtLink to="/contact" class="d-lg-show">Liên hệ</NuxtLink>
           <NuxtLink to="/user/profile" class="d-lg-show">Tài khoản</NuxtLink>
           <a
             v-if="!authStore.isSignedIn"
@@ -80,7 +80,7 @@ onMounted(() => {
             >Đăng ký</a
           >
           <a
-            href="logout"
+            href="/logout"
             @click.prevent="authStore.logout()"
             v-if="authStore.isSignedIn"
             >Đăng xuất</a
@@ -94,12 +94,13 @@ onMounted(() => {
       <div class="header-middle">
         <div class="container">
           <div class="header-left mr-md-4">
-            <NuxtLink
-              to="login"
+            <a
+              v-if="!authStore.isSignedIn"
+              :href="`${config.public.vueUrl}/login`"
               class="mobile-menu-toggle w-icon-hamburger"
               aria-label="menu-toggle"
             >
-            </NuxtLink>
+            </a>
             <NuxtLink to="/" class="logo ml-lg-0">
               <img
                 src="assets/images/logo.png"
@@ -160,7 +161,7 @@ onMounted(() => {
               v-if="authStore.isSignedIn"
             >
               <div class="cart-overlay"></div>
-              <NuxtLink to="wishlist" class="cart-toggle label-down link">
+              <NuxtLink to="/wishlist" class="cart-toggle label-down link">
                 <i class="w-icon-heart">
                   <span class="cart-count" v-if="wishlistCount">{{
                     wishlistCount
