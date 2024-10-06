@@ -2,28 +2,34 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Classes\Stringee;
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ForgotRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\User\Client\ClientUserResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Services\Interfaces\Auth\AuthServiceInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Log;
 
 class AuthController extends Controller
 {
     protected $authService;
 
+    protected $currentUser = null;
+
     public function __construct(
         AuthServiceInterface $authService
     ) {
+        $this->currentUser = Auth::user();
         $this->authService = $authService;
     }
 
@@ -39,8 +45,6 @@ class AuthController extends Controller
 
             return handleResponse($response, ResponseEnum::CREATED);
         } catch (Exception $e) {
-            Log::info($e->getMessage());
-
             return errorResponse($e->getMessage(), true);
         }
     }
@@ -52,7 +56,7 @@ class AuthController extends Controller
     {
         $response = $this->verifyRecaptcha($request->input('g-recaptcha-response'));
 
-        if ( ! $response) {
+        if (! $response) {
             return errorResponse('Xác minh captcha không thành công', true);
         }
 
@@ -60,11 +64,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if ( ! $user) {
+        if (! $user) {
             return errorResponse('Email hoặc mật khẩu không chính xác.', true);
         }
 
-        if ( ! $user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.', true);
         }
 
@@ -75,6 +79,13 @@ class AuthController extends Controller
         return errorResponse('Email hoặc mật khẩu không chính xác.', true);
     }
 
+    /**
+     * Verify the given reCAPTCHA token.
+     *
+     * @param string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     protected function verifyRecaptcha($token)
     {
         $secretKey = env('RECAPTCHA_SECRET_KEY');
@@ -85,8 +96,11 @@ class AuthController extends Controller
         ])->json();
     }
 
+
     /**
-     * Handle password reset for a user.
+     * Forgot password for a user.
+     *
+     * @return JsonResponse
      */
     public function forgotPassword(ForgotRequest $request): JsonResponse
     {
@@ -95,18 +109,30 @@ class AuthController extends Controller
         return handleResponse($response);
     }
 
+
     /**
-     * Get the authenticated user's information.
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function me(): JsonResponse
     {
-        $user = new UserResource(auth()->user());
+        $user =
+            $this->currentUser->user_catalogue->id == User::ROLE_CUSTOMER
+            ?
+            new ClientUserResource($this->currentUser)
+            :
+            new UserResource($this->currentUser);
 
-        return response()->json($user);
+
+        return response()->json($user, ResponseEnum::OK);
     }
 
+
     /**
-     * Refresh the authentication token.
+     * Refresh the token.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function refreshToken(): JsonResponse
     {
@@ -118,6 +144,15 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Generate a response with a token.
+     *
+     * @param string $token
+     * @param string $message
+     * @param \App\Models\User|null $user
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     private function respondWithToken(string $token, string $message, ?User $user = null): JsonResponse
     {
         return response()->json([
@@ -132,13 +167,44 @@ class AuthController extends Controller
         ], ResponseEnum::OK);
     }
 
+
     /**
-     * Logout user (Revoke the token)
+     * Logs the user out of the application.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function logout(): JsonResponse
     {
         auth()->logout(true);
 
         return successResponse('Đăng xuất thành công.', [], true);
+    }
+
+    /**
+     * Send a verification code to the user's phone number.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendVerificationCode(Request $request): JsonResponse
+    {
+        $response = Stringee::sendVerificationCode($request, $this->currentUser);
+
+        return handleResponse($response);
+    }
+
+    /**
+     * Verify the verification code that was sent to the user's phone number.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyCode(Request $request): JsonResponse
+    {
+        $response = Stringee::verifyCode($request, $this->currentUser);
+
+        return handleResponse($response);
     }
 }
