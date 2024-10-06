@@ -12,7 +12,6 @@ class DashboardController extends Controller
         $serviceInstance = getServiceInstance($request->modelName);
 
         $response = $serviceInstance->updateStatus();
-
         return handleResponse($response);
     }
 
@@ -34,12 +33,13 @@ class DashboardController extends Controller
         return handleResponse($response);
     }
 
+
     public function getDataByModel(Request $request)
     {
         $serviceInstance = getServiceInstance($request->model);
         $response = $serviceInstance->paginate();
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 
     public function archiveMultiple(Request $request)

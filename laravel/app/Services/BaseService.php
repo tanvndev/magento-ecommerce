@@ -42,7 +42,7 @@ class BaseService implements BaseServiceInterface
             $repositoryName = lcfirst($request->modelName) . 'Repository';
             $payload[$request->field] = $request->value;
 
-            $this->{$repositoryName}->update($request->value, $payload);
+            $this->{$repositoryName}->update($request->modelId, $payload);
 
             return successResponse(__('messages.publish.success'));
         }, __('messages.publish.error'));

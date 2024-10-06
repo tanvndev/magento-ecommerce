@@ -31,8 +31,8 @@ class VoucherResource extends JsonResource
             'condition_apply'    => $this->condition_apply,
             'status'             => $this->getStatus(),
             'voucher_time'       => [
-                $this->start_at,
-                $this->end_at,
+                Carbon::parse($this->start_at)->format('d/m/Y H:i'),
+                Carbon::parse($this->end_at)->format('d/m/Y H:i')
             ],
             'publish'          => $this->publish,
             'text_description' => $this->getTextDescription(),

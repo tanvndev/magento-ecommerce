@@ -24,7 +24,7 @@ class ClientVoucherResource extends JsonResource
             'value_type'       => $this->value_type,
             'value'            => $this->value,
             'status'           => $this->getStatus(),
-            'expired'          => $this->end_at,
+            'expired'          => Carbon::parse($this->end_at)->format('d/m/Y H:i'),
             'text_description' => $this->getTextDescription(),
         ];
     }
