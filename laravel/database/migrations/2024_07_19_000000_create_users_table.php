@@ -20,10 +20,6 @@ return new class extends Migration
             $table->string('google_id', 100)->nullable()->unique();
             $table->string('password');
             $table->string('phone', 20)->nullable();
-            $table->string('province_id', 10)->nullable();
-            $table->string('district_id', 10)->nullable();
-            $table->string('ward_id', 10)->nullable();
-            $table->string('address', 255)->nullable();
             $table->date('birthday')->nullable();
             $table->string('image', 255)->nullable();
             $table->string('description', 255)->nullable();
@@ -31,7 +27,6 @@ return new class extends Migration
             $table->tinyInteger('publish')->default(1)->comment('1: Active, 2: Inactive');
             $table->string('ip')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();
         });

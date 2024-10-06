@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
-import { useRouter } from '#app' // Nuxt 3 router
 import { useCartStore } from '#imports'
 
 export const useAuthStore = defineStore('auth', {

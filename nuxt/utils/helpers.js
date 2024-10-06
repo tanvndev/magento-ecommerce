@@ -379,6 +379,38 @@ const generateRandomString = (length) => {
   return result
 }
 
+const hintPhoneNumber = (phoneNumber) => {
+  const cleaned = phoneNumber.replace(/\D/g, '')
+
+  if (cleaned.length < 4) return 'Invalid phone number'
+
+  const hinted =
+    cleaned.slice(0, 2) + '*'.repeat(cleaned.length - 4) + cleaned.slice(-2)
+
+  return hinted
+}
+
+const hintEmail = (email) => {
+  const [localPart, domain] = email.split('@')
+  if (!domain) return 'Invalid email address'
+
+  const hintedLocalPart =
+    localPart.charAt(0) +
+    '*'.repeat(localPart.length - 2) +
+    localPart.charAt(localPart.length - 1)
+  const hintedDomain =
+    domain.charAt(0) +
+    '.'.repeat(domain.length - 2) +
+    domain.charAt(domain.length - 1)
+
+  return `${hintedLocalPart}@${hintedDomain}`
+}
+
+const formatTime = (value) => {
+    return String(value).padStart(2, '0'); // Đảm bảo luôn có 2 chữ số
+};
+
+
 export {
   debounce,
   resizeImage,
@@ -399,4 +431,7 @@ export {
   toast,
   generateUUID,
   generateRandomString,
+  hintPhoneNumber,
+  hintEmail,
+  formatTime
 }

@@ -773,3 +773,8 @@
 .combo-detail .buy-access .total-bill a:hover {
   opacity: 0.9;
 }
+
+/* V-field */
+.v-text-field .v-input__details .v-messages__message {
+    margin-bottom: 8px;
+}

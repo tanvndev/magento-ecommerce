@@ -17,12 +17,12 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->string('province_code', 20)->nullable();
-            $table->string('district_code', 20)->nullable();
-            $table->string('ward_code', 20)->nullable();
-            $table->string('fullname');
-            $table->string('shipping_address');
-            $table->string('phone');
+            $table->string('province_id', 20)->nullable();
+            $table->string('district_id', 20)->nullable();
+            $table->string('ward_id', 20)->nullable();
+            $table->string('fullname', 50);
+            $table->string('shipping_address', 255);
+            $table->string('phone', 15);
             $table->boolean('is_primary')->default(true);
             $table->timestamps();
         });

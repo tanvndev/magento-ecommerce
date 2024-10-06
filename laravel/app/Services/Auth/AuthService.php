@@ -9,6 +9,8 @@ use App\Events\AuthRegisteredEvent;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Auth\AuthServiceInterface;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService extends BaseService implements AuthServiceInterface
@@ -21,6 +23,11 @@ class AuthService extends BaseService implements AuthServiceInterface
         $this->userRepository = $userRepository;
     }
 
+    /**
+     * Dang ky tai khoan moi.
+     *
+     * @return JsonResponse
+     */
     public function register()
     {
         return $this->executeInTransaction(function () {
@@ -34,7 +41,7 @@ class AuthService extends BaseService implements AuthServiceInterface
                 ]
             );
 
-            if ( ! empty($user)) {
+            if (! empty($user)) {
                 if ($user->hasVerifiedEmail()) {
                     return errorResponse(__('messages.auth.register.email_verified'));
                 }
@@ -57,6 +64,11 @@ class AuthService extends BaseService implements AuthServiceInterface
         }, __('messages.auth.register.error'));
     }
 
+    /**
+     * Handle password reset for a user.
+     *
+     * @return JsonResponse
+     */
     public function resetPassword()
     {
         return $this->executeInTransaction(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\UserAddress\UserAddressResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,14 +21,14 @@ class UserResource extends JsonResource
             'fullname'       => $this->fullname,
             'email'          => $this->email,
             'phone'          => $this->phone,
-            'province_id'    => $this->province_id,
-            'district_id'    => $this->district_id,
-            'ward_id'        => $this->ward_id,
-            'address'        => $this->address,
             'image'          => $this->image,
+            'birthday'       => $this->birthday,
             'publish'        => $this->publish,
             'catalogue_id'   => $this->user_catalogue_id,
             'catalogue_name' => $this->user_catalogue->name,
+            'hint_email'     => hintEmail($this->email),
+            'hint_phone'     => hintPhoneNumber($this->phone),
+            'addresses'      => UserAddressResource::collection($this->user_addresses),
         ];
     }
 }
