@@ -14,19 +14,19 @@ class Post extends Model
 
     protected $fillable = [
         'user_id',
-        // 'category_id',
+        // 'post_catalogue_id',
         'name',
         'image',
         'description',
         'content',
-        'icon',
         'canonical',
-        'order',
         'meta_title',
         'meta_keyword',
         'meta_description',
         'publish',
+        'is_featured',
     ];
+
 
     public function user()
     {

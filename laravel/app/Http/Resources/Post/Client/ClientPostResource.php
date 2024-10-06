@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Post;
+namespace App\Http\Resources\Post\Client;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PostResource extends JsonResource
+class ClientPostResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,6 @@ class PostResource extends JsonResource
     {
         return [
             'id'                => $this->id,
-            'key'               => $this->id,
             'user_name'         => $this->user->fullname,
             'name'              => $this->name,
             'image'             => $this->image,
@@ -26,8 +25,6 @@ class PostResource extends JsonResource
             'canonical'         => $this->canonical,
             'meta_title'        => $this->meta_title,
             'meta_description'  => $this->meta_description,
-            'publish'           => $this->publish,
-            'is_featured'       => $this->is_featured,
             'created_at'        => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
         ];
     }

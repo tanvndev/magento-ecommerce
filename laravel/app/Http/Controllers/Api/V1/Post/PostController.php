@@ -6,10 +6,13 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
+use App\Http\Resources\Post\Client\ClientPostCollection;
+use App\Http\Resources\Post\Client\ClientPostResource;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Resources\Post\PostResource;
 use App\Repositories\Interfaces\Post\PostRepositoryInterface;
 use App\Services\Interfaces\Post\PostServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller
 {
@@ -25,50 +28,40 @@ class PostController extends Controller
         $this->postRepository = $postRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(): JsonResponse
     {
         $paginator = $this->postService->paginate();
         $data = new PostCollection($paginator);
-        return successResponse('', $data);
+        return successResponse('', $data, true);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StorePostRequest $request)
+
+    public function store(StorePostRequest $request): JsonResponse
     {
         $response = $this->postService->create();
 
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+
+    public function show(string $id): JsonResponse
     {
         $post = new PostResource($this->postRepository->findById($id));
 
-        return successResponse('', $post);
+        return successResponse('', $post, true);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePostRequest $request, string $id)
+
+    public function update(UpdatePostRequest $request, string $id): JsonResponse
     {
         $response = $this->postService->update($id);
 
         return handleResponse($response);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+    public function destroy(string $id): JsonResponse
     {
         $response = $this->postService->destroy($id);
 
@@ -77,12 +70,21 @@ class PostController extends Controller
 
     // CLIENT API //
 
-    public function getAllPost()
+    public function getAllPost(): JsonResponse
     {
         $paginator = $this->postService->getAllPost();
 
-        $data = new PostCollection($paginator);
+        $data = new ClientPostCollection($paginator);
 
-        return successResponse('', $data);
+        return successResponse('', $data, true);
+    }
+
+    public function getPostByCanonical(string $canonical): JsonResponse
+    {
+        $response = $this->postService->getPost(['canonical' => $canonical]);
+
+        $data = new ClientPostResource($response);
+
+        return successResponse('', $data, true);
     }
 }

@@ -88,6 +88,13 @@ const state = reactive({
 
 const columns = [
   {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    sorter: (a, b) => a.id - b.id,
+    width: '5%'
+  },
+  {
     title: 'Tên nhóm thành viên',
     dataIndex: 'name',
     key: 'name',

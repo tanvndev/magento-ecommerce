@@ -100,6 +100,13 @@ const state = reactive({
 
 const columns = [
   {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    sorter: (a, b) => a.id - b.id,
+    width: '5%'
+  },
+  {
     title: 'Bài viết',
     dataIndex: 'name',
     key: 'name'
@@ -109,6 +116,17 @@ const columns = [
     dataIndex: 'canonical',
     key: 'canonical',
     sorter: (a, b) => a.canonical.localeCompare(b.canonical)
+  },
+  {
+    title: 'Người viết',
+    dataIndex: 'user_name',
+    key: 'user_name',
+    sorter: (a, b) => a.user_name.localeCompare(b.user_name)
+  },
+  {
+    title: 'Ngày tạo',
+    dataIndex: 'created_at',
+    key: 'created_at'
   },
   {
     title: 'Nổi bật',

@@ -51,6 +51,20 @@
                 />
               </template>
             </template>
+
+            <template #expandedRowRender="{ record }">
+              <h2>Địa chỉ giao hàng</h2>
+              <ul class="mb-0 ml-10 mt-3 list-disc" v-if="record?.addresses?.length">
+                <li class="mb-2" v-for="address in record.addresses" :key="address.id">
+                  <span class="capitalize"> {{ address.fullname }} - </span>
+                  <span class="text-primary-500"> {{ address.phone }} - </span>
+                  <span>
+                    {{ address.shipping_address }}
+                  </span>
+                </li>
+              </ul>
+              <div class="ml-10 text-red-500" v-else>Chưa có sẵn địa chỉ.</div>
+            </template>
           </a-table>
         </a-card>
         <!-- End table -->
@@ -88,6 +102,13 @@ const state = reactive({
 
 const columns = [
   {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    sorter: (a, b) => a.id - b.id,
+    width: '5%'
+  },
+  {
     title: 'Tên thành viên',
     dataIndex: 'fullname',
     key: 'fullname',
@@ -109,11 +130,6 @@ const columns = [
     dataIndex: 'phone',
     key: 'phone',
     sorter: (a, b) => a.phone.localeCompare(b.phone)
-  },
-  {
-    title: 'Địa chỉ',
-    dataIndex: 'address',
-    key: 'address'
   },
   {
     title: 'Tình trạng',
