@@ -52,6 +52,10 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Widget\WidgetServiceInterface' => 'App\Services\Widget\WidgetService',
         // Voucher
         'App\Services\Interfaces\Voucher\VoucherServiceInterface' => 'App\Services\Voucher\VoucherService',
+
+        // WishList
+        'App\Services\Interfaces\WishList\WishListServiceInterface' => 'App\Services\WishList\WishListService',
+
         // Slider
         'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
         // Order
@@ -60,6 +64,13 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Location\LocationServiceInterface' => 'App\Services\Location\LocationService',
         // Slider
         'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
+
+        // UserAddress
+        'App\Services\Interfaces\User\UserAddressServiceInterface' => 'App\Services\User\UserAddressService',
+
+        // PRODUCT REVIEW
+        'App\Services\Interfaces\Product\ProductReviewServiceInterface' => 'App\Services\Product\ProductReviewService',
+
         // Post
         'App\Services\Interfaces\Post\PostServiceInterface' => 'App\Services\Post\PostService',
     ];
