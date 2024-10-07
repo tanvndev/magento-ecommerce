@@ -66,7 +66,7 @@ onMounted(() => {
           <NuxtLink to="/user/profile" class="d-lg-show">Tài khoản</NuxtLink>
           <a
             v-if="!authStore.isSignedIn"
-            :href="`${config.public.vueUrl}/login`"
+            :href="`${config.public.VUE_APP_URL}/login`"
             class="d-lg-show login sign-in"
           >
             <i class="w-icon-account"></i>Đăng nhập</a
@@ -76,7 +76,7 @@ onMounted(() => {
           >
           <a
             v-if="!authStore.isSignedIn"
-            :href="`${config.public.vueUrl}/register`"
+            :href="`${config.public.VUE_APP_URL}/register`"
             class="ml-0 d-lg-show login register"
             >Đăng ký</a
           >
@@ -97,7 +97,7 @@ onMounted(() => {
           <div class="header-left mr-md-4">
             <a
               v-if="!authStore.isSignedIn"
-              :href="`${config.public.vueUrl}/login`"
+              :href="`${config.public.VUE_APP_URL}/login`"
               class="mobile-menu-toggle w-icon-hamburger"
               aria-label="menu-toggle"
             >
