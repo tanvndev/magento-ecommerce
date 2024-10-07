@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Auth;
 
-use App\Events\AuthRegisteredEvent;
+use App\Events\Auth\AuthRegisteredEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendEmailRegisterVerification implements ShouldQueue

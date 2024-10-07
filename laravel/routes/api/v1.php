@@ -59,8 +59,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('product-reviews', [ProductReviewController::class, 'getAllProductReviews'])->name('index');
     Route::get('posts/all', [PostController::class, 'getAllPost']);
     Route::get('posts/{canonical}/detail', [PostController::class, 'getPostByCanonical']);
-    Route::get('notifications', [NotificationController::class, 'index']);
-    Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
@@ -101,6 +99,11 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::put('archiveMultiple', [DashboardController::class, 'archiveMultiple'])->name('archiveMultiple');
             Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
+
+        // NOTIFICATION ROUTE
+
+        Route::get('notifications', [NotificationController::class, 'index']);
+        Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
 
         // USER ADDRESSES ROUTE

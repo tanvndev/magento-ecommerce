@@ -12,15 +12,15 @@ class LiveChatController extends Controller
     public function sendMessage(Request $request)
     {
 
-        $userId = auth()->id();
-        $msg = $request->message;
+        // $userId = auth()->id();
+        // $msg = $request->message;
 
-        $message = Chat::create([
-            'user_id' => $userId,
-            'message' => $msg
-        ]);
+        // $message = Chat::create([
+        //     'user_id' => $userId,
+        //     'message' => $msg
+        // ]);
 
-        broadcast(new MessageSent($userId, $msg))->toOthers();
+        // broadcast(new MessageSent($userId, $msg))->toOthers();
 
         return response()->json(['message' => 'success'], 200);
     }

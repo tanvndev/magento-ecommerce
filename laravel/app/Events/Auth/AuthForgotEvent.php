@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Auth;
 
-use App\Models\Voucher;
-use Illuminate\Broadcasting\Channel;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewVoucherCreatedEvent implements ShouldBroadcast
+class AuthForgotEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $voucher;
+    /**
+     * Create a new event instance.
+     */
+    public $user;
 
     public function __construct(
-        $voucher,
+        User $user
     ) {
-        $this->voucher = $voucher;
+        $this->user = $user;
     }
 
     /**
@@ -31,12 +31,7 @@ class NewVoucherCreatedEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('vouchers-created'),
+            new PrivateChannel('channel-name'),
         ];
-    }
-
-    public function broadcastAs(): string
-    {
-        return 'new-voucher-created';
     }
 }

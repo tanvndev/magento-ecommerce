@@ -9,27 +9,20 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewVoucherNotification extends Notification implements ShouldQueue
+class NewVoucherNotification extends Notification
 {
     use Queueable;
 
-    protected $voucher;
+    private $voucher;
 
-
-    public function __construct(Voucher $voucher)
+    public function __construct($voucher)
     {
         $this->voucher = $voucher;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
-    public function via(object $notifiable): array
+    public function via($notifiable)
     {
-        // database giup luu vao bang notifications va droadcast gui event toi client
-        return ['database', 'broadcast'];
+        return ['broadcast', 'database'];
     }
 
     public function toBroadcast($notifiable)
@@ -38,11 +31,9 @@ class NewVoucherNotification extends Notification implements ShouldQueue
             'voucher_id' => $this->voucher->id,
             'title' => 'Voucher mới!',
             'message' => 'Bạn có voucher mới: ' . $this->voucher->name,
-            'created_at' => now()->toISOString(),
         ]);
     }
 
-    // Phuong thuc nay dinh dang lai thong bao de luu vao bang notifications
     public function toArray($notifiable)
     {
         return [

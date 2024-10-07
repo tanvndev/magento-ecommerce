@@ -4,7 +4,7 @@
 
 namespace App\Services\Voucher;
 
-use App\Events\NewVoucherCreatedEvent;
+use App\Events\Voucher\VoucherCreatedEvent;
 use App\Models\Voucher;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
@@ -80,9 +80,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
             $payload = $this->preparePayload();
             $voucher = $this->voucherRepository->create($payload);
 
-            // dd($voucher);
-
-            broadcast(new NewVoucherCreatedEvent($voucher));
+            event(new VoucherCreatedEvent($voucher));
 
             return successResponse(__('messages.create.success'));
         }, __('messages.create.error'));

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Wishlist;
 
-use App\Events\WishListEvent;
+use App\Events\Wishlist\WishListEvent;
 use App\Mail\WishListMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;

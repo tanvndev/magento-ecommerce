@@ -1,26 +1,22 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Order;
 
-use App\Models\User;
+use App\Models\Order;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class WishListEvent
+class OrderShippedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+    public $order;
 
-    public $data;
-
-    public function __construct(User $user, $data)
+    public function __construct(Order $order)
     {
-        $this->user = $user;
-
-        $this->data = $data;
+        $this->order = $order;
     }
 
     /**
