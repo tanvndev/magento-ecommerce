@@ -16,8 +16,16 @@
 import { MasterLayout } from '@/components/backend/';
 import InputFinderComponent from '@/components/backend/includes/input/InputFinderComponent.vue';
 import { useForm } from 'vee-validate';
-
+import { onMounted } from 'vue';
 const { handleSubmit } = useForm();
+import pusher from '@/plugins/pusher';
+
+onMounted(() => {
+  const channel = pusher.subscribe('vouchers-created');
+  channel.bind('new-voucher-created', function (data) {
+    console.log('<><><><><><><><><>:', data);
+  });
+});
 
 const onSubmit = handleSubmit(async (values) => {
   console.log(values);

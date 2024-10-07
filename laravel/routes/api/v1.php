@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\LiveChat\LiveChatController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
@@ -42,9 +43,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('log.request.response', 'api')->group(function () {
 
-
-    // Stringee
-
     // ROUTE TEST
     Route::post('test/index', [TestApiController::class, 'upload']);
 
@@ -61,6 +59,8 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('product-reviews', [ProductReviewController::class, 'getAllProductReviews'])->name('index');
     Route::get('posts/all', [PostController::class, 'getAllPost']);
     Route::get('posts/{canonical}/detail', [PostController::class, 'getPostByCanonical']);
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
