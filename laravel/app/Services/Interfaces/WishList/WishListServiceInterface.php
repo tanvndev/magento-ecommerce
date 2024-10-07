@@ -16,5 +16,5 @@ interface WishListServiceInterface
 
     public function sendWishListMail();
 
-    public function createOrUpdate($request);
+    public function addToCart($request);
 }

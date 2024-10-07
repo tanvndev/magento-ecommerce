@@ -66,7 +66,7 @@ class WishListService extends BaseService implements WishListServiceInterface
                 ]
             );
 
-            if ( ! empty($exists)) {
+            if (! empty($exists)) {
                 return errorResponse(__('messages.wishlist.error.existed'));
             }
 
@@ -135,7 +135,7 @@ class WishListService extends BaseService implements WishListServiceInterface
                 true
             );
 
-            if ( ! $user->wishList) {
+            if (! $user->wishList) {
                 return errorResponse(__('messages.wishlist.error.wishlist_not_found'));
             }
             foreach ($user->wishList as $item) {
@@ -167,8 +167,21 @@ class WishListService extends BaseService implements WishListServiceInterface
         }, __('messages.wishlist.error.mail'));
     }
 
-    public function createOrUpdate($request)
+    public function addToCart($request)
     {
-        return $this->cartService->createOrUpdate($request);
+        return $this->executeInTransaction(function () use ($request) {
+
+            $this->cartService->createOrUpdate($request);
+
+            $conditions = [
+                'user_id' => auth()->user()->id,
+                'product_variant_id' => $request->product_variant_id,
+            ];
+
+            $this->wishListRepository->deleteByWhere($conditions);
+            $wishlists = $this->getWishListByUserId();
+
+            return $wishlists;
+        }, __('messages.cart.error.not_found'));
     }
 }

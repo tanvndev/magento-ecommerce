@@ -1,5 +1,4 @@
 <script setup>
-import { formatDataToSelect } from '#imports'
 import _ from 'lodash'
 
 const emits = defineEmits(['onLocation'])

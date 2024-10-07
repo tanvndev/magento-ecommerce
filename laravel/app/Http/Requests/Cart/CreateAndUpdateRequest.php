@@ -21,10 +21,12 @@ class CreateAndUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [];
+        $rules = [
+            'product_variant_id' => 'required'
+        ];
 
-        if (request()->quantity) {
-            $rules['quantity'] = 'integer|min:1';
+        if (request()->has('quantity')) {
+            $rules['quantity'] = 'required|integer|min:1';
         }
 
         return $rules;
@@ -33,6 +35,7 @@ class CreateAndUpdateRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'product_variant_id' => 'Sản phẩm',
             'quantity' => 'Số lượng',
         ];
     }

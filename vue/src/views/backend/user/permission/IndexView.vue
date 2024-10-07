@@ -1,8 +1,8 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+      <div class="h-screen mx-10">
+        <BreadcrumbComponent :titlePage="state.pageTitle" :routeCreate="state.routeCreate" />
 
         <!-- Toolbox -->
         <ToolboxComponent
@@ -10,18 +10,15 @@
           :modelName="state.modelName"
           :isShowToolbox="state.isShowToolbox"
           :modelIds="state.modelIds"
+          @onFilter="onFilterOptions"
           @onChangeToolbox="onChangeToolbox"
         />
         <!-- End toolbox -->
 
-        <!-- Filter -->
-        <FilterComponent @onFilter="onFilterOptions" />
-        <!-- End filter -->
-
         <!-- Table -->
-        <a-card class="mt-3">
-          <a-table
-            bordered
+        <a-table
+          bordered
+          class="mt-2"
             :columns="columns"
             :data-source="state.dataSource"
             :row-selection="rowSelection"
@@ -40,7 +37,6 @@
               </template>
             </template>
           </a-table>
-        </a-card>
         <!-- End table -->
       </div>
     </template>
@@ -52,7 +48,7 @@ import { onMounted, reactive, watch } from 'vue';
 import {
   BreadcrumbComponent,
   MasterLayout,
-  FilterComponent,
+
   ToolboxComponent,
   ActionComponent
 } from '@/components/backend';
@@ -72,6 +68,13 @@ const state = reactive({
 });
 
 const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    sorter: (a, b) => a.id - b.id,
+    width: '5%'
+  },
   {
     title: 'Tên quyền người dùng',
     dataIndex: 'name',

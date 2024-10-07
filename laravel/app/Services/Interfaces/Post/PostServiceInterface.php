@@ -13,4 +13,6 @@ interface PostServiceInterface
     public function destroy($id);
 
     public function getAllPost();
+
+    public function getPost(array $conditions = []);
 }

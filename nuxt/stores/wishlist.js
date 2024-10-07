@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useLoadingStore, useAuthStore } from '#imports'
+import { useLoadingStore, useAuthStore, useCartStore } from '#imports'
 
 export const useWishlistStore = defineStore('wishlist', {
   state: () => {
@@ -41,6 +41,8 @@ export const useWishlistStore = defineStore('wishlist', {
     },
     async addToWishlist(payload) {
       const authStore = useAuthStore()
+      const cartStore = useCartStore()
+
       if (!authStore.isSignedIn) {
         return toast('Vui lòng đăng nhập.', 'warning')
       }
@@ -55,6 +57,8 @@ export const useWishlistStore = defineStore('wishlist', {
         const response = await $axios.post('wishlists', payload)
 
         this.setWishlistCount(response.data?.total)
+
+        await cartStore.getAllCarts()
         toast(response.messages, response.status)
       } catch (error) {
         toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
@@ -76,6 +80,37 @@ export const useWishlistStore = defineStore('wishlist', {
 
         this.setWishlists(response.data)
         this.setWishlistCount(response.data?.total)
+      } catch (error) {
+        toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
+      }
+    },
+    async addWishlistToCart(product_variant_id) {
+      const authStore = useAuthStore()
+      const cartStore = useCartStore()
+
+      if (!authStore.isSignedIn) {
+        return toast('Vui lòng đăng nhập.', 'warning')
+      }
+      const { $axios } = useNuxtApp()
+
+      if (!product_variant_id) {
+        return toast('Có lỗi vui lòng thử lại.', 'error')
+      }
+
+      const payload = {
+        product_variant_id,
+        quantity: 1,
+      }
+
+      try {
+        const response = await $axios.post('wishlists/carts', payload)
+
+        this.setWishlists(response.data)
+        this.setWishlistCount(response.data?.total)
+
+        await cartStore.getAllCarts()
+
+        toast(response.messages, response.status)
       } catch (error) {
         toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
       }

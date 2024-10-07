@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '@/store';
 
-import DashboardView from '@/views/backend/DashboardView.vue';
-
 import {
   userRoutes,
   authRoutes,
@@ -13,6 +11,7 @@ import {
   voucherRoutes,
   orderRoutes,
   liveChatRoutes
+  postRoutes
 } from './backend';
 
 import { isLoggedIn } from '@/middlewares/authenticate';
@@ -31,7 +30,7 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: DashboardView,
+    component: () => import('@/views/backend/DashboardView.vue'),
     beforeEnter: [isLoggedIn]
   },
   {
@@ -49,6 +48,7 @@ const routes = [
   ...widgetRoutes,
   ...voucherRoutes,
   ...orderRoutes,
+  ...postRoutes
   ...liveChatRoutes
 ];
 

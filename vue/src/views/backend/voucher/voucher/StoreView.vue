@@ -1,15 +1,133 @@
+<script setup>
+import {
+  MasterLayout,
+  BreadcrumbComponent,
+  AleartError,
+  InputComponent,
+  InputFinderComponent,
+  RadioComponent,
+  InputNumberComponent,
+  InputDateComponent
+} from '@/components/backend';
+import { computed, onMounted, reactive } from 'vue';
+import { useForm } from 'vee-validate';
+import { formatMessages } from '@/utils/format';
+import * as yup from 'yup';
+import router from '@/router';
+import { useCRUD } from '@/composables';
+import { DISCOUNT_TYPE, DISCOUNT_CONDITION_APPLY } from '@/static/constants';
+// VARIABLES
+
+const { getOne, create, update, messages, data } = useCRUD();
+const id = computed(() => router.currentRoute.value.params.id || null);
+import { handleDateChangeToAnt } from '@/utils/helpers';
+import { message } from 'ant-design-vue';
+
+// STATE
+const state = reactive({
+  endpoint: 'vouchers',
+  pageTitle: 'Thêm mới mã giảm giá',
+  errors: {},
+  valueType: 'fixed',
+  conditionApply: 'all',
+  usage_limit: 'unlimited'
+});
+
+const { handleSubmit, setValues } = useForm({
+  validationSchema: yup.object({
+    name: yup.string().required('Tên mã giảm giá không được để trống.'),
+    voucher_time: yup.array().required('Thời gian không được để trống.'),
+    value: yup.string().required('Vui lòng nhập giá trị mã giảm giá.'),
+    quantity: yup.string().required('Vui lòng nhập số lượng mã giảm giá.'),
+    code: yup.string().required('Vui có nhập mã code.')
+  })
+});
+
+const handleChangeValueType = (value) => {
+  state.valueType = value?.target?.value;
+};
+const handleChangeConditionApply = (value) => {
+  state.conditionApply = value?.target?.value;
+};
+
+const handleChangeQuantity = (value) => {
+  state.usage_limit = value?.target?.value;
+};
+
+const onSubmit = handleSubmit(async (values) => {
+  const response =
+    id.value && id.value > 0
+      ? await update(state.endpoint, id.value, values)
+      : await create(state.endpoint, values);
+  if (!response) {
+    return (state.errors = formatMessages(messages.value));
+  }
+
+  message.success(messages.value);
+  state.errors = {};
+  router.push({ name: 'voucher.index' });
+});
+
+const fetchOne = async () => {
+  await getOne(state.endpoint, id.value);
+  const {
+    name,
+    description,
+    code,
+    quantity,
+    image,
+    value,
+    value_type,
+    voucher_time,
+    condition_apply,
+    min_quantity,
+    subtotal_price,
+    value_limit_amount,
+    usage_limit
+  } = data.value;
+
+  setValues({
+    name,
+    description,
+    code,
+    image,
+    quantity,
+    value_type,
+    value,
+    condition_apply,
+    min_quantity,
+    subtotal_price,
+    value_limit_amount,
+    voucher_time: handleDateChangeToAnt(voucher_time),
+    quantity_condition: usage_limit ? 'limited' : 'unlimited',
+    usage_limit: usage_limit
+  });
+
+  state.valueType = value_type;
+  state.conditionApply = condition_apply;
+  state.usage_limit = usage_limit ? 'limited' : 'unlimited';
+};
+
+onMounted(() => {
+  if (id.value && id.value > 0) {
+    state.pageTitle = 'Cập nhập mã giảm giá.';
+    fetchOne();
+  }
+});
+</script>
+
 <template>
   <MasterLayout>
     <template #template>
       <div class="container mx-auto mb-[50px] min-h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
             <a-col :span="16">
               <a-card class="mt-3" title="Thông tin chung">
                 <AleartError :errors="state.errors" />
                 <a-row :gutter="[16, 16]">
-                  <a-col :span="24">
+                  <a-col :span="12">
                     <InputComponent
                       name="name"
                       label="Tên mã giảm giá"
@@ -17,7 +135,7 @@
                       placeholder="Tên mã giảm giá"
                     />
                   </a-col>
-                  <a-col :span="24">
+                  <a-col :span="12">
                     <InputComponent
                       name="code"
                       label="Mã"
@@ -38,14 +156,35 @@
               </a-card>
 
               <!-- Quantity -->
-              <a-card class="mt-3" title="Số lượng">
+              <a-card class="mt-3" title="Số lượng ">
                 <a-row :gutter="[16, 16]">
                   <a-col :span="24">
+                    <RadioComponent
+                      name="quantity_condition"
+                      :options="[
+                        {
+                          value: 'unlimited',
+                          label: 'Không giới hạn'
+                        },
+                        {
+                          value: 'limited',
+                          label: 'Giới hạn'
+                        }
+                      ]"
+                      option-type="button"
+                      old-value="unlimited"
+                      button-style="solid"
+                      @on-change="handleChangeQuantity"
+                    />
+                  </a-col>
+                  <a-col :span="12">
+                    <InputNumberComponent name="quantity" label="Số lượng" placeholder="Số lượng" />
+                  </a-col>
+                  <a-col :span="12" v-if="state.usage_limit === 'limited'">
                     <InputNumberComponent
-                      name="quantity"
-                      label="Số lượng"
-                      :required="true"
-                      placeholder="Số lượng"
+                      name="usage_limit"
+                      label="Giới hạn sử dụng"
+                      placeholder="Giới hạn sử dụng"
                     />
                   </a-col>
                 </a-row>
@@ -139,8 +278,8 @@
           </a-row>
 
           <div class="fixed bottom-0 right-[19px] p-10">
-            <a-button html-type="submit" type="primary">
-              <i class="far fa-save mr-2"></i>
+            <a-button html-type="submit" type="primary" size="large">
+              <i class="fas fa-save mr-2"></i>
               <span>Lưu thông tin</span>
             </a-button>
           </div>
@@ -149,113 +288,3 @@
     </template>
   </MasterLayout>
 </template>
-
-<script setup>
-import {
-  MasterLayout,
-  BreadcrumbComponent,
-  AleartError,
-  InputComponent,
-  InputFinderComponent,
-  RadioComponent,
-  InputNumberComponent,
-  InputDateComponent
-} from '@/components/backend';
-import { computed, onMounted, reactive } from 'vue';
-import { useForm } from 'vee-validate';
-import { formatMessages } from '@/utils/format';
-import * as yup from 'yup';
-import router from '@/router';
-import { useCRUD } from '@/composables';
-import { DISCOUNT_TYPE, DISCOUNT_CONDITION_APPLY } from '@/static/constants';
-
-// VARIABLES
-
-const { getOne, create, update, messages, data } = useCRUD();
-const id = computed(() => router.currentRoute.value.params.id || null);
-import { handleDateChangeToAnt } from '@/utils/helpers';
-import { message } from 'ant-design-vue';
-
-// STATE
-const state = reactive({
-  endpoint: 'vouchers',
-  pageTitle: 'Thêm mới mã giảm giá',
-  errors: {},
-  valueType: 'fixed',
-  conditionApply: 'all'
-});
-
-const { handleSubmit, setValues } = useForm({
-  validationSchema: yup.object({
-    name: yup.string().required('Tên mã giảm giá không được để trống.'),
-    voucher_time: yup.array().required('Thời gian không được để trống.'),
-    value: yup.string().required('Vui lòng nhập giá trị mã giảm giá.'),
-    quantity: yup.string().required('Vui lòng nhập số lượng mã giảm giá.'),
-    code: yup.string().required('Vui có nhập mã code.')
-  })
-});
-
-const handleChangeValueType = (value) => {
-  state.valueType = value?.target?.value;
-};
-const handleChangeConditionApply = (value) => {
-  state.conditionApply = value?.target?.value;
-};
-
-const onSubmit = handleSubmit(async (values) => {
-  const response =
-    id.value && id.value > 0
-      ? await update(state.endpoint, id.value, values)
-      : await create(state.endpoint, values);
-  if (!response) {
-    return (state.errors = formatMessages(messages.value));
-  }
-
-  message.success(messages.value);
-  state.errors = {};
-  router.push({ name: 'voucher.index' });
-});
-
-const fetchOne = async () => {
-  await getOne(state.endpoint, id.value);
-  const {
-    name,
-    description,
-    code,
-    quantity,
-    image,
-    value,
-    value_type,
-    voucher_time,
-    condition_apply,
-    min_quantity,
-    subtotal_price,
-    value_limit_amount
-  } = data.value;
-
-  setValues({
-    name,
-    description,
-    code,
-    image,
-    quantity,
-    value_type,
-    value,
-    condition_apply,
-    min_quantity,
-    subtotal_price,
-    value_limit_amount,
-    voucher_time: handleDateChangeToAnt(voucher_time)
-  });
-
-  state.valueType = value_type;
-  state.conditionApply = condition_apply;
-};
-
-onMounted(() => {
-  if (id.value && id.value > 0) {
-    state.pageTitle = 'Cập nhập mã giảm giá.';
-    fetchOne();
-  }
-});
-</script>

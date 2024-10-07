@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('condition_apply', 50)->nullable()->comment('Điều kiện áp dụng');
             $table->decimal('subtotal_price', 15, 2)->nullable()->comment('Tổng giá trị đơn hàng tối thiểu');
             $table->unsignedSmallInteger('min_quantity')->nullable()->comment('Tổng số lượng sản phẩm được khuyến mại tối thiểu');
+            $table->unsignedTinyInteger('usage_limit')->nullable()->comment('Giới hạn có thể sử dụng/mã');
             $table->dateTime('start_at');
             $table->dateTime('end_at');
             $table->tinyInteger('publish')->default(1)->comment('1:Active, 2: Inactive');

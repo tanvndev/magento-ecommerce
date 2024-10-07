@@ -42,6 +42,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('log.request.response', 'api')->group(function () {
 
+
+    // Stringee
+
     // ROUTE TEST
     Route::post('test/index', [TestApiController::class, 'upload']);
 
@@ -56,6 +59,8 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('shipping-methods/products/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
     Route::post('vouchers/{code}/apply', [VoucherController::class, 'applyVoucher']);
     Route::get('product-reviews', [ProductReviewController::class, 'getAllProductReviews'])->name('index');
+    Route::get('posts/all', [PostController::class, 'getAllPost']);
+    Route::get('posts/{canonical}/detail', [PostController::class, 'getPostByCanonical']);
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
@@ -72,6 +77,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('refreshToken', [AuthController::class, 'refreshToken']);
+        Route::get('me', [AuthController::class, 'me'])->middleware('jwt.verify');
+        Route::post('send-verification-code', [AuthController::class, 'sendVerificationCode'])->middleware('jwt.verify');
+        Route::post('verify-code', [AuthController::class, 'verifyCode'])->middleware('jwt.verify');
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');
 
@@ -85,9 +93,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
     // Routes with JWT Middleware
     Route::group(['middleware' => 'jwt.verify'], function () {
 
-        // AUTH
-        Route::get('auth/me', [AuthController::class, 'me']);
-
         // DASHBOARD ROUTE
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
             Route::put('changeStatus', [DashboardController::class, 'changeStatus'])->name('changeStatus');
@@ -97,11 +102,21 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
 
+
+        // USER ADDRESSES ROUTE
+
+        Route::get('users/addresses', [UserAddressController::class, 'index']);
+        Route::get('users/addresses/user', [UserAddressController::class, 'getByUserId']);
+        Route::post('users/addresses', [UserAddressController::class, 'store']);
+        Route::put('users/addresses/{id}', [UserAddressController::class, 'update']);
+        Route::delete('users/addresses/{id}', [UserAddressController::class, 'destroy']);
+
         // USER ROUTE
-        // * Neu dung resource de tao .../catalogues thi phai gan them name neu khong se bi loi
+
         Route::prefix('/')->name('users.')->group(function () {
             Route::apiResource('users/catalogues', UserCatalogueController::class);
         });
+        Route::put('users/update/profile', [UserController::class, 'updateProfile'])->name('users.update.profile');
         Route::apiResource('users', UserController::class);
 
         // PERMISSION ROUTE
@@ -156,17 +171,11 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('wishlists', [WishListController::class, 'index']);
         Route::get('wishlists/user', [WishListController::class, 'getByUser']);
         Route::post('wishlists', [WishListController::class, 'store']);
-        Route::post('wishlists/carts', [WishListController::class, 'createOrUpdateCart']);
+        Route::post('wishlists/carts', [WishListController::class, 'addWishlistToCart']);
         Route::delete('wishlists/clean', [WishListController::class, 'destroyAll']);
         Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
         Route::get('wishlists/send-mail', [WishListController::class, 'sendWishListMail']);
 
-        // USER ADDRESSES ROUTE
-        Route::get('addresses', [UserAddressController::class, 'index']);
-        Route::get('addresses/user', [UserAddressController::class, 'getByUserId']);
-        Route::post('addresses', [UserAddressController::class, 'store']);
-        Route::put('addresses/{id}', [UserAddressController::class, 'update']);
-        Route::delete('addresses/{id}', [UserAddressController::class, 'destroy']);
         // ORDER ROUTE
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');

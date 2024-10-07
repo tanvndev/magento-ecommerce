@@ -1,8 +1,9 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
-if ( ! function_exists('getServiceInstance')) {
+if (! function_exists('getServiceInstance')) {
     function getServiceInstance($modelName)
     {
         $folderName = str_replace(['Catalogue', 'Variant'], '', $modelName);
@@ -16,7 +17,7 @@ if ( ! function_exists('getServiceInstance')) {
         return null;
     }
 }
-if ( ! function_exists('generateStrongPassword')) {
+if (! function_exists('generateStrongPassword')) {
     function generateStrongPassword(int $length = 12)
     {
         $uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -34,7 +35,7 @@ if ( ! function_exists('generateStrongPassword')) {
         return $password;
     }
 }
-if ( ! function_exists('getRepositoryInstance')) {
+if (! function_exists('getRepositoryInstance')) {
     function getRepositoryInstance(string $modelName)
     {
         $folderName = str_replace(['Catalogue', 'Variant'], '', $modelName);
@@ -49,7 +50,7 @@ if ( ! function_exists('getRepositoryInstance')) {
     }
 }
 
-if ( ! function_exists('formatToCommas')) {
+if (! function_exists('formatToCommas')) {
     function formatToCommas($nStr)
     {
         $nStr = strval($nStr);
@@ -65,7 +66,7 @@ if ( ! function_exists('formatToCommas')) {
     }
 }
 
-if ( ! function_exists('getColorForStock')) {
+if (! function_exists('getColorForStock')) {
     function getColorForStock($stock): string
     {
         if ($stock <= 0) {
@@ -80,7 +81,7 @@ if ( ! function_exists('getColorForStock')) {
     }
 }
 
-if ( ! function_exists('formatIso8601ToDatetime')) {
+if (! function_exists('formatIso8601ToDatetime')) {
     function formatIso8601ToDatetime($isoDate)
     {
         if (empty($isoDate)) {
@@ -94,7 +95,7 @@ if ( ! function_exists('formatIso8601ToDatetime')) {
     }
 }
 
-if ( ! function_exists('convertPrice')) {
+if (! function_exists('convertPrice')) {
 
     function convertPrice($priceString)
     {
@@ -106,7 +107,7 @@ if ( ! function_exists('convertPrice')) {
     }
 }
 
-if ( ! function_exists('generateOrderCode')) {
+if (! function_exists('generateOrderCode')) {
 
     function generateOrderCode($prefix = 'ORD')
     {
@@ -120,7 +121,7 @@ if ( ! function_exists('generateOrderCode')) {
     }
 }
 
-if ( ! function_exists('formatCurrency')) {
+if (! function_exists('formatCurrency')) {
 
     function formatCurrency($amount, string $currencyCode = 'vn')
     {
@@ -141,12 +142,12 @@ if ( ! function_exists('formatCurrency')) {
     }
 }
 
-if ( ! function_exists('recursive')) {
+if (! function_exists('recursive')) {
 
     function recursive($data, $parent_id = 0)
     {
         $result = [];
-        if ( ! is_null($data) && count($data) > 0) {
+        if (! is_null($data) && count($data) > 0) {
             foreach ($data as $key => $value) {
                 if ($value->parent_id == $parent_id) {
                     $result[] = [
@@ -161,14 +162,14 @@ if ( ! function_exists('recursive')) {
     }
 }
 
-if ( ! function_exists('convertDateTime')) {
+if (! function_exists('convertDateTime')) {
     function convertDateTime($dateTime = '', $format = 'd/m/Y H:i')
     {
         return date($format, strtotime($dateTime));
     }
 }
 
-if ( ! function_exists('cut_string_and_decode')) {
+if (! function_exists('cut_string_and_decode')) {
     function cut_string_and_decode($str = null, $n = 200)
     {
         $str = html_entity_decode($str);
@@ -180,7 +181,7 @@ if ( ! function_exists('cut_string_and_decode')) {
         return $str;
     }
 }
-if ( ! function_exists('sortString')) {
+if (! function_exists('sortString')) {
     function sortString($string)
     {
         if ($string == '') {
@@ -195,7 +196,7 @@ if ( ! function_exists('sortString')) {
     }
 }
 
-if ( ! function_exists('generateStar')) {
+if (! function_exists('generateStar')) {
     function generateStar($rate)
     {
         $filledStars = round($rate, 0);
@@ -213,7 +214,7 @@ if ( ! function_exists('generateStar')) {
     }
 }
 
-if ( ! function_exists('generateStarPercent')) {
+if (! function_exists('generateStarPercent')) {
     function generateStarPercent($rate = 100)
     {
         $percent = round(100 - ($rate / 5 * 100));
@@ -242,7 +243,7 @@ if ( ! function_exists('generateStarPercent')) {
     }
 }
 
-if ( ! function_exists('renderProress')) {
+if (! function_exists('renderProress')) {
     function renderProress($rate = 100)
     {
         $percent = round(100 - ($rate / 5 * 100));
@@ -271,7 +272,7 @@ if ( ! function_exists('renderProress')) {
     }
 }
 
-if ( ! function_exists('sortAttributeId')) {
+if (! function_exists('sortAttributeId')) {
     function sortAttributeId($attributeId)
     {
         sort($attributeId, SORT_NUMERIC);
@@ -281,7 +282,7 @@ if ( ! function_exists('sortAttributeId')) {
     }
 }
 
-if ( ! function_exists('starsToPercent')) {
+if (! function_exists('starsToPercent')) {
     function starsToPercent($stars, $maxStars = 5)
     {
         if ($maxStars <= 0) {
@@ -292,7 +293,7 @@ if ( ! function_exists('starsToPercent')) {
     }
 }
 
-if ( ! function_exists('convertVndTo')) {
+if (! function_exists('convertVndTo')) {
 
     function convertVndTo($amountVnd, $currency = 'USD')
     {
@@ -303,7 +304,7 @@ if ( ! function_exists('convertVndTo')) {
             // Add more currencies as needed
         ];
 
-        if ( ! isset($exchangeRates[$currency])) {
+        if (! isset($exchangeRates[$currency])) {
             throw new Exception("Exchange rate for currency '{$currency}' not found.");
         }
 
@@ -313,7 +314,7 @@ if ( ! function_exists('convertVndTo')) {
     }
 }
 
-if ( ! function_exists('abbreviateName')) {
+if (! function_exists('abbreviateName')) {
     function abbreviateName($fullName)
     {
         $parts = explode(' ', $fullName);
@@ -326,7 +327,7 @@ if ( ! function_exists('abbreviateName')) {
     }
 }
 
-if ( ! function_exists('errorResponse')) {
+if (! function_exists('errorResponse')) {
     function errorResponse(string $message, bool $isResponse = false)
     {
         $response = [
@@ -339,7 +340,7 @@ if ( ! function_exists('errorResponse')) {
     }
 }
 
-if ( ! function_exists('successResponse')) {
+if (! function_exists('successResponse')) {
     function successResponse(string $message, $data = null, bool $isResponse = false)
     {
         $response = [
@@ -352,7 +353,7 @@ if ( ! function_exists('successResponse')) {
     }
 }
 
-if ( ! function_exists('handleResponse')) {
+if (! function_exists('handleResponse')) {
     function handleResponse(array $response, int $successCode = 200)
     {
         $status = $response['status'] ?? '';
@@ -363,7 +364,7 @@ if ( ! function_exists('handleResponse')) {
     }
 }
 
-if ( ! function_exists('renderRatingFilter')) {
+if (! function_exists('renderRatingFilter')) {
     function renderRatingFilter()
     {
         $html = '';
@@ -381,7 +382,7 @@ if ( ! function_exists('renderRatingFilter')) {
         return $html;
     }
 }
-if ( ! function_exists('generateSKU')) {
+if (! function_exists('generateSKU')) {
 
     function generateSKU(string $productName, int $length = 3, array $options = []): string
     {
@@ -396,7 +397,7 @@ if ( ! function_exists('generateSKU')) {
         return $sku . '-' . time();
     }
 }
-if ( ! function_exists('removeEmptyValues')) {
+if (! function_exists('removeEmptyValues')) {
     function removeEmptyValues(array $array): array
     {
         if (empty($array)) {
@@ -417,7 +418,7 @@ if ( ! function_exists('removeEmptyValues')) {
         return $array;
     }
 }
-if ( ! function_exists('convertToFriDdMonYyyyHhMmSs')) {
+if (! function_exists('convertToFriDdMonYyyyHhMmSs')) {
 
     function convertToFriDdMonYyyyHhMmSs($dateStr)
     {
@@ -429,7 +430,7 @@ if ( ! function_exists('convertToFriDdMonYyyyHhMmSs')) {
         return $date->format($outputFormat);
     }
 }
-if ( ! function_exists('convertToYyyyMmDdHhMmSs')) {
+if (! function_exists('convertToYyyyMmDdHhMmSs')) {
 
     function convertToYyyyMmDdHhMmSs($dateStr)
     {
@@ -442,7 +443,7 @@ if ( ! function_exists('convertToYyyyMmDdHhMmSs')) {
     }
 }
 
-if ( ! function_exists('getError')) {
+if (! function_exists('getError')) {
     function getError($e)
     {
         echo 'Error: ' . $e->getMessage() . '<br>';
@@ -453,7 +454,7 @@ if ( ! function_exists('getError')) {
     }
 }
 
-if ( ! function_exists('convertToAcronym')) {
+if (! function_exists('convertToAcronym')) {
     function convertToAcronym(string $input, string $delimiter = '-'): string
     {
         $parts = explode($delimiter, $input);
@@ -466,7 +467,7 @@ if ( ! function_exists('convertToAcronym')) {
         return $acronym;
     }
 }
-if ( ! function_exists('truncate')) {
+if (! function_exists('truncate')) {
     function truncate($text, $length = 60, $appendEllipsis = false)
     {
         if (mb_strlen($text) <= $length) {
@@ -483,7 +484,7 @@ if ( ! function_exists('truncate')) {
     }
 }
 
-if ( ! function_exists('haversineGreatCircleDistance')) {
+if (! function_exists('haversineGreatCircleDistance')) {
 
     function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
     {
@@ -501,5 +502,91 @@ if ( ! function_exists('haversineGreatCircleDistance')) {
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earthRadius * $c;
+    }
+}
+
+if (! function_exists('hintPhoneNumber')) {
+
+    function hintPhoneNumber(string $phoneNumber): string
+    {
+        $cleaned = preg_replace('/\D/', '', $phoneNumber);
+
+        if (strlen($cleaned) < 4) {
+            return 'Invalid phone number';
+        }
+
+        $hinted = substr($cleaned, 0, 2) . str_repeat('*', strlen($cleaned) - 4) . substr($cleaned, -2);
+
+        return $hinted;
+    }
+}
+if (! function_exists('hintEmail')) {
+
+    function hintEmail(string $email): string
+    {
+        $parts = explode('@', $email);
+        if (count($parts) != 2) {
+            return 'Invalid email address';
+        }
+
+        $localPart = $parts[0];
+        $domain = $parts[1];
+
+        $hintedLocalPart = $localPart[0] . str_repeat('*', strlen($localPart) - 2) . $localPart[-1];
+        $hintedDomain = $domain[0] . str_repeat('.', strlen($domain) - 2) . $domain[-1];
+
+        return $hintedLocalPart . '@' . $hintedDomain;
+    }
+}
+
+if (! function_exists('convertPhoneNumber')) {
+
+    function convertPhoneNumber($phoneNumber, $countryCode = '84')
+    {
+        if (strlen($phoneNumber) === 10 && strpos($phoneNumber, '0') === 0) {
+            return $countryCode . substr($phoneNumber, 1);
+        }
+
+        return false;
+    }
+}
+
+if (! function_exists('numberToWords')) {
+
+    function numberToWords($number)
+    {
+        $units = [
+            'không', // 0
+            'một',   // 1
+            'hai',    // 2
+            'ba',     // 3
+            'bốn',    // 4
+            'năm',    // 5
+            'sáu',    // 6
+            'bảy',    // 7
+            'tám',    // 8
+            'chín',   // 9
+        ];
+
+
+        $numberStr = (string)$number;
+        $words = [];
+
+
+        for ($i = 0; $i < strlen($numberStr); $i++) {
+            $digit = (int)$numberStr[$i];
+            $words[] = $units[$digit];
+        }
+
+        return implode('. ', $words);
+    }
+}
+
+
+if (! function_exists('_log')) {
+
+    function _log($value)
+    {
+        Log::info('>>>> BỐ MÀY ĐANG KIỂM TRA GIÁ TRỊ TẠI ĐÂY ->>>>>> ' . json_encode($value, JSON_UNESCAPED_UNICODE));
     }
 }

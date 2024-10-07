@@ -21,14 +21,22 @@ class UpdateUserAddressRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        if ($this->has('is_primary') && $this->is_primary) {
+            return [
+                'is_primary' => 'required'
+            ];
+        }
+
+        $rules = [
             'fullname'         => 'required|string|max:255',
-            'province_code'    => 'required|exists:provinces,code',
-            'district_code'    => 'required|exists:districts,code',
-            'ward_code'        => 'required|exists:wards,code',
+            'province_id'      => 'required',
+            'district_id'      => 'required',
+            'ward_id'          => 'required',
             'shipping_address' => 'required|string|max:255',
-            'phone'            => 'required|string|max:15',
+            'phone'            => 'required|regex:/(0)[0-9]{9}/',
         ];
+
+        return $rules;
     }
 
     public function attributes()

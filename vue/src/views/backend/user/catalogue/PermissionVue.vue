@@ -1,8 +1,8 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+      <div class="mx-10 h-screen">
+        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
         <a-card class="mt-3">
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full border-collapse text-left text-sm text-gray-500">
@@ -51,7 +51,7 @@
           </div>
           <div class="fixed bottom-[40px] right-[40px]">
             <a-button @click="onSubmit" :loading="loading" type="primary">
-              <i class="far fa-save mr-2"></i>
+              <i class="fas fa-save mr-2"></i>
               <span>Lưu thông tin</span>
             </a-button>
           </div>

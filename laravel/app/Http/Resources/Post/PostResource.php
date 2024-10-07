@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Post;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,19 +17,18 @@ class PostResource extends JsonResource
     {
         return [
             'id'                => $this->id,
-            'user_id'           => $this->user->id,
+            'key'               => $this->id,
             'user_name'         => $this->user->fullname,
             'name'              => $this->name,
             'image'             => $this->image,
             'description'       => $this->description,
             'content'           => $this->content,
             'canonical'         => $this->canonical,
-            'icon'              => $this->icon,
-            'order'             => $this->order,
             'meta_title'        => $this->meta_title,
-            'meta_keyword'      => $this->meta_keyword,
             'meta_description'  => $this->meta_description,
             'publish'           => $this->publish,
+            'is_featured'       => $this->is_featured,
+            'created_at'        => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
         ];
     }
 }

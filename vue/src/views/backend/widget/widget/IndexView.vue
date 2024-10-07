@@ -1,88 +1,8 @@
-<template>
-  <MasterLayout>
-    <template #template>
-      <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
-
-        <!-- Toolbox -->
-        <ToolboxComponent
-          :routeCreate="state.routeCreate"
-          :modelName="state.modelName"
-          :isShowToolbox="state.isShowToolbox"
-          :modelIds="state.modelIds"
-          @onChangeToolbox="onChangeToolbox"
-        />
-        <!-- End toolbox -->
-
-        <!-- Filter -->
-        <FilterComponent @onFilter="onFilterOptions" />
-        <!-- End filter -->
-
-        <!-- Table -->
-        <a-card class="mt-3">
-          <a-table
-            bordered
-            :columns="columns"
-            :data-source="state.dataSource"
-            :row-selection="rowSelection"
-            :pagination="pagination"
-            :loading="loading"
-            @change="handleTableChange"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'image'">
-                <img
-                  class="w-20 object-contain"
-                  :src="resizeImage(record.image, 100)"
-                  :alt="record.name"
-                />
-              </template>
-
-              <template v-if="column.dataIndex === 'publish'">
-                <StatusSwitchComponent
-                  :record="record"
-                  :modelName="state.modelName"
-                  :field="column.dataIndex"
-                />
-              </template>
-
-              <template v-if="column.dataIndex === 'name'">
-                <RouterLink
-                  :to="{ name: 'widget.update', params: { id: record.id } }"
-                  class="text-blue-500"
-                  >{{ record.name }}</RouterLink
-                >
-              </template>
-              <template v-if="column.dataIndex === 'type'">
-                {{ typeName(record.type) }}
-              </template>
-
-              <template v-if="column.dataIndex === 'model'">
-                {{ modelName(record.model) }}
-              </template>
-
-              <template v-if="column.dataIndex === 'order'">
-                <EditOrderComponent
-                  :record="record"
-                  :dataSource="state.dataSource"
-                  :endpoint="state.endpoint"
-                />
-              </template>
-            </template>
-          </a-table>
-        </a-card>
-        <!-- End table -->
-      </div>
-    </template>
-  </MasterLayout>
-</template>
-
 <script setup>
 import { onMounted, reactive, watch } from 'vue';
 import {
   BreadcrumbComponent,
   MasterLayout,
-  FilterComponent,
   StatusSwitchComponent,
   ToolboxComponent,
   EditOrderComponent
@@ -107,6 +27,13 @@ const state = reactive({
 });
 
 const columns = [
+  {
+    title: 'ID',
+    dataIndex: 'id',
+    key: 'id',
+    sorter: (a, b) => a.id - b.id,
+    width: '5%'
+  },
   {
     title: 'Tên widget',
     dataIndex: 'name',
@@ -177,7 +104,6 @@ watch(selectedRows, () => {
 watch(
   () => route.query.archive,
   (newValue) => {
-
     state.filterOptions.archive = newValue === 'true' ? true : false;
     state.pageTitle = newValue === 'true' ? 'Danh sách lưu trữ widget' : 'Danh sách widget';
     deboucedFetchData();
@@ -196,3 +122,77 @@ const onChangeToolbox = () => {
 // Lifecycle hook
 onMounted(fetchData);
 </script>
+<template>
+  <MasterLayout>
+    <template #template>
+      <div class="mx-10 h-screen">
+        <BreadcrumbComponent :titlePage="state.pageTitle" :routeCreate="state.routeCreate" />
+
+        <!-- Toolbox -->
+        <ToolboxComponent
+          :routeCreate="state.routeCreate"
+          :modelName="state.modelName"
+          :isShowToolbox="state.isShowToolbox"
+          :modelIds="state.modelIds"
+          @onFilter="onFilterOptions"
+          @onChangeToolbox="onChangeToolbox"
+        />
+        <!-- End toolbox -->
+
+        <!-- Table -->
+        <a-table
+          bordered
+          class="mt-2"
+          :columns="columns"
+          :data-source="state.dataSource"
+          :row-selection="rowSelection"
+          :pagination="pagination"
+          :loading="loading"
+          @change="handleTableChange"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.dataIndex === 'image'">
+              <img
+                class="w-20 object-contain"
+                :src="resizeImage(record.image, 100)"
+                :alt="record.name"
+              />
+            </template>
+
+            <template v-if="column.dataIndex === 'publish'">
+              <StatusSwitchComponent
+                :record="record"
+                :modelName="state.modelName"
+                :field="column.dataIndex"
+              />
+            </template>
+
+            <template v-if="column.dataIndex === 'name'">
+              <RouterLink
+                :to="{ name: 'widget.update', params: { id: record.id } }"
+                class="text-blue-500"
+                >{{ record.name }}</RouterLink
+              >
+            </template>
+            <template v-if="column.dataIndex === 'type'">
+              {{ typeName(record.type) }}
+            </template>
+
+            <template v-if="column.dataIndex === 'model'">
+              {{ modelName(record.model) }}
+            </template>
+
+            <template v-if="column.dataIndex === 'order'">
+              <EditOrderComponent
+                :record="record"
+                :dataSource="state.dataSource"
+                :endpoint="state.endpoint"
+              />
+            </template>
+          </template>
+        </a-table>
+        <!-- End table -->
+      </div>
+    </template>
+  </MasterLayout>
+</template>

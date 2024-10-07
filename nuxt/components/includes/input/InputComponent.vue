@@ -3,6 +3,7 @@
     v-if="props.typeInput == 'text'"
     v-model="value"
     clearable
+    :type="props.type"
     :variant="props.variant"
     :density="props.density"
     :error-messages="errorMessage"
@@ -73,6 +74,10 @@ const props = defineProps({
   autoGrow: {
     type: Boolean,
     default: true,
+  },
+  type: {
+    type: String,
+    default: 'text',
   },
 })
 

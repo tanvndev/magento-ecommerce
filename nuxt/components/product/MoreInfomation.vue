@@ -1,19 +1,15 @@
 <script setup>
-const props = defineProps({
-  product: {
-    type: [Object, Array],
-    default: () => [],
-  },
-})
-
+const productStore = useProductStore()
 const { $axios } = useNuxtApp()
-const reviews = ref([])
+
+const reviews = computed(() => productStore.getProductReviews)
 const tabs = reactive([
   { name: 'description', label: 'Mô tả' },
   { name: 'specifications', label: 'Thông số kĩ thuật' },
   { name: 'reviews', label: 'Đánh giá' },
 ])
-
+const isReload = productStore.getIsReload
+const product = productStore.getProduct
 const activeTab = ref('reviews')
 
 const selectTab = (tabName) => {
@@ -21,18 +17,15 @@ const selectTab = (tabName) => {
 }
 
 const getAllReviews = async () => {
-  const response = await $axios.get(`/product-reviews/${props.product.id}`)
-
-  reviews.value = response.data
-  console.log(reviews.value.data)
+  const response = await $axios.get(`/product-reviews/${product?.id}`)
+  productStore.setProductReviews(response.data)
 }
 
-watch(
-  () => props.product,
-  () => {
+onMounted(() => {
+  if (isReload || reviews.value?.length == 0) {
     getAllReviews()
   }
-)
+})
 </script>
 
 <template>
