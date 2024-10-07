@@ -1,18 +1,20 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import MenuItem from '../MenuItem.vue'
-import { useCartStore, useAuthStore, debounce } from '#imports'
 import { useProductCatalogueStore } from '~/stores/productCatalogue'
 
-const { $axios } = useNuxtApp()
+const { $axios, $pusher } = useNuxtApp()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
+const notificationStore = useNotificationStore()
+
 const wishlistStore = useWishlistStore()
 const productCatalogueStore = useProductCatalogueStore()
 const headerMain = ref(null)
 const productCatalogues = ref([])
 const cartCount = computed(() => cartStore.getCartCount)
 const wishlistCount = computed(() => wishlistStore.getWishlistCount)
+const user = computed(() => authStore.getUser)
 const config = useRuntimeConfig()
 
 let lastScrollPosition = 0
@@ -41,8 +43,38 @@ const getProductCatalogues = async () => {
   )
 }
 
+const getNotitications = async () => {
+  if (!authStore.isSignedIn) {
+    return
+  }
+  notificationStore.getAllNotifications()
+}
+
+const listenForNotifications = async () => {
+  if (!authStore.isSignedIn) {
+    return
+  }
+
+  const channel = $pusher.subscribe(`App.Models.User.${user.value?.id || 1}`)
+
+  channel.bind('App\\Notifications\\NewVoucherNotification', function (data) {
+    console.log('Nhận được thông báo:', data)
+  })
+}
+
+const getVoucherNotify = async () => {
+  const channel = $pusher.subscribe('voucher-created-channel')
+  channel.bind('voucher-created-event', function (data) {
+    console.log('<><><><><><><><><>:', data)
+  })
+}
+
 onMounted(() => {
+  getNotitications()
+  getVoucherNotify()
   getProductCatalogues()
+  listenForNotifications()
+
   cartStore.getAllCarts()
   wishlistStore.getAllWishlists()
   window.addEventListener('scroll', debouncedHandleScroll)

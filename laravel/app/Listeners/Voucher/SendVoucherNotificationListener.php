@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Voucher;
 
 use App\Models\User;
 use App\Notifications\NewVoucherNotification;
@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Notification;
 
-class SendVoucherNotificationListener
+class SendVoucherNotificationListener implements ShouldQueue
 {
     // Thoi gian cho job
     public $timeout = 60;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Wishlist;
 
 use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -8,19 +8,19 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AuthForgotEvent
+class WishListEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     */
     public $user;
 
-    public function __construct(
-        User $user
-    ) {
+    public $data;
+
+    public function __construct(User $user, $data)
+    {
         $this->user = $user;
+
+        $this->data = $data;
     }
 
     /**

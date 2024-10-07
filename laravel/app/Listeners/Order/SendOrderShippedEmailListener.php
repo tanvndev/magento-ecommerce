@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\OrderShippedEvent;
+use App\Events\Order\OrderShippedEvent;
 use App\Mail\OrderShippedMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;

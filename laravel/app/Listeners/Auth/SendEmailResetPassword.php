@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Auth;
 
-use App\Events\AuthForgotEvent;
+use App\Events\Auth\AuthForgotEvent;
 use App\Notifications\EmailResetPasswordNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;

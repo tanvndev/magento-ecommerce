@@ -16,21 +16,21 @@ class EventServiceProvider extends ServiceProvider
         'Registered'::class => [
             'Illuminate\Auth\Listeners\SendEmailVerificationNotification',
         ],
-        'App\Events\AuthRegisteredEvent'::class => [
-            'App\Listeners\SendEmailRegisterVerification',
+        'App\Events\Auth\AuthRegisteredEvent'::class => [
+            'App\Listeners\Auth\SendEmailRegisterVerification',
         ],
-        'App\Events\AuthForgotEvent' => [
-            'App\Listeners\SendEmailResetPassword',
+        'App\Events\Auth\AuthForgotEvent' => [
+            'App\Listeners\Auth\SendEmailResetPassword',
         ],
-        'App\Events\OrderShippedEvent' => [
-            'App\Listeners\SendOrderShippedEmailListener',
+        'App\Events\Order\OrderShippedEvent' => [
+            'App\Listeners\Order\SendOrderShippedEmailListener',
         ],
-        'App\Events\WishListEvent' => [
-            'App\Listeners\SendWishListEmailListener',
+        'App\Events\Wishlist\WishListEvent' => [
+            'App\Listeners\Wishlist\SendWishListEmailListener',
         ],
-        // 'App\Events\NewVoucherCreatedEvent' => [
-        //     'App\Listeners\SendVoucherNotificationListener',
-        // ],
+        'App\Events\Voucher\VoucherCreatedEvent' => [
+            'App\Listeners\Voucher\SendVoucherNotificationListener',
+        ],
     ];
 
     /**
