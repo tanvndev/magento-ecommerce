@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '~/plugins/axios.js',
     '~/plugins/authService.js',
     '~/plugins/vue-toastify.js',
+    '~/plugins/pusher.js',
   ],
   runtimeConfig: {
     public: {
