@@ -2,19 +2,21 @@
 import { ref, onMounted } from 'vue'
 import MenuItem from '../MenuItem.vue'
 import { useProductCatalogueStore } from '~/stores/productCatalogue'
+import _ from 'lodash'
 
 const { $axios, $pusher } = useNuxtApp()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
 const notificationStore = useNotificationStore()
-
 const wishlistStore = useWishlistStore()
 const productCatalogueStore = useProductCatalogueStore()
 const headerMain = ref(null)
 const productCatalogues = ref([])
 const cartCount = computed(() => cartStore.getCartCount)
 const wishlistCount = computed(() => wishlistStore.getWishlistCount)
-const user = computed(() => authStore.getUser)
+const notifications = computed(() => notificationStore.getNotifications)
+const isShowBell = ref(false)
+
 const config = useRuntimeConfig()
 
 let lastScrollPosition = 0
@@ -43,41 +45,31 @@ const getProductCatalogues = async () => {
   )
 }
 
-const getNotitications = async () => {
-  if (!authStore.isSignedIn) {
-    return
-  }
-  notificationStore.getAllNotifications()
-}
+const listenForVoucherNotifications = async () => {
+  const channel = $pusher.subscribe(`voucher-created-channel`)
 
-const listenForNotifications = async () => {
-  if (!authStore.isSignedIn) {
-    return
-  }
-
-  const channel = $pusher.subscribe(`App.Models.User.${user.value?.id || 1}`)
-
-  channel.bind('App\\Notifications\\NewVoucherNotification', function (data) {
-    console.log('Nhận được thông báo:', data)
+  channel.bind('voucher-created-event', (data) => {
+    const message = `Chúc mừng bạn vừa nhận được mã giảm giá mới: ${data.voucher.name} Hãy áp dụng ngay!`
+    toast(message)
+    showNotification(data.voucher.name, message)
+    notificationStore.getAllNotifications()
   })
 }
 
-const getVoucherNotify = async () => {
-  const channel = $pusher.subscribe('voucher-created-channel')
-  channel.bind('voucher-created-event', function (data) {
-    console.log('<><><><><><><><><>:', data)
-  })
-}
+watch(notifications, (newValue) => {
+  isShowBell.value = newValue.some((item) => item.read_at == null)
+})
 
 onMounted(() => {
-  getNotitications()
-  getVoucherNotify()
   getProductCatalogues()
-  listenForNotifications()
+  listenForVoucherNotifications()
 
-  cartStore.getAllCarts()
   wishlistStore.getAllWishlists()
+  cartStore.getAllCarts()
   window.addEventListener('scroll', debouncedHandleScroll)
+})
+onUnmounted(() => {
+  $pusher.unsubscribe(`voucher-created-channel`)
 })
 </script>
 <template>
@@ -93,6 +85,39 @@ onMounted(() => {
         <div class="header-right">
           <!-- End of Dropdown Menu -->
           <span class="d-lg-show"></span>
+          <div class="header-notification">
+            <NuxtLink to="/post/catalogue" class="d-lg-show">
+              <i class="fas fa-bell fs-1" :class="{ shake: isShowBell }"></i>
+              <span class="notification-text"> Thông báo </span>
+            </NuxtLink>
+
+            <div class="noti-dropdown-box" v-if="!_.isEmpty(notifications)">
+              <h6>Thông báo mới nhận</h6>
+              <ul>
+                <li
+                  v-for="notification in notifications"
+                  :class="{ active: notification.read_at == null }"
+                  :key="notification.id"
+                >
+                  <div class="noti-image">
+                    <v-img
+                      width="50"
+                      height="50"
+                      contain
+                      src="https://cdn.tgdd.vn/Products/Images/54/315072/s16/tai-nghe-co-day-apple-mtjy3-thumb-13-650x650.png"
+                    ></v-img>
+                  </div>
+                  <div class="noti-content">
+                    <p class="noti-title">{{ notification?.data?.title }}</p>
+                    <p class="noti-desc">
+                      {{ notification?.data?.description }}
+                    </p>
+                  </div>
+                </li>
+              </ul>
+              <h6 class="btn-all">Xem tất cả</h6>
+            </div>
+          </div>
           <NuxtLink to="/post/catalogue" class="d-lg-show">Bài viết</NuxtLink>
           <NuxtLink to="/contact" class="d-lg-show">Liên hệ</NuxtLink>
           <NuxtLink to="/user/profile" class="d-lg-show">Tài khoản</NuxtLink>

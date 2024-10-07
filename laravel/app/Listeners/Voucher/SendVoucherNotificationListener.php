@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Notification;
 
-class SendVoucherNotificationListener implements ShouldQueue
+class SendVoucherNotificationListener
 {
     // Thoi gian cho job
     public $timeout = 60;

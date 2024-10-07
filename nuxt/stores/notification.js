@@ -5,7 +5,6 @@ export const useNotificationStore = defineStore('notification', {
   state: () => {
     return {
       notifications: [],
-      notificationCount: 0,
     }
   },
   getters: {
@@ -20,17 +19,16 @@ export const useNotificationStore = defineStore('notification', {
       loadingStore.setLoading(true)
 
       try {
-        const response = await $axios.get('/notifications')
+        const response = await $axios.get('/notifications/user')
 
-        this.addNotification(response.data?.items)
-        this.setNotificationCount(response.data?.items?.length)
+        this.setNotification(response.data)
       } catch (error) {
       } finally {
         loadingStore.setLoading(false)
       }
     },
-    addNotification(notification) {
-      this.notifications.unshift(notification)
+    setNotification(notifications) {
+      this.notifications = notifications
     },
     setNotificationCount(count) {
       this.notificationCount = count
@@ -40,6 +38,20 @@ export const useNotificationStore = defineStore('notification', {
       if (index > -1) {
         this.notifications.splice(index, 1)
       }
+    },
+    async readMarked() {
+      const { $axios } = useNuxtApp()
+      try {
+        const response = await $axios.get('/notifications/user')
+
+        this.setNotification(response.data)
+      } catch (error) {}
+    },
+
+    readAll() {
+      this.notifications.map((notification) => {
+        notification.read = true
+      })
     },
   },
 })

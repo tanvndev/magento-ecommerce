@@ -407,9 +407,27 @@ const hintEmail = (email) => {
 }
 
 const formatTime = (value) => {
-    return String(value).padStart(2, '0'); // Đảm bảo luôn có 2 chữ số
-};
+  return String(value).padStart(2, '0') // Đảm bảo luôn có 2 chữ số
+}
 
+const showNotification = (title, body, icon = 'src/assets/images/logo.png') => {
+  if (Notification.permission === 'granted') {
+    new Notification(title, {
+      body: body,
+      icon: icon,
+    })
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(function (permission) {
+      if (permission === 'granted') {
+        // Hiển thị thông báo
+        new Notification(title, {
+          body: body,
+          icon: icon,
+        })
+      }
+    })
+  }
+}
 
 export {
   debounce,
@@ -433,5 +451,6 @@ export {
   generateRandomString,
   hintPhoneNumber,
   hintEmail,
-  formatTime
+  formatTime,
+  showNotification,
 }

@@ -22,24 +22,18 @@ class NewVoucherNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['broadcast', 'database'];
-    }
-
-    public function toBroadcast($notifiable)
-    {
-        return new BroadcastMessage([
-            'voucher_id' => $this->voucher->id,
-            'title' => 'Voucher mới!',
-            'message' => 'Bạn có voucher mới: ' . $this->voucher->name,
-        ]);
+        return ['database'];
     }
 
     public function toArray($notifiable)
     {
         return [
+            'type' => 'voucher',
             'voucher_id' => $this->voucher->id,
+            'image' => $this->voucher->image,
             'title' => 'Voucher mới!',
-            'message' => 'Bạn có voucher mới: ' . $this->voucher->name,
+            'message' => 'Chúc mừng bạn vừa nhận được mã giảm giá mới: ' . $this->voucher->name . ' Hãy áp dụng ngay!',
+            'description' => $this->voucher->description
         ];
     }
 }
