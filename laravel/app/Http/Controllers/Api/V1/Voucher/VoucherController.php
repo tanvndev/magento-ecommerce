@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\V1\Voucher;
 
 use App\Enums\ResponseEnum;
+use App\Events\NewVoucherCreatedEvent;
+use App\Events\TestEvent;
+use App\Events\YourEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Voucher\StoreVoucherRequest;
 use App\Http\Requests\Voucher\UpdateVoucherRequest;
@@ -53,9 +56,9 @@ class VoucherController extends Controller
      */
     public function show(string $id): JsonResponse
     {
-        $Voucher = new VoucherResource($this->voucherRepository->findById($id));
+        $voucher = new VoucherResource($this->voucherRepository->findById($id));
 
-        return successResponse('', $Voucher, true);
+        return successResponse('', $voucher, true);
     }
 
     /**
@@ -64,8 +67,6 @@ class VoucherController extends Controller
     public function update(UpdateVoucherRequest $request, string $id): JsonResponse
     {
         $response = $this->voucherService->update($id);
-        \Log::info('Update voucher: ' . json_encode($response));
-
 
         return handleResponse($response);
     }
@@ -90,6 +91,7 @@ class VoucherController extends Controller
         $paginator = $this->voucherService->getAllVoucher();
 
         $data = new ClientVoucherCollection($paginator);
+        event(new NewVoucherCreatedEvent($data));
 
         return successResponse('', $data, true);
     }
