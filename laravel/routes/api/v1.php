@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Auth\VerificationController;
 use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\LiveChat\LiveChatController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
 use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
@@ -178,6 +179,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::post('product-reviews/{parentId}/replies', 'adminReply')->name('reply');
             Route::put('product-reviews/replies/{replyId}', 'adminUpdateReply')->name('updateReply');
         });
+
+        // Reatime Live Chat
+        Route::post('/send-message', [LiveChatController::class, 'sendMessage']);
     });
 
     // CART ROUTE
