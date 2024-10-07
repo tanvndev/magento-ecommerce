@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     public: {
       API_BASE_URL: process.env.API_BASE_URL,
       VUE_APP_URL: process.env.VUE_APP_URL,
-      LARAVEL_APP_URL: process.env.LARAVEL_APP_URL,
+      LARAVEL_URL: process.env.LARAVEL_URL,
       PUSHER_APP_KEY: process.env.PUSHER_APP_KEY,
       PUSHER_APP_CLUSTER: process.env.PUSHER_APP_CLUSTER,
     },

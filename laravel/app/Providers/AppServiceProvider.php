@@ -68,6 +68,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\User\UserAddressServiceInterface' => 'App\Services\User\UserAddressService',
         // PRODUCT REVIEW
         'App\Services\Interfaces\Product\ProductReviewServiceInterface' => 'App\Services\Product\ProductReviewService',
+        // NOTIFICATION
+        'App\Services\Interfaces\Notification\NotificationServiceInterface' => 'App\Services\Notification\NotificationService',
     ];
 
     public function register(): void
@@ -108,9 +110,9 @@ class AppServiceProvider extends ServiceProvider
 
             $logContent = sprintf(
                 "/*==================================================================*/\n" .
-                "/* Origin (request): %s\n" .
-                "   Query %d - %s [%sms] */\n\n" .
-                "%s\n\n",
+                    "/* Origin (request): %s\n" .
+                    "   Query %d - %s [%sms] */\n\n" .
+                    "%s\n\n",
                 request()->fullUrl() ?? 'N/A',
                 $query->time, // Số thứ tự truy vấn
                 Carbon::now()->toDateTimeString(),

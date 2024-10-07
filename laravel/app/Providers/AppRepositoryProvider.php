@@ -62,6 +62,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\User\UserAddressRepositoryInterface' => 'App\Repositories\User\UserAddressRepository',
         // PRODUCT REVIEW
         'App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface' => 'App\Repositories\Product\ProductReviewRepository',
+        // NOTIFICATION
+        'App\Repositories\Interfaces\Notification\NotificationRepositoryInterface' => 'App\Repositories\Notification\NotificationRepository',
 
     ];
 

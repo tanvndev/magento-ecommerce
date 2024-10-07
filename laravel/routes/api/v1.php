@@ -102,8 +102,8 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // NOTIFICATION ROUTE
 
-        Route::get('notifications', [NotificationController::class, 'index']);
-        Route::post('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::get('notifications/user', [NotificationController::class, 'getNotificationByUser']);
+        Route::post('notifications/{id}/read', [NotificationController::class, 'readNotification']);
 
 
         // USER ADDRESSES ROUTE
