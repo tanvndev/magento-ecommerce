@@ -15,7 +15,6 @@
     "axios": "^1.7.2",
     "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
-    "laravel-echo": "^1.16.1",
     "lodash": "^4.17.21",
     "magento-ecommerce": "file:",
     "marked": "^14.1.2",

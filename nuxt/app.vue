@@ -6,9 +6,11 @@ import Spinner from './components/includes/Spinner.vue'
 import Cookies from 'js-cookie'
 
 const authStore = useAuthStore()
+const notificationStore = useNotificationStore()
+const user = computed(() => authStore.getUser)
 const token = computed(() => authStore.getToken ?? null)
 const route = useRoute()
-const { $authService } = useNuxtApp()
+const { $authService, $pusher } = useNuxtApp()
 
 const showScrollTop = ref(false)
 const progressIndicator = ref(null)
@@ -57,6 +59,35 @@ const scrollToTop = (event) => {
   })
 }
 
+const listenForNotifications = async () => {
+  const channel = $pusher.subscribe(`private-App.Models.User.${user.value?.id}`)
+
+  channel.bind(
+    'Illuminate\\Notifications\\Events\\BroadcastNotificationCreated',
+    (data) => {
+      console.log(data.title, data.message)
+      toast(data.message)
+      showNotification(data.title, data.message)
+    }
+  )
+}
+
+const debounceGetNotifications = debounce(async () => {
+  if (authStore.isSignedIn) {
+    await notificationStore.getAllNotifications()
+    // await listenForNotifications()
+  }
+}, 2000)
+
+watch(
+  () => route.path,
+  async () => {
+    await setTokenAndSetCurrentUser()
+    debounceGetNotifications()
+  },
+  { immediate: true }
+)
+
 onMounted(() => {
   setSession_id()
   window.addEventListener('scroll', checkScroll)
@@ -65,14 +96,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', checkScroll)
 })
-
-watch(
-  () => route.path,
-  () => {
-    setTokenAndSetCurrentUser()
-  },
-  { immediate: true }
-)
 </script>
 <template>
   <Spinner />

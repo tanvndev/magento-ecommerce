@@ -2,12 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\AuthForgotEvent;
-use App\Events\AuthRegisteredEvent;
-use App\Listeners\SendEmailRegisterVerification;
-use App\Listeners\SendEmailResetPassword;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
@@ -19,20 +13,23 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+        'Registered'::class => [
+            'Illuminate\Auth\Listeners\SendEmailVerificationNotification',
         ],
-        AuthRegisteredEvent::class => [
-            SendEmailRegisterVerification::class,
+        'App\Events\Auth\AuthRegisteredEvent'::class => [
+            'App\Listeners\Auth\SendEmailRegisterVerification',
         ],
-        AuthForgotEvent::class => [
-            SendEmailResetPassword::class,
+        'App\Events\Auth\AuthForgotEvent' => [
+            'App\Listeners\Auth\SendEmailResetPassword',
         ],
-        'App\Events\OrderShippedEvent' => [
-            'App\Listeners\SendOrderShippedEmailListener',
+        'App\Events\Order\OrderShippedEvent' => [
+            'App\Listeners\Order\SendOrderShippedEmailListener',
         ],
-        'App\Events\WishListEvent' => [
-            'App\Listeners\SendWishListEmailListener',
+        'App\Events\Wishlist\WishListEvent' => [
+            'App\Listeners\Wishlist\SendWishListEmailListener',
+        ],
+        'App\Events\Voucher\VoucherCreatedEvent' => [
+            'App\Listeners\Voucher\SendVoucherNotificationListener',
         ],
     ];
 

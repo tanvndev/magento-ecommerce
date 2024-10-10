@@ -4,6 +4,7 @@
 
 namespace App\Services\Voucher;
 
+use App\Events\Voucher\VoucherCreatedEvent;
 use App\Models\Voucher;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
@@ -77,7 +78,9 @@ class VoucherService extends BaseService implements VoucherServiceInterface
         return $this->executeInTransaction(function () {
 
             $payload = $this->preparePayload();
-            $this->voucherRepository->create($payload);
+            $voucher = $this->voucherRepository->create($payload);
+
+            event(new VoucherCreatedEvent($voucher));
 
             return successResponse(__('messages.create.success'));
         }, __('messages.create.error'));
@@ -121,7 +124,6 @@ class VoucherService extends BaseService implements VoucherServiceInterface
     {
         $payload = request()->except('_token', '_method');
 
-        _log($payload);
         $payload['start_at'] = convertToYyyyMmDdHhMmSs($payload['voucher_time'][0] ?? null);
         $payload['end_at'] = convertToYyyyMmDdHhMmSs($payload['voucher_time'][1] ?? null);
 

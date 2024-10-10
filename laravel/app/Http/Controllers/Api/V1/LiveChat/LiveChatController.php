@@ -68,6 +68,7 @@ class LiveChatController extends Controller
                 'is_read' => false,
             ])->update(['is_read' => true]);
 
+
             return successResponse(__('messages.retrieve.success'), $messages, true);
         } catch (\Illuminate\Database\QueryException $e) {
             return errorResponse(__('messages.database_error'), true);

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\LiveChat\LiveChatController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
@@ -41,9 +42,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('log.request.response', 'api')->group(function () {
-
-
-    // Stringee
 
     // ROUTE TEST
     Route::post('test/index', [TestApiController::class, 'upload']);
@@ -101,6 +99,11 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::put('archiveMultiple', [DashboardController::class, 'archiveMultiple'])->name('archiveMultiple');
             Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
+
+        // NOTIFICATION ROUTE
+
+        Route::get('notifications/user', [NotificationController::class, 'getNotificationByUser']);
+        Route::post('notifications/{id}/read', [NotificationController::class, 'readNotification']);
 
 
         // USER ADDRESSES ROUTE
