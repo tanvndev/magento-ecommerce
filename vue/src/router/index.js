@@ -10,7 +10,7 @@ import {
   widgetRoutes,
   voucherRoutes,
   orderRoutes,
-  liveChatRoutes
+  liveChatRoutes,
   postRoutes
 } from './backend';
 
@@ -48,7 +48,7 @@ const routes = [
   ...widgetRoutes,
   ...voucherRoutes,
   ...orderRoutes,
-  ...postRoutes
+  ...postRoutes,
   ...liveChatRoutes
 ];
 
