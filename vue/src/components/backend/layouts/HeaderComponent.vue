@@ -12,7 +12,7 @@
               >
             </button>
             <template #overlay>
-              <div class="w-[300px] rounded-lg bg-white shadow-lg md:w-[400px]">
+              <div class="w-[300px] rounded-[4px] bg-white shadow-lg md:w-[400px]">
                 <div class="px-5">
                   <div class="flex items-center justify-between pb-2">
                     <h2 class="mb-0 text-lg">Thông báo</h2>

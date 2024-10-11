@@ -18,6 +18,7 @@
         <!-- Table -->
         <a-table
           bordered
+          class="mt-2"
           :columns="columns"
           :data-source="state.dataSource"
           :row-selection="rowSelection"
