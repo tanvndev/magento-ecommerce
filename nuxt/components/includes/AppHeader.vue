@@ -86,7 +86,7 @@ onUnmounted(() => {
           <!-- End of Dropdown Menu -->
           <span class="d-lg-show"></span>
           <div class="header-notification">
-            <NuxtLink to="/post/catalogue" class="d-lg-show">
+            <NuxtLink to="/post/catalogue" class="d-lg-show notification-link">
               <i class="fas fa-bell fs-1" :class="{ shake: isShowBell }"></i>
               <span class="notification-text"> Thông báo </span>
             </NuxtLink>

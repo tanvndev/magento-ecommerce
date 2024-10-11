@@ -2,12 +2,17 @@
 import _ from 'lodash'
 
 const emits = defineEmits(['onLocation'])
-const { $axios } = useNuxtApp()
-
+const { $axios, $authService } = useNuxtApp()
+const authStore = useAuthStore()
+const isLoggedIn = computed(() => authStore.isSignedIn)
+const user = computed(() => authStore.getUser)
 const provinces = ref([])
 const districts = ref([])
 const wards = ref([])
 const isLoading = ref(false)
+const isOpenChooseAddress = ref(false)
+const currentAddress = ref(null)
+const isOpenModalAddress = ref(false)
 const location = reactive({
   province_id: '',
   district_id: '',
@@ -107,6 +112,42 @@ const getLocationByAddress = async (address) => {
   })
 }
 
+const fetch = async (endpoint = '', payload = {}) => {
+  try {
+    let response = await $axios.post(endpoint, payload)
+
+    if (response.status == 'success') {
+      toast(response.messages)
+
+      const user = await $authService.me()
+      authStore.setUser(user.data)
+    }
+  } catch (error) {
+    toast(
+      formatMessages(error?.response?.data?.messages) || 'Thao tác thất bại',
+      'error'
+    )
+  }
+}
+
+const handleUpdatePrimaryAddress = async (id) => {
+  const endpoint = `users/addresses/${id}?_method=PUT`
+  const payload = {
+    is_primary: true,
+  }
+  fetch(endpoint, payload)
+}
+
+watch(
+  user,
+  (newVal) => {
+    currentAddress.value = newVal?.addresses?.find((item) => item.is_primary)
+  },
+  {
+    immediate: true,
+  }
+)
+
 onMounted(async () => {
   getProvinces()
 })
@@ -117,9 +158,15 @@ onMounted(async () => {
       <h3 class="title billing-title text-uppercase ls-10 pt-1 m-0">
         Địa chỉ giao hàng
       </h3>
-      <a href="#" class="fs-15">Chỉnh sửa</a>
+      <a
+        href="#"
+        @click.prevent="isOpenChooseAddress = true"
+        class="fs-15"
+        v-if="isLoggedIn"
+        >Thay đổi</a
+      >
     </div>
-    <div class="customer-address">
+    <div class="customer-address" v-if="!isLoggedIn">
       <div class="row gutter-sm">
         <div class="col-xs-6">
           <IncludesInputComponent name="customer_name" label="Họ và tên *" />
@@ -190,13 +237,15 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="customer-user d-none">
+    <div class="customer-user" v-else>
       <div>
         <div class="v2-checkout-address-inner">
           <div>
             <div class="v2-address-title-container">
-              <span class="v2-address-title">Vũ Ngọc Tân</span>
-              <span class="v2-mobile">0332225690</span>
+              <span class="v2-address-title">{{
+                currentAddress?.fullname
+              }}</span>
+              <span class="v2-mobile">{{ currentAddress?.phone }}</span>
             </div>
           </div>
           <div class="v2-address-info-item">
@@ -212,12 +261,96 @@ onMounted(async () => {
               >NHÀ RIÊNG</span
             >
             <span class="v2-address-info-address">
-              Thôn cầu thăng long Cổng cụm 4 ngõ thứ 2, Xã Kim Nỗ, Huyện Đông
-              Anh, Hà Nội
+              {{ currentAddress?.shipping_address }}
             </span>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Modal -->
+
+  <v-dialog
+    v-model="isOpenChooseAddress"
+    max-width="700"
+    persistent
+    @click:outside="isOpenChooseAddress = false"
+  >
+    <v-card class="py-3 relative" elevation="12" max-width="700" width="100%">
+      <div class="d-flex items-center justify-between px-4">
+        <h3 class="title billing-title text-uppercase ls-10 pt-1 m-0">
+          Thay đổi Địa chỉ giao hàng
+        </h3>
+        <v-btn
+          icon="mdi-close"
+          size="small"
+          variant="text"
+          @click="isOpenChooseAddress = false"
+        ></v-btn>
+      </div>
+      <v-divider class="border-opacity-100 mb-0"></v-divider>
+      <v-row class="mt-4 px-4" v-if="user?.addresses?.length">
+        <v-col cols="12" md="12">
+          <div
+            class="customer-user py-3"
+            v-for="item in user?.addresses"
+            :key="item.id"
+          >
+            <div class="row gutter-sm items-center">
+              <div class="col-xs-9">
+                <div class="v2-checkout-address-inner">
+                  <div>
+                    <div class="v2-address-title-container">
+                      <span class="v2-address-title">{{ item.fullname }}</span>
+                      <span class="v2-mobile">{{ item.phone }}</span>
+                    </div>
+                  </div>
+                  <div class="v2-address-info-item">
+                    <span
+                      class="v2-address-tag-label mr-2"
+                      style="
+                        background-image: linear-gradient(
+                          -143deg,
+                          rgb(255, 123, 83) 0%,
+                          rgb(255, 75, 40) 100%
+                        );
+                      "
+                      >NHÀ RIÊNG</span
+                    >
+                    <span class="v2-address-info-address">
+                      {{ item.shipping_address }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-3">
+                <div class="mt-1 d-flex justify-end">
+                  <v-btn
+                    density="compact"
+                    @click="handleUpdatePrimaryAddress(item.id)"
+                    :color="item.is_primary == 1 ? 'primary' : ''"
+                    :disabled="item.is_primary == 1"
+                    >Mặc định</v-btn
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <v-btn
+            prepend-icon="mdi-plus-circle"
+            @click="
+              () => {
+                isOpenModalAddress = true
+                isOpenChooseAddress = false
+              }
+            "
+            >Thêm địa chỉ mới</v-btn
+          >
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-dialog>
+
+  <IncludesLocationModal :is-open-modal-address="isOpenModalAddress" />
 </template>

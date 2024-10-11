@@ -5,56 +5,82 @@ import { useCartStore } from '#imports'
 
 const { $axios } = useNuxtApp()
 const cartStore = useCartStore()
+const authStore = useAuthStore()
 const router = useRouter()
 const showApplyVoucher = ref(false)
 const sidebarStyle = ref({})
 const mainContent = ref(null)
 const secondaryContent = ref(null)
 const stickyOffset = 20
+const user = computed(() => authStore.getUser)
+const isLoggedIn = computed(() => authStore.isSignedIn)
 const carts = computed(() => cartStore.getCartSelected)
 const voucherCode = ref('')
 
-const { handleSubmit, setFieldValue } = useForm({
+const { handleSubmit, setFieldValue, setValues } = useForm({
   validationSchema: {
     customer_name(value) {
-      if (value) return true
-      return 'Vui lòng nhập họ và tên.'
+      return validateField(value, 'Vui lòng nhập họ và tên.')
     },
     shipping_address(value) {
-      if (value) return true
-      return 'Vui lòng nhập địa chỉ.'
+      return validateField(value, 'Vui lòng nhập địa chỉ.')
     },
     province_id(value) {
-      if (value) return true
-      return 'Vui lòng chọn Tỉnh / Thành phố.'
+      return validateField(value, 'Vui lòng chọn Tỉnh / Thành phố.')
     },
     district_id(value) {
-      if (value) return true
-      return 'Vui lòng chọn Quận / Huyện.'
+      return validateField(value, 'Vui lòng chọn Quận / Huyện.')
     },
     ward_id(value) {
-      if (value) return true
-      return 'Vui lòng chọn Phường / Xã.'
+      return validateField(value, 'Vui lòng chọn Phường / Xã.')
     },
     customer_phone(value) {
-      if (!value) return 'Số điện thoại không được để trống.'
-      if (/^(0[0-9]{9})$/.test(value)) return true
-      return 'Số điện thoại không đúng định dạng.'
+      if (!isLoggedIn.value) {
+        return validatePhone(value)
+      }
+      return true
     },
     customer_email(value) {
-      if (!value) return 'Email không được để trống.'
-      if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value))
-        return true
-      return 'Email không đúng định dạng.'
+      if (!isLoggedIn.value) {
+        return validateEmail(value)
+      }
+      return true
     },
   },
 })
 
-const onSubmit = handleSubmit(async (values) => {
-  const response = await $axios.post('/orders', values)
+// Helper functions
+function validateField(value, message) {
+  if (isLoggedIn.value) return true
+  return value ? true : message
+}
 
-  if (response.status == 'success') {
-    return (location.href = response?.url)
+const validatePhone = (value) => {
+  if (!value) return 'Số điện thoại không được để trống.'
+  return /^(0[0-9]{9})$/.test(value)
+    ? true
+    : 'Số điện thoại không đúng định dạng.'
+}
+
+const validateEmail = (value) => {
+  if (!value) return 'Email không được để trống.'
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)
+    ? true
+    : 'Email không đúng định dạng.'
+}
+
+const onSubmit = handleSubmit(async (values) => {
+  try {
+    const response = await $axios.post('/orders', values)
+
+    if (response.status == 'success') {
+      return (location.href = response?.url)
+    }
+  } catch (error) {
+    toast(
+      formatMessages(error?.response?.data?.messages) || 'Thao tác thất bại',
+      'error'
+    )
   }
 })
 
@@ -114,6 +140,29 @@ const applyVoucher = async () => {
   }
 }
 
+const applyInfoAddress = (currentUser) => {
+  const currentAddress = currentUser?.addresses?.find((item) => item.is_primary)
+
+  setFieldValue('shipping_address', currentAddress?.shipping_address)
+  setFieldValue('customer_name', currentAddress?.fullname)
+  setFieldValue('customer_phone', currentAddress?.phone)
+  setFieldValue('customer_email', user.value?.email)
+  setFieldValue('province_id', currentAddress?.province_id)
+  setFieldValue('district_id', currentAddress?.district_id)
+  setFieldValue('ward_id', currentAddress?.ward_id)
+}
+
+watch(
+  user,
+  (newVal) => {
+    applyInfoAddress(newVal)
+  },
+  {
+    immediate: true,
+    deep: true,
+  }
+)
+
 onBeforeMount(() => {
   if (!carts.value.length) {
     router.push({ name: 'cart' })
@@ -121,6 +170,7 @@ onBeforeMount(() => {
 })
 
 onMounted(async () => {
+  applyInfoAddress()
   window.addEventListener('scroll', handleScroll)
 })
 
