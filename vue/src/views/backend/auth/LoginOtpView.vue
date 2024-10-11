@@ -25,38 +25,27 @@
               </p>
             </div>
           </div>
-          <form @submit.prevent="onSubmit">
+          <form>
             <AleartError :errors="errors" />
-            <div class="mb-5">
-              <InputComponent
-                label="Địa chỉ email"
-                name="email"
-                type="text"
-                placeholder="Nhập địa chỉ email của bạn"
-              />
-            </div>
             <div>
               <InputComponent
-                label="Mật khẩu"
-                name="password"
-                type="password"
-                placeholder="*************"
+                label="Số điện thoại"
+                name="phone"
+                type="text"
+                placeholder="Nhập số điện thoại của bạn"
               />
             </div>
+            <div class="mt-5" v-if="showOtp">
+              <InputComponent label="OTP" name="otp" type="text" placeholder="OTP" />
+            </div>
             <div class="mt-2 flex items-center justify-between">
-              <div>
-                <RouterLink
-                  class="text-[13px] text-blue-600 hover:text-blue-500"
-                  :to="{ name: 'forgot' }"
-                  >Quên mật khẩu?</RouterLink
-                >
-              </div>
+              <div></div>
 
               <div>
                 <RouterLink
                   class="text-[13px] text-blue-600 hover:text-blue-500"
-                  :to="{ name: 'login.otp' }"
-                  >Đăng nhập với SMS</RouterLink
+                  :to="{ name: 'login' }"
+                  >Đăng nhập với mật khẩu</RouterLink
                 >
               </div>
             </div>
@@ -65,6 +54,16 @@
             <RecaptchaComponent />
 
             <button
+              v-if="!showOtp"
+              @click.prevent="onSubmitOtp"
+              type="submit"
+              class="mt-4 w-full rounded-lg bg-primary-600 px-4 py-2 font-medium text-white duration-150 hover:bg-primary-500 active:bg-primary-600"
+            >
+              Tiếp tục
+            </button>
+            <button
+              v-else
+              @click.prevent="onSubmit"
               type="submit"
               class="mt-4 w-full rounded-lg bg-primary-600 px-4 py-2 font-medium text-white duration-150 hover:bg-primary-500 active:bg-primary-600"
             >
@@ -75,9 +74,9 @@
           <div className="relative">
             <span className="block w-full h-px bg-gray-300"></span>
             <p
-              className="inline-block w-fit text-sm bg-white px-2 absolute -top-2 inset-x-0 mx-auto uppercase"
+              className="inline-block w-fit text-sm bg-white px-2 absolute -top-2 inset-x-0 mx-auto"
             >
-              Hoặc
+              Hoặc đăng nhập với
             </p>
           </div>
         </div>
@@ -96,44 +95,65 @@ import { useStore } from 'vuex';
 import { formatMessages } from '@/utils/format';
 import { message } from 'ant-design-vue';
 import { NUXT_URL } from '@/static/constants';
+import axios from '@/configs/axios';
 
 const store = useStore();
 const errors = ref({});
+const showOtp = ref(false);
 
 // VALIDATION
 const { handleSubmit } = useForm({
   validationSchema: yup.object({
-    email: yup
+    phone: yup
       .string()
-      .email('Email không đúng định dạng email.')
-      .required('Email không được để trống.'),
-    password: yup
-      .string()
-      .min(6, 'Mật khẩu phải có ít nhất 6 ký tự.')
-      .required('Mật khẩu không được để trống.')
+      .required('Số điện thoại không được để trống.')
+      .matches(/(0)[0-9]{9}/, 'Số điện thoại không đúng định dạng.')
   })
+});
+
+const onSubmitOtp = handleSubmit(async (values) => {
+  //   eslint-disable-next-line no-undef
+  const recaptchaResponse = grecaptcha.getResponse();
+
+  if (!recaptchaResponse) {
+    return message.error('Vui lòng xác nhận bạn không phải là robot.');
+  }
+
+  errors.value = {};
+  try {
+    const response = await axios.post(`/auth/send-verification-code`, {
+      ...values
+    });
+
+    if (response.status == 'success') {
+      message.success(response.messages);
+      showOtp.value = true;
+    }
+  } catch (error) {
+    message.error(error?.response?.data?.messages || 'Thao tác thất bại');
+  }
 });
 
 // SUBMIT FORM HANDLE
 const onSubmit = handleSubmit(async (values) => {
   errors.value = {};
 
-  // eslint-disable-next-line no-undef
+  //   eslint-disable-next-line no-undef
   const recaptchaResponse = grecaptcha.getResponse();
 
   if (!recaptchaResponse) {
-    
+    showOtp.value = false;
     return message.error('Vui lòng xác nhận bạn không phải là robot.');
   }
-
   const formData = {
     ...values,
     'g-recaptcha-response': recaptchaResponse
   };
 
-  await store.dispatch('authStore/login', formData);
+  await store.dispatch('authStore/loginOtp', formData);
   const authState = store.state.authStore;
   if (!authState.status.loggedIn) {
+    showOtp.value = false;
     return (errors.value = formatMessages(authState.messages));
   }
 

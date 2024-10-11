@@ -4,7 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class LoginOtpRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,8 @@ class LoginRequest extends FormRequest
     {
 
         return [
-            'email'                => 'required|email',
-            'password'             => 'required',
+            'phone'             => 'required|regex:/(0)[0-9]{9}/',
+            'otp'               => 'required',
             'g-recaptcha-response' => 'required',
         ];
     }
@@ -32,14 +32,16 @@ class LoginRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email'    => 'Email',
-            'password' => 'Mật khẩu',
+            'phone'             => 'Số điện thoại',
+            'otp'               => 'Mã xác nhận',
             'g-recaptcha-response' => 'Xác minh captcha',
         ];
     }
 
     public function messages()
     {
-        return __('request.messages');
+        return __('request.messages') + [
+            'phone.regex' => 'Số điện thoại không đúng dạng.',
+        ];
     }
 }

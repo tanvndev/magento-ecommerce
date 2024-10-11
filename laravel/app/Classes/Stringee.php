@@ -10,7 +10,7 @@ class Stringee
     private static $url = 'https://api.stringee.com/v1/call2/callout';
     private static $fromPhone = '842871015881';
 
-    public static function sendVerificationCode($request, $user)
+    public static function sendVerificationCode($request, $user, string $key = 'verification_code_')
     {
         if (! $user->phone) {
             return errorResponse('Số điện thoại không chính xác.');
@@ -39,6 +39,7 @@ class Stringee
                 'text' => 'Vui lòng không chia sẻ mã cho bất kì ai. Mã xác nhận của bạn là . ' . $formatVerificationCode . '. Mã sẽ được lặp lại. Mã xác nhận của bạn là . ' . $formatVerificationCode . '. Mã hết hạn sau mười năm phút.'
             ]],
         ];
+        dd($data);
 
         try {
             $response = $client->post(self::$url, [
@@ -50,7 +51,7 @@ class Stringee
             ]);
 
             $responseBody = json_decode($response->getBody(), true);
-            Cache::put('verification_code_' . $user->phone, $verificationCode, 15 * 60);
+            Cache::put($key . $user->phone, $verificationCode, 15 * 60);
 
             return successResponse('Gửi mã xác nhận thành công.', $responseBody);
         } catch (\Exception $e) {
@@ -58,9 +59,9 @@ class Stringee
         }
     }
 
-    public static function verifyCode($request, $user)
+    public static function verifyCode($request, $user, $key = 'verification_code_')
     {
-        $verificationCode = Cache::get('verification_code_' . $user->phone);
+        $verificationCode = Cache::get($key . $user->phone);
 
         if (! $verificationCode) {
             return errorResponse(__('messages.auth.invalid_code.error'));

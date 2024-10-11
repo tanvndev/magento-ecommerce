@@ -26,6 +26,8 @@ class RegisterRequest extends FormRequest
             'email'    => 'required|email',
             'fullname' => 'required',
             'password' => 'required',
+            'g-recaptcha-response' => 'required',
+
         ];
     }
 
@@ -35,6 +37,8 @@ class RegisterRequest extends FormRequest
             'email'    => 'Email',
             'fullname' => 'Họ và tên',
             'password' => 'Mật khẩu',
+            'g-recaptcha-response' => 'Xác minh captcha',
+
         ];
     }
 

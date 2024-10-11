@@ -7,6 +7,7 @@ use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ForgotRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\LoginOtpRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\User\Client\ClientUserResource;
 use App\Http\Resources\User\UserResource;
@@ -18,7 +19,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Log;
 
 class AuthController extends Controller
 {
@@ -29,6 +29,8 @@ class AuthController extends Controller
     public function __construct(
         AuthServiceInterface $authService
     ) {
+        $this->middleware('throttle:5,1')->only(['login', 'register', 'sendVerificationCode']);
+
         $this->currentUser = Auth::user();
         $this->authService = $authService;
     }
@@ -77,6 +79,34 @@ class AuthController extends Controller
         }
 
         return errorResponse('Email hoặc mật khẩu không chính xác.', true);
+    }
+
+    public function loginOtp(LoginOtpRequest $request): JsonResponse
+    {
+        $response = $this->verifyRecaptcha($request->input('g-recaptcha-response'));
+
+        if (! $response) {
+            return errorResponse('Xác minh captcha không thành công', true);
+        }
+
+        $credentials = $request->only('phone');
+
+        $user = User::where('phone', $credentials['phone'])->first();
+
+        $response = Stringee::verifyCode($request, $user);
+
+        if ($response['status'] == 'error') {
+            return errorResponse($response['messages'], true);
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.', true);
+        }
+
+        $token = JWTAuth::fromUser($user);
+
+        // Successful login
+        return $this->respondWithToken($token, 'Đăng nhập thành công.', $user);
     }
 
     /**
@@ -189,7 +219,21 @@ class AuthController extends Controller
      */
     public function sendVerificationCode(Request $request): JsonResponse
     {
-        $response = Stringee::sendVerificationCode($request, $this->currentUser);
+        if (auth()->check()) {
+            $response = Stringee::sendVerificationCode($request, $this->currentUser);
+            return handleResponse($response);
+        }
+
+        $phone = $request->input('phone');
+        if (! $phone) {
+            return errorResponse('Vui lòng nhập số điện thoại.', true);
+        }
+        $user = User::where('phone', $phone)->first();
+        if (! $user) {
+            return errorResponse('Số điện thoại không tồn tại trong hệ thống.', true);
+        }
+
+        $response = Stringee::sendVerificationCode($request, $user);
 
         return handleResponse($response);
     }

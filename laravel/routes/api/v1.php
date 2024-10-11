@@ -72,11 +72,12 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);
+        Route::post('login/otp', [AuthController::class, 'loginOtp']);
         Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('refreshToken', [AuthController::class, 'refreshToken']);
         Route::get('me', [AuthController::class, 'me'])->middleware('jwt.verify');
-        Route::post('send-verification-code', [AuthController::class, 'sendVerificationCode'])->middleware('jwt.verify');
+        Route::post('send-verification-code', [AuthController::class, 'sendVerificationCode']);
         Route::post('verify-code', [AuthController::class, 'verifyCode'])->middleware('jwt.verify');
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');

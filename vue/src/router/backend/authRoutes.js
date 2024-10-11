@@ -9,6 +9,11 @@ const userRoutes = [
     component: () => import('@/views/backend/auth/LoginView.vue')
   },
   {
+    path: '/login/otp',
+    name: 'login.otp',
+    component: () => import('@/views/backend/auth/LoginOtpView.vue')
+  },
+  {
     path: '/register',
     name: 'register',
     component: () => import('@/views/backend/auth/RegisterView.vue')
