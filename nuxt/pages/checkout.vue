@@ -12,6 +12,7 @@ const mainContent = ref(null)
 const secondaryContent = ref(null)
 const stickyOffset = 20
 const carts = computed(() => cartStore.getCartSelected)
+const voucherCode = ref('')
 
 const { handleSubmit, setFieldValue } = useForm({
   validationSchema: {
@@ -99,6 +100,20 @@ const handleScroll = () => {
   }
 }
 
+const applyVoucher = async () => {
+  if (!voucherCode.value) return toast('Vui lòng nhập mã giảm giá.', 'error')
+  try {
+    const response = await $axios.post(`/vouchers/${voucherCode.value}/apply`)
+
+    if (response.status == 'success') {
+      toast(response.messages)
+      setFieldValue('voucher_id', response.data.voucher_id)
+    }
+  } catch (error) {
+    toast(error?.response?.data?.messages || 'Thao tác thất bại', 'error')
+  }
+}
+
 onBeforeMount(() => {
   if (!carts.value.length) {
     router.push({ name: 'cart' })
@@ -161,12 +176,13 @@ onBeforeUnmount(() => {
             <div class="input-wrapper-inline">
               <input
                 type="text"
-                name="Mã giảm giá"
+                v-model="voucherCode"
                 class="form-control form-control-md mr-1 mb-2"
                 placeholder="Mã giảm giá"
               />
               <button
                 type="button"
+                @click="applyVoucher"
                 class="btn button btn-rounded btn-coupon mb-2"
               >
                 Áp Dụng Mã
@@ -214,6 +230,5 @@ onBeforeUnmount(() => {
   </main>
   <!-- End of Main -->
 </template>
-
 
 <style scoped></style>
