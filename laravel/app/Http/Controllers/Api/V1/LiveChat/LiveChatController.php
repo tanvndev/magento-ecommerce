@@ -15,13 +15,11 @@ class LiveChatController extends Controller
     public function getChatList()
     {
         try {
-            // $users = User::where('user_catalogue_id', User::ROLE_CUSTOMER)
-            //     ->with(['chat' => function ($query) {
-            //         $query->orderBy('created_at', 'desc')->first();
-            //     }])
-            //     ->get();
-
-            $users = User::all();
+            $users = User::where('user_catalogue_id', '!=', User::ROLE_ADMIN)
+                ->with(['chat' => function ($query) {
+                    $query->orderBy('created_at', 'desc')->first();
+                }])
+                ->get();
 
             return successResponse('', $users, true);
         } catch (\Illuminate\Database\QueryException $e) {

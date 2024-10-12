@@ -148,7 +148,7 @@ const formatDate = (date) => {
 };
 const fetchChatList = async () => {
   try {
-    await getAll('chat/list');
+    await getAll('chats/list');
     chatLists.value = data.value;
     selectedChatUser.value = data.value[0];
   } catch (error) {
@@ -164,7 +164,7 @@ const handleSelectChat = async (receiver_id) => {
 
 const fetchReceiverMessages = async (receiver_id) => {
   try {
-    const response = await getOne('chat/message', receiver_id);
+    const response = await getOne('chats/message', receiver_id);
     messages.value = response;
 
     await nextTick();
@@ -175,7 +175,7 @@ const fetchReceiverMessages = async (receiver_id) => {
 };
 
 const sendMessage = async () => {
-  if (newMessage.value.trim() === '') return; // Kiểm tra tin nhắn trống
+  if (newMessage.value.trim() === '') return;
 
   const message = {
     message: newMessage.value,
@@ -184,7 +184,7 @@ const sendMessage = async () => {
 
   try {
     await create(
-      `send-message/${selectedChatUser.value.id}`,
+      `chats/${selectedChatUser.value.id}/send`,
       {
         message: newMessage.value
       },
@@ -214,22 +214,12 @@ const initializeChat = async () => {
 
     const channel = pusher.subscribe(`private-chat-channel.${user.value.id}`);
     channel.bind('message-sent-event', handleIncomingMessage);
-
-    channel.bind('pusher:subscription_succeeded', () => {
-      console.log('Successfully subscribed to channel');
-    });
-
-    channel.bind('pusher:subscription_error', (error) => {
-      console.error('Subscription error:', error);
-    });
   } catch (error) {
     console.error('Error initializing chat:', error);
   }
 };
 
 const handleIncomingMessage = async (data) => {
-  console.log(data);
-
   if (data.message.sender_id !== user.value.id) {
     messages.value.push(data.message);
 
