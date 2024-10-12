@@ -34,11 +34,11 @@
                 <div class="flex w-full items-center justify-between">
                   <div class="header-title">{{ chat.fullname }}</div>
                   <small class="me-2 text-gray-500">
-                    {{ formatDate(chat.created_at) }}
+                    {{ chat.last_at && timeAgo(chat.last_at) }}
                   </small>
                 </div>
                 <div class="header-meta w-64 truncate font-bold">
-                  {{ chat.chat ? chat.chat.message : 'No messages yet.' }}
+                  {{ chat.last_message || 'No messages yet.' }}
                 </div>
               </div>
             </div>
@@ -126,6 +126,7 @@ import { useCRUD } from '@/composables';
 import pusher from '@/plugins/pusher';
 import { useStore } from 'vuex';
 
+import { timeAgo } from '@/utils/helpers';
 const chatLists = ref([]);
 const selectedChatUser = ref(null);
 const messages = ref([]);
@@ -136,16 +137,6 @@ const store = useStore();
 const { getAll, getOne, create, data } = useCRUD();
 const user = computed(() => store.getters['authStore/getUser']);
 
-const formatDate = (date) => {
-  return new Date(date).toLocaleString('vi-VN', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
-};
 const fetchChatList = async () => {
   try {
     await getAll('chats/list');

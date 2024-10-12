@@ -7,8 +7,8 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
 use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
+use App\Http\Controllers\Api\V1\Chat\ChatController;
 use App\Http\Controllers\Api\V1\DashboardController;
-use App\Http\Controllers\Api\V1\LiveChat\LiveChatController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\Order\OrderController;
@@ -194,9 +194,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
         });
 
         // Reatime Live Chat
-        Route::post('/chats/{id}/send', [LiveChatController::class, 'sendMessage']);
-        Route::get('/chats/list', [LiveChatController::class, 'getChatList']);
-        Route::get('/chats/message/{id}', [LiveChatController::class, 'getMessage']);
+        Route::post('/chats/{id}/send', [ChatController::class, 'sendMessage']);
+        Route::get('/chats/list', [ChatController::class, 'getChatList']);
+        Route::get('/chats/message/{id}', [ChatController::class, 'getMessage']);
     });
 
 

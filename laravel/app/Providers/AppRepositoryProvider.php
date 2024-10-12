@@ -64,6 +64,8 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface' => 'App\Repositories\Product\ProductReviewRepository',
         // NOTIFICATION
         'App\Repositories\Interfaces\Notification\NotificationRepositoryInterface' => 'App\Repositories\Notification\NotificationRepository',
+        // CHAT
+        'App\Repositories\Interfaces\Chat\ChatRepositoryInterface' => 'App\Repositories\Chat\ChatRepository',
 
     ];
 
