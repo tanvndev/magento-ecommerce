@@ -22,7 +22,6 @@ import { useAntToast } from '@/utils/antToast';
 import { computed, onMounted, watchEffect } from 'vue';
 import { AuthService } from '@/services';
 import Cookies from 'js-cookie';
-Cookies;
 
 const { showMessage } = useAntToast();
 const store = useStore();

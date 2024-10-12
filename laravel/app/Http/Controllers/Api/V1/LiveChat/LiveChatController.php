@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\LiveChat;
 use App\Models\Chat;
 use App\Models\User;
 use App\Enums\ResponseEnum;
-use App\Events\MessageSent;
+use App\Events\Chat\MessageSentEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -43,35 +43,35 @@ class LiveChatController extends Controller
             'is_read' => false,
         ]);
 
-        broadcast(new MessageSent($message))->toOthers();
+        event(new MessageSentEvent($message));
 
         return successResponse(__('messages.create.success'), $message, true);
     }
 
 
-    public function getMessage($userId)
+    public function getMessage(string $senderId)
     {
         try {
             // Lấy tất cả tin nhắn giữa người dùng và admin
-            $messages = Chat::where(function ($query) use ($userId) {
-                $query->where('sender_id', $userId)
-                    ->where('receiver_id', auth()->id()); // auth()->id() là ID của admin
-            })->orWhere(function ($query) use ($userId) {
-                $query->where('sender_id', auth()->id())
-                    ->where('receiver_id', $userId);
+            $messages = Chat::where(function ($query) use ($senderId) {
+                $query->where('sender_id', $senderId)
+                    ->where('receiver_id', auth()->id());
             })
+                ->orWhere(function ($query) use ($senderId) {
+                    $query->where('sender_id', auth()->id())
+                        ->where('receiver_id', $senderId);
+                })
+                ->with(['sender', 'receiver'])
                 ->orderBy('created_at', 'asc') // Sắp xếp theo thời gian tạo
                 ->get();
 
             Chat::where([
-                'sender_id' => $userId,
-                'is_read' => false,
-            ])->update(['is_read' => true]);
+                'sender_id' => $senderId,
+                'read_at' => false,
+            ])->update(['read_at' => true]);
 
 
             return successResponse(__('messages.retrieve.success'), $messages, true);
-        } catch (\Illuminate\Database\QueryException $e) {
-            return errorResponse(__('messages.database_error'), true);
         } catch (\Exception $e) {
             return errorResponse($e->getMessage(), true);
         }
