@@ -210,17 +210,26 @@ const scrollToBottom = () => {
 const initializeChat = async () => {
   try {
     await fetchChatList();
-
     await handleSelectChat(selectedChatUser.value.id);
 
-    const channel = pusher.subscribe('chat-channel');
+    const channel = pusher.subscribe(`private-chat-channel.${user.value.id}`);
     channel.bind('message-sent-event', handleIncomingMessage);
+
+    channel.bind('pusher:subscription_succeeded', () => {
+      console.log('Successfully subscribed to channel');
+    });
+
+    channel.bind('pusher:subscription_error', (error) => {
+      console.error('Subscription error:', error);
+    });
   } catch (error) {
     console.error('Error initializing chat:', error);
   }
 };
 
 const handleIncomingMessage = async (data) => {
+  console.log(data);
+
   if (data.message.sender_id !== user.value.id) {
     messages.value.push(data.message);
 
@@ -234,7 +243,7 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  pusher.unsubscribe('chat-channel');
+  pusher.unsubscribe('private-chat-channel.' + user.value.id);
 });
 </script>
 

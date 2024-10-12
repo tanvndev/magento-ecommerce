@@ -192,13 +192,12 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::post('product-reviews/{parentId}/replies', 'adminReply')->name('reply');
             Route::put('product-reviews/replies/{replyId}', 'adminUpdateReply')->name('updateReply');
         });
-
-        // Reatime Live Chat
-        Route::post('/send-message/{id}', [LiveChatController::class, 'sendMessage']);
-        Route::get('/chat/list', [LiveChatController::class, 'getChatList']);
-        // Route::post('/chat/send', [LiveChatController::class, 'sendMessage']);
-        Route::get('/chat/message/{id}', [LiveChatController::class, 'getMessage']);
     });
+    // Reatime Live Chat
+    Route::post('/send-message/{id}', [LiveChatController::class, 'sendMessage']);
+    Route::get('/chat/list', [LiveChatController::class, 'getChatList']);
+    // Route::post('/chat/send', [LiveChatController::class, 'sendMessage']);
+    Route::get('/chat/message/{id}', [LiveChatController::class, 'getMessage']);
 
     // CART ROUTE
     Route::controller(CartController::class)->name('cart.')->group(function () {

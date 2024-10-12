@@ -15,11 +15,13 @@ class LiveChatController extends Controller
     public function getChatList()
     {
         try {
-            $users = User::where('user_catalogue_id', ResponseEnum::TYPE_USER)
-                ->with(['chat' => function ($query) {
-                    $query->orderBy('created_at', 'desc')->first();
-                }])
-                ->get();
+            // $users = User::where('user_catalogue_id', User::ROLE_CUSTOMER)
+            //     ->with(['chat' => function ($query) {
+            //         $query->orderBy('created_at', 'desc')->first();
+            //     }])
+            //     ->get();
+
+            $users = User::all();
 
             return successResponse('', $users, true);
         } catch (\Illuminate\Database\QueryException $e) {
@@ -33,7 +35,7 @@ class LiveChatController extends Controller
     public function sendMessage(Request $request, $receiverId)
     {
         $request->validate([
-            'message' => 'required|string|max:1000', // Giới hạn độ dài tin nhắn
+            'message' => 'required|string|max:1000',
         ]);
 
         $message = Chat::create([
@@ -42,6 +44,7 @@ class LiveChatController extends Controller
             'message' => $request->message,
             'is_read' => false,
         ]);
+
 
         event(new MessageSentEvent($message));
 
