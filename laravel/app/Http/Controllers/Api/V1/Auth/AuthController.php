@@ -105,7 +105,6 @@ class AuthController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
-        // Successful login
         return $this->respondWithToken($token, 'Đăng nhập thành công.', $user);
     }
 

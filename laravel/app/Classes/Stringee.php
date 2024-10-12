@@ -39,7 +39,6 @@ class Stringee
                 'text' => 'Vui lòng không chia sẻ mã cho bất kì ai. Mã xác nhận của bạn là . ' . $formatVerificationCode . '. Mã sẽ được lặp lại. Mã xác nhận của bạn là . ' . $formatVerificationCode . '. Mã hết hạn sau mười năm phút.'
             ]],
         ];
-        dd($data);
 
         try {
             $response = $client->post(self::$url, [
