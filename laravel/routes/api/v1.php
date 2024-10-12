@@ -194,7 +194,10 @@ Route::middleware('log.request.response', 'api')->group(function () {
         });
 
         // Reatime Live Chat
-        Route::post('/send-message', [LiveChatController::class, 'sendMessage']);
+        Route::post('/send-message/{id}', [LiveChatController::class, 'sendMessage']);
+        Route::get('/chat/list', [LiveChatController::class, 'getChatList']);
+        // Route::post('/chat/send', [LiveChatController::class, 'sendMessage']);
+        Route::get('/chat/message/{id}', [LiveChatController::class, 'getMessage']);
     });
 
     // CART ROUTE
