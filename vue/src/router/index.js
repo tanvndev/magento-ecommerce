@@ -11,7 +11,8 @@ import {
   voucherRoutes,
   orderRoutes,
   liveChatRoutes,
-  postRoutes,
+  postRoutes
+
 } from './backend';
 
 import { isLoggedIn } from '@/middlewares/authenticate';
@@ -49,7 +50,8 @@ const routes = [
   ...voucherRoutes,
   ...orderRoutes,
   ...postRoutes,
-  ...liveChatRoutes,
+  ...liveChatRoutes
+
 ];
 
 const router = createRouter({

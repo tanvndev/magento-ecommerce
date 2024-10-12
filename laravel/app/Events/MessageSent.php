@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Events;
 
+use App\Models\Chat;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -13,18 +15,16 @@ class MessageSent implements ShouldBroadcast
     use InteractsWithSockets, SerializesModels;
 
     public $message;
-    public $user;
 
 
-    public function __construct($user, $message)
+    public function __construct($message)
     {
-        $this->user = $user;
         $this->message = $message;
     }
 
     public function broadcastOn()
     {
-        return new Channel('chat');
+        return new PrivateChannel('chat.' . $this->message->receiver_id);
     }
 
     public function broadcastAs()

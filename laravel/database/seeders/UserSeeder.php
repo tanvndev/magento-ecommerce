@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
                 'ward_id'           => '00787',
                 'address'           => 'Dong anh HA NOI',
                 'birthday'          => null,
-                'image'             => 'http://127.0.0.1:8000/images/2024/07/registerpng_669bc58c82ee7.webp',
+                'image'             => 'http://127.0.0.1:8000/images/2w024/07/registerpng_669bc58c82ee7.webp',
                 'description'       => null,
                 'user_agent'        => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
                 'publish'           => 1,
