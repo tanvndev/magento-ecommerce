@@ -196,6 +196,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
         // Reatime Live Chat
         Route::post('/chats/{id}/send', [ChatController::class, 'sendMessage']);
         Route::get('/chats/list', [ChatController::class, 'getChatList']);
+        Route::get('/chats/user/list', [ChatController::class, 'getChatListUser']);
         Route::get('/chats/message/{id}', [ChatController::class, 'getMessage']);
     });
 

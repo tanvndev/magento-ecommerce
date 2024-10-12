@@ -73,7 +73,7 @@
           >
             <div v-for="message in messages" :key="message.id" class="mb-4">
               <div v-if="message.sender_id == user?.id" class="mt-2 flex justify-end">
-                <p class="inline-block max-w-[80%] rounded-[6px] bg-blue-100 px-[16px] py-3">
+                <p class="inline-block max-w-[80%] rounded-[6px] bg-[#3b71ca] text-white px-[16px] py-3">
                   {{ message.message }}
                 </p>
               </div>

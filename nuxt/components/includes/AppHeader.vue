@@ -7,6 +7,7 @@ import _ from 'lodash'
 const { $axios, $pusher } = useNuxtApp()
 const authStore = useAuthStore()
 const cartStore = useCartStore()
+const chatStore = useChatStore()
 const notificationStore = useNotificationStore()
 const wishlistStore = useWishlistStore()
 const productCatalogueStore = useProductCatalogueStore()
@@ -15,8 +16,8 @@ const productCatalogues = ref([])
 const cartCount = computed(() => cartStore.getCartCount)
 const wishlistCount = computed(() => wishlistStore.getWishlistCount)
 const notifications = computed(() => notificationStore.getNotifications)
+const chatCount = computed(() => chatStore.getChatCount)
 const isShowBell = ref(false)
-
 const config = useRuntimeConfig()
 
 let lastScrollPosition = 0
@@ -56,6 +57,10 @@ const listenForVoucherNotifications = async () => {
   })
 }
 
+const getChats = async () => {
+  await chatStore.getAllChats()
+}
+
 watch(notifications, (newValue) => {
   isShowBell.value = newValue.some((item) => item.read_at == null)
 })
@@ -63,6 +68,9 @@ watch(notifications, (newValue) => {
 onMounted(() => {
   getProductCatalogues()
   listenForVoucherNotifications()
+  setTimeout(() => {
+    getChats()
+  }, 4000)
 
   wishlistStore.getAllWishlists()
   cartStore.getAllCarts()
@@ -207,9 +215,9 @@ onUnmounted(() => {
 
             <div class="dropdown cart-dropdown cart-offcanvas mr-0 mr-lg-2">
               <div class="cart-overlay"></div>
-              <NuxtLink to="#" class="cart-toggle label-down link">
+              <NuxtLink to="/chat" class="cart-toggle label-down link">
                 <i class="w-icon-chat">
-                  <span class="cart-count">2</span>
+                  <span class="cart-count" v-if="chatCount">{{ chatCount }}</span>
                 </i>
                 <span class="cart-label">Tin nhắn</span>
               </NuxtLink>
