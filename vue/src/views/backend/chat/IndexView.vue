@@ -73,19 +73,55 @@
           >
             <div v-for="message in messages" :key="message.id" class="mb-4">
               <div v-if="message.sender_id == user?.id" class="mt-2 flex justify-end">
-                <p class="inline-block max-w-[80%] rounded-[6px] bg-[#3b71ca] text-white px-[16px] py-3">
-                  {{ message.message }}
-                </p>
+                <div>
+                  <div class="mb-2 ml-2" v-if="message.images && message.images.length">
+                    <div class="flex justify-end">
+                      <div
+                        v-for="(image, index) in message.images"
+                        class="image-upload mr-1"
+                        :key="index"
+                      >
+                        <img width="50" height="50" :src="image" alt="" />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="inline-block rounded-[6px] bg-[#3b71ca] px-[16px] py-3 text-white">
+                      {{ message.message }}
+                    </p>
+                  </div>
+                </div>
               </div>
               <div v-else class="mt-2 flex justify-start">
-                <img
-                  :src="selectedChatUser.image || 'https://via.placeholder.com/40'"
-                  alt="User Image"
-                  class="mr-3 h-8 w-8 rounded-full"
-                />
-                <p class="inline-block max-w-[80%] rounded-[6px] bg-gray-100 px-[16px] py-3">
-                  {{ message.message }}
-                </p>
+                <div>
+                  <div class="mb-2 ml-11" v-if="message.images && message.images.length">
+                    <div class="flex justify-end">
+                      <div
+                        v-for="(image, index) in message.images"
+                        class="image-upload mr-1"
+                        :key="index"
+                      >
+                        <img
+                          width="50"
+                          height="50"
+                          :src="image || 'https://via.placeholder.com/40'"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center">
+                    <img
+                      :src="selectedChatUser.image || 'https://via.placeholder.com/40'"
+                      alt="User Image"
+                      class="mr-3 h-8 w-8 rounded-full"
+                    />
+
+                    <p class="inline-block rounded-[6px] bg-gray-100 px-[16px] py-3">
+                      {{ message.message }}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -228,4 +264,26 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.image-upload {
+  position: relative;
+  border: 1px solid #f1f1f1;
+  z-index: 1;
+  border-radius: 4px;
+  padding: 5px;
+  display: grid;
+  place-content: center;
+}
+.image-upload .icon-delete {
+  position: absolute;
+  top: -10px;
+  right: -7px;
+  transition: all 0.1s linear;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 3;
+}
+.image-upload .icon-delete:hover {
+  color: #dc4c64;
+}
+</style>
