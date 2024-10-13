@@ -36,6 +36,7 @@
           placeholder="Thẻ mô tả"
           size="large"
           show-count
+          :auto-size="true"
           :maxlength="160"
         />
       </a-col>
@@ -59,7 +60,6 @@ import { generateSlug } from '@/utils/helpers';
 import { watch } from 'vue';
 import TooltipComponent from './TooltipComponent.vue';
 const baseUrl = import.meta.env.VITE_BASE_URL + '/';
-
 
 const { value: metaTitle } = useField('meta_title');
 const { value: metaDescription } = useField('meta_description');
