@@ -149,6 +149,35 @@ class AuthService {
       };
     }
   }
+
+  async googleLogin($payload) {
+    try {
+      const response = await axios.post('/auth/google/callback', $payload);
+
+      if (response.status !== 200) {
+        return {
+          success: false,
+          messages: response.messages
+        };
+      }
+
+      const token = response.data.access_token;
+      // set token to Cookie
+      Cookies.set('token', token, {
+        expires: parseInt(import.meta.env.VITE_REFRESHTOKEN_EXPIRES)
+      });
+
+      return {
+        success: true,
+        data: token
+      };
+    } catch (error) {
+      return {
+        success: false,
+        messages: [error.message]
+      };
+    }
+  }
 }
 
 export default new AuthService();
