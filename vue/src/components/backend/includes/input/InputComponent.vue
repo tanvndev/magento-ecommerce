@@ -57,7 +57,7 @@
       :status="errorMessage ? 'error' : ''"
       :size="props.size"
       :allowClear="true"
-      :auto-size="{ minRows: 2, maxRows: 50 }"
+      :auto-size="true"
       show-count
       :maxlength="props.maxlength"
       :disabled="props.disabled"
@@ -235,7 +235,7 @@ const props = defineProps({
   },
   showAI: {
     type: Boolean,
-    default: true
+    default: false
   }
 });
 

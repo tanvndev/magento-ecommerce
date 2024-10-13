@@ -9,7 +9,7 @@
               <a-card class="mt-3" title="Thông tin chung">
                 <AleartError :errors="state.errors" />
                 <a-row :gutter="[16, 16]">
-                  <a-col :span="24">
+                  <a-col :span="12">
                     <InputComponent
                       name="name"
                       label="Tên widget"
@@ -17,7 +17,7 @@
                       placeholder="Tên widget"
                     />
                   </a-col>
-                  <a-col :span="24">
+                  <a-col :span="12">
                     <InputComponent
                       typeInput="textarea"
                       name="description"
