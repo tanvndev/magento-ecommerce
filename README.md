@@ -1,13 +1,8 @@
-# Hướng dẫn Cài đặt Dự án
-
-
-
-```bash
 Di chuyển vào thư mục Vue và cài đặt các phụ thuộc:
 
-## Bước 1: Cài đặt phụ thuộc cho Vue
+## Bước 1: Cài đặt phụ thuộc cho Nuxt
 
-cd vue
+cd nuxt
 npm install
 
 ## Bước 2: Cài đặt phụ thuộc cho Laravel
@@ -17,7 +12,7 @@ composer update
 
 ## Bước 3: Cấu hình Môi trường
 
-cd ../vue
+cd ../nuxt
 cp .env.example .env
 
 cd ../laravel
@@ -29,16 +24,25 @@ cd ../laravel
 php artisan key:generate
 php artisan migrate
 
-
-## Bước 5: Khởi tạo Cơ sở dữ liệu Laravel
+## Bước 5: Khởi tạo dữ liệu mẫu cho cơ sở dữ liệu Laravel
 
 cd ../laravel
 php artisan db:seed
 
-## Bước 6: Khởi động Ứng dụng Vue
+## Bước 6: Khởi động Ứng dụng Nuxt
+
+cd ../nuxt
+npm run dev
+
+## Bước 7: Khởi động Ứng dụng Vue (nếu có)
 
 cd ../vue
 npm run dev
 
+## Bước 8: Khởi động Ứng dụng Laravel (nếu cần)
+
+cd ../laravel
+php artisan serve
+
 * Lưu ý
->>Đảm bảo rằng các đường dẫn thư mục (`cd vue`, `cd ../laravel`, v.v.) và lệnh (`npm install`, `composer update`, v.v.) chính xác với cấu trúc dự án của bạn.<<
+>>Đảm bảo rằng các đường dẫn thư mục (`cd nuxt`, `cd ../laravel`, `cd ../vue`, v.v.) và lệnh (`npm install`, `composer update`, v.v.) chính xác với cấu trúc dự án của bạn.<<

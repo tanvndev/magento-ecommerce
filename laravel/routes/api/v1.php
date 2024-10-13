@@ -7,8 +7,10 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
 use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
+use App\Http\Controllers\Api\V1\Chat\ChatController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
@@ -43,6 +45,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
     // CLIENT ROUTE
     Route::get('products/catalogues/list', [ProductCatalogueController::class, 'list']);
+<<<<<<< HEAD
     Route::get('getAllWidgetCode', [WidgetController::class, 'getAllWidgetCode']);
     Route::get('getWidget/{code}', [WidgetController::class, 'getWidget']);
     Route::get('getProduct/{slug}', [ProductController::class, 'getProduct']);
@@ -50,6 +53,19 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('getAllSlider', [SliderController::class, 'getAllSlider']);
     Route::get('getAllPaymentMethods', [PaymentMethodController::class, 'getAllPaymentMethod']);
     Route::get('getShippingMethodByProductVariant/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
+=======
+    Route::get('widgets/codes', [WidgetController::class, 'getAllWidgetCode']);
+    Route::get('widgets/{code}/detail', [WidgetController::class, 'getWidget']);
+    Route::get('products/{slug}/detail', [ProductController::class, 'getProduct']);
+    Route::get('vouchers/all', [VoucherController::class, 'getAllVoucher']);
+    Route::get('sliders/all', [SliderController::class, 'getAllSlider']);
+    Route::get('payment-methods/all', [PaymentMethodController::class, 'getAllPaymentMethod']);
+    Route::get('shipping-methods/products/{productVariantIds}', [ShippingMethodController::class, 'getShippingMethodByProductVariant']);
+    Route::post('vouchers/{code}/apply', [VoucherController::class, 'applyVoucher']);
+    Route::get('product-reviews', [ProductReviewController::class, 'getAllProductReviews'])->name('index');
+    Route::get('posts/all', [PostController::class, 'getAllPost']);
+    Route::get('posts/{canonical}/detail', [PostController::class, 'getPostByCanonical']);
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 
     // Order
     Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
@@ -60,8 +76,16 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);
+        Route::post('login/otp', [AuthController::class, 'loginOtp']);
         Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('logout', [AuthController::class, 'logout']);
+<<<<<<< HEAD
+=======
+        Route::post('refreshToken', [AuthController::class, 'refreshToken']);
+        Route::get('me', [AuthController::class, 'me'])->middleware('jwt.verify');
+        Route::post('send-verification-code', [AuthController::class, 'sendVerificationCode']);
+        Route::post('verify-code', [AuthController::class, 'verifyCode'])->middleware('jwt.verify');
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');
 
@@ -75,10 +99,13 @@ Route::middleware('log.request.response', 'api')->group(function () {
     // Routes with JWT Middleware
     Route::group(['middleware' => 'jwt.verify'], function () {
 
+<<<<<<< HEAD
         // AUTH
         Route::get('auth/me', [AuthController::class, 'me']);
         Route::post('auth/refreshToken', [AuthController::class, 'refreshToken']);
 
+=======
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
         // DASHBOARD ROUTE
         Route::prefix('dashboard')->name('dashboard.')->group(function () {
             Route::put('changeStatus', [DashboardController::class, 'changeStatus'])->name('changeStatus');
@@ -88,11 +115,25 @@ Route::middleware('log.request.response', 'api')->group(function () {
             Route::get('getDataByModel', [DashboardController::class, 'getDataByModel'])->name('getDataByModel');
         });
 
+        // NOTIFICATION ROUTE
+
+        Route::get('notifications/user', [NotificationController::class, 'getNotificationByUser']);
+        Route::post('notifications/{id}/read', [NotificationController::class, 'readNotification']);
+
+        // USER ADDRESSES ROUTE
+
+        Route::get('users/addresses', [UserAddressController::class, 'index']);
+        Route::get('users/addresses/user', [UserAddressController::class, 'getByUserId']);
+        Route::post('users/addresses', [UserAddressController::class, 'store']);
+        Route::put('users/addresses/{id}', [UserAddressController::class, 'update']);
+        Route::delete('users/addresses/{id}', [UserAddressController::class, 'destroy']);
+
         // USER ROUTE
-        // * Neu dung resource de tao .../catalogues thi phai gan them name neu khong se bi loi
+
         Route::prefix('/')->name('users.')->group(function () {
             Route::apiResource('users/catalogues', UserCatalogueController::class);
         });
+        Route::put('users/update/profile', [UserController::class, 'updateProfile'])->name('users.update.profile');
         Route::apiResource('users', UserController::class);
 
         // PERMISSION ROUTE
@@ -142,6 +183,37 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // POST ROUTE
         Route::apiResource('posts', PostController::class);
+<<<<<<< HEAD
+=======
+
+        // WISHLIST ROUTE
+        Route::get('wishlists', [WishListController::class, 'index']);
+        Route::get('wishlists/user', [WishListController::class, 'getByUser']);
+        Route::post('wishlists', [WishListController::class, 'store']);
+        Route::post('wishlists/carts', [WishListController::class, 'addWishlistToCart']);
+        Route::delete('wishlists/clean', [WishListController::class, 'destroyAll']);
+        Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
+        Route::get('wishlists/send-mail', [WishListController::class, 'sendWishListMail']);
+
+        // ORDER ROUTE
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
+        Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
+
+        // PRODUCT REVIEW ROUTE
+        Route::controller(ProductReviewController::class)->name('product-reviews.')->group(function () {
+            Route::get('product-reviews/{productId}', 'getReviewByProductId')->name('show');
+            Route::post('product-reviews', 'store')->name('store');
+            Route::post('product-reviews/{parentId}/replies', 'adminReply')->name('reply');
+            Route::put('product-reviews/replies/{replyId}', 'adminUpdateReply')->name('updateReply');
+        });
+
+        // Reatime Live Chat
+        Route::post('/chats/{id}/send', [ChatController::class, 'sendMessage']);
+        Route::get('/chats/list', [ChatController::class, 'getChatList']);
+        Route::get('/chats/user/list', [ChatController::class, 'getChatListUser']);
+        Route::get('/chats/message/{id}', [ChatController::class, 'getMessage']);
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
     });
 
     // CART ROUTE

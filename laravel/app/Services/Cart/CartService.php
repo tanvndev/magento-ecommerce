@@ -81,6 +81,14 @@ class CartService extends BaseService implements CartServiceInterface
         ]);
     }
 
+    /**
+     * Check stock of product variants in cart and update cart.
+     *
+     * If a product variant's stock is less than the quantity of the cart item, update the quantity of the cart item to the stock of the product variant.
+     * Finally, merge session cart to user cart.
+     *
+     * @param  array  $conditions
+     */
     public function checkStockProductAndUpdateCart($conditions)
     {
         $cart = $this->cartRepository->findByWhere($conditions);
@@ -100,6 +108,16 @@ class CartService extends BaseService implements CartServiceInterface
         $this->mergeSessionCartToUserCart($sessionId);
     }
 
+    /**
+     * Delete one item from the cart.
+     *
+     * This method deletes one item from the cart by product variant id.
+     * If the item is not found, it returns a error response.
+     * If the item is found, it deletes the item and returns the cart.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteOneItem($id)
     {
         return $this->executeInTransaction(function () use ($id) {
@@ -120,6 +138,11 @@ class CartService extends BaseService implements CartServiceInterface
         }, __('messages.cart.error.item_not_found'));
     }
 
+    /**
+     * Clean the entire cart.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function cleanCart()
     {
         return $this->executeInTransaction(function () {
@@ -138,6 +161,16 @@ class CartService extends BaseService implements CartServiceInterface
         }, __('messages.cart.error.delete'));
     }
 
+    /**
+     * Handle selected items in the cart.
+     *
+     * If the request has a "product_variant_id" key, the method will toggle the selected status of the specified cart item.
+     *
+     * If the request has a "select_all" key with a boolean value, the method will update the selected status of all the cart items.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function handleSelected($request)
     {
         return $this->executeInTransaction(function () use ($request) {
@@ -162,6 +195,11 @@ class CartService extends BaseService implements CartServiceInterface
         }, __('messages.cart.error.not_found'));
     }
 
+    /**
+     * Delete selected items from the cart.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteCartSelected()
     {
         return $this->executeInTransaction(function () {
@@ -184,7 +222,13 @@ class CartService extends BaseService implements CartServiceInterface
         }, __('messages.cart.error.delete'));
     }
 
-    private function toggleCartItemSelection($cart, $productId)
+    /**
+     * Toggle cart item selection.
+     *
+     * @param  \App\Models\Cart  $cart
+     * @param  int  $productId
+     */
+    private function toggleCartItemSelection($cart, $productId): void
     {
         $cartItem = $cart->cart_items()->where('product_variant_id', $productId)->first();
 
@@ -193,6 +237,11 @@ class CartService extends BaseService implements CartServiceInterface
         }
     }
 
+    /**
+     * Get conditions for querying cart based on user or session ID.
+     *
+     * @param  int  $sessionId
+     */
     private function getUserOrSessionConditions($sessionId): array
     {
         return auth()->check()
@@ -200,7 +249,12 @@ class CartService extends BaseService implements CartServiceInterface
             : ['session_id' => $sessionId];
     }
 
-    public function mergeSessionCartToUserCart($sessionId)
+    /**
+     * Merge session cart to user cart when user logged in.
+     *
+     * @param  int  $sessionId
+     */
+    public function mergeSessionCartToUserCart($sessionId): void
     {
         if ( ! auth()->check()) {
             return;
@@ -240,6 +294,15 @@ class CartService extends BaseService implements CartServiceInterface
         $sessionCart->cart_items()->delete();
     }
 
+    /**
+     * Add paid products to the cart.
+     *
+     * This method takes the paid product variant ids from the request and adds them to the cart.
+     * It also checks if the product variant is available in the stock and updates the cart item quantity.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function addPaidProductsToCart($request)
     {
         return $this->executeInTransaction(function () use ($request) {
@@ -275,7 +338,12 @@ class CartService extends BaseService implements CartServiceInterface
         }, __('messages.cart.error.not_found'));
     }
 
-    private function updateCartItemQuantity($cartItem, $additionalQuantity)
+    /**
+     * Update quantity of a cart item.
+     *
+     * @param  \App\Models\CartItem  $cartItem
+     */
+    private function updateCartItemQuantity($cartItem, int $additionalQuantity): void
     {
         $newQuantity = $cartItem->quantity + $additionalQuantity;
 

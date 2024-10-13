@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\User;
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserProfileRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
@@ -82,6 +83,18 @@ class UserController extends Controller
         // $this->authorize('modules', 'users.destroy');
 
         $response = $this->userService->destroy($id);
+
+        return handleResponse($response);
+    }
+
+    /**
+     * Update the authenticated user's profile.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function updateProfile(UpdateUserProfileRequest $request): JsonResponse
+    {
+        $response = $this->userService->updateProfile();
 
         return handleResponse($response);
     }

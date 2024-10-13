@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 if ( ! function_exists('getServiceInstance')) {
     function getServiceInstance($modelName)
@@ -486,5 +487,88 @@ if ( ! function_exists('haversineGreatCircleDistance')) {
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earthRadius * $c;
+    }
+}
+
+if ( ! function_exists('hintPhoneNumber')) {
+
+    function hintPhoneNumber(string $phoneNumber): string
+    {
+        $cleaned = preg_replace('/\D/', '', $phoneNumber);
+
+        if (strlen($cleaned) < 4) {
+            return 'Invalid phone number';
+        }
+
+        $hinted = substr($cleaned, 0, 2) . str_repeat('*', strlen($cleaned) - 4) . substr($cleaned, -2);
+
+        return $hinted;
+    }
+}
+if ( ! function_exists('hintEmail')) {
+
+    function hintEmail(string $email): string
+    {
+        $parts = explode('@', $email);
+        if (count($parts) != 2) {
+            return 'Invalid email address';
+        }
+
+        $localPart = $parts[0];
+        $domain = $parts[1];
+
+        $hintedLocalPart = $localPart[0] . str_repeat('*', strlen($localPart) - 2) . $localPart[-1];
+        $hintedDomain = $domain[0] . str_repeat('.', strlen($domain) - 2) . $domain[-1];
+
+        return $hintedLocalPart . '@' . $hintedDomain;
+    }
+}
+
+if ( ! function_exists('convertPhoneNumber')) {
+
+    function convertPhoneNumber($phoneNumber, $countryCode = '84')
+    {
+        if (strlen($phoneNumber) === 10 && strpos($phoneNumber, '0') === 0) {
+            return $countryCode . substr($phoneNumber, 1);
+        }
+
+        return false;
+    }
+}
+
+if ( ! function_exists('numberToWords')) {
+
+    function numberToWords($number)
+    {
+        $units = [
+            'không', // 0
+            'một',   // 1
+            'hai',    // 2
+            'ba',     // 3
+            'bốn',    // 4
+            'năm',    // 5
+            'sáu',    // 6
+            'bảy',    // 7
+            'tám',    // 8
+            'chín',   // 9
+        ];
+
+        $numberStr = (string) $number;
+        $words = [];
+
+        for ($i = 0; $i < strlen($numberStr); $i++) {
+            $digit = (int) $numberStr[$i];
+            $words[] = $units[$digit];
+        }
+
+        return implode('. ', $words);
+    }
+}
+
+if ( ! function_exists('_log')) {
+
+    function _log($value)
+    {
+        Log::info('>>>> BỐ MÀY ĐANG KIỂM TRA GIÁ TRỊ TẠI ĐÂY ->>>>>> ' . json_encode($value, JSON_UNESCAPED_UNICODE));
     }
 }

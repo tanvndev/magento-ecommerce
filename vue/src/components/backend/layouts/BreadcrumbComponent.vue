@@ -1,29 +1,58 @@
-<template>
-  <a-card class="my-4">
-    <a-breadcrumb class="mb-2">
-      <a-breadcrumb-item>
-        <RouterLink :to="{ name: 'dashboard' }">
-          <i class="fas fa-home-lg-alt mr-2"></i>
-          <span>Dashboard</span>
-        </RouterLink>
-      </a-breadcrumb-item>
-      <a-breadcrumb-item>
-        <span>
-          {{ props.titlePage }}
-        </span>
-      </a-breadcrumb-item>
-    </a-breadcrumb>
-    <a-page-header :title="props.titlePage" class="p-0" @back="() => router.back()" />
-  </a-card>
-</template>
 <script setup>
-import { RouterLink, useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
-const props = defineProps({
+const router = useRouter();
+const route = useRoute();
+
+const emits = defineEmits(['onSave']);
+defineProps({
   titlePage: {
     type: String,
     required: true
+  },
+
+  routeCreate: {
+    type: String,
+    default: ''
   }
 });
-const router = useRouter();
 </script>
+<template>
+  <a-card class="mb-2 mt-4">
+    <a-page-header class="p-0" @back="() => router.back()">
+      <template #title>
+        <span class="text-[18px] uppercase">
+          {{ titlePage }}
+        </span>
+      </template>
+
+      <template #extra>
+        <a-button
+          v-if="route.name == 'user.catalogue.index'"
+          size="large"
+          class="btn-warning"
+          @click="() => router.push({ name: 'user.catalogue.permission' })"
+        >
+          <i class="fas fa-key-skeleton mr-2 text-[13px]"></i>
+          <span>Phân Quyền</span>
+        </a-button>
+
+        <a-button
+          v-if="routeCreate"
+          size="large"
+          type="primary"
+          class="btn-success"
+          @click="() => router.push({ name: routeCreate })"
+        >
+          <i class="far fa-plus mr-2 text-[14px]"></i>
+          Thêm mới
+        </a-button>
+
+        <a-button size="large" type="primary" @click="() => emits('onSave')" v-else>
+          <i class="fas fa-save mr-2 text-[14px]"></i>
+          Lưu thông tin
+        </a-button>
+      </template>
+    </a-page-header>
+  </a-card>
+</template>

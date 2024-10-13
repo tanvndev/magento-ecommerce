@@ -66,7 +66,11 @@ import router from '@/router';
 import { formatMessages } from '@/utils/format';
 import { AuthService } from '@/services';
 import { useAntToast } from '@/utils/antToast';
+<<<<<<< HEAD
 import { LARAVEL_URL } from '@/static/constants';
+=======
+import { message } from 'ant-design-vue';
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 
 // STATE
 const laravelUrl = import.meta.env.VITE_LARAVEL_URL;
@@ -97,6 +101,17 @@ const onSubmit = handleSubmit(async (values) => {
   state.errors = {};
   state.loading = true;
 
+<<<<<<< HEAD
+=======
+  // eslint-disable-next-line no-undef
+  const recaptchaResponse = grecaptcha.getResponse();
+
+  if (!recaptchaResponse) {
+    return message.error('Vui lòng xác nhận bạn không phải là robot.');
+  }
+  values['g-recaptcha-response'] = recaptchaResponse;
+
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
   const response = await AuthService.register(values);
 
   if (!response.success) {

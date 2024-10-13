@@ -52,15 +52,19 @@ class VoucherController extends Controller
      */
     public function show(string $id)
     {
-        $Voucher = new VoucherResource($this->voucherRepository->findById($id));
+        $voucher = new VoucherResource($this->voucherRepository->findById($id));
 
-        return successResponse('', $Voucher);
+        return successResponse('', $voucher, true);
     }
 
+<<<<<<< HEAD
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateVoucherRequest $request, string $id)
+=======
+    public function update(UpdateVoucherRequest $request, string $id): JsonResponse
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
     {
         $response = $this->voucherService->update($id);
 

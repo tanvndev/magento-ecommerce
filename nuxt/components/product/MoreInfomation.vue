@@ -1,3 +1,36 @@
+<<<<<<< HEAD
+=======
+<script setup>
+const productStore = useProductStore()
+const { $axios } = useNuxtApp()
+
+const reviews = computed(() => productStore.getProductReviews)
+const tabs = reactive([
+  { name: 'description', label: 'Mô tả' },
+  { name: 'specifications', label: 'Thông số kĩ thuật' },
+  { name: 'reviews', label: 'Đánh giá' },
+])
+const isReload = productStore.getIsReload
+const product = productStore.getProduct
+const activeTab = ref('reviews')
+
+const selectTab = (tabName) => {
+  activeTab.value = tabName
+}
+
+const getAllReviews = async () => {
+  const response = await $axios.get(`/product-reviews/${product?.id}`)
+  productStore.setProductReviews(response.data)
+}
+
+onMounted(() => {
+  if (isReload || reviews.value?.length == 0) {
+    getAllReviews()
+  }
+})
+</script>
+
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 <template>
   <div class="tab tab-nav-boxed tab-nav-underline product-tabs">
     <ul class="nav nav-tabs" role="tablist">

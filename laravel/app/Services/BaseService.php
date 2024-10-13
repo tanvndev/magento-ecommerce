@@ -42,7 +42,7 @@ class BaseService implements BaseServiceInterface
             $repositoryName = lcfirst($request->modelName) . 'Repository';
             $payload[$request->field] = $request->value;
 
-            $this->{$repositoryName}->update($request->value, $payload);
+            $this->{$repositoryName}->update($request->modelId, $payload);
 
             return successResponse(__('messages.publish.success'));
         }, __('messages.publish.error'));
@@ -87,7 +87,7 @@ class BaseService implements BaseServiceInterface
 
             return $result;
         } catch (Exception $e) {
-            getError($e);
+            // getError($e);
 
             Log::error('>>Transaction failed<<', [
                 'message' => $e->getMessage(),

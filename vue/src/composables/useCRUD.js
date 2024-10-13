@@ -41,8 +41,8 @@ export default function useCRUD() {
       loading.value = false;
     }
   };
-  const create = async (endpoint, payload) => {
-    store.dispatch('loadingStore/startLoading');
+  const create = async (endpoint, payload, isLoading = true) => {
+    isLoading && store.dispatch('loadingStore/startLoading');
     loading.value = true;
     error.value = null;
     try {
@@ -53,7 +53,7 @@ export default function useCRUD() {
     } catch (err) {
       error.value = err;
     } finally {
-      store.dispatch('loadingStore/stopLoading');
+      isLoading && store.dispatch('loadingStore/stopLoading');
       loading.value = false;
     }
   };

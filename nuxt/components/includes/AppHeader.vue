@@ -1,3 +1,88 @@
+<<<<<<< HEAD
+=======
+<script setup>
+import { ref, onMounted } from 'vue'
+import MenuItem from '../MenuItem.vue'
+import { useProductCatalogueStore } from '~/stores/productCatalogue'
+import _ from 'lodash'
+
+const { $axios, $pusher } = useNuxtApp()
+const authStore = useAuthStore()
+const cartStore = useCartStore()
+const chatStore = useChatStore()
+const notificationStore = useNotificationStore()
+const wishlistStore = useWishlistStore()
+const productCatalogueStore = useProductCatalogueStore()
+const headerMain = ref(null)
+const productCatalogues = ref([])
+const cartCount = computed(() => cartStore.getCartCount)
+const wishlistCount = computed(() => wishlistStore.getWishlistCount)
+const notifications = computed(() => notificationStore.getNotifications)
+const chatCount = computed(() => chatStore.getChatCount)
+const isShowBell = ref(false)
+const config = useRuntimeConfig()
+
+let lastScrollPosition = 0
+
+const handleScroll = () => {
+  if (!headerMain.value) return
+
+  const headerTop = document.querySelector('.header-top')
+  const headerMainHeight = headerMain.value.offsetHeight
+  const currentScrollPosition = window.pageYOffset
+  const threshold = headerTop.offsetHeight + headerMainHeight
+
+  const isFixed = currentScrollPosition > threshold
+  headerMain.value.classList.toggle('is-fixed', isFixed)
+
+  lastScrollPosition = currentScrollPosition
+}
+
+const debouncedHandleScroll = debounce(handleScroll, 10)
+
+const getProductCatalogues = async () => {
+  const response = await $axios.get('/products/catalogues/list')
+  productCatalogueStore.setProductCatalogues(response.data.data)
+  productCatalogues.value = response.data.data.filter(
+    (item) => item.parent_id === null
+  )
+}
+
+const listenForVoucherNotifications = async () => {
+  const channel = $pusher.subscribe(`voucher-created-channel`)
+
+  channel.bind('voucher-created-event', (data) => {
+    const message = `Chúc mừng bạn vừa nhận được mã giảm giá mới: ${data.voucher.name} Hãy áp dụng ngay!`
+    toast(message)
+    showNotification(data.voucher.name, message)
+    notificationStore.getAllNotifications()
+  })
+}
+
+const getChats = async () => {
+  await chatStore.getAllChats()
+}
+
+watch(notifications, (newValue) => {
+  isShowBell.value = newValue.some((item) => item.read_at == null)
+})
+
+onMounted(() => {
+  getProductCatalogues()
+  listenForVoucherNotifications()
+  setTimeout(() => {
+    getChats()
+  }, 4000)
+
+  wishlistStore.getAllWishlists()
+  cartStore.getAllCarts()
+  window.addEventListener('scroll', debouncedHandleScroll)
+})
+onUnmounted(() => {
+  $pusher.unsubscribe(`voucher-created-channel`)
+})
+</script>
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 <template>
   <!-- Start of Header -->
   <header class="header">
@@ -11,11 +96,45 @@
         <div class="header-right">
           <!-- End of Dropdown Menu -->
           <span class="d-lg-show"></span>
-          <NuxtLink to="contact" class="d-lg-show">Liên hệ</NuxtLink>
+          <div class="header-notification">
+            <NuxtLink to="/post/catalogue" class="d-lg-show notification-link">
+              <i class="fas fa-bell fs-1" :class="{ shake: isShowBell }"></i>
+              <span class="notification-text"> Thông báo </span>
+            </NuxtLink>
+
+            <div class="noti-dropdown-box" v-if="!_.isEmpty(notifications)">
+              <h6>Thông báo mới nhận</h6>
+              <ul>
+                <li
+                  v-for="notification in notifications"
+                  :class="{ active: notification.read_at == null }"
+                  :key="notification.id"
+                >
+                  <div class="noti-image">
+                    <v-img
+                      width="50"
+                      height="50"
+                      contain
+                      src="https://cdn.tgdd.vn/Products/Images/54/315072/s16/tai-nghe-co-day-apple-mtjy3-thumb-13-650x650.png"
+                    ></v-img>
+                  </div>
+                  <div class="noti-content">
+                    <p class="noti-title">{{ notification?.data?.title }}</p>
+                    <p class="noti-desc">
+                      {{ notification?.data?.description }}
+                    </p>
+                  </div>
+                </li>
+              </ul>
+              <h6 class="btn-all">Xem tất cả</h6>
+            </div>
+          </div>
+          <NuxtLink to="/post/catalogue" class="d-lg-show">Bài viết</NuxtLink>
+          <NuxtLink to="/contact" class="d-lg-show">Liên hệ</NuxtLink>
           <NuxtLink to="/user/profile" class="d-lg-show">Tài khoản</NuxtLink>
           <a
             v-if="!authStore.isSignedIn"
-            :href="`${config.public.vueUrl}/login`"
+            :href="`${config.public.VUE_APP_URL}/login`"
             class="d-lg-show login sign-in"
           >
             <i class="w-icon-account"></i>Đăng nhập</a
@@ -25,12 +144,12 @@
           >
           <a
             v-if="!authStore.isSignedIn"
-            :href="`${config.public.vueUrl}/register`"
+            :href="`${config.public.VUE_APP_URL}/register`"
             class="ml-0 d-lg-show login register"
             >Đăng ký</a
           >
           <a
-            href="logout"
+            href="/logout"
             @click.prevent="authStore.logout()"
             v-if="authStore.isSignedIn"
             >Đăng xuất</a
@@ -44,12 +163,13 @@
       <div class="header-middle">
         <div class="container">
           <div class="header-left mr-md-4">
-            <NuxtLink
-              to="login"
+            <a
+              v-if="!authStore.isSignedIn"
+              :href="`${config.public.VUE_APP_URL}/login`"
               class="mobile-menu-toggle w-icon-hamburger"
               aria-label="menu-toggle"
             >
-            </NuxtLink>
+            </a>
             <NuxtLink to="/" class="logo ml-lg-0">
               <img
                 src="assets/images/logo.png"
@@ -98,16 +218,16 @@
 
             <div class="dropdown cart-dropdown cart-offcanvas mr-0 mr-lg-2">
               <div class="cart-overlay"></div>
-              <NuxtLink to="#" class="cart-toggle label-down link">
+              <NuxtLink to="/chat" class="cart-toggle label-down link">
                 <i class="w-icon-chat">
-                  <span class="cart-count">2</span>
+                  <span class="cart-count" v-if="chatCount">{{ chatCount }}</span>
                 </i>
                 <span class="cart-label">Tin nhắn</span>
               </NuxtLink>
             </div>
             <div class="dropdown cart-dropdown cart-offcanvas mr-2 mr-lg-2">
               <div class="cart-overlay"></div>
-              <NuxtLink to="wishlist" class="cart-toggle label-down link">
+              <NuxtLink to="/wishlist" class="cart-toggle label-down link">
                 <i class="w-icon-heart">
                   <span class="cart-count">2</span>
                 </i>

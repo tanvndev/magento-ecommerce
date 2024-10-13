@@ -23,10 +23,9 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'email'             => 'required|string|email|unique:users,email,' . $this->user,
-            'phone'             => 'required|unique:users,phone,' . $this->user,
+            'phone'             => 'required|regex:/(0)[0-9]{9}/|unique:users,phone,' . $this->user,
             'fullname'          => 'required|string',
             'user_catalogue_id' => 'required|integer|gt:0',
-
         ];
     }
 
@@ -43,6 +42,8 @@ class UpdateUserRequest extends FormRequest
 
     public function messages()
     {
-        return __('request.messages');
+        return __('request.messages') + [
+            'phone.regex' => 'Số điện thoại không đúng dạng.',
+        ];
     }
 }

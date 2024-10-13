@@ -14,6 +14,11 @@ const userRoutes = [
     component: LoginView
   },
   {
+    path: '/login/otp',
+    name: 'login.otp',
+    component: () => import('@/views/backend/auth/LoginOtpView.vue')
+  },
+  {
     path: '/register',
     name: 'register',
     component: RegisterView

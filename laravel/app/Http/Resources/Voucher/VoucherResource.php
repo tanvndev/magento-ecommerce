@@ -36,6 +36,7 @@ class VoucherResource extends JsonResource
             ],
             'publish'          => $this->publish,
             'text_description' => $this->getTextDescription(),
+            'usage_limit'      => $this->usage_limit,
         ];
     }
 
@@ -59,11 +60,18 @@ class VoucherResource extends JsonResource
             ];
         }
 
-        if ($start && $end && ($now->lt($start) || $now->gt($end))) {
-            return [
-                'color' => 'red',
-                'text'  => 'Đã hết hạn',
-            ];
+        if ($start && $end) {
+            if ($now->lt($start)) {
+                return [
+                    'color' => 'orange',
+                    'text'  => 'Chưa đến hạn',
+                ];
+            } elseif ($now->gt($end)) {
+                return [
+                    'color' => 'red',
+                    'text'  => 'Đã hết hạn',
+                ];
+            }
         }
 
         return [

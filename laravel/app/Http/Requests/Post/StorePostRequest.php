@@ -25,13 +25,7 @@ class StorePostRequest extends FormRequest
             'name'              => 'required',
             'canonical'         => 'unique:posts',
             'image'             => 'required',
-            'description'       => 'required',
             'content'           => 'required',
-            'icon'              => 'required',
-            'order'             => 'required|integer',
-            'meta_title'        => 'required',
-            'meta_keyword'      => 'required',
-            'meta_description'  => 'required',
         ];
     }
 
@@ -41,13 +35,7 @@ class StorePostRequest extends FormRequest
             'name'              => 'Tên bài viết',
             'canonical'         => 'Đường dẫn',
             'image'             => 'Hình ảnh',
-            'description'       => 'Mô tả',
             'content'           => 'Nội dung',
-            'icon'              => 'Biểu tượng',
-            'order'             => 'Sắp xếp',
-            'meta_title'        => 'Tiêu đề',
-            'meta_keyword'      => 'Từ khóa',
-            'meta_description'  => 'Mô tả',
         ];
     }
 

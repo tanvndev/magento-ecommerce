@@ -8,15 +8,17 @@ export default defineNuxtConfig({
     '~/plugins/axios.js',
     '~/plugins/authService.js',
     '~/plugins/vue-toastify.js',
+    '~/plugins/pusher.js',
   ],
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.API_BASE_URL,
-      vueUrl: process.env.VUE_APP_URL,
-      laravelUrl: process.env.LARAVEL_APP_URL,
+      API_BASE_URL: process.env.API_BASE_URL,
+      VUE_APP_URL: process.env.VUE_APP_URL,
+      LARAVEL_URL: process.env.LARAVEL_URL,
+      PUSHER_APP_KEY: process.env.PUSHER_APP_KEY,
+      PUSHER_APP_CLUSTER: process.env.PUSHER_APP_CLUSTER,
     },
   },
-
   app: {
     head: {
       charset: 'utf-8',

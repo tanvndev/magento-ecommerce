@@ -39,7 +39,7 @@ class DashboardController extends Controller
         $serviceInstance = getServiceInstance($request->model);
         $response = $serviceInstance->paginate();
 
-        return successResponse('', $response);
+        return successResponse('', $response, true);
     }
 
     public function archiveMultiple(Request $request)

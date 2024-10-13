@@ -1,22 +1,25 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Auth;
 
-use App\Models\Order;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderShippedEvent
+class AuthRegisteredEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $order;
+    /**
+     * Create a new event instance.
+     */
+    public $user;
 
-    public function __construct(Order $order)
+    public function __construct(User $user)
     {
-        $this->order = $order;
+        $this->user = $user;
     }
 
     /**

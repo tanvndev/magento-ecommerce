@@ -23,18 +23,22 @@ class RegisterRequest extends FormRequest
     {
 
         return [
-            'email'    => 'required|email',
-            'fullname' => 'required',
-            'password' => 'required',
+            'email'                => 'required|email',
+            'fullname'             => 'required',
+            'password'             => 'required',
+            'g-recaptcha-response' => 'required',
+
         ];
     }
 
     public function attributes()
     {
         return [
-            'email'    => 'Email',
-            'fullname' => 'Họ và tên',
-            'password' => 'Mật khẩu',
+            'email'                => 'Email',
+            'fullname'             => 'Họ và tên',
+            'password'             => 'Mật khẩu',
+            'g-recaptcha-response' => 'Xác minh captcha',
+
         ];
     }
 

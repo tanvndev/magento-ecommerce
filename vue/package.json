@@ -17,6 +17,11 @@
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "magento-ecommerce": "file:",
+<<<<<<< HEAD
+=======
+    "marked": "^14.1.2",
+    "pusher-js": "^8.4.0-rc2",
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
     "vee-validate": "^4.13.1",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",

@@ -3,6 +3,10 @@
 use App\Http\Controllers\Payment\MomoController;
 use App\Http\Controllers\Payment\PaypalController;
 use App\Http\Controllers\Payment\VnpController;
+<<<<<<< HEAD
+=======
+use App\Http\Controllers\Stringee\StringeeController;
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use League\Glide\Server;
@@ -34,3 +38,8 @@ Route::get('return/momo_ipn', [MomoController::class, 'handleMomoIpn'])->name('r
 // PAYPAL
 Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal.success');
 Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');
+
+// STRINGEE
+Route::get('stringee/answer', [StringeeController::class, 'answer']);
+
+Route::get('test/', [UserAddressController::class, 'getByUserId']);

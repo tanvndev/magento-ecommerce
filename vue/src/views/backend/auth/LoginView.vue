@@ -4,7 +4,7 @@
       <div
         class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]"
       >
-        <img :src="'src/assets/images/loginpng.webp'" alt="" class="imig-fluid" />
+        <img :src="'/src/assets/images/loginpng.webp'" alt="" class="imig-fluid" />
       </div>
     </a-col>
     <a-col span="14">
@@ -43,6 +43,30 @@
                 placeholder="*************"
               />
             </div>
+<<<<<<< HEAD
+=======
+            <div class="mt-2 flex items-center justify-between">
+              <div>
+                <RouterLink
+                  class="text-[13px] text-blue-600 hover:text-blue-500"
+                  :to="{ name: 'forgot' }"
+                  >Quên mật khẩu?</RouterLink
+                >
+              </div>
+
+              <div>
+                <RouterLink
+                  class="text-[13px] text-blue-600 hover:text-blue-500"
+                  :to="{ name: 'login.otp' }"
+                  >Đăng nhập với SMS</RouterLink
+                >
+              </div>
+            </div>
+
+            <!-- Thêm reCAPTCHA ở đây -->
+            <RecaptchaComponent />
+
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
             <button
               type="submit"
               class="mt-4 w-full rounded-lg bg-primary-600 px-4 py-2 font-medium text-white duration-150 hover:bg-primary-500 active:bg-primary-600"
@@ -51,10 +75,13 @@
             </button>
           </form>
 
-          <div class="text-center">
-            <RouterLink class="text-blue-600 hover:text-blue-500" :to="{ name: 'forgot' }"
-              >Quên mật khẩu?</RouterLink
+          <div className="relative">
+            <span className="block w-full h-px bg-gray-300"></span>
+            <p
+              className="inline-block w-fit text-sm bg-white px-2 absolute -top-2 inset-x-0 mx-auto uppercase"
             >
+              Hoặc
+            </p>
           </div>
         </div>
       </div>
@@ -93,7 +120,25 @@ const { handleSubmit } = useForm({
 // SUBMIT FORM HANDLE
 const onSubmit = handleSubmit(async (values) => {
   errors.value = {};
+<<<<<<< HEAD
   await store.dispatch('authStore/login', values);
+=======
+
+  // eslint-disable-next-line no-undef
+  const recaptchaResponse = grecaptcha.getResponse();
+
+  if (!recaptchaResponse) {
+    
+    return message.error('Vui lòng xác nhận bạn không phải là robot.');
+  }
+
+  const formData = {
+    ...values,
+    'g-recaptcha-response': recaptchaResponse
+  };
+
+  await store.dispatch('authStore/login', formData);
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
   const authState = store.state.authStore;
   if (!authState.status.loggedIn) {
     return (errors.value = formatMessages(authState.messages));

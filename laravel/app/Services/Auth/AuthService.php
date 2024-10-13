@@ -21,6 +21,11 @@ class AuthService extends BaseService implements AuthServiceInterface
         $this->userRepository = $userRepository;
     }
 
+    /**
+     * Dang ky tai khoan moi.
+     *
+     * @return JsonResponse
+     */
     public function register()
     {
         return $this->executeInTransaction(function () {
@@ -57,6 +62,11 @@ class AuthService extends BaseService implements AuthServiceInterface
         }, __('messages.auth.register.error'));
     }
 
+    /**
+     * Handle password reset for a user.
+     *
+     * @return JsonResponse
+     */
     public function resetPassword()
     {
         return $this->executeInTransaction(function () {

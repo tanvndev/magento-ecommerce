@@ -56,6 +56,17 @@ class AppRepositoryProvider extends ServiceProvider
         'App\Repositories\Interfaces\Slider\SliderRepositoryInterface' => 'App\Repositories\Slider\SliderRepository',
         // Post
         'App\Repositories\Interfaces\Post\PostRepositoryInterface' => 'App\Repositories\Post\PostRepository',
+<<<<<<< HEAD
+=======
+        // UserAddress
+        'App\Repositories\Interfaces\User\UserAddressRepositoryInterface' => 'App\Repositories\User\UserAddressRepository',
+        // PRODUCT REVIEW
+        'App\Repositories\Interfaces\Product\ProductReviewRepositoryInterface' => 'App\Repositories\Product\ProductReviewRepository',
+        // NOTIFICATION
+        'App\Repositories\Interfaces\Notification\NotificationRepositoryInterface' => 'App\Repositories\Notification\NotificationRepository',
+        // CHAT
+        'App\Repositories\Interfaces\Chat\ChatRepositoryInterface' => 'App\Repositories\Chat\ChatRepository',
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 
     ];
 

@@ -79,5 +79,43 @@ return [
             'success' => 'Chúng tôi đã gửi mật khẩu mới vào email của bạn vui lòng kiểm tra.',
             'error'   => 'Đặt lại mật khẩu thất bại.',
         ],
+        'update_profile' => [
+            'success' => 'Cập nhật hồ sơ thành công.',
+            'error'   => 'Cập nhật hồ sơ thất bại.',
+        ],
+        'invalid_code' => [
+            'error' => 'Mã xác nhận không hợp lệ hoặc đã hết hạn.',
+        ],
     ],
+<<<<<<< HEAD
+=======
+    'wishlist' => [
+        'success' => [
+            'create' => 'Thêm sản phẩm ưa thích thành công',
+            'delete' => 'Xóa sản phẩm ưa thích thành công',
+            'clean'  => 'Xóa tất cả sản phẩm khỏi ưa thích thành công',
+            'mail'   => 'Gửi email thành công',
+        ],
+        'error' => [
+            'existed'            => 'Sản phẩm đã tồn tại trong danh mục ưa thích.',
+            'create'             => 'Thêm sản phẩm ưa thích không thành công',
+            'delete'             => 'Xóa sản phẩm ưa thích thành công',
+            'wishlist_not_found' => 'Bạn chưa có sản phẩm ưa thích',
+            'auth'               => 'Vui lòng đăng nhập để yêu thích sản phẩm',
+            'mail'               => 'Gửi email không thành công',
+        ],
+    ],
+    'userAddress' => [
+        'success' => [
+            'create'             => 'Thêm địa chỉ thành công.',
+            'update'             => 'Cập nhật địa chỉ thành công.',
+            'delete'             => 'Xóa địa chỉ thành công.',
+        ],
+        'error' => [
+            'create'             => 'Thêm địa chỉ không thành công.',
+            'delete'             => 'Xóa địa chỉ không thành công.',
+        ],
+    ],
+
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 ];

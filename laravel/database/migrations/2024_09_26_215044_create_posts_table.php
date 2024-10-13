@@ -17,21 +17,19 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            // $table->foreignId('category_id')
-            //     ->constrained('post_categories')
+            // $table->foreignId('post_catalogue_id')
+            //     ->constrained('post_catalogues')
             //     ->cascadeOnDelete()
             //     ->cascadeOnUpdate();
             $table->string('name');
             $table->string('image');
             $table->text('description');
-            $table->text('content');
+            $table->longText('content');
+            $table->string('meta_title')->nullable();
+            $table->string('meta_description')->nullable();
             $table->string('canonical')->unique();
-            $table->string('icon');
-            $table->integer('order');
-            $table->string('meta_title');
-            $table->string('meta_keyword');
-            $table->string('meta_description');
             $table->tinyInteger('publish')->default(1)->comment('1:Active, 2: Inactive');
+            $table->tinyInteger('is_featured')->default(1)->comment('1: true, 2: false');
             $table->softDeletes();
             $table->timestamps();
         });

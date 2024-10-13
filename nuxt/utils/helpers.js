@@ -379,6 +379,78 @@ const generateRandomString = (length) => {
   return result
 }
 
+const hintPhoneNumber = (phoneNumber) => {
+  const cleaned = phoneNumber.replace(/\D/g, '')
+
+  if (cleaned.length < 4) return 'Invalid phone number'
+
+  const hinted =
+    cleaned.slice(0, 2) + '*'.repeat(cleaned.length - 4) + cleaned.slice(-2)
+
+  return hinted
+}
+
+const hintEmail = (email) => {
+  const [localPart, domain] = email.split('@')
+  if (!domain) return 'Invalid email address'
+
+  const hintedLocalPart =
+    localPart.charAt(0) +
+    '*'.repeat(localPart.length - 2) +
+    localPart.charAt(localPart.length - 1)
+  const hintedDomain =
+    domain.charAt(0) +
+    '.'.repeat(domain.length - 2) +
+    domain.charAt(domain.length - 1)
+
+  return `${hintedLocalPart}@${hintedDomain}`
+}
+
+const formatTime = (value) => {
+  return String(value).padStart(2, '0') // Đảm bảo luôn có 2 chữ số
+}
+
+const showNotification = (title, body, icon = 'src/assets/images/logo.png') => {
+  if (Notification.permission === 'granted') {
+    new Notification(title, {
+      body: body,
+      icon: icon,
+    })
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(function (permission) {
+      if (permission === 'granted') {
+        // Hiển thị thông báo
+        new Notification(title, {
+          body: body,
+          icon: icon,
+        })
+      }
+    })
+  }
+}
+
+const timeAgo = (dateString) => {
+  const now = new Date()
+  const pastDate = new Date(dateString)
+  const seconds = Math.floor((now - pastDate) / 1000)
+
+  let interval = Math.floor(seconds / 31536000)
+  if (interval >= 1) return interval + ' năm trước'
+
+  interval = Math.floor(seconds / 2592000)
+  if (interval >= 1) return interval + ' tháng trước'
+
+  interval = Math.floor(seconds / 86400)
+  if (interval >= 1) return interval + ' ngày trước'
+
+  interval = Math.floor(seconds / 3600)
+  if (interval >= 1) return interval + ' giờ trước'
+
+  interval = Math.floor(seconds / 60)
+  if (interval >= 1) return interval + ' phút trước'
+
+  return 'vừa mới'
+}
 export {
   debounce,
   resizeImage,
@@ -399,4 +471,9 @@ export {
   toast,
   generateUUID,
   generateRandomString,
+  hintPhoneNumber,
+  hintEmail,
+  formatTime,
+  showNotification,
+  timeAgo,
 }

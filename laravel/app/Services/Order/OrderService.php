@@ -31,7 +31,129 @@ class OrderService extends BaseService implements OrderServiceInterface
     //     return $this->orderRepository->paginate();
     // }
 
+<<<<<<< HEAD
     public function create()
+=======
+        $condition = [
+            'search'       => addslashes($request->search),
+            'searchFields' => ['code'],
+        ];
+
+        $pageSize = $request->pageSize;
+
+        $data = $this->orderRepository->pagination(['*'], $condition, $pageSize);
+
+        return $data;
+    }
+
+    /**
+     * Get an order by its code.
+     *
+     * @param  string  $orderCode  The order code.
+     * @return \App\Models\Order The order.
+     */
+    public function getOrder(string $orderCode): Order
+    {
+        $condition = [
+            'code'    => $orderCode,
+        ];
+
+        $order = $this->orderRepository->findByWhere(
+            $condition,
+            ['*'],
+            ['order_items']
+        );
+
+        return $order;
+    }
+
+    /**
+     * Update an order
+     */
+    public function update(string $id): array
+    {
+        return $this->executeInTransaction(function () use ($id) {
+            $request = request();
+            $payload = $this->handlePayloadUpdate($request);
+
+            $order = $this->orderRepository->findById($id);
+
+            if (
+                $request->has('order_status')
+                && $request->has('payment_status')
+                && $request->has('delivery_status')
+            ) {
+                if ( ! $this->checkUpdateStatus($request, $order)) {
+                    return errorResponse(__('messages.order.error.invalid'));
+                }
+            }
+
+            $order->update($payload);
+
+            return successResponse(__('messages.update.success'));
+        }, __('messages.update.error'));
+    }
+
+    /**
+     * Handle the payload of the update request.
+     *
+     * This method takes the request and returns an array of the payload that can be used to update the order.
+     * The payload is filtered to only include the fields that are required for the update.
+     * The fields that are included in the payload are:
+     *  - ordered_at if the order status is being updated
+     *  - paid_at if the payment status is being updated
+     *  - delivered_at if the delivery status is being updated
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    private function handlePayloadUpdate($request): array
+    {
+        $payload = $request->except('_token', '_method');
+        $now = now();
+
+        if ($request->has('order_status')) {
+            $payload['ordered_at'] = $now;
+        }
+
+        if ($request->has('payment_status')) {
+            $payload['paid_at'] = $now;
+        }
+
+        if ($request->has('delivery_status')) {
+            $payload['delivered_at'] = $now;
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Check if the order can be updated to the given status.
+     *
+     * If the order status is to be updated to completed, the payment status must be paid and the delivery status must be delivered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    public function checkUpdateStatus($request, Order $order): bool
+    {
+        if ($request->order_status == Order::ORDER_STATUS_COMPLETED) {
+            if (
+                $order->payment_status != Order::PAYMENT_STATUS_PAID
+                || $order->delivery_status != Order::DELYVERY_STATUS_DELIVERED
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Create a new order in the database.
+     *
+     * @return \App\Models\Order|null
+     */
+    public function create(): mixed
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
     {
         return $this->executeInTransaction(function () {
             $request = request();

@@ -1,8 +1,8 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+      <div class="mx-10 h-screen">
+        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16">
             <a-col :span="12">
@@ -10,15 +10,30 @@
                 <AleartError :errors="state.error" />
                 <a-row :gutter="[16, 16]">
                   <a-col :span="12">
-                    <InputComponent label="Họ tên thành viên" :required="true" name="fullname" />
+                    <InputComponent
+                      label="Họ tên thành viên"
+                      :required="true"
+                      name="fullname"
+                      placeholder="Họ tên thành viên"
+                    />
                   </a-col>
 
                   <a-col :span="12">
-                    <InputComponent label="Địa chỉ email" :required="true" name="email" />
+                    <InputComponent
+                      label="Địa chỉ email"
+                      :required="true"
+                      name="email"
+                      placeholder="Địa chỉ email"
+                    />
                   </a-col>
 
                   <a-col :span="12">
-                    <InputComponent label="Số điện thoại" :required="true" name="phone" />
+                    <InputComponent
+                      label="Số điện thoại"
+                      :required="true"
+                      name="phone"
+                      placeholder="Số điện thoại"
+                    />
                   </a-col>
 
                   <a-col :span="12" v-if="!id">
@@ -27,6 +42,7 @@
                       label="Mật khẩu"
                       :required="true"
                       name="password"
+                      placeholder="**************"
                     />
                   </a-col>
 
@@ -82,7 +98,7 @@
                   </a-col>
 
                   <a-col :span="24">
-                    <InputComponent label="Địa chỉ" name="address" />
+                    <InputComponent label="Địa chỉ" name="address" placeholder="Địa chỉ" />
                   </a-col>
                 </a-row>
               </a-card>
@@ -90,8 +106,8 @@
           </a-row>
 
           <div class="fixed bottom-0 right-[19px] p-10">
-            <a-button html-type="submit" :loading="loading" type="primary">
-              <i class="far fa-save mr-2"></i>
+            <a-button html-type="submit" :loading="loading" type="primary" size="large">
+              <i class="fas fa-save mr-2"></i>
               <span>Lưu thông tin</span>
             </a-button>
           </div>

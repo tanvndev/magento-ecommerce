@@ -1,34 +1,38 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="container mx-auto h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" />
+      <div class="mx-10 h-screen">
+        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
         <form @submit.prevent="onSubmit">
-          <a-card class="mt-3">
-            <AleartError :errors="state.errors" />
-            <a-row :gutter="16">
-              <a-col :span="12">
-                <InputComponent
-                  name="name"
-                  label="Tên quyền người dùng"
-                  :required="true"
-                  placeholder="Nếu tạo nhanh CRUD thì điền tên kiểu gì cũng được."
-                />
-              </a-col>
-              <a-col :span="12">
-                <InputComponent
-                  name="canonical"
-                  label="Canonical"
-                  :required="true"
-                  placeholder="Tạo nhanh CRUD ví dụ: users:CRUD:thành viên, users.catalogue:CRU:giáo viên, ..."
-                />
-              </a-col>
-            </a-row>
-          </a-card>
+          <AleartError :errors="state.errors" />
+          <a-row>
+            <a-col :span="16" class="mx-auto">
+              <a-card class="mt-3">
+                <a-row :gutter="[16, 16]">
+                  <a-col :span="12">
+                    <InputComponent
+                      name="name"
+                      label="Tên quyền người dùng"
+                      :required="true"
+                      placeholder="Nếu tạo nhanh CRUD thì điền tên kiểu gì cũng được."
+                    />
+                  </a-col>
+                  <a-col :span="12">
+                    <InputComponent
+                      name="canonical"
+                      label="Canonical"
+                      :required="true"
+                      placeholder="Tạo nhanh CRUD ví dụ: users:CRUD:thành viên, users.catalogue:CRU:giáo viên, ..."
+                    />
+                  </a-col>
+                </a-row>
+              </a-card>
+            </a-col>
+          </a-row>
 
           <div class="fixed bottom-0 right-[19px] p-10">
-            <a-button html-type="submit" :loading="loading" type="primary">
-              <i class="far fa-save mr-2"></i>
+            <a-button html-type="submit" :loading="loading" type="primary" size="large">
+              <i class="fas fa-save mr-2"></i>
               <span>Lưu thông tin</span>
             </a-button>
           </div>

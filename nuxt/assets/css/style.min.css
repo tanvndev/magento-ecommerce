@@ -18018,6 +18018,7 @@ body .product-popup {
   margin: 0 0.9375rem;
 }
 .blog-filters.filter-underline .nav-filter::after {
+  margin-top: 4px;
   border-top: 3px solid;
   border-bottom: 0;
 }

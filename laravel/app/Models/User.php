@@ -117,4 +117,37 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(Ward::class, 'ward_id', 'code');
     }
+<<<<<<< HEAD
+=======
+
+    public function user_addresses()
+    {
+        return $this->hasMany(UserAddress::class);
+    }
+
+    public function product_reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function sent_chats()
+    {
+        return $this->hasMany(Chat::class, 'sender_id');
+    }
+
+    public function received_chats()
+    {
+        return $this->hasMany(Chat::class, 'receiver_id');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 }

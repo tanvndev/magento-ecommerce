@@ -1,3 +1,29 @@
+<<<<<<< HEAD
+=======
+<script setup>
+const loadingStore = useLoadingStore()
+const wishlistStore = useWishlistStore()
+const { $axios } = useNuxtApp()
+const wishlists = computed(() => wishlistStore.getWishlists)
+const page = ref(1)
+
+const handleRemove = async (id) => {
+  await wishlistStore.removeWishlist(id)
+}
+const debounceHandleChangePage = debounce(async () => {
+  await wishlistStore.getAllWishlists(page.value)
+}, 300)
+
+const addWishlistToCart = async (product_variant_id) => {
+  await wishlistStore.addWishlistToCart(product_variant_id)
+}
+
+watch(page, () => {
+  debounceHandleChangePage()
+})
+</script>
+
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 <template>
   <!-- Start of PageContent -->
   <main class="main wishlist-page">
@@ -50,6 +76,9 @@
                     >Quick View</a
                   >
                   <a
+                    @click.prevent="
+                      addWishlistToCart(wishlist.product_variant_id)
+                    "
                     href="#"
                     class="btn btn-dark btn-rounded btn-sm ml-lg-2 btn-cart"
                     >Add to cart</a

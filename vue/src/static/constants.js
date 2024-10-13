@@ -118,6 +118,63 @@ const DISCOUNT_CONDITION_APPLY = [
   }
 ];
 
+const INDUSTRY = [
+  {
+    value: 'Thiết bị điện tử',
+    label: 'Thiết bị điện tử'
+  },
+  {
+    value: 'Thiết bị công nghệ',
+    label: 'Thiết bị công nghệ'
+  },
+  {
+    value: 'Đồng hồ',
+    label: 'Đồng hồ'
+  },
+  {
+    value: 'Giày dép',
+    label: 'Giày dép'
+  },
+  {
+    value: 'Mẹ và bé',
+    label: 'Mẹ và bé'
+  }
+];
+
+const TONE_AI = [
+  {
+    icon: 'fal fa-briefcase',
+    value: 'Chuyên nghiệp',
+    label: 'Chuyên nghiệp'
+  },
+  {
+    icon: 'fas fa-grin',
+    value: 'Vui tươi',
+    label: 'Vui tươi'
+  },
+  {
+    icon: 'fas fa-laugh-wink',
+    value: 'Hài hước',
+    label: 'Hài hước'
+  }
+];
+const TEXT_STYLE_AI = [
+  {
+    icon: 'far fa-comment-alt-lines',
+    value: 'Khoảng 70 từ',
+    label: 'Tiêu đề (khoảng 70 từ)'
+  },
+  {
+    icon: 'far fa-comment-alt-lines',
+    value: 'Khoảng 500 từ',
+    label: 'Tóm tắt (khoảng 500 từ)'
+  },
+  {
+    icon: 'far fa-comment-alt-lines',
+    value: 'Khoảng 1000 từ',
+    label: 'Tiêu chuẩn (khoảng 1000 từ)'
+  }
+];
 export {
   PUBLISH,
   PAGESIZE,
@@ -130,5 +187,8 @@ export {
   WIDGET_TYPE,
   NUXT_URL,
   DISCOUNT_TYPE,
-  DISCOUNT_CONDITION_APPLY
+  DISCOUNT_CONDITION_APPLY,
+  INDUSTRY,
+  TEXT_STYLE_AI,
+  TONE_AI
 };

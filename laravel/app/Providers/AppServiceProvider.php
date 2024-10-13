@@ -70,9 +70,16 @@ class AppServiceProvider extends ServiceProvider
 
         // PRODUCT REVIEW
         'App\Services\Interfaces\Product\ProductReviewServiceInterface' => 'App\Services\Product\ProductReviewService',
+<<<<<<< HEAD
 
         // Post
         'App\Services\Interfaces\Post\PostServiceInterface' => 'App\Services\Post\PostService',
+=======
+        // NOTIFICATION
+        'App\Services\Interfaces\Notification\NotificationServiceInterface' => 'App\Services\Notification\NotificationService',
+        // CHAT
+        'App\Services\Interfaces\Chat\ChatServiceInterface' => 'App\Services\Chat\ChatService',
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
     ];
 
     public function register(): void

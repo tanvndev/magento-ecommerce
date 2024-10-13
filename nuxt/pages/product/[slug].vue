@@ -1,6 +1,170 @@
+<script setup>
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Navigation, Autoplay } from 'swiper/modules'
+import QuantityComponent from '~/components/includes/QuantityComponent.vue'
+import 'swiper/css'
+import { useRouter } from 'vue-router'
+import ProductRecent from '~/components/product/ProductRecent.vue'
+
+const modules = [Navigation, Autoplay]
+
+const cartStore = useCartStore()
+const productStore = useProductStore()
+const loadingStore = useLoadingStore()
+const { $axios } = useNuxtApp()
+const route = useRoute()
+const router = useRouter()
+
+const visibleRef = ref(false)
+const indexRef = ref(0)
+const attributeEnables = ref([])
+const attributeNotEnables = ref([])
+const attributeSelected = ref([])
+const product = computed(() => productStore.getProduct)
+const variant = ref({})
+const prices = ref({})
+const images = ref([])
+const slider = ref(null)
+const quantity = ref(1)
+
+const onSwiper = (swiper) => {
+  slider.value = swiper
+}
+
+const showImg = (index) => {
+  indexRef.value = index
+  visibleRef.value = true
+}
+
+const getProduct = async () => {
+  if (product.value) {
+    return updateVariantAndAttributes()
+  }
+
+  try {
+    loadingStore.setLoading(true)
+    const response = await $axios(`/products/${route.params.slug}/detail`)
+
+    if (response.data) {
+      productStore.setProduct(response.data)
+      productStore.setIsReload(false)
+      updateVariantAndAttributes()
+    }
+  } catch (error) {
+  } finally {
+    loadingStore.setLoading(false)
+  }
+}
+
+const updateVariantAndAttributes = () => {
+  const variantCurrent = product.value?.variants.find(
+    (variant) => variant.slug === removeLastSegment(route.params.slug)
+  )
+  variant.value = variantCurrent
+
+  attributeEnables.value = product.value?.attribute_enabled
+  attributeNotEnables.value = product.value?.attribute_not_enabled
+
+  if (variant.value?.attributes.length > 0) {
+    triggerSelectedAttribute(variant.value.attributes)
+  }
+}
+
+const triggerSelectedAttribute = (attributes) => {
+  attributes.forEach((attribute) => {
+    attributeSelected.value[attribute.attribute_id] = attribute.id
+  })
+}
+
+const handleSelectedAttribute = (attributeId, AttributeValueId) => {
+  attributeSelected.value[attributeId] = AttributeValueId
+
+  if (isChooseAttribute) {
+    const attributeIdCombine = sortAndConcatenate(attributeSelected.value)
+
+    variant.value = product.value?.variants.find(
+      (variant) => variant?.attribute_value_combine == attributeIdCombine
+    )
+
+    if (variant.value) {
+      const newSlug = variant.value?.slug
+      const currentPath = router.currentRoute.value.path
+
+      const newUrl = `${currentPath.split('/').slice(0, -1).join('/')}/${newSlug}-${variant.value.product_id}`
+      router.replace(newUrl)
+    }
+  }
+}
+
+const isChooseAttribute = () =>
+  attributeEnables.value.length === Object.keys(attributeSelected.value).length
+const isSelected = (attributeId, AttributeValueId) =>
+  attributeSelected.value[attributeId] === AttributeValueId
+
+const handleAlbum = () => {
+  if (!variant.value) {
+    return
+  }
+  const album = JSON.parse(variant.value?.album || '[]')
+
+  if (album.length > 0) {
+    images.value = album?.map((image) => resizeImage(image, '500', '500'))
+  }
+}
+
+const handleUpdateQuantity = (qty) => (quantity.value = qty)
+
+const addToCart = async () => {
+  if (
+    !variant.value ||
+    !quantity.value ||
+    quantity.value < 1 ||
+    !isChooseAttribute
+  ) {
+    return
+  }
+
+  const payload = {
+    product_variant_id: variant.value.id,
+    quantity: quantity.value,
+  }
+  cartStore.addToCart(payload)
+}
+
+watch(
+  variant,
+  (newVariant) => {
+    prices.value = handlePrice(newVariant)
+    handleAlbum()
+  },
+  { immediate: true }
+)
+
+watch(
+  () => route.params.slug,
+  (newSlug) => {
+    const lastSegment = newSlug.split('/').pop()
+    const productId = getLastPartOfSlug(lastSegment)
+    const currentProductId = product.value?.id
+
+    if (currentProductId != productId) {
+      productStore.setProduct(null)
+      productStore.setProductReviews([])
+    }
+  },
+  { immediate: true }
+)
+
+onMounted(() => {
+  getProduct()
+})
+
+const onHide = () => (visibleRef.value = false)
+</script>
+
 <template>
   <!-- Start of Page Content -->
-  <div class="page-content mt-5">
+  <div class="page-content mt-5" v-if="product">
     <div class="container">
       <div class="row gutter-lg">
         <div class="main-content">
@@ -206,6 +370,7 @@
                   <span class="divider d-xs-show"></span>
                   <div class="product-link-wrapper d-flex">
                     <a
+                      @click.prevent="addToWishlist"
                       href="#"
                       class="btn-product-icon btn-wishlist w-icon-heart"
                       ><span></span
@@ -232,11 +397,8 @@
   </div>
   <!-- End of Page Content -->
 </template>
-<script setup>
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation, Autoplay } from 'swiper/modules'
-import QuantityComponent from '~/components/includes/QuantityComponent.vue'
 
+<<<<<<< HEAD
 import 'swiper/css'
 import {
   sortAndConcatenate,
@@ -367,6 +529,8 @@ onMounted(() => {
 
 const onHide = () => (visibleRef.value = false)
 </script>
+=======
+>>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 <style scoped>
 .size {
   margin-right: 6px;
