@@ -30,6 +30,15 @@ const actions = {
     }
     return commit('loginSuccess', response.data);
   },
+
+  async loginOtp({ commit }, payload) {
+    const response = await AuthService.loginOtp(payload);
+
+    if (!response.success) {
+      return commit('loginFailure', response.messages);
+    }
+    return commit('loginSuccess', response.data);
+  },
   async logout({ commit }) {
     commit('logout');
   },

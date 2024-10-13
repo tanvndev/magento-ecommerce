@@ -37,10 +37,6 @@ const handleRemoveAddress = async (id) => {
   const endpoint = `users/addresses/${id}`
   fetch(endpoint, {}, 'delete')
 }
-
-const handleOpenModalAddress = (action) => {
-  isOpenModalAddress.value = !isOpenModalAddress.value
-}
 </script>
 
 <template>
@@ -106,9 +102,6 @@ const handleOpenModalAddress = (action) => {
                       </div>
                       <div class="col-xs-3">
                         <div class="d-flex justify-end mr-1">
-                          <!-- <a href="#" :class="{ 'mr-2': item.is_primary == 0 }">
-                            Cập nhập</a
-                          > -->
                           <a
                             v-if="item.is_primary == 0"
                             @click.prevent="handleRemoveAddress(item.id)"

@@ -1,43 +1,44 @@
 <template>
   <MasterLayout>
     <template #template>
-      <div class="flex h-full bg-gray-100">
+      <div
+        class="chat-container-wrapper mx-10 my-2 flex overflow-hidden rounded border bg-gray-100"
+      >
         <!-- Sidebar -->
-        <div class="w-1/3 border-r bg-white p-4">
-          <input type="text" placeholder="Tìm kiếm..." class="mb-4 w-full rounded border p-2" />
+        <div class="w-1/4 rounded-[4px] border-r bg-white">
+          <div class="p-4 pb-2">
+            <h2 class="mb-3 text-lg font-bold">Tin nhắn</h2>
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              class="mb-4 w-full rounded border p-2 text-[14px]"
+            />
+          </div>
           <div class="scrollable">
             <div
-              v-for="user in chats"
-              :key="user.id"
-              class="chat-item mb-4 flex cursor-pointer items-center border-b p-2"
-              @click="selectChat(user.id)"
+              v-for="chat in chatLists"
+              :key="chat.id"
+              class="chat-item flex cursor-pointer items-center px-3 py-3"
+              :class="selectedChatUser.id == chat.id ? 'selected' : ''"
+              @click="handleSelectChat(chat.id)"
             >
               <div class="relative">
                 <img
-                  :src="user.image || 'https://via.placeholder.com/40'"
+                  :src="chat.image || 'https://via.placeholder.com/40'"
                   alt=""
-                  class="mr-3 rounded-full"
+                  class="mr-3 h-[50px] w-[50px] rounded-full"
                 />
                 <div class="status-indicator-1 active"></div>
               </div>
               <div class="w-full">
                 <div class="flex w-full items-center justify-between">
-                  <div class="header-title">{{ user.fullname }}</div>
+                  <div class="header-title">{{ chat.fullname }}</div>
                   <small class="me-2 text-gray-500">
-                    {{
-                      new Date(user.created_at).toLocaleString('vi-VN', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                      })
-                    }}
+                    {{ chat.last_at && timeAgo(chat.last_at) }}
                   </small>
                 </div>
-                <div class="header-meta w-56 truncate font-bold">
-                  {{ user.chat ? user.chat.message : 'No messages yet.' }}
+                <div class="header-meta w-64 truncate font-bold">
+                  {{ chat.last_message || 'No messages yet.' }}
                 </div>
               </div>
             </div>
@@ -53,7 +54,7 @@
                 <img
                   :src="selectedChatUser.image || 'https://via.placeholder.com/40'"
                   alt=""
-                  class="mr-3 rounded-full"
+                  class="mr-3 h-[50px] w-[50px] rounded-full"
                 />
                 <div class="status-indicator active"></div>
               </div>
@@ -66,53 +67,85 @@
 
           <!-- Middle: Phần giữa có thể cuộn -->
           <div
-            class="flex-grow overflow-y-auto p-4"
-            v-if="messages.length > 0"
+            class="chat-container flex-grow overflow-y-auto p-4"
+            v-if="messages?.length > 0"
             ref="messagesContainer"
           >
             <div v-for="message in messages" :key="message.id" class="mb-4">
-              <div v-if="message.sender_id === 1" class="mt-2 flex justify-end">
-                <p class="inline-block max-w-[70%] rounded bg-blue-100 p-2">
-                  {{ message.message }}
-                </p>
+              <div v-if="message.sender_id == user?.id" class="mt-2 flex justify-end">
+                <div>
+                  <div class="mb-2 ml-2" v-if="message.images && message.images.length">
+                    <div class="flex justify-end">
+                      <div
+                        v-for="(image, index) in message.images"
+                        class="image-upload mr-1"
+                        :key="index"
+                      >
+                        <img width="50" height="50" :src="image" alt="" />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="inline-block rounded-[6px] bg-[#3b71ca] px-[16px] py-3 text-white">
+                      {{ message.message }}
+                    </p>
+                  </div>
+                </div>
               </div>
               <div v-else class="mt-2 flex justify-start">
-                <img
-                  :src="selectedChatUser.avatar || 'https://via.placeholder.com/40'"
-                  alt="User Image"
-                  class="mr-3 h-8 w-8 rounded-full"
-                />
-                <p class="inline-block max-w-[70%] rounded bg-gray-200 p-2">
-                  {{ message.message }}
-                </p>
+                <div>
+                  <div class="mb-2 ml-11" v-if="message.images && message.images.length">
+                    <div class="flex justify-end">
+                      <div
+                        v-for="(image, index) in message.images"
+                        class="image-upload mr-1"
+                        :key="index"
+                      >
+                        <img
+                          width="50"
+                          height="50"
+                          :src="image || 'https://via.placeholder.com/40'"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center">
+                    <img
+                      :src="selectedChatUser.image || 'https://via.placeholder.com/40'"
+                      alt="User Image"
+                      class="mr-3 h-8 w-8 rounded-full"
+                    />
+
+                    <p class="inline-block rounded-[6px] bg-gray-100 px-[16px] py-3">
+                      {{ message.message }}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Bottom: Phần input tin nhắn đứng yên -->
-          <div class="flex-none border-t p-4">
-            <div class="flex items-center">
+          <div class="flex border-t p-4">
+            <div class="flex w-[50px] items-center">
+              <button
+                type="button"
+                class="h-[35px] w-[35px] rounded-full bg-gray-200 transition-all duration-100 hover:bg-blue-200 hover:text-blue-900"
+              >
+                <i class="fas fa-image"></i>
+              </button>
+            </div>
+            <div class="flex flex-1 items-center">
               <input
                 type="text"
                 placeholder="Nhập tin nhắn..."
                 class="message-input"
                 v-model="newMessage"
+                @keyup.enter="sendMessage"
               />
-              <button class="rounded-r bg-blue-500 p-2 text-white" @click="sendMessage">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 7l18 7-7 3-3-7-7-3zm0 0l7 5-3 7-7-5zm0 0l7-5 3 7-7 5z"
-                  />
-                </svg>
+              <button class="rounded-r bg-blue-500 px-4 py-[9px] text-white" @click="sendMessage">
+                <i class="fas fa-paper-plane"></i>
               </button>
             </div>
           </div>
@@ -123,156 +156,134 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick, computed } from 'vue';
 import { MasterLayout } from '@/components/backend';
 import { useCRUD } from '@/composables';
+import pusher from '@/plugins/pusher';
+import { useStore } from 'vuex';
 
-const chats = ref([]);
-const selectedChat = ref(null);
+import { timeAgo } from '@/utils/helpers';
+const chatLists = ref([]);
 const selectedChatUser = ref(null);
 const messages = ref([]);
 const newMessage = ref('');
 const messagesContainer = ref(null);
 
-const { getAll, getOne, create } = useCRUD();
+const store = useStore();
+const { getAll, getOne, create, data } = useCRUD();
+const user = computed(() => store.getters['authStore/getUser']);
 
 const fetchChatList = async () => {
   try {
-    const response = await getAll('chat/list');
-    chats.value = response;
+    await getAll('chats/list');
+    chatLists.value = data.value;
+    selectedChatUser.value = data.value[0];
   } catch (error) {
     console.error('Error fetching chat list:', error);
   }
 };
 
-const handleNewMessage = (event) => {
-  const message = event.message;
+const handleSelectChat = async (receiver_id) => {
+  selectedChatUser.value = chatLists.value?.find((user) => user.id === receiver_id);
 
-  // Kiểm tra nếu tin nhắn thuộc về phòng chat hiện tại
-  if (selectedChat.value === message.chat_id) {
-    messages.value.push(message);
-  }
+  await fetchReceiverMessages(receiver_id);
 };
 
-// Khi chọn phòng chat, lấy danh sách tin nhắn
-const selectChat = async (userId) => {
-  selectedChat.value = userId;
-  selectedChatUser.value = chats.value.find((user) => user.id === userId);
-
-  await fetchMessages();
-};
-
-// Lấy tin nhắn của phòng chat hiện tại
-const fetchMessages = async () => {
+const fetchReceiverMessages = async (receiver_id) => {
   try {
-    const response = await getOne('chat/message', selectedChat.value);
+    const response = await getOne('chats/message', receiver_id);
     messages.value = response;
 
-    // Cuộn đến tin nhắn mới nhất
-    await nextTick(); // Đảm bảo DOM đã được cập nhật
+    await nextTick();
     scrollToBottom();
   } catch (error) {
     console.error('Error fetching messages:', error);
   }
 };
 
-// Gửi tin nhắn
 const sendMessage = async () => {
-  if (newMessage.value.trim() === '') return; // Kiểm tra tin nhắn trống
+  if (newMessage.value.trim() === '') return;
 
   const message = {
     message: newMessage.value,
-    sender_id: 1
+    sender_id: user.value.id
   };
 
   try {
-    await create(`send-message/${selectedChat.value}`, {
-      message: newMessage.value
-    });
+    await create(
+      `chats/${selectedChatUser.value.id}/send`,
+      {
+        message: newMessage.value
+      },
+      false
+    );
 
     messages.value.push(message);
-    newMessage.value = ''; // Xóa input sau khi gửi
+    newMessage.value = '';
 
-    // Cuộn đến tin nhắn mới nhất
-    await nextTick(); // Đảm bảo DOM đã được cập nhật
+    await nextTick();
     scrollToBottom();
   } catch (error) {
     console.error('Error sending message:', error);
   }
 };
 
-//Hàm cuộn đến tin nhắn mới nhất
 const scrollToBottom = () => {
   if (messagesContainer.value) {
     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-  } else {
-    console.error('messagesContainer is not defined');
+  }
+};
+
+const initializeChat = async () => {
+  try {
+    await fetchChatList();
+    await handleSelectChat(selectedChatUser.value.id);
+
+    const channel = pusher.subscribe(`private-chat-channel.${user.value.id}`);
+    channel.bind('message-sent-event', handleIncomingMessage);
+  } catch (error) {
+    console.error('Error initializing chat:', error);
+  }
+};
+
+const handleIncomingMessage = async (data) => {
+  if (data.message.sender_id !== user.value.id) {
+    messages.value.push(data.message);
+
+    await nextTick();
+    scrollToBottom();
   }
 };
 
 onMounted(async () => {
-  await fetchChatList();
-
-  Echo.private(`chat.${selectedChat.value}`).listen('MessageSent', handleNewMessage);
+  await initializeChat();
 });
 
 onBeforeUnmount(() => {
-  // Hủy đăng ký Echo khi component bị hủy
-  Echo.leave(`chat.${selectedChat.value}`);
+  pusher.unsubscribe('private-chat-channel.' + user.value.id);
 });
 </script>
 
 <style scoped>
-.chat-item {
-  transition: background-color 0.3s;
+.image-upload {
+  position: relative;
+  border: 1px solid #f1f1f1;
+  z-index: 1;
+  border-radius: 4px;
+  padding: 5px;
+  display: grid;
+  place-content: center;
 }
-
-.chat-item:hover {
-  background-color: #f0f0f0; /* Màu nền khi hover */
-}
-.scrollable {
-  max-height: calc(100vh - 150px); /* Giới hạn chiều cao cho sidebar */
-  overflow-y: auto;
-}
-
-.header-title {
-  font-size: 0.9375rem;
-  font-weight: 500;
-}
-
-.header-meta {
-  color: #6c757d;
-  font-size: 0.8125rem;
-}
-
-.message-input {
-  flex: 1;
-  padding: 0.5rem; /* Tương đương với p-2 */
-  border: 1px solid #ccc; /* Tương đương với border */
-  border-radius: 0.375rem 0 0 0.375rem; /* Tương đương với rounded-l */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Tương đương với shadow */
-  transition: box-shadow 0.3s; /* Hiệu ứng chuyển tiếp cho box-shadow */
-}
-.message-input:focus {
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Tạo hiệu ứng box-shadow khi focus */
-  outline: none; /* Loại bỏ viền mặc định */
-}
-
-.status-indicator,
-.status-indicator-1 {
+.image-upload .icon-delete {
   position: absolute;
-  bottom: 0;
-  right: 13px;
-  width: 10px; /* Kích thước của chấm tròn */
-  height: 10px; /* Kích thước của chấm tròn */
-  border-radius: 50%; /* Tạo hình tròn */
+  top: -10px;
+  right: -7px;
+  transition: all 0.1s linear;
+  cursor: pointer;
+  font-size: 16px;
+  z-index: 3;
 }
-
-.status-indicator.active {
-  background-color: #28a745; /* Màu xanh cho online */
-}
-
-.status-indicator-1.active {
-  background-color: #ffc107; /* Màu vàng cho offline */
+.image-upload .icon-delete:hover {
+  color: #dc4c64;
 }
 </style>

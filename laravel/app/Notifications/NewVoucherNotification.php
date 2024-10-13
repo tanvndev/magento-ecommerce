@@ -2,11 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\Voucher;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\BroadcastMessage;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class NewVoucherNotification extends Notification
@@ -28,12 +24,12 @@ class NewVoucherNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'type' => 'voucher',
-            'voucher_id' => $this->voucher->id,
-            'image' => $this->voucher->image,
-            'title' => 'Voucher mới!',
-            'message' => 'Chúc mừng bạn vừa nhận được mã giảm giá mới: ' . $this->voucher->name . ' Hãy áp dụng ngay!',
-            'description' => $this->voucher->description
+            'type'        => 'voucher',
+            'voucher_id'  => $this->voucher->id,
+            'image'       => $this->voucher->image,
+            'title'       => 'Voucher mới!',
+            'message'     => 'Chúc mừng bạn vừa nhận được mã giảm giá mới: ' . $this->voucher->name . ' Hãy áp dụng ngay!',
+            'description' => $this->voucher->description,
         ];
     }
 }

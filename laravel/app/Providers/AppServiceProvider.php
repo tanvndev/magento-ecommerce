@@ -70,6 +70,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Product\ProductReviewServiceInterface' => 'App\Services\Product\ProductReviewService',
         // NOTIFICATION
         'App\Services\Interfaces\Notification\NotificationServiceInterface' => 'App\Services\Notification\NotificationService',
+        // CHAT
+        'App\Services\Interfaces\Chat\ChatServiceInterface' => 'App\Services\Chat\ChatService',
     ];
 
     public function register(): void

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1\WishList;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Cart\CreateAndUpdateRequest;
 use App\Http\Requests\WishList\StoreWishListRequest;
-use App\Http\Resources\Cart\CartCollection;
 use App\Http\Resources\WishList\WishListCollection;
 use App\Repositories\Interfaces\WishList\WishListRepositoryInterface;
 use App\Services\Interfaces\WishList\WishListServiceInterface;
@@ -25,11 +24,8 @@ class WishListController extends Controller
         $this->wishListRepository = $wishListRepository;
     }
 
-
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function index(): JsonResponse
     {
@@ -39,11 +35,8 @@ class WishListController extends Controller
         return successResponse('', $data, true);
     }
 
-
     /**
      * Get wishlist by user.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function getByUser(): JsonResponse
     {
@@ -54,12 +47,8 @@ class WishListController extends Controller
         return successResponse('', $data, true);
     }
 
-
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\WishList\StoreWishListRequest  $request
-     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreWishListRequest $request): JsonResponse
     {
@@ -74,12 +63,8 @@ class WishListController extends Controller
         return successResponse(__('messages.wishlist.success.create'), $data, true);
     }
 
-
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(string $id): JsonResponse
     {
@@ -94,11 +79,8 @@ class WishListController extends Controller
         return successResponse('', $data, true);
     }
 
-
     /**
      * Remove all wishlist items.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroyAll(): JsonResponse
     {
@@ -106,8 +88,6 @@ class WishListController extends Controller
 
         return handleResponse($response);
     }
-
-
 
     public function addWishlistToCart(CreateAndUpdateRequest $request): JsonResponse
     {
@@ -125,8 +105,6 @@ class WishListController extends Controller
 
     /**
      * Send wishlist mail.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function sendWishListMail(): JsonResponse
     {

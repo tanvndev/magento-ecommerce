@@ -2,7 +2,7 @@
   <MasterLayout>
     <template #template>
       <div class="mx-10 h-screen">
-        <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
+        <BreadcrumbComponent :titlePage="state.pageTitle" :routeCreate="state.routeCreate" />
 
         <!-- Toolbox -->
         <ToolboxComponent
@@ -10,67 +10,63 @@
           :modelName="state.modelName"
           :isShowToolbox="state.isShowToolbox"
           :modelIds="state.modelIds"
+          @onFilter="onFilterOptions"
           @onChangeToolbox="onChangeToolbox"
         />
         <!-- End toolbox -->
 
-        <!-- Filter -->
-        <FilterComponent @onFilter="onFilterOptions" />
-        <!-- End filter -->
-
         <!-- Table -->
-        <a-card class="mt-3">
-          <a-table
-            bordered
-            :columns="columns"
-            :data-source="state.dataSource"
-            :row-selection="rowSelection"
-            :pagination="pagination"
-            :loading="loading"
-            @change="handleTableChange"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.dataIndex === 'email'">
-                <ul class="mb-0">
-                  <li class="capitalize">{{ record.customer_name }}</li>
-                  <li>
-                    <a class="text-blue-500" href="mailto:{{ record.customer_email }}">{{
-                      record.customer_email
-                    }}</a>
-                  </li>
-                  <li>{{ record.customer_phone }}</li>
-                </ul>
-              </template>
-
-              <template v-if="column.dataIndex === 'order_status'">
-                <a-tag :color="record.order_status_color">{{ record.order_status }}</a-tag>
-              </template>
-              <template v-if="column.dataIndex === 'payment_status'">
-                <a-tag :color="record.payment_status_color">{{ record.payment_status }}</a-tag>
-              </template>
-              <template v-if="column.dataIndex === 'total_price'">
-                {{ formatCurrency(record.total_price) }}
-              </template>
-              <template v-if="column.dataIndex === 'shipping_fee'">
-                {{ formatCurrency(record.shipping_fee) }}
-              </template>
-              <template v-if="column.dataIndex === 'discount'">
-                {{ formatCurrency(record.discount) }}
-              </template>
-              <template v-if="column.dataIndex === 'final_price'">
-                {{ formatCurrency(record.final_price) }}
-              </template>
-              <template v-if="column.dataIndex === 'action'">
-                <RouterLink
-                  class="rounded-[6px] bg-primary-500 px-[8px] py-[7px] text-white hover:bg-primary-400 hover:text-white"
-                  :to="{ name: 'order.update', params: { code: record.code } }"
-                >
-                  <i class="fas fa-edit"></i
-                ></RouterLink>
-              </template>
+        <a-table
+          bordered
+          class="mt-2"
+          :columns="columns"
+          :data-source="state.dataSource"
+          :row-selection="rowSelection"
+          :pagination="pagination"
+          :loading="loading"
+          @change="handleTableChange"
+        >
+          <template #bodyCell="{ column, record }">
+            <template v-if="column.dataIndex === 'email'">
+              <ul class="mb-0">
+                <li class="capitalize">{{ record.customer_name }}</li>
+                <li>
+                  <a class="text-blue-500" href="mailto:{{ record.customer_email }}">{{
+                    record.customer_email
+                  }}</a>
+                </li>
+                <li>{{ record.customer_phone }}</li>
+              </ul>
             </template>
-          </a-table>
-        </a-card>
+
+            <template v-if="column.dataIndex === 'order_status'">
+              <a-tag :color="record.order_status_color">{{ record.order_status }}</a-tag>
+            </template>
+            <template v-if="column.dataIndex === 'payment_status'">
+              <a-tag :color="record.payment_status_color">{{ record.payment_status }}</a-tag>
+            </template>
+            <template v-if="column.dataIndex === 'total_price'">
+              {{ formatCurrency(record.total_price) }}
+            </template>
+            <template v-if="column.dataIndex === 'shipping_fee'">
+              {{ formatCurrency(record.shipping_fee) }}
+            </template>
+            <template v-if="column.dataIndex === 'discount'">
+              {{ formatCurrency(record.discount) }}
+            </template>
+            <template v-if="column.dataIndex === 'final_price'">
+              {{ formatCurrency(record.final_price) }}
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <RouterLink
+                class="rounded-[6px] bg-primary-500 px-[8px] py-[7px] text-white hover:bg-primary-400 hover:text-white"
+                :to="{ name: 'order.update', params: { code: record.code } }"
+              >
+                <i class="fas fa-edit"></i
+              ></RouterLink>
+            </template>
+          </template>
+        </a-table>
         <!-- End table -->
       </div>
     </template>

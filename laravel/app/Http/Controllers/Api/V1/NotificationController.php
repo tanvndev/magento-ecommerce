@@ -11,6 +11,7 @@ class NotificationController extends Controller
     public function getNotificationByUser(): JsonResponse
     {
         $user = auth()->user();
+
         return successResponse('Successfully retrieved notifications', $user->notifications->take(5), true);
     }
 
@@ -19,6 +20,7 @@ class NotificationController extends Controller
         $user = auth()->user();
         $notification = $user->notifications()->findOrFail($id);
         $notification->markAsRead();
+
         return successResponse('Successfully read notifications', null, true);
     }
 }

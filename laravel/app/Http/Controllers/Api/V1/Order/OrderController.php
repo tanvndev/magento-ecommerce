@@ -7,6 +7,7 @@ use App\Classes\Paypal;
 use App\Classes\Vnpay;
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\Client\ClientOrderCollection;
 use App\Http\Resources\Order\Client\ClientOrderResource;
@@ -16,7 +17,6 @@ use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -57,11 +57,11 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreOrderRequest $request): JsonResponse
     {
         $order = $this->orderService->create();
-        if (empty($order)) {
-            return errorResponse(__('messages.order.error.create'));
+        if (empty($order) || $order['status'] == 'error') {
+            return errorResponse(__('messages.order.error.create'), true);
         }
 
         $response = $this->handlePaymentMethod($order);
@@ -106,7 +106,7 @@ class OrderController extends Controller
     /**
      * Handle payment method.
      */
-    private function handlePaymentMethod(Order $order): array
+    private function handlePaymentMethod($order)
     {
         switch ($order->payment_method_id) {
             case PaymentMethod::VNPAY_ID:

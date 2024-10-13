@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
@@ -33,8 +32,9 @@ class LoginRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email'    => 'Email',
-            'password' => 'Mật khẩu',
+            'email'                => 'Email',
+            'password'             => 'Mật khẩu',
+            'g-recaptcha-response' => 'Xác minh captcha',
         ];
     }
 

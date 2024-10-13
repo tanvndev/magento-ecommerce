@@ -93,15 +93,13 @@ class UserService extends BaseService implements UserServiceInterface
             $payload = request()->except('_token', '_method');
             $user = Auth::user();
 
-
-            if (!request()->has('fullname') && !request()->has('birthday')) {
+            if ( ! request()->has('fullname') && ! request()->has('birthday')) {
                 $verificationCode = Cache::get('verification_code_' . $user->phone);
 
-                if (!$verificationCode) {
+                if ( ! $verificationCode) {
                     return errorResponse(__('messages.auth.invalid_code.error'));
                 }
             }
-
 
             $this->userRepository->update($user->id, $payload);
 

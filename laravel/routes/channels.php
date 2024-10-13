@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +19,17 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('chat.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+// Broadcast::channel('chat-channel.{userId}', function ($user, $userId) {
+//     Log::info('Channel auth attempt', ['user' => $user->id, 'channel' => $userId]);
+//     return (int) $user->id === (int) $userId;
+// });
+
+Broadcast::channel('chat-channel.{userId}', function ($user, $userId) {
+    try {
+        $tokenUser = JWTAuth::parseToken()->authenticate();
+
+        return $tokenUser->id == $userId;
+    } catch (\Exception $e) {
+        return false;
+    }
 });

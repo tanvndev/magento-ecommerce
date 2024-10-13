@@ -4,7 +4,7 @@
       <div
         class="coming-soom-image-container flex h-full w-full items-center justify-center bg-[#0162e84d]"
       >
-        <img :src="'src/assets/images/loginpng.webp'" alt="" class="imig-fluid" />
+        <img :src="'/src/assets/images/loginpng.webp'" alt="" class="imig-fluid" />
       </div>
     </a-col>
     <a-col span="14">
@@ -43,6 +43,23 @@
                 placeholder="*************"
               />
             </div>
+            <div class="mt-2 flex items-center justify-between">
+              <div>
+                <RouterLink
+                  class="text-[13px] text-blue-600 hover:text-blue-500"
+                  :to="{ name: 'forgot' }"
+                  >Quên mật khẩu?</RouterLink
+                >
+              </div>
+
+              <div>
+                <RouterLink
+                  class="text-[13px] text-blue-600 hover:text-blue-500"
+                  :to="{ name: 'login.otp' }"
+                  >Đăng nhập với SMS</RouterLink
+                >
+              </div>
+            </div>
 
             <!-- Thêm reCAPTCHA ở đây -->
             <RecaptchaComponent />
@@ -55,10 +72,13 @@
             </button>
           </form>
 
-          <div class="text-center">
-            <RouterLink class="text-blue-600 hover:text-blue-500" :to="{ name: 'forgot' }"
-              >Quên mật khẩu?</RouterLink
+          <div className="relative">
+            <span className="block w-full h-px bg-gray-300"></span>
+            <p
+              className="inline-block w-fit text-sm bg-white px-2 absolute -top-2 inset-x-0 mx-auto uppercase"
             >
+              Hoặc
+            </p>
           </div>
         </div>
       </div>
@@ -102,8 +122,8 @@ const onSubmit = handleSubmit(async (values) => {
   const recaptchaResponse = grecaptcha.getResponse();
 
   if (!recaptchaResponse) {
-    errors.value = { recaptcha: 'Vui lòng xác nhận bạn không phải là robot.' };
-    return;
+    
+    return message.error('Vui lòng xác nhận bạn không phải là robot.');
   }
 
   const formData = {

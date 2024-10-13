@@ -25,8 +25,4 @@ enum ResponseEnum
     public const UNPROCESSABLE_ENTITY = 422;
 
     public const INTERNAL_SERVER_ERROR = 500;
-
-    public const TYPE_ADMIN = 1;
-
-    public const TYPE_USER = 2;
 }

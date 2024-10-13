@@ -80,6 +80,7 @@ import router from '@/router';
 import { formatMessages } from '@/utils/format';
 import { AuthService } from '@/services';
 import { useAntToast } from '@/utils/antToast';
+import { message } from 'ant-design-vue';
 
 // STATE
 const state = reactive({
@@ -111,11 +112,10 @@ const onSubmit = handleSubmit(async (values) => {
 
   // eslint-disable-next-line no-undef
   const recaptchaResponse = grecaptcha.getResponse();
-  if (!recaptchaResponse) {
-    state.loading = false;
-    return (state.errors = { recaptcha: 'Vui đã xác nhận không phải là robot.' });
-  }
 
+  if (!recaptchaResponse) {
+    return message.error('Vui lòng xác nhận bạn không phải là robot.');
+  }
   values['g-recaptcha-response'] = recaptchaResponse;
 
   const response = await AuthService.register(values);

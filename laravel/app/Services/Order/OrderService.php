@@ -162,7 +162,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      *
      * @return \App\Models\Order|null
      */
-    public function create(): Order
+    public function create(): mixed
     {
         return $this->executeInTransaction(function () {
             $request = request();

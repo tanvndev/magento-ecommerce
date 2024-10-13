@@ -196,7 +196,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if (! $cart) {
+        if ( ! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -211,26 +211,33 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      */
     public function applyVoucher(string $code)
     {
-        $userId = auth()->user()->id;
 
-        $cartItems = $this->getCartItems($userId);
-        $totalPrice = $this->calculateTotalPrice($cartItems);
+        return $this->executeInTransaction(function () use ($code) {
+            $userId = auth()->user()->id;
 
-        $voucher = $this->voucherRepository->findByWhere(['code' => $code]);
+            $cartItems = $this->getCartItems($userId);
+            $totalPrice = $this->calculateTotalPrice($cartItems);
 
-        $condition = $this->handleConditionVoucher($voucher, $cartItems, $totalPrice);
+            $voucher = $this->voucherRepository->findByWhere(['code' => $code]);
 
-        if (! $condition) {
-            return errorResponse(__('messages.voucher.error.apply'));
-        }
+            if ( ! $voucher) {
+                throw new Exception('Voucher not found.');
+            }
 
-        $discount = $this->getDisount($voucher, $totalPrice);
-        $data = [
-            'voucher_id' => $voucher->id,
-            'discount'   => $discount,
-        ];
+            $condition = $this->handleConditionVoucher($voucher, $cartItems, $totalPrice);
 
-        return successResponse(__('messages.voucher.success.apply'), $data);
+            if ( ! $condition) {
+                return errorResponse(__('messages.voucher.error.apply'));
+            }
+
+            $discount = $this->getDisount($voucher, $totalPrice);
+            $data = [
+                'voucher_id' => $voucher->id,
+                'discount'   => $discount,
+            ];
+
+            return successResponse(__('messages.voucher.success.apply'), $data);
+        }, __('messages.voucher.error.apply'));
     }
 
     /**
@@ -273,9 +280,9 @@ class VoucherService extends BaseService implements VoucherServiceInterface
             return false;
         }
 
-        if (!$voucher->canBeUsedByUser(auth()->user()->id)) {
+        if ( ! $voucher->canBeUsedByUser(auth()->user()->id)) {
             return false;
-        };
+        }
 
         switch ($voucher->condition_apply) {
             case Voucher::SUBTOTAL_PRICE:
@@ -347,7 +354,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      */
     private function isSalePriceValid($productVariant): bool
     {
-        if (! $productVariant->sale_price || ! $productVariant->price) {
+        if ( ! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 

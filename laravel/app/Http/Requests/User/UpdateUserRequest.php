@@ -44,6 +44,6 @@ class UpdateUserRequest extends FormRequest
     {
         return __('request.messages') + [
             'phone.regex' => 'Số điện thoại không đúng dạng.',
-        ];;
+        ];
     }
 }

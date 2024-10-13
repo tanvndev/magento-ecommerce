@@ -175,7 +175,7 @@ const countdown = (seconds) => {
             <v-row class="mt-4 px-2">
               <v-col cols="12" md="8">
                 <v-row gutter="10">
-                  <v-col cols="12" md="8">
+                  <v-col cols="12" md="10">
                     <v-text-field
                       :model-value="user?.fullname"
                       label="Họ và tên"
@@ -185,22 +185,21 @@ const countdown = (seconds) => {
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="2">
                     <v-btn
                       variant="tonal"
-                      color="primary"
-                      prepend-icon="mdi-pencil"
+                      size="x-small"
+                      icon="mdi-pencil"
                       @click="
                         () => {
                           updateField = 'fullname'
                           isUpdateProfile = true
                         }
                       "
-                      >Thay đổi</v-btn
-                    >
+                    ></v-btn>
                   </v-col>
 
-                  <v-col cols="12" md="8">
+                  <v-col cols="12" md="10">
                     <v-text-field
                       :model-value="user?.birthday"
                       label="Ngày sinh"
@@ -211,22 +210,21 @@ const countdown = (seconds) => {
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="2">
                     <v-btn
                       variant="tonal"
-                      color="primary"
-                      prepend-icon="mdi-pencil"
+                      size="x-small"
+                      icon="mdi-pencil"
                       @click="
                         () => {
                           updateField = 'birthday'
                           isUpdateProfile = true
                         }
                       "
-                      >Thay đổi</v-btn
-                    >
+                    ></v-btn>
                   </v-col>
 
-                  <v-col cols="12" md="8">
+                  <v-col cols="12" md="10">
                     <v-text-field
                       :model-value="user?.hint_email"
                       label="Địa chỉ email"
@@ -235,16 +233,15 @@ const countdown = (seconds) => {
                       variant="underlined"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="2">
                     <v-btn
                       variant="tonal"
-                      color="primary"
-                      prepend-icon="mdi-pencil"
+                      size="x-small"
+                      icon="mdi-pencil"
                       @click="openEditInfo('email')"
-                      >Thay đổi</v-btn
-                    >
+                    ></v-btn>
                   </v-col>
-                  <v-col cols="12" md="8">
+                  <v-col cols="12" md="10">
                     <v-text-field
                       :model-value="user?.hint_phone"
                       label="Số điện thoại"
@@ -253,14 +250,13 @@ const countdown = (seconds) => {
                       variant="underlined"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="12" md="2">
                     <v-btn
                       variant="tonal"
-                      color="primary"
-                      prepend-icon="mdi-pencil"
+                      size="x-small"
+                      icon="mdi-pencil"
                       @click="openEditInfo('phone')"
-                      >Thay đổi</v-btn
-                    >
+                    ></v-btn>
                   </v-col>
                 </v-row>
               </v-col>

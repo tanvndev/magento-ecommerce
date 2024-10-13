@@ -66,7 +66,7 @@ class WishListService extends BaseService implements WishListServiceInterface
                 ]
             );
 
-            if (! empty($exists)) {
+            if ( ! empty($exists)) {
                 return errorResponse(__('messages.wishlist.error.existed'));
             }
 
@@ -135,7 +135,7 @@ class WishListService extends BaseService implements WishListServiceInterface
                 true
             );
 
-            if (! $user->wishList) {
+            if ( ! $user->wishList) {
                 return errorResponse(__('messages.wishlist.error.wishlist_not_found'));
             }
             foreach ($user->wishList as $item) {
@@ -174,7 +174,7 @@ class WishListService extends BaseService implements WishListServiceInterface
             $this->cartService->createOrUpdate($request);
 
             $conditions = [
-                'user_id' => auth()->user()->id,
+                'user_id'            => auth()->user()->id,
                 'product_variant_id' => $request->product_variant_id,
             ];
 

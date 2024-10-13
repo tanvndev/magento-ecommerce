@@ -91,9 +91,7 @@ class UserController extends Controller
     /**
      * Update the authenticated user's profile.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \Illuminate\Http\Request  $request
      */
     public function updateProfile(UpdateUserProfileRequest $request): JsonResponse
     {

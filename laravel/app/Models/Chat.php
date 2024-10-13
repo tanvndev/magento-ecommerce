@@ -15,9 +15,20 @@ class Chat extends Model
         'message',
         'sender_id',
         'receiver_id',
+        'read_at',
+        'images',
     ];
 
-    public function user()
+    protected $casts = [
+        'images' => 'array',
+    ];
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'receiver_id');
+    }
+
+    public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');
     }

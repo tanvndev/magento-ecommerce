@@ -30,7 +30,34 @@ class AuthService {
       };
     }
   }
+  async loginOtp(payload) {
+    try {
+      const response = await axios.post('/auth/login/otp', payload);
 
+      if (response.status !== 200) {
+        return {
+          success: false,
+          messages: response.messages
+        };
+      }
+
+      const token = response.data.access_token;
+      // set token to Cookie
+      Cookies.set('token', token, {
+        expires: parseInt(import.meta.env.VITE_REFRESHTOKEN_EXPIRES)
+      });
+      return {
+        success: true,
+        data: { token, catalogue: response.data.catalogue },
+        messages: response.messages
+      };
+    } catch (error) {
+      return {
+        success: false,
+        messages: error.response.data.messages
+      };
+    }
+  }
   async refreshToken() {
     try {
       const response = await axios.post('/auth/refreshToken');

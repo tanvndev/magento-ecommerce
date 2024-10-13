@@ -7,8 +7,8 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
 use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
+use App\Http\Controllers\Api\V1\Chat\ChatController;
 use App\Http\Controllers\Api\V1\DashboardController;
-use App\Http\Controllers\Api\V1\LiveChat\LiveChatController;
 use App\Http\Controllers\Api\V1\Location\LocationController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\Order\OrderController;
@@ -72,11 +72,12 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);
+        Route::post('login/otp', [AuthController::class, 'loginOtp']);
         Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('logout', [AuthController::class, 'logout']);
         Route::post('refreshToken', [AuthController::class, 'refreshToken']);
         Route::get('me', [AuthController::class, 'me'])->middleware('jwt.verify');
-        Route::post('send-verification-code', [AuthController::class, 'sendVerificationCode'])->middleware('jwt.verify');
+        Route::post('send-verification-code', [AuthController::class, 'sendVerificationCode']);
         Route::post('verify-code', [AuthController::class, 'verifyCode'])->middleware('jwt.verify');
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');
@@ -104,7 +105,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         Route::get('notifications/user', [NotificationController::class, 'getNotificationByUser']);
         Route::post('notifications/{id}/read', [NotificationController::class, 'readNotification']);
-
 
         // USER ADDRESSES ROUTE
 
@@ -193,10 +193,10 @@ Route::middleware('log.request.response', 'api')->group(function () {
         });
 
         // Reatime Live Chat
-        Route::post('/send-message/{id}', [LiveChatController::class, 'sendMessage']);
-        Route::get('/chat/list', [LiveChatController::class, 'getChatList']);
-        // Route::post('/chat/send', [LiveChatController::class, 'sendMessage']);
-        Route::get('/chat/message/{id}', [LiveChatController::class, 'getMessage']);
+        Route::post('/chats/{id}/send', [ChatController::class, 'sendMessage']);
+        Route::get('/chats/list', [ChatController::class, 'getChatList']);
+        Route::get('/chats/user/list', [ChatController::class, 'getChatListUser']);
+        Route::get('/chats/message/{id}', [ChatController::class, 'getMessage']);
     });
 
     // CART ROUTE

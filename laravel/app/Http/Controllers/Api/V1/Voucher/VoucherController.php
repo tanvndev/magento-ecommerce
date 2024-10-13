@@ -58,7 +58,6 @@ class VoucherController extends Controller
         return successResponse('', $voucher, true);
     }
 
-
     public function update(UpdateVoucherRequest $request, string $id): JsonResponse
     {
         $response = $this->voucherService->update($id);
