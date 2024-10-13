@@ -68,22 +68,77 @@
     }}</span>
   </div>
 
-  <a-modal
-    v-if="showAI"
-    v-model:open="openModalAI"
-    title="Tạo nội dung với AI"
-    width="1000px"
-    style="top: 20px"
-  >
-    <div class="py-5">
-      <a-textarea
-        v-model:value="prompt"
-        size="large"
-        placeholder="Tạo cho tôi nội dung cho tiêu đề iPhone 16 promax chuẩn SEO"
-        @pressEnter="handleGenerateAI"
-        allowClear
-        :autoSize="{ minRows: 2, maxRows: 10 }"
-      />
+  <a-modal v-if="showAI" v-model:open="openModalAI" width="800px" style="top: 20px">
+    <template #title>
+      <h1 class="text-lg font-normal uppercase">Tạo nội dung với AI</h1>
+    </template>
+    <a-divider class="mb-0 mt-3" />
+
+    <div class="py-5" v-if="!streamingContent">
+      <div class="mb-4">
+        <label for="industry" class="mb-1 block text-gray-700">Ngành hàng</label>
+        <a-select
+          id="industry"
+          v-model:value="formData.industry"
+          placeholder="Lựa chọn ngành hàng"
+          size="large"
+          style="width: 100%"
+          :show-search="true"
+          allow-clear
+          :options="INDUSTRY"
+        ></a-select>
+      </div>
+
+      <div class="mb-4">
+        <label for="keywords" class="mb-1 block text-gray-700"
+          >Từ khóa liên quan đến sản phẩm</label
+        >
+        <a-textarea
+          id="keywords"
+          v-model:value="formData.keywords"
+          placeholder="Từ khóa liên quan đến sản phẩm"
+          size="large"
+          allow-clear
+          auto-size
+        />
+      </div>
+
+      <div class="mb-4">
+        <label for="keywords" class="mb-1 block text-gray-700">Giọng văn bản</label>
+        <a-radio-group v-model:value="formData.tone">
+          <a-radio-button :value="toneAi.value" v-for="toneAi in TONE_AI" :key="toneAi.value">
+            <i :class="toneAi.icon" class="mr-2"></i>
+            <span>{{ toneAi.label }}</span>
+          </a-radio-button>
+        </a-radio-group>
+      </div>
+      <div class="mb-4">
+        <label for="keywords" class="mb-1 block text-gray-700">Kiểu văn bản</label>
+        <a-radio-group v-model:value="formData.textStyle">
+          <a-radio-button
+            :value="textStyle.value"
+            v-for="textStyle in TEXT_STYLE_AI"
+            :key="textStyle.value"
+          >
+            <i :class="textStyle.icon" class="mr-2"></i>
+            <span> {{ textStyle.label }}</span>
+          </a-radio-button>
+        </a-radio-group>
+      </div>
+
+      <div class="mb-4">
+        <label for="keywords" class="mb-1 block text-gray-700"
+          >Yêu cầu khác (Khách hàng mục tiêu, ...)</label
+        >
+        <a-textarea
+          id="keywords"
+          v-model:value="formData.extra"
+          placeholder="Hướng tới tệp khách hàng trẻ dưới 30 tuổi"
+          size="large"
+          allow-clear
+          auto-size
+        />
+      </div>
     </div>
 
     <div v-if="streamingContent" class="text-generate-wrap">
@@ -91,19 +146,11 @@
     </div>
 
     <template #footer>
-      <a-button
-        @click="
-          () => {
-            (streamingContent = ''), (prompt = '');
-          }
-        "
-        v-if="streamingContent"
-      >
-        Làm mới
-      </a-button>
-      <a-button @click="openModalAI = false" v-else> Hủy bỏ </a-button>
+      <a-button size="large" @click="resetContent" v-if="streamingContent"> Làm mới </a-button>
 
+      <a-button size="large" @click="openModalAI = false" v-else> Hủy bỏ </a-button>
       <a-button
+        size="large"
         type="primary"
         :loading="isLoading"
         v-if="streamingContent"
@@ -111,7 +158,7 @@
       >
         Áp dụng ngay
       </a-button>
-      <a-button type="primary" :loading="isLoading" v-else @click="handleGenerateAI">
+      <a-button type="primary" :loading="isLoading" size="large" v-else @click="handleGenerateAI">
         Tạo ngay
       </a-button>
     </template>
@@ -120,12 +167,13 @@
 
 <script setup>
 import { useField } from 'vee-validate';
-import { ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { TooltipComponent } from '@/components/backend';
 import { generateRandomString } from '@/utils/helpers';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import { marked } from 'marked';
+import { INDUSTRY, TONE_AI, TEXT_STYLE_AI } from '@/static/constants';
 
 const props = defineProps({
   typeInput: {
@@ -187,14 +235,51 @@ const props = defineProps({
   },
   showAI: {
     type: Boolean,
-    default: false
+    default: true
   }
 });
 
 const openModalAI = ref(false);
 const isLoading = ref(false);
-const prompt = ref('');
 const streamingContent = ref('');
+const formData = reactive({
+  industry: INDUSTRY[0].value,
+  keywords: '',
+  tone: TONE_AI[0].value,
+  textStyle: TEXT_STYLE_AI[0].value,
+  extra: ''
+});
+
+const prompt = computed(() => {
+  const { industry, keywords, tone, textStyle, extra } = formData;
+  const parts = [];
+
+  if (industry) parts.push(`Ngành hàng: ${industry}`);
+  if (keywords) parts.push(`Từ khóa chính: ${keywords}`);
+  if (tone) parts.push(`Giọng văn bản: ${tone}`);
+  if (textStyle) parts.push(`Kiểu văn bản: ${textStyle}`);
+  if (extra) parts.push(`Yêu cầu khác: ${extra}`);
+
+  return `Tạo nội dung SEO cho trang web dựa trên thông tin sau:
+    ${parts.join('\n')}
+
+    Yêu cầu cụ thể:
+    1. Tạo một tiêu đề hấp dẫn (H1) sử dụng từ khóa chính.
+    2. Viết một đoạn mô tả meta ngắn gọn (150-160 ký tự) chứa từ khóa.
+    3. Tạo cấu trúc nội dung với các tiêu đề phụ (H2, H3) phù hợp.
+    4. Viết nội dung chi tiết cho mỗi phần, tối thiểu 300 từ.
+    5. Sử dụng từ khóa chính và các biến thể một cách tự nhiên trong nội dung.
+    6. Thêm một đoạn kết luận ngắn gọn.
+    7. Đề xuất 2-3 internal linking có liên quan.
+
+    Đảm bảo nội dung:
+    - Tuân thủ giọng văn và kiểu văn bản đã chỉ định.
+    - Cung cấp thông tin có giá trị và phù hợp với ngành hàng.
+    - Tối ưu hóa cho SEO nhưng vẫn đọc tự nhiên và hấp dẫn.
+    - Đáp ứng các yêu cầu khác đã nêu (nếu có).
+
+    Vui lòng tạo nội dung có cấu trúc rõ ràng, dễ đọc và tối ưu cho cả người dùng lẫn công cụ tìm kiếm.`;
+});
 
 // Tạo field với VeeValidate
 const { value, errorMessage } = useField(props.name);
@@ -265,6 +350,11 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const handleApplyGenerateAI = () => {
   value.value = streamingContent.value;
   openModalAI.value = false;
+};
+
+const resetContent = () => {
+  streamingContent.value = '';
+  prompt.value = '';
 };
 </script>
 
