@@ -53,7 +53,6 @@ const handleArchive = async () => {
   message[type](response.messages);
 };
 
-<<<<<<< HEAD
 const removeRouteHide = () => {
   const routeHide = ['permission.index', 'attribute.index'];
   if (routeHide.includes(route.name)) {
@@ -62,8 +61,6 @@ const removeRouteHide = () => {
   return true;
 };
 
-=======
->>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
 const hideArchive = () => {
   const routeHide = ['attribute.index', 'permission.index'];
   if (routeHide.includes(route.name)) {
@@ -104,14 +101,6 @@ const filterOptions = reactive({
   publish: 0,
   search: ''
 });
-
-const removeRouteHide = () => {
-  const routeHide = ['permission.index', 'attribute.index', 'attribute.update', 'order.index'];
-  if (routeHide.includes(route.name)) {
-    return false;
-  }
-  return true;
-};
 
 const onSearch = (searchValue) => {
   filterOptions.search = searchValue.target.value;

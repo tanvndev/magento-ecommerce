@@ -44,17 +44,10 @@ const sidebar = [
     ]
   },
   {
-<<<<<<< HEAD
     id: 'attribute_sidebar',
     icon: 'fab fa-buffer',
     name: 'Thuộc tính',
     active: ['attribute'],
-=======
-    id: 'product_sidebar',
-    icon: 'fas fa-box-check',
-    name: 'Sản phẩm',
-    active: ['product', 'brand', 'attribute'],
->>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
     subMenu: [
       {
         name: 'Danh sách thuộc tính',
@@ -73,48 +66,6 @@ const sidebar = [
         route: 'product.catalogue.index'
       }
     ]
-<<<<<<< HEAD
-=======
-  },
-  {
-    id: 'live_chat_sidebar',
-    icon: 'fas fa-comments',
-    name: 'Nhắn tin',
-    route: 'live-chat.index',
-    subMenu: []
-  },
-  {
-    id: 'marketing_sidebar',
-    icon: 'fas fa-bullhorn',
-    name: 'Marketing',
-    active: ['voucher', 'widget'],
-    subMenu: [
-      {
-        name: 'Danh sách khuyến mại',
-        route: 'voucher.index'
-      },
-      {
-        name: 'Danh sách widget',
-        route: 'widget.index'
-      }
-    ]
-  },
-  {
-    id: 'post_sidebar',
-    icon: 'fas fa-newspaper',
-    name: 'Bài viết',
-    active: ['post'],
-    subMenu: [
-      {
-        name: 'Danh sách bài viết',
-        route: 'post.index'
-      },
-      {
-        name: 'Nhóm bài viết',
-        route: 'post.catalogue.index'
-      }
-    ]
->>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
   }
 ];
 export default sidebar;

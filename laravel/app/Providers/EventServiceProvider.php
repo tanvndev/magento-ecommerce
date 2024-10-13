@@ -25,15 +25,12 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\Order\OrderShippedEvent' => [
             'App\Listeners\Order\SendOrderShippedEmailListener',
         ],
-<<<<<<< HEAD
-=======
         'App\Events\Wishlist\WishListEvent' => [
             'App\Listeners\Wishlist\SendWishListEmailListener',
         ],
         'App\Events\Voucher\VoucherCreatedEvent' => [
             'App\Listeners\Voucher\SendVoucherNotificationListener',
         ],
->>>>>>> 28ac521f371fe1d69daf3422cd40b3245b2bcee1
     ];
 
     /**
