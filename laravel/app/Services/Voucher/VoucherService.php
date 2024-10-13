@@ -196,7 +196,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if (! $cart) {
+        if ( ! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -220,13 +220,13 @@ class VoucherService extends BaseService implements VoucherServiceInterface
 
             $voucher = $this->voucherRepository->findByWhere(['code' => $code]);
 
-            if (! $voucher) {
+            if ( ! $voucher) {
                 throw new Exception('Voucher not found.');
             }
 
             $condition = $this->handleConditionVoucher($voucher, $cartItems, $totalPrice);
 
-            if (! $condition) {
+            if ( ! $condition) {
                 return errorResponse(__('messages.voucher.error.apply'));
             }
 
@@ -280,9 +280,9 @@ class VoucherService extends BaseService implements VoucherServiceInterface
             return false;
         }
 
-        if (!$voucher->canBeUsedByUser(auth()->user()->id)) {
+        if ( ! $voucher->canBeUsedByUser(auth()->user()->id)) {
             return false;
-        };
+        }
 
         switch ($voucher->condition_apply) {
             case Voucher::SUBTOTAL_PRICE:
@@ -354,7 +354,7 @@ class VoucherService extends BaseService implements VoucherServiceInterface
      */
     private function isSalePriceValid($productVariant): bool
     {
-        if (! $productVariant->sale_price || ! $productVariant->price) {
+        if ( ! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 

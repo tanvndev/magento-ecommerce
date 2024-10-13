@@ -5,7 +5,6 @@ use App\Http\Controllers\Payment\MomoController;
 use App\Http\Controllers\Payment\PaypalController;
 use App\Http\Controllers\Payment\VnpController;
 use App\Http\Controllers\Stringee\StringeeController;
-use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use League\Glide\Server;

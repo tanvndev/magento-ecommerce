@@ -22,7 +22,7 @@ class CreateAndUpdateRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'product_variant_id' => 'required'
+            'product_variant_id' => 'required',
         ];
 
         if (request()->has('quantity')) {
@@ -36,7 +36,7 @@ class CreateAndUpdateRequest extends FormRequest
     {
         return [
             'product_variant_id' => 'Sản phẩm',
-            'quantity' => 'Số lượng',
+            'quantity'           => 'Số lượng',
         ];
     }
 

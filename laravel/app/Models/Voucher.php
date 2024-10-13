@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Voucher extends Model
 {
-    use HasFactory, QueryScopes, SoftDeletes, Notifiable;
+    use HasFactory, Notifiable, QueryScopes, SoftDeletes;
 
     const SUBTOTAL_PRICE = 'subtotal_price';
 
@@ -59,6 +59,7 @@ class Voucher extends Model
 
         // Kiểm tra số lần đã sử dụng
         $usageCount = $this->getUserUsageCount($userId);
+
         return $usageCount < $this->usage_limit;
     }
 }

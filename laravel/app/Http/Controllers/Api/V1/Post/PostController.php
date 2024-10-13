@@ -28,14 +28,13 @@ class PostController extends Controller
         $this->postRepository = $postRepository;
     }
 
-
     public function index(): JsonResponse
     {
         $paginator = $this->postService->paginate();
         $data = new PostCollection($paginator);
+
         return successResponse('', $data, true);
     }
-
 
     public function store(StorePostRequest $request): JsonResponse
     {
@@ -44,7 +43,6 @@ class PostController extends Controller
         return handleResponse($response, ResponseEnum::CREATED);
     }
 
-
     public function show(string $id): JsonResponse
     {
         $post = new PostResource($this->postRepository->findById($id));
@@ -52,14 +50,12 @@ class PostController extends Controller
         return successResponse('', $post, true);
     }
 
-
     public function update(UpdatePostRequest $request, string $id): JsonResponse
     {
         $response = $this->postService->update($id);
 
         return handleResponse($response);
     }
-
 
     public function destroy(string $id): JsonResponse
     {

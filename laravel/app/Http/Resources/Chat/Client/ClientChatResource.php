@@ -15,16 +15,16 @@ class ClientChatResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'          => $this->id,
-            'sender_id'     => $this->sender_id,
-            'receiver_id'   => $this->receiver_id,
-            'fullname'    => $this->fullname,
-            'image'       => $this->image,
-            'read_at'      => $this->read_at,
-            'message'       => $this->message,
-            'images'       => $this->images,
+            'id'                 => $this->id,
+            'sender_id'          => $this->sender_id,
+            'receiver_id'        => $this->receiver_id,
+            'fullname'           => $this->fullname,
+            'image'              => $this->image,
+            'read_at'            => $this->read_at,
+            'message'            => $this->message,
+            'images'             => $this->images,
             'last_message'       => $this->last_message,
-            'last_at'       => $this->last_at,
+            'last_at'            => $this->last_at,
         ];
     }
 }

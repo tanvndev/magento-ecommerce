@@ -39,7 +39,6 @@ class UpdateUserProfileRequest extends FormRequest
             $rules['birthday'] = 'required|date' . $this->id;
         }
 
-
         return $rules;
     }
 

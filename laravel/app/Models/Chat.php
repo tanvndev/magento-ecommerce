@@ -16,12 +16,11 @@ class Chat extends Model
         'sender_id',
         'receiver_id',
         'read_at',
-        'images'
+        'images',
     ];
 
-
     protected $casts = [
-        'images' => 'array'
+        'images' => 'array',
     ];
 
     public function receiver()

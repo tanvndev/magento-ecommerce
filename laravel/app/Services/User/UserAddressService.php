@@ -56,8 +56,6 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
      *
      * This method takes the request payload, adds the current user ID to it if the user is authenticated,
      * and sets is_primary to 0 if it is not provided.
-     *
-     * @return array
      */
     private function preparePayload(): array
     {
@@ -110,8 +108,8 @@ class UserAddressService extends BaseService implements UserAddressServiceInterf
     {
         $this->userAddressRepository->updateByWhere(
             [
-                'user_id' => auth()->user()->id,
-                'is_primary' => 1
+                'user_id'    => auth()->user()->id,
+                'is_primary' => 1,
             ],
             ['is_primary' => 0]
         );

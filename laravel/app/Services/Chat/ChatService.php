@@ -12,16 +12,14 @@ use App\Repositories\Interfaces\Chat\ChatRepositoryInterface;
 use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Chat\ChatServiceInterface;
+use Exception;
 
 class ChatService extends BaseService implements ChatServiceInterface
 {
-
-
     public function __construct(
-        protected  ChatRepositoryInterface $chatRepository,
-        protected  UserRepositoryInterface $userRepository
+        protected ChatRepositoryInterface $chatRepository,
+        protected UserRepositoryInterface $userRepository
     ) {}
-
 
     public function getChatList()
     {
@@ -39,7 +37,7 @@ class ChatService extends BaseService implements ChatServiceInterface
                         'received_chats' => function ($query) {
                             $query->orderBy('created_at', 'desc')->take(1);
                         },
-                    ]
+                    ],
                 ],
                 true
             );
@@ -55,7 +53,7 @@ class ChatService extends BaseService implements ChatServiceInterface
             }
 
             return successResponse('', $users);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return errorResponse($e->getMessage());
         }
     }
@@ -76,7 +74,7 @@ class ChatService extends BaseService implements ChatServiceInterface
                         'received_chats' => function ($query) {
                             $query->orderBy('created_at', 'desc')->take(1);
                         },
-                    ]
+                    ],
                 ],
                 true
             );
@@ -92,7 +90,7 @@ class ChatService extends BaseService implements ChatServiceInterface
             }
 
             return $users;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return errorResponse($e->getMessage());
         }
     }
@@ -175,7 +173,7 @@ class ChatService extends BaseService implements ChatServiceInterface
         foreach ($images as $image) {
             $uploadResponse = Upload::uploadImage($image);
 
-            if (! $uploadResponse['status'] === 'success') {
+            if ( ! $uploadResponse['status'] === 'success') {
                 return [
                     'status'  => 'error',
                     'message' => $uploadResponse['message'],
@@ -190,7 +188,6 @@ class ChatService extends BaseService implements ChatServiceInterface
             'data'    => $uploadedImages,
         ];
     }
-
 
     public function getMessage(string $senderId)
     {
@@ -209,12 +206,11 @@ class ChatService extends BaseService implements ChatServiceInterface
 
             Chat::where([
                 'sender_id' => $senderId,
-                'read_at' => false,
+                'read_at'   => false,
             ])->update(['read_at' => true]);
 
-
             return successResponse(__('messages.retrieve.success'), $chats);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return errorResponse('Get message error.');
         }
     }

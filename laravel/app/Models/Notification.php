@@ -30,7 +30,7 @@ class Notification extends Model
      * @var array
      */
     protected $casts = [
-        'data' => 'array',
+        'data'    => 'array',
         'read_at' => 'datetime',
     ];
 
@@ -75,7 +75,7 @@ class Notification extends Model
      */
     public function markAsUnread()
     {
-        if (! is_null($this->read_at)) {
+        if ( ! is_null($this->read_at)) {
             $this->forceFill(['read_at' => null])->save();
         }
     }

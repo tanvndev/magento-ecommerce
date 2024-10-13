@@ -17,7 +17,6 @@ use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -89,7 +88,7 @@ class OrderController extends Controller
     {
         $order = $this->orderService->getOrderUserByCode($orderCode);
 
-        if (! $order) {
+        if ( ! $order) {
             $response = [
                 'status'   => 'error',
                 'messages' => __('messages.order.error.create'),

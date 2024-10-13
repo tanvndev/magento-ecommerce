@@ -106,7 +106,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('notifications/user', [NotificationController::class, 'getNotificationByUser']);
         Route::post('notifications/{id}/read', [NotificationController::class, 'readNotification']);
 
-
         // USER ADDRESSES ROUTE
 
         Route::get('users/addresses', [UserAddressController::class, 'index']);
@@ -199,7 +198,6 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('/chats/user/list', [ChatController::class, 'getChatListUser']);
         Route::get('/chats/message/{id}', [ChatController::class, 'getMessage']);
     });
-
 
     // CART ROUTE
     Route::controller(CartController::class)->name('cart.')->group(function () {

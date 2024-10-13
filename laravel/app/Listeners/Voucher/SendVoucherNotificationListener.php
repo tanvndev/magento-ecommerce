@@ -4,8 +4,7 @@ namespace App\Listeners\Voucher;
 
 use App\Models\User;
 use App\Notifications\NewVoucherNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use Exception;
 use Illuminate\Support\Facades\Notification;
 
 class SendVoucherNotificationListener
@@ -16,10 +15,7 @@ class SendVoucherNotificationListener
     // Lan thu lai neu that bai
     public $tries = 3;
 
-    public function __construct()
-    {
-        //
-    }
+    public function __construct() {}
 
     /**
      * Handle the event.
@@ -30,7 +26,7 @@ class SendVoucherNotificationListener
             User::chunk(1000, function ($users) use ($event) {
                 Notification::send($users, new NewVoucherNotification($event->voucher));
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }

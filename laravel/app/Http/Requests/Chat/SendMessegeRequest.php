@@ -29,7 +29,7 @@ class SendMessegeRequest extends FormRequest
     public function attributes()
     {
         return [
-            'Tin nhắn'
+            'Tin nhắn',
         ];
     }
 

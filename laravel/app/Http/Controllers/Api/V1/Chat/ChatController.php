@@ -10,7 +10,6 @@ use Illuminate\Http\JsonResponse;
 
 class ChatController extends Controller
 {
-
     public function __construct(
         protected ChatServiceInterface $chatService
     ) {}
@@ -31,14 +30,12 @@ class ChatController extends Controller
         return successResponse('', $data, true);
     }
 
-
     public function sendMessage(SendMessegeRequest $request, string $receiverId): JsonResponse
     {
         $response = $this->chatService->sendMessage($receiverId);
 
         return handleResponse($response);
     }
-
 
     public function getMessage(string $senderId): JsonResponse
     {

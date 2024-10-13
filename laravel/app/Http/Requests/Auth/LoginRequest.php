@@ -32,8 +32,8 @@ class LoginRequest extends FormRequest
     public function attributes()
     {
         return [
-            'email'    => 'Email',
-            'password' => 'Mật khẩu',
+            'email'                => 'Email',
+            'password'             => 'Mật khẩu',
             'g-recaptcha-response' => 'Xác minh captcha',
         ];
     }

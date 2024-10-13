@@ -12,6 +12,7 @@ class DashboardController extends Controller
         $serviceInstance = getServiceInstance($request->modelName);
 
         $response = $serviceInstance->updateStatus();
+
         return handleResponse($response);
     }
 
@@ -32,7 +33,6 @@ class DashboardController extends Controller
 
         return handleResponse($response);
     }
-
 
     public function getDataByModel(Request $request)
     {

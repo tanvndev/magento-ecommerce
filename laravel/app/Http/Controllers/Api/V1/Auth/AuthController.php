@@ -58,7 +58,7 @@ class AuthController extends Controller
     {
         $response = $this->verifyRecaptcha($request->input('g-recaptcha-response'));
 
-        if (! $response) {
+        if ( ! $response) {
             return errorResponse('Xác minh captcha không thành công', true);
         }
 
@@ -66,11 +66,11 @@ class AuthController extends Controller
 
         $user = User::where('email', $credentials['email'])->first();
 
-        if (! $user) {
+        if ( ! $user) {
             return errorResponse('Email hoặc mật khẩu không chính xác.', true);
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if ( ! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.', true);
         }
 
@@ -85,7 +85,7 @@ class AuthController extends Controller
     {
         $response = $this->verifyRecaptcha($request->input('g-recaptcha-response'));
 
-        if (! $response) {
+        if ( ! $response) {
             return errorResponse('Xác minh captcha không thành công', true);
         }
 
@@ -99,7 +99,7 @@ class AuthController extends Controller
             return errorResponse($response['messages'], true);
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if ( ! $user->hasVerifiedEmail()) {
             return errorResponse('Vui lòng xác nhận email của bạn trước khi đăng nhập.', true);
         }
 
@@ -111,8 +111,7 @@ class AuthController extends Controller
     /**
      * Verify the given reCAPTCHA token.
      *
-     * @param string $token
-     *
+     * @param  string  $token
      * @return \Illuminate\Http\JsonResponse
      */
     protected function verifyRecaptcha($token)
@@ -125,11 +124,8 @@ class AuthController extends Controller
         ])->json();
     }
 
-
     /**
      * Forgot password for a user.
-     *
-     * @return JsonResponse
      */
     public function forgotPassword(ForgotRequest $request): JsonResponse
     {
@@ -138,11 +134,8 @@ class AuthController extends Controller
         return handleResponse($response);
     }
 
-
     /**
      * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function me(): JsonResponse
     {
@@ -153,15 +146,11 @@ class AuthController extends Controller
             :
             new UserResource($this->currentUser);
 
-
         return response()->json($user, ResponseEnum::OK);
     }
 
-
     /**
      * Refresh the token.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function refreshToken(): JsonResponse
     {
@@ -175,12 +164,6 @@ class AuthController extends Controller
 
     /**
      * Generate a response with a token.
-     *
-     * @param string $token
-     * @param string $message
-     * @param \App\Models\User|null $user
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     private function respondWithToken(string $token, string $message, ?User $user = null): JsonResponse
     {
@@ -196,11 +179,8 @@ class AuthController extends Controller
         ], ResponseEnum::OK);
     }
 
-
     /**
      * Logs the user out of the application.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function logout(): JsonResponse
     {
@@ -211,24 +191,21 @@ class AuthController extends Controller
 
     /**
      * Send a verification code to the user's phone number.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function sendVerificationCode(Request $request): JsonResponse
     {
         if (auth()->check()) {
             $response = Stringee::sendVerificationCode($request, $this->currentUser);
+
             return handleResponse($response);
         }
 
         $phone = $request->input('phone');
-        if (! $phone) {
+        if ( ! $phone) {
             return errorResponse('Vui lòng nhập số điện thoại.', true);
         }
         $user = User::where('phone', $phone)->first();
-        if (! $user) {
+        if ( ! $user) {
             return errorResponse('Số điện thoại không tồn tại trong hệ thống.', true);
         }
 
@@ -239,10 +216,6 @@ class AuthController extends Controller
 
     /**
      * Verify the verification code that was sent to the user's phone number.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function verifyCode(Request $request): JsonResponse
     {

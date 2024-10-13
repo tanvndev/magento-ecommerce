@@ -27,12 +27,10 @@ class Post extends Model
         'is_featured',
     ];
 
-
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
 
     protected static function boot()
     {

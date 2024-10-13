@@ -2,9 +2,7 @@
 
 namespace App\Events\Chat;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -25,12 +23,13 @@ class MessageSentEvent implements ShouldBroadcast
     public function broadcastOn()
     {
         Log::info('Broadcasting message', [
-            'sender' => $this->message->sender_id,
-            'receiver' => $this->message->receiver_id
+            'sender'   => $this->message->sender_id,
+            'receiver' => $this->message->receiver_id,
         ]);
+
         return [
             new PrivateChannel('chat-channel.' . $this->message->sender_id),
-            new PrivateChannel('chat-channel.' . $this->message->receiver_id)
+            new PrivateChannel('chat-channel.' . $this->message->receiver_id),
         ];
     }
 

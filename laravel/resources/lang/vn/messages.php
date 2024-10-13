@@ -115,7 +115,7 @@ return [
         ],
         'invalid_code' => [
             'error' => 'Mã xác nhận không hợp lệ hoặc đã hết hạn.',
-        ]
+        ],
     ],
     'wishlist' => [
         'success' => [

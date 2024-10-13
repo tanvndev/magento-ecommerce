@@ -23,7 +23,7 @@ class UpdateUserAddressRequest extends FormRequest
     {
         if ($this->has('is_primary') && $this->is_primary) {
             return [
-                'is_primary' => 'required'
+                'is_primary' => 'required',
             ];
         }
 

@@ -93,7 +93,7 @@ class OrderService extends BaseService implements OrderServiceInterface
                 && $request->has('payment_status')
                 && $request->has('delivery_status')
             ) {
-                if (! $this->checkUpdateStatus($request, $order)) {
+                if ( ! $this->checkUpdateStatus($request, $order)) {
                     return errorResponse(__('messages.order.error.invalid'));
                 }
             }
@@ -257,7 +257,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (! $paymentMethod) {
+        if ( ! $paymentMethod) {
             throw new Exception('Payment method not found.');
         }
 
@@ -278,7 +278,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (! $shippingMethod) {
+        if ( ! $shippingMethod) {
             throw new Exception('Shipping method not found.');
         }
 
@@ -309,7 +309,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if (! $cart) {
+        if ( ! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -350,7 +350,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ])->lockForUpdate()->first();
 
-        if (! $voucher) {
+        if ( ! $voucher) {
             throw new Exception('Voucher not found.');
         }
 
@@ -486,7 +486,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     private function isSalePriceValid($productVariant): bool
     {
-        if (! $productVariant->sale_price || ! $productVariant->price) {
+        if ( ! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 
@@ -582,7 +582,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     public function getOrderByUser()
     {
-        if (! auth()->check()) {
+        if ( ! auth()->check()) {
             return [];
         }
 
@@ -626,7 +626,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            if (! auth()->check()) {
+            if ( ! auth()->check()) {
                 return errorResponse(__('messages.order.error.status'));
             }
 
@@ -655,7 +655,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            if (! auth()->check()) {
+            if ( ! auth()->check()) {
                 return errorResponse(__('messages.order.error.status'));
             }
 
