@@ -63,13 +63,16 @@ class Stringee
         $verificationCode = Cache::get($key . $user->phone);
 
         if (! $verificationCode) {
+            Cache::forget($key . $user->phone);
             return errorResponse(__('messages.auth.invalid_code.error'));
         }
 
         if ($verificationCode != $request->verification_code) {
+            Cache::forget($key . $user->phone);
             return errorResponse(__('messages.auth.invalid_code.error'));
         }
 
+        Cache::forget($key . $user->phone);
         return successResponse('Mã xác nhận chính xác.');
     }
 }

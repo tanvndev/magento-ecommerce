@@ -36,7 +36,7 @@
               />
             </div>
             <div class="mt-5" v-if="showOtp">
-              <InputComponent label="OTP" name="otp" type="text" placeholder="OTP" />
+              <InputComponent label="OTP" name="verification_code" type="text" placeholder="OTP" />
             </div>
             <div class="mt-2 flex items-center justify-between">
               <div></div>

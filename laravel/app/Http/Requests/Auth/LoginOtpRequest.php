@@ -24,7 +24,7 @@ class LoginOtpRequest extends FormRequest
 
         return [
             'phone'             => 'required|regex:/(0)[0-9]{9}/',
-            'otp'               => 'required',
+            'verification_code'               => 'required',
             'g-recaptcha-response' => 'required',
         ];
     }
@@ -33,7 +33,7 @@ class LoginOtpRequest extends FormRequest
     {
         return [
             'phone'             => 'Số điện thoại',
-            'otp'               => 'Mã xác nhận',
+            'verification_code'               => 'Mã xác nhận',
             'g-recaptcha-response' => 'Xác minh captcha',
         ];
     }
