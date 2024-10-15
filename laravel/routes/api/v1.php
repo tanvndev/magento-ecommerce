@@ -187,6 +187,10 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
         Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
 
+        // CREATE ORDER WITH ADMIN
+        Route::post('orders/create/', [OrderController::class, 'storeOrder']);
+
+
         // PRODUCT REVIEW ROUTE
         Route::controller(ProductReviewController::class)->name('product-reviews.')->group(function () {
             Route::get('product-reviews/{productId}', 'getReviewByProductId')->name('show');

@@ -88,11 +88,11 @@ class OrderController extends Controller
     {
         $order = $this->orderService->getOrderUserByCode($orderCode);
 
-        if ( ! $order) {
+        if (!$order) {
             $response = [
-                'status'   => 'error',
+                'status' => 'error',
                 'messages' => __('messages.order.error.create'),
-                'url'      => env('NUXT_APP_URL') . '/payment-fail',
+                'url' => env('NUXT_APP_URL') . '/payment-fail',
             ];
 
             return handleResponse($response);
@@ -123,9 +123,9 @@ class OrderController extends Controller
                 break;
             case PaymentMethod::COD_ID:
                 $response = [
-                    'status'   => 'success',
+                    'status' => 'success',
                     'messages' => __('messages.order.success.create'),
-                    'url'      => env('NUXT_APP_URL') . '/order-success?code=' . $order->code,
+                    'url' => env('NUXT_APP_URL') . '/order-success?code=' . $order->code,
                 ];
             default:
 
@@ -184,5 +184,19 @@ class OrderController extends Controller
         $response = $this->orderService->updateStatusOrderToCancelled($id);
 
         return handleResponse($response);
+    }
+
+    public function storeOrder(StoreOrderRequest $request): JsonResponse
+    {
+        $order = $this->orderService->add();
+
+
+        // if (empty($order) || $order['status'] == 'error') {
+        //     return errorResponse(__('messages.order.error.create'), true);
+        // }
+
+        // $response = $this->handlePaymentMethod($order);
+        return response()->json($order);
+        return handleResponse($order, ResponseEnum::CREATED);
     }
 }
