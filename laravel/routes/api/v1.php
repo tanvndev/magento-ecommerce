@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
 use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Post\PostController;
+use App\Http\Controllers\Api\V1\Post\PostCatalogueController;
 use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
 use App\Http\Controllers\Api\V1\Product\ProductController;
 use App\Http\Controllers\Api\V1\Product\ProductReviewController;
@@ -169,6 +170,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // POST ROUTE
         Route::apiResource('posts', PostController::class);
+        Route::prefix('/')->name('posts.')->group(function () {
+            Route::apiResource('posts/catalogues', PostCatalogueController::class);
+        });
 
         // WISHLIST ROUTE
         Route::get('wishlists', [WishListController::class, 'index']);
