@@ -2,17 +2,17 @@ import router from '@/router';
 import AuthService from '@/services/AuthService';
 import Cookies from 'js-cookie';
 
-const token = Cookies.get('token') ?? null;
+const token = Cookies.get('token') || null;
 
-// state
+// State
 const state = {
   status: token ? { loggedIn: true } : { loggedIn: false },
-  accessToken: token ? token : null,
+  accessToken: token,
   user: null,
   messages: []
 };
 
-// getters
+// Getters
 const getters = {
   isLoggedIn: (state) => state.status.loggedIn,
   getUser: (state) => state.user,
@@ -20,7 +20,8 @@ const getters = {
   getMessages: (state) => state.messages,
   getRole: (state) => state.user?.user_catalogue
 };
-// actions
+
+// Actions
 const actions = {
   async login({ commit }, payload) {
     const response = await AuthService.login(payload);
@@ -28,7 +29,8 @@ const actions = {
     if (!response.success) {
       return commit('loginFailure', response.messages);
     }
-    return commit('loginSuccess', response.data);
+
+    commit('loginSuccess', response.data);
   },
 
   async loginOtp({ commit }, payload) {
@@ -39,57 +41,71 @@ const actions = {
     }
     return commit('loginSuccess', response.data);
   },
+
   async logout({ commit }) {
+    const response = await AuthService.logout();
     commit('logout');
+
+    if (!response.success) {
+      console.error(response.messages);
+    }
   },
+
   async refreshToken({ commit }) {
     const response = await AuthService.refreshToken();
+
     if (!response.success) {
       return commit('loginFailure', response.messages);
     }
-    return commit('loginSuccess', response.data);
+
+    commit('loginSuccess', response.data);
+  },
+
+  async googleLogin({ commit }, formData) {
+    try {
+      const response = await AuthService.googleLogin(formData);
+
+      if (!response.success) {
+        return commit('loginFailure', response.messages);
+      }
+      commit('loginSuccess', response.data);
+    } catch (error) {
+      console.log(error);
+
+      throw new Error(error.response?.data.message || 'Đăng nhập thất bại.');
+    }
   }
 };
 
-// mutations
-
+// Mutations
 const mutations = {
   setUser(state, user) {
     state.user = user;
   },
+
   setIsLoggedIn(state, value) {
     state.status.loggedIn = value;
   },
+
   loginSuccess(state, data) {
     state.status.loggedIn = true;
-    state.accessToken = data?.token;
-    state.messages = '';
-    state.user = {
-      user_catalogue: data?.catalogue
-    };
+    state.accessToken = data.token;
+    state.user = { user_catalogue: data.catalogue };
+    state.messages = [];
   },
-  loginFailure(state, message) {
+
+  loginFailure(state, messages) {
     state.status.loggedIn = false;
     state.accessToken = null;
     state.user = null;
-    state.messages = message;
+    state.messages = messages;
   },
-  refreshTokenSuccess(state, token) {
-    state.status.loggedIn = true;
-    state.accessToken = token;
-  },
-  refreshTokenFailure(state) {
+
+  logout(state) {
     state.status.loggedIn = false;
     state.accessToken = null;
     state.user = null;
-  },
-  async logout(state) {
-    await AuthService.logout();
-
-    state.status.loggedIn = false;
-    state.accessToken = null;
-    state.messages = '';
-
+    state.messages = [];
     Cookies.remove('token');
     router.push('/login');
   }

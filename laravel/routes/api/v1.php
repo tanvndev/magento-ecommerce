@@ -80,6 +80,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('me', [AuthController::class, 'me'])->middleware('jwt.verify');
         Route::post('send-verification-code', [AuthController::class, 'sendVerificationCode']);
         Route::post('verify-code', [AuthController::class, 'verifyCode'])->middleware('jwt.verify');
+
+        Route::get('google', [AuthController::class, 'redirectToGoogle'])->name('google');
+        Route::post('google/callback', [AuthController::class, 'handleGoogleCallback'])->name('google.callback');
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');
 
