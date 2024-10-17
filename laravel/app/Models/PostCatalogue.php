@@ -48,4 +48,18 @@ class PostCatalogue extends Model
         return $canonical;
     }
 
-    
+    public function childrens()
+    {
+        return $this->hasMany(PostCatalogue::class, 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(PostCatalogue::class, 'parent_id');
+    }
+
+    public function scopeWithChildren($query)
+    {
+        return $query->with('children');
+    }
+}
