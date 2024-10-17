@@ -34,3 +34,20 @@ class UpdatePostVariantRequest extends FormRequest
 
         return $rules;
     }
+
+    public function attributes()
+    {
+        return [
+            'variable_id' => 'ID',
+            'variable_name' => 'Tên bài viết',
+            
+        ];
+    }
+
+    public function messages()
+    {
+        return __('request.messages') + [
+            'variable_is_used.in' => 'bài viết đã bị khóa vui lòng chọn khác.',
+        ];
+    }
+}
