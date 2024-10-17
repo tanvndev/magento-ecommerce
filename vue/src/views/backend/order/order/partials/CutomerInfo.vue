@@ -1,7 +1,7 @@
 <template>
   <a-card class="mt-3" title="Khách hàng">
     <div class="mb-4">
-      <a-avatar :size="64">
+      <a-avatar :size="55">
         <template #icon>
           <img :src="order?.user?.image" :alt="order?.customer_name" />
         </template>
