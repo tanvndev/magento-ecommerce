@@ -15,6 +15,7 @@ use App\Services\BaseService;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use PhpParser\Node\Stmt\Return_;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
@@ -686,7 +687,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
 
     // Create order with admin
-    public function add(): mixed
+    public function createNewOrder(): mixed
     {
         return $this->executeInTransaction(function () {
             $request = request();
@@ -704,36 +705,90 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     private function addOrder($request)
     {
+
         $payload = $this->preparePayload($request);
+
         $paymentMethod = $this->getPaymentMethod($payload['payment_method_id']);
         $shippingMethod = $this->getShippingMethod($payload['shipping_method_id']);
-        $listProduct = $payload['list_product'];
-        $listProduct = json_decode(json_encode($listProduct));
-        $payload['total_price'] = $this->calculateTotalPrice($listProduct);
+        $product_variant_ids = array_column($payload['order_items'], 'product_variant_id');
+
+        $listProduct = $this->productVariantRepository
+            ->findByWhereIn(
+                $product_variant_ids,
+                'id',
+                ['id', 'uuid', 'name', 'price', 'sale_price', 'sale_price_start_at', 'sale_price_end_at']
+            );
+
+        $payloadOrderItems = $payload['order_items'];
+
+        // Tổ chức lại dữ liệu của orderItems
+        $orderItems = $this->mapOrderItem($listProduct, $payloadOrderItems);
+
+        // Đổi orderItems từ mảng sang object
+        $orderItems = json_decode(json_encode($orderItems));
+
+        $payload['total_price'] = $this->calculateTotalPrice($orderItems);
         $payload['additional_details'] = $this->getAdditionalDetails($paymentMethod, $shippingMethod, $payload);
         $payload['shipping_fee'] = $this->calculateShippingFee($shippingMethod);
-
         $payload['final_price'] = $this->calculateFinalPrice($payload);
-
 
         $order = $this->orderRepository->create($payload);
 
-        $listProduct = new Collection($listProduct);
+        $orderItems = new Collection($orderItems);
 
-        $this->createOrderItems($order, $listProduct);
+        $this->createOrderItems($order, $orderItems);
 
-        // $this->decreaseStockProductVariants($listProduct);
+        // $this->updateStockProductVariants($orderItems);
 
         return $order;
     }
     private function preparePayload($request): array
     {
-
         return array_merge($request->except('_token'), [
-            'shipping_method_id' => 1,
             'voucher_id' => null,
             'code' => generateOrderCode(),
             'ordered_at' => now(),
         ]);
+    }
+    private function mapOrderItem($listProduct, $payloadOrderItems)
+    {
+        $orderItems = [];
+
+        foreach ($listProduct as $product) {
+
+            $orderItem = current(array_filter($payloadOrderItems, function ($item) use ($product) {
+                return $item['product_variant_id'] === $product->id;
+            }));
+            $product->quantity = $orderItem['quantity'];
+
+            $orderItems[] = [
+                'product_variant_id' => $product['id'],
+                'quantity' => $product['quantity'],
+                'product_variant' => [
+                    'id' => $product['id'],
+                    "uuid" => $product['uuid'],
+                    'name' => $product['name'],
+                    'price' => $product['price'],
+                    "sale_price" => $product['sale_price'],
+                    "sale_price_start_at" => $product['sale_price_start_at'],
+                    "sale_price_end_at" => $product['sale_price_end_at'],
+                ],
+            ];
+        }
+        return $orderItems;
+    }
+    private function updateStockProductVariants($orderItems): void
+    {
+        foreach ($orderItems as $orderItem) {
+            $productVariant = $this->productVariantRepository->findByWhere(['id' => $orderItem->product_variant_id])->first();
+            $quantity = $orderItem->quantity;
+            $stock = $productVariant->stock - $quantity;
+            $productVariant->update(
+                [
+                    'stock' => $stock,
+                    'is_used' => true,
+                ]
+            );
+        }
     }
 }

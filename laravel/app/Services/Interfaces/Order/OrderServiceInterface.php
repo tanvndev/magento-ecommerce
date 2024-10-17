@@ -22,5 +22,5 @@ interface OrderServiceInterface
 
     public function updateStatusOrderToCancelled(string $id);
 
-    public function add();
+    public function createNewOrder();
 }
