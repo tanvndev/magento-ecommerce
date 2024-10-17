@@ -7,6 +7,7 @@ use App\Classes\Paypal;
 use App\Classes\Vnpay;
 use App\Enums\ResponseEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Order\CreateOrderRequest;
 use App\Http\Requests\Order\StoreOrderRequest;
 use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\Client\ClientOrderCollection;
@@ -186,17 +187,16 @@ class OrderController extends Controller
         return handleResponse($response);
     }
 
-    public function storeOrder(StoreOrderRequest $request): JsonResponse
+    public function createOrder(CreateOrderRequest $request): JsonResponse
     {
-        $order = $this->orderService->add();
+        $order = $this->orderService->createNewOrder();
 
+        if (empty($order) || $order['status'] == 'error') {
+            return errorResponse(__('messages.order.error.create'), true);
+        }
 
-        // if (empty($order) || $order['status'] == 'error') {
-        //     return errorResponse(__('messages.order.error.create'), true);
-        // }
+        $response = $this->handlePaymentMethod($order);
 
-        // $response = $this->handlePaymentMethod($order);
-        return response()->json($order);
-        return handleResponse($order, ResponseEnum::CREATED);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 }

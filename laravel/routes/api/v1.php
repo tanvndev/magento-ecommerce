@@ -185,7 +185,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
 
         // CREATE ORDER WITH ADMIN
-        Route::post('orders/create/', [OrderController::class, 'storeOrder']);
+        Route::post('orders/create/', [OrderController::class, 'createOrder']);
 
 
         // PRODUCT REVIEW ROUTE
