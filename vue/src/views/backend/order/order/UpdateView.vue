@@ -5,7 +5,7 @@
         <BreadcrumbComponent :titlePage="state.pageTitle" @on-save="onSubmit" />
         <form @submit.prevent="onSubmit">
           <a-row :gutter="16" v-if="order">
-            <a-col :span="17">
+            <a-col :span="18">
               <a-card class="mt-3">
                 <template #title> Đơn hàng #10000048 </template>
                 <!-- Order detail -->
@@ -16,7 +16,7 @@
               </a-card>
             </a-col>
 
-            <a-col :span="7">
+            <a-col :span="6">
               <!-- Aside View -->
               <CutomerInfo :order="order" />
 

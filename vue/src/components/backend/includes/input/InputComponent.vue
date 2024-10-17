@@ -58,7 +58,7 @@
       :size="props.size"
       :allowClear="true"
       :auto-size="true"
-      show-count
+      :show-count="props.showCount"
       :maxlength="props.maxlength"
       :disabled="props.disabled"
     />
@@ -236,6 +236,10 @@ const props = defineProps({
   showAI: {
     type: Boolean,
     default: false
+  },
+  showCount: {
+    type: Boolean,
+    default: true
   }
 });
 

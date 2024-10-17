@@ -86,7 +86,7 @@ import { useStore } from 'vuex';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
-import { WIDGET_MODEL, WIDGET_TYPE } from '@/static/constants';
+import { WIDGET_TYPE } from '@/static/constants';
 import SearchProductView from './partials/SearchProductView.vue';
 import AdvertisementView from './partials/AdvertisementView.vue';
 
