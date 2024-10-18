@@ -16,6 +16,7 @@ use App\Services\Interfaces\Order\OrderServiceInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\Return_;
 
@@ -765,30 +766,36 @@ class OrderService extends BaseService implements OrderServiceInterface
 
     private function fakeData()
     {
-        $ids = DB::select("SELECT GROUP_CONCAT(id) AS ids FROM product_variants");
-        $arrayOfIds = explode(',', $ids[0]->ids);
+        $ids = Cache::get('product_variants');
+        $arrayOfIds = array_column($ids, 'id');
 
-        for ($i = 1; $i < 10000; $i++) {
-            $numItems = rand(3, 6);
+        // Sinh ra các frequent itemsets với các kích thước khác nhau
+        $frequentItemsets = $this->generateFrequentItemsets($arrayOfIds, 5, 3, 6);
 
-            $randomProductIds = array_rand(array_flip($arrayOfIds), $numItems);
+        for ($i = 1; $i <= 100; $i++) {
+            if (rand(0, 100) < 90) {
+                $itemset = $this->generateItemset($arrayOfIds, $frequentItemsets, 80);
+            } else {
+                $numItems = rand(3, 8);
+                $itemset = array_rand(array_flip($arrayOfIds), $numItems);
+            }
+
             $orderItems = [];
-
-            foreach ($randomProductIds as $id) {
+            foreach ($itemset as $id) {
                 $orderItems[] = [
                     "product_variant_id" => $id,
-                    "quantity" => rand(1, 2)
+                    "quantity" => rand(1, 3)
                 ];
             }
 
             $orderData = [
                 "customer_name" => "customer name " . $i,
-                "customer_email" => "customer {$i}@gmail.com",
-                "customer_phone" => "03322256{$i}",
+                "customer_email" => "customer{$i}@gmail.com",
+                "customer_phone" => "03322256" . str_pad($i, 4, '0', STR_PAD_LEFT),
                 "province_id" => "02",
                 "district_id" => "027",
                 "ward_id" => "00787",
-                "shipping_address" => "Dong anh HA NOI 3",
+                "shipping_address" => "Dong Anh, Ha Noi",
                 "note" => "note {$i}",
                 "shipping_method_id" => 1,
                 "payment_method_id" => 1,
@@ -796,8 +803,7 @@ class OrderService extends BaseService implements OrderServiceInterface
                 "payment_status" => "paid",
                 "delivery_status" => "delivered",
                 "user_id" => rand(19, 210),
-                "shipping_fee" => "12000.00",
-                "discount" => null,
+                "discount" => rand(0, 1) ? rand(1000, 5000) : null,
                 "order_items" => $orderItems
             ];
 
@@ -805,6 +811,37 @@ class OrderService extends BaseService implements OrderServiceInterface
             $order = $this->addOrder($request);
         }
     }
+
+    private function generateItemset($arrayOfIds, $frequentItemsets, $probability)
+    {
+        // Lựa chọn một frequent itemset
+        $itemset = $frequentItemsets[array_rand($frequentItemsets)];
+
+        // Tăng xác suất thêm các sản phẩm ngẫu nhiên
+        $additionalItems = rand(0, 2);
+        for ($j = 0; $j < $additionalItems; $j++) {
+            if (rand(0, 100) < $probability) {
+                $randomProductId = $arrayOfIds[array_rand($arrayOfIds)];
+                if (!in_array($randomProductId, $itemset)) {
+                    $itemset[] = $randomProductId;
+                }
+            }
+        }
+
+        return array_unique($itemset);
+    }
+
+    private function generateFrequentItemsets($arrayOfIds, $numSets, $minItems, $maxItems)
+    {
+        $frequentItemsets = [];
+        for ($i = 0; $i < $numSets; $i++) {
+            $setSize = rand($minItems, $maxItems);
+            $frequentItemsets[] = array_rand(array_flip($arrayOfIds), $setSize);
+        }
+        return $frequentItemsets;
+    }
+
+
     // Create order with admin
     public function createNewOrder(): mixed
     {
@@ -813,8 +850,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $this->fakeData();
 
-        dd('success!');
-        // return $order;
+        return [];
         // }, __('messages.order.error.create'));
     }
 
@@ -866,7 +902,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return array_merge($request->except('_token'), [
             'voucher_id' => null,
-            'code' => generateOrderCode(),
+            'code' => generateOrderCode() . rand(0, 100),
             'ordered_at' => now(),
         ]);
     }
