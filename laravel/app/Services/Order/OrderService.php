@@ -15,6 +15,7 @@ use App\Services\BaseService;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use PhpParser\Node\Stmt\Return_;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
@@ -25,7 +26,8 @@ class OrderService extends BaseService implements OrderServiceInterface
         protected PaymentMethodRepositoryInterface $paymentMethodRepository,
         protected ShippingMethodRepositoryInterface $shippingMethodRepository,
         protected VoucherRepositoryInterface $voucherRepository
-    ) {}
+    ) {
+    }
 
     /**
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
@@ -45,7 +47,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         $request = request();
 
         $condition = [
-            'search'       => addslashes($request->search),
+            'search' => addslashes($request->search),
             'searchFields' => ['code'],
         ];
 
@@ -65,7 +67,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     public function getOrder(string $orderCode): Order
     {
         $condition = [
-            'code'    => $orderCode,
+            'code' => $orderCode,
         ];
 
         $order = $this->orderRepository->findByWhere(
@@ -93,7 +95,7 @@ class OrderService extends BaseService implements OrderServiceInterface
                 && $request->has('payment_status')
                 && $request->has('delivery_status')
             ) {
-                if ( ! $this->checkUpdateStatus($request, $order)) {
+                if (!$this->checkUpdateStatus($request, $order)) {
                     return errorResponse(__('messages.order.error.invalid'));
                 }
             }
@@ -221,7 +223,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
             $productVariant->update(
                 [
-                    'stock'   => $productVariant->stock - $quantity,
+                    'stock' => $productVariant->stock - $quantity,
                     'is_used' => true,
                 ]
             );
@@ -237,8 +239,8 @@ class OrderService extends BaseService implements OrderServiceInterface
     private function prepareOrderPayload($request, string $userId): array
     {
         return array_merge($request->except('_token'), [
-            'user_id'    => $userId,
-            'code'       => generateOrderCode(),
+            'user_id' => $userId,
+            'code' => generateOrderCode(),
             'ordered_at' => now(),
         ]);
     }
@@ -253,11 +255,11 @@ class OrderService extends BaseService implements OrderServiceInterface
     private function getPaymentMethod(int $paymentMethodId)
     {
         $paymentMethod = $this->paymentMethodRepository->findByWhere([
-            'id'      => $paymentMethodId,
+            'id' => $paymentMethodId,
             'publish' => 1,
         ]);
 
-        if ( ! $paymentMethod) {
+        if (!$paymentMethod) {
             throw new Exception('Payment method not found.');
         }
 
@@ -274,11 +276,11 @@ class OrderService extends BaseService implements OrderServiceInterface
     private function getShippingMethod(int $shippingMethodId)
     {
         $shippingMethod = $this->shippingMethodRepository->findByWhere([
-            'id'      => $shippingMethodId,
+            'id' => $shippingMethodId,
             'publish' => 1,
         ]);
 
-        if ( ! $shippingMethod) {
+        if (!$shippingMethod) {
             throw new Exception('Shipping method not found.');
         }
 
@@ -309,7 +311,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if ( ! $cart) {
+        if (!$cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -327,12 +329,12 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return [
             'payment_method' => [
-                'id'   => $paymentMethod->id,
+                'id' => $paymentMethod->id,
                 'name' => $paymentMethod->name,
             ],
             'shipping_method' => [
-                'id'        => $shippingMethod->id,
-                'name'      => $shippingMethod->name,
+                'id' => $shippingMethod->id,
+                'name' => $shippingMethod->name,
                 'base_cost' => $shippingMethod->base_cost,
             ],
         ];
@@ -346,19 +348,19 @@ class OrderService extends BaseService implements OrderServiceInterface
     private function applyVoucher(array &$payload)
     {
         $voucher = $this->voucherRepository->findByWhere([
-            'id'      => $payload['voucher_id'],
+            'id' => $payload['voucher_id'],
             'publish' => 1,
         ])->lockForUpdate()->first();
 
-        if ( ! $voucher) {
+        if (!$voucher) {
             throw new Exception('Voucher not found.');
         }
 
         $payload['additional_details']['voucher'] = [
-            'id'         => $voucher->id,
-            'name'       => $voucher->name,
+            'id' => $voucher->id,
+            'name' => $voucher->name,
             'value_type' => $voucher->value_type,
-            'value'      => $voucher->value,
+            'value' => $voucher->value,
         ];
 
         if ($voucher->value_type === Voucher::TYPE_PERCENT) {
@@ -394,13 +396,13 @@ class OrderService extends BaseService implements OrderServiceInterface
             $salePrice = $this->getEffectivePrice($item->product_variant, false);
 
             return [
-                'order_id'             => $orderId,
-                'uuid'                 => $item->product_variant->uuid,
-                'product_variant_id'   => $item->product_variant_id,
+                'order_id' => $orderId,
+                'uuid' => $item->product_variant->uuid,
+                'product_variant_id' => $item->product_variant_id,
                 'product_variant_name' => $item->product_variant->name,
-                'quantity'             => $item->quantity,
-                'price'                => $item->product_variant->price,
-                'sale_price'           => $salePrice != null ? floatval($salePrice) : null,
+                'quantity' => $item->quantity,
+                'price' => $item->product_variant->price,
+                'sale_price' => $salePrice != null ? floatval($salePrice) : null,
             ];
         })->toArray();
 
@@ -486,7 +488,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     private function isSalePriceValid($productVariant): bool
     {
-        if ( ! $productVariant->sale_price || ! $productVariant->price) {
+        if (!$productVariant->sale_price || !$productVariant->price) {
             return false;
         }
 
@@ -535,10 +537,10 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
 
         return [
-            'order_id'          => $order->id,
+            'order_id' => $order->id,
             'payment_method_id' => $order->payment_method_id,
-            'payment_detail'    => $payload['payment_detail'],
-            'method_name'       => $order->payment_method->name,
+            'payment_detail' => $payload['payment_detail'],
+            'method_name' => $order->payment_method->name,
         ];
     }
 
@@ -560,7 +562,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     public function getOrderUserByCode(string $orderCode): ?Order
     {
         $condition = [
-            'code'    => $orderCode,
+            'code' => $orderCode,
             // 'user_id' => auth()->check() ? auth()->user()->id : null,
         ];
 
@@ -582,7 +584,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     public function getOrderByUser()
     {
-        if ( ! auth()->check()) {
+        if (!auth()->check()) {
             return [];
         }
 
@@ -607,9 +609,9 @@ class OrderService extends BaseService implements OrderServiceInterface
         }
 
         $condition = [
-            'search'       => addslashes($request->search),
+            'search' => addslashes($request->search),
             'searchFields' => ['code'],
-            'where'        => $conditionWhere,
+            'where' => $conditionWhere,
         ];
 
         return $this->orderRepository->pagination(
@@ -626,7 +628,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            if ( ! auth()->check()) {
+            if (!auth()->check()) {
                 return errorResponse(__('messages.order.error.status'));
             }
 
@@ -636,7 +638,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
             $order = $this->orderRepository->findByWhere(
                 [
-                    'id'      => $id,
+                    'id' => $id,
                     'user_id' => auth()->user()->id,
                 ]
             );
@@ -655,7 +657,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            if ( ! auth()->check()) {
+            if (!auth()->check()) {
                 return errorResponse(__('messages.order.error.status'));
             }
 
@@ -665,7 +667,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
             $order = $this->orderRepository->findByWhere(
                 [
-                    'id'      => $id,
+                    'id' => $id,
                     'user_id' => auth()->user()->id,
                 ]
             );
@@ -681,5 +683,112 @@ class OrderService extends BaseService implements OrderServiceInterface
 
             return successResponse(__('messages.order.success.status'));
         }, __('messages.order.error.status'));
+    }
+
+
+    // Create order with admin
+    public function createNewOrder(): mixed
+    {
+        return $this->executeInTransaction(function () {
+            $request = request();
+
+            $order = $this->addOrder($request);
+
+            return $order;
+        }, __('messages.order.error.create'));
+    }
+
+    /**
+     * Create a new order in the database.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     */
+    private function addOrder($request)
+    {
+
+        $payload = $this->preparePayload($request);
+
+        $paymentMethod = $this->getPaymentMethod($payload['payment_method_id']);
+        $shippingMethod = $this->getShippingMethod($payload['shipping_method_id']);
+        $product_variant_ids = array_column($payload['order_items'], 'product_variant_id');
+
+        $listProduct = $this->productVariantRepository
+            ->findByWhereIn(
+                $product_variant_ids,
+                'id',
+                ['id', 'uuid', 'name', 'price', 'sale_price', 'sale_price_start_at', 'sale_price_end_at']
+            );
+
+        $payloadOrderItems = $payload['order_items'];
+
+        // Tổ chức lại dữ liệu của orderItems
+        $orderItems = $this->mapOrderItem($listProduct, $payloadOrderItems);
+
+        // Đổi orderItems từ mảng sang object
+        $orderItems = json_decode(json_encode($orderItems));
+
+        $payload['total_price'] = $this->calculateTotalPrice($orderItems);
+        $payload['additional_details'] = $this->getAdditionalDetails($paymentMethod, $shippingMethod, $payload);
+        $payload['shipping_fee'] = $this->calculateShippingFee($shippingMethod);
+        $payload['final_price'] = $this->calculateFinalPrice($payload);
+
+        $order = $this->orderRepository->create($payload);
+
+        $orderItems = new Collection($orderItems);
+
+        $this->createOrderItems($order, $orderItems);
+
+        // $this->updateStockProductVariants($orderItems);
+
+        return $order;
+    }
+    private function preparePayload($request): array
+    {
+        return array_merge($request->except('_token'), [
+            'voucher_id' => null,
+            'code' => generateOrderCode(),
+            'ordered_at' => now(),
+        ]);
+    }
+    private function mapOrderItem($listProduct, $payloadOrderItems)
+    {
+        $orderItems = [];
+
+        foreach ($listProduct as $product) {
+
+            $orderItem = current(array_filter($payloadOrderItems, function ($item) use ($product) {
+                return $item['product_variant_id'] === $product->id;
+            }));
+            $product->quantity = $orderItem['quantity'];
+
+            $orderItems[] = [
+                'product_variant_id' => $product['id'],
+                'quantity' => $product['quantity'],
+                'product_variant' => [
+                    'id' => $product['id'],
+                    "uuid" => $product['uuid'],
+                    'name' => $product['name'],
+                    'price' => $product['price'],
+                    "sale_price" => $product['sale_price'],
+                    "sale_price_start_at" => $product['sale_price_start_at'],
+                    "sale_price_end_at" => $product['sale_price_end_at'],
+                ],
+            ];
+        }
+        return $orderItems;
+    }
+    private function updateStockProductVariants($orderItems): void
+    {
+        foreach ($orderItems as $orderItem) {
+            $productVariant = $this->productVariantRepository->findByWhere(['id' => $orderItem->product_variant_id])->first();
+            $quantity = $orderItem->quantity;
+            $stock = $productVariant->stock - $quantity;
+            $productVariant->update(
+                [
+                    'stock' => $stock,
+                    'is_used' => true,
+                ]
+            );
+        }
     }
 }
