@@ -19,4 +19,24 @@ class StorePostCatalogueRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-  
+    public function rules(): array
+    {
+        return [
+            'name' => 'required',
+            'canonical' => 'unique',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'name' => 'Tên nhóm nhóm bài viết',
+            'canonical' => 'Đường dẫn',
+        ];
+    }
+
+    public function messages()
+    {
+        return __('request.messages');
+    }
+}
