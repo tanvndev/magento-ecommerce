@@ -182,13 +182,16 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
         Route::get('wishlists/send-mail', [WishListController::class, 'sendWishListMail']);
 
+
+        // CREATE ORDER WITH ADMIN
+        Route::post('orders/create', [OrderController::class, 'createOrder']);
+
         // ORDER ROUTE
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
         Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
 
-        // CREATE ORDER WITH ADMIN
-        Route::post('orders/create/', [OrderController::class, 'createOrder']);
+
 
 
         // PRODUCT REVIEW ROUTE

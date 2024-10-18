@@ -5,6 +5,7 @@ use App\Http\Controllers\Payment\MomoController;
 use App\Http\Controllers\Payment\PaypalController;
 use App\Http\Controllers\Payment\VnpController;
 use App\Http\Controllers\Stringee\StringeeController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use League\Glide\Server;
@@ -40,4 +41,4 @@ Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal.c
 // STRINGEE
 Route::get('stringee/answer', [StringeeController::class, 'answer']);
 
-Route::get('test/', [UserAddressController::class, 'getByUserId']);
+Route::get('test/order', [TestController::class, 'getOrder']);

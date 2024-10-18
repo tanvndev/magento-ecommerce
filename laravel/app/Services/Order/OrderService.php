@@ -15,6 +15,8 @@ use App\Services\BaseService;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\Return_;
 
 class OrderService extends BaseService implements OrderServiceInterface
@@ -566,7 +568,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             return false;
         }
 
-        if ($productVariant->is_discount_time) {
+        if (isset($productVariant->is_discount_time) && $productVariant->is_discount_time) {
             if ($productVariant->sale_price_start_at && $productVariant->sale_price_end_at) {
                 $now = now();
                 $start = \Carbon\Carbon::parse($productVariant->sale_price_start_at);
@@ -760,16 +762,60 @@ class OrderService extends BaseService implements OrderServiceInterface
     }
 
 
+
+    private function fakeData()
+    {
+        $ids = DB::select("SELECT GROUP_CONCAT(id) AS ids FROM product_variants");
+        $arrayOfIds = explode(',', $ids[0]->ids);
+
+        for ($i = 1; $i < 10000; $i++) {
+            $numItems = rand(3, 6);
+
+            $randomProductIds = array_rand(array_flip($arrayOfIds), $numItems);
+            $orderItems = [];
+
+            foreach ($randomProductIds as $id) {
+                $orderItems[] = [
+                    "product_variant_id" => $id,
+                    "quantity" => rand(1, 2)
+                ];
+            }
+
+            $orderData = [
+                "customer_name" => "customer name " . $i,
+                "customer_email" => "customer {$i}@gmail.com",
+                "customer_phone" => "03322256{$i}",
+                "province_id" => "02",
+                "district_id" => "027",
+                "ward_id" => "00787",
+                "shipping_address" => "Dong anh HA NOI 3",
+                "note" => "note {$i}",
+                "shipping_method_id" => 1,
+                "payment_method_id" => 1,
+                "order_status" => "completed",
+                "payment_status" => "paid",
+                "delivery_status" => "delivered",
+                "user_id" => rand(19, 210),
+                "shipping_fee" => "12000.00",
+                "discount" => null,
+                "order_items" => $orderItems
+            ];
+
+            $request = new Request($orderData);
+            $order = $this->addOrder($request);
+        }
+    }
     // Create order with admin
     public function createNewOrder(): mixed
     {
-        return $this->executeInTransaction(function () {
-            $request = request();
+        // return $this->executeInTransaction(function () {
+        $request = request();
 
-            $order = $this->addOrder($request);
+        $this->fakeData();
 
-            return $order;
-        }, __('messages.order.error.create'));
+        dd('success!');
+        // return $order;
+        // }, __('messages.order.error.create'));
     }
 
     /**

@@ -72,6 +72,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Notification\NotificationServiceInterface' => 'App\Services\Notification\NotificationService',
         // CHAT
         'App\Services\Interfaces\Chat\ChatServiceInterface' => 'App\Services\Chat\ChatService',
+        // Apriori
+        'App\Services\Interfaces\Apriori\AprioriServiceInterface' => 'App\Services\Apriori\AprioriService',
     ];
 
     public function register(): void

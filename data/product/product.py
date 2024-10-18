@@ -148,7 +148,7 @@ for i in range(200):
 
     call_api(payload)
 
-    wait_time = random.uniform(1, 5)
+    wait_time = random.uniform(1, 3)
     print(f"Waiting for {wait_time:.2f} seconds before next call...")
     time.sleep(wait_time)
 
