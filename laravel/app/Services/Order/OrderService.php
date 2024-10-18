@@ -767,16 +767,29 @@ class OrderService extends BaseService implements OrderServiceInterface
     }
 
 
+    // Create order with admin fake data
+    // public function createNewOrder(): mixed
+    // {
+    //     // return $this->executeInTransaction(function () {
+    //     $request = request();
+
+    //     $this->fakeData();
+
+    //     return [];
+    //     // }, __('messages.order.error.create'));
+    // }
+
+
     // Create order with admin
     public function createNewOrder(): mixed
     {
-        // return $this->executeInTransaction(function () {
-        $request = request();
+        return $this->executeInTransaction(function () {
+            $request = request();
 
-        $this->fakeData();
+            $order = $this->addOrder($request);
 
-        return [];
-        // }, __('messages.order.error.create'));
+            return $order;
+        }, __('messages.order.error.create'));
     }
 
     /**

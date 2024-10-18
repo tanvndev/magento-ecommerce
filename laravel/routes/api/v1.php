@@ -51,6 +51,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('widgets/codes', [WidgetController::class, 'getAllWidgetCode']);
     Route::get('widgets/{code}/detail', [WidgetController::class, 'getWidget']);
     Route::get('products/{slug}/detail', [ProductController::class, 'getProduct']);
+    Route::get('products/{product_variant_id}/suggest', [ProductController::class, 'getSuggestedProduct']);
     Route::get('vouchers/all', [VoucherController::class, 'getAllVoucher']);
     Route::get('sliders/all', [SliderController::class, 'getAllSlider']);
     Route::get('payment-methods/all', [PaymentMethodController::class, 'getAllPaymentMethod']);

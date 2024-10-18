@@ -3,6 +3,7 @@
 namespace App\Services\Apriori;
 
 use App\Models\Order;
+use App\Models\ProductVariant;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;
 use App\Services\Interfaces\Apriori\AprioriServiceInterface;
 use Illuminate\Support\Facades\Redis;
@@ -19,8 +20,6 @@ class AprioriService implements AprioriServiceInterface
     //     order_status = 'completed',
     //     payment_status = 'paid',
     //     delivery_status = 'delivered';
-
-
 
     public function exportOrdersToCsv()
     {
@@ -44,21 +43,11 @@ class AprioriService implements AprioriServiceInterface
 
             fclose($file);
         } catch (\Exception $e) {
-            // Ghi lại lỗi
-            getError($e);
+            throw new \Exception($e->getMessage());
         }
     }
 
-
-    public function getAprioriResultsFromRedis()
-    {
-
-        dd($this->suggestProducts(304));
-
-        return $results;
-    }
-
-    public function suggestProducts($targetProductId, $topN = 5)
+    public function suggestProducts($targetProductId, $topN = 3)
     {
         $aprioriResults = $this->getAprioriResults();
         $suggestions = [];
@@ -76,12 +65,10 @@ class AprioriService implements AprioriServiceInterface
             }
         }
 
-        // Sắp xếp các gợi ý theo confidence và lift
         usort($suggestions, function ($a, $b) {
             return ($b['confidence'] <=> $a['confidence']) ?: ($b['lift'] <=> $a['lift']);
         });
 
-        // Loại bỏ các gợi ý trùng lặp, giữ lại gợi ý tốt nhất cho mỗi sản phẩm
         $uniqueSuggestions = [];
         foreach ($suggestions as $suggestion) {
             $productId = $suggestion['product_variant_id'];
@@ -90,7 +77,19 @@ class AprioriService implements AprioriServiceInterface
             }
         }
 
-        return array_slice(array_values($uniqueSuggestions), 0, $topN);
+        $productVariantIds = array_slice(array_values($uniqueSuggestions), 0, $topN);
+
+        if (empty($productVariantIds)) {
+            return [];
+        }
+
+        $productVariantIds = collect($productVariantIds)->pluck('product_variant_id')->unique();
+
+        $productVariants = ProductVariant::query()
+            ->whereIn('id', $productVariantIds)
+            ->get();
+
+        return $productVariants;
     }
 
     private function addSuggestions(&$suggestions, $items, $targetProductId, $stat)
