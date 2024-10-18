@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Classes\Upload;
 use App\Services\Interfaces\Apriori\AprioriServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class TestController extends Controller
 {
@@ -14,6 +15,7 @@ class TestController extends Controller
     ) {}
     public function getOrder(Request $request)
     {
+
         // $orders = $this->aprioriService->exportOrdersToCsv();
         $this->aprioriService->getAprioriResultsFromRedis();
     }
