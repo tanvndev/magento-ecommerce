@@ -18,7 +18,6 @@ class ClientProductVariantResource extends JsonResource
     {
         return [
             'id'                      => $this->id,
-            'key'                     => $this->id,
             'product_id'              => $this->product_id,
             'name'                    => $this->name,
             'slug'                    => $this->slug,

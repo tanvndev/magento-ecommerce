@@ -192,13 +192,12 @@ class OrderController extends Controller
     {
         $order = $this->orderService->createNewOrder();
 
-        return successResponse('', $order, true);
-        // if (empty($order) || $order['status'] == 'error') {
-        //     return errorResponse(__('messages.order.error.create'), true);
-        // }
+        if (empty($order) || $order['status'] == 'error') {
+            return errorResponse(__('messages.order.error.create'), true);
+        }
 
-        // $response = $this->handlePaymentMethod($order);
+        $response = $this->handlePaymentMethod($order);
 
-        // return handleResponse($response, ResponseEnum::CREATED);
+        return handleResponse($response, ResponseEnum::CREATED);
     }
 }

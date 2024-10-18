@@ -9,26 +9,23 @@ use App\Http\Requests\Product\UpdateProductAttributeRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Requests\Product\UpdateProductVariantRequest;
 use App\Http\Resources\Product\Client\ClientProductResource;
+use App\Http\Resources\Product\Client\ClientProductVariantCollection;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductVariantCollection;
 use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
+use App\Services\Interfaces\Apriori\AprioriServiceInterface;
 use App\Services\Interfaces\Product\ProductServiceInterface;
 use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
-    protected $productService;
-
-    protected $productRepository;
 
     public function __construct(
-        ProductServiceInterface $productService,
-        ProductRepositoryInterface $productRepository
-    ) {
-        $this->productService = $productService;
-        $this->productRepository = $productRepository;
-    }
+        protected ProductServiceInterface $productService,
+        protected ProductRepositoryInterface $productRepository,
+        protected AprioriServiceInterface $aprioriService
+    ) {}
 
     /**
      * Display a listing of the products.
@@ -136,5 +133,13 @@ class ProductController extends Controller
         );
 
         return successResponse('', $response, true);
+    }
+
+    public function getSuggestedProduct(string $productVariantId): JsonResponse
+    {
+        $response = $this->aprioriService->suggestProducts($productVariantId);
+        $data = new ClientProductVariantCollection($response);
+
+        return successResponse('', $data, true);
     }
 }

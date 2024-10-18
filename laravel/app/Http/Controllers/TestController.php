@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Classes\Upload;
+use App\Http\Resources\Product\Client\ClientProductVariantCollection;
 use App\Services\Interfaces\Apriori\AprioriServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
@@ -17,6 +18,10 @@ class TestController extends Controller
     {
 
         // $orders = $this->aprioriService->exportOrdersToCsv();
-        $this->aprioriService->getAprioriResultsFromRedis();
+        $response = $this->aprioriService->suggestProducts(208);
+
+        $data = new ClientProductVariantCollection($response);
+
+        return successResponse('', $data, true);
     }
 }
