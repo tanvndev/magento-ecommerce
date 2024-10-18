@@ -51,6 +51,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('widgets/codes', [WidgetController::class, 'getAllWidgetCode']);
     Route::get('widgets/{code}/detail', [WidgetController::class, 'getWidget']);
     Route::get('products/{slug}/detail', [ProductController::class, 'getProduct']);
+    Route::get('products/{product_variant_id}/suggest', [ProductController::class, 'getSuggestedProduct']);
     Route::get('vouchers/all', [VoucherController::class, 'getAllVoucher']);
     Route::get('sliders/all', [SliderController::class, 'getAllSlider']);
     Route::get('payment-methods/all', [PaymentMethodController::class, 'getAllPaymentMethod']);
@@ -182,13 +183,16 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
         Route::get('wishlists/send-mail', [WishListController::class, 'sendWishListMail']);
 
+
+        // CREATE ORDER WITH ADMIN
+        Route::post('orders/create', [OrderController::class, 'createOrder']);
+
         // ORDER ROUTE
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
         Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
 
-        // CREATE ORDER WITH ADMIN
-        Route::post('orders/create/', [OrderController::class, 'createOrder']);
+
 
 
         // PRODUCT REVIEW ROUTE

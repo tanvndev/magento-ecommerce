@@ -18,6 +18,7 @@ use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Services\Interfaces\Order\OrderServiceInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -187,7 +188,7 @@ class OrderController extends Controller
         return handleResponse($response);
     }
 
-    public function createOrder(CreateOrderRequest $request): JsonResponse
+    public function createOrder(Request $request): JsonResponse
     {
         $order = $this->orderService->createNewOrder();
 

@@ -791,8 +791,9 @@
 
 .combo-detail .list-access li {
   width: 100%;
+  min-height: 310px;
   border: 1px solid #e5e5e5;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 13px 15px 14px;
   margin: 0 20px 0 0;
   position: relative;

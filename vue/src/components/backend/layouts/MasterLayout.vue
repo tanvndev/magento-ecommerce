@@ -8,7 +8,7 @@
       <!-- Header -->
       <HeaderComponent />
       <!-- Main -->
-      <main class="h-full overflow-y-auto bg-[#f5f6f7]">
+      <main class="h-full overflow-y-auto bg-[#f3f3f9]">
         <slot name="template"></slot>
       </main>
     </div>
