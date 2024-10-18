@@ -26,8 +26,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         protected PaymentMethodRepositoryInterface $paymentMethodRepository,
         protected ShippingMethodRepositoryInterface $shippingMethodRepository,
         protected VoucherRepositoryInterface $voucherRepository
-    ) {
-    }
+    ) {}
 
     /**
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
@@ -85,6 +84,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     public function update(string $id): array
     {
         return $this->executeInTransaction(function () use ($id) {
+
             $request = request();
             $payload = $this->handlePayloadUpdate($request);
 
@@ -95,12 +95,16 @@ class OrderService extends BaseService implements OrderServiceInterface
                 && $request->has('payment_status')
                 && $request->has('delivery_status')
             ) {
-                if (!$this->checkUpdateStatus($request, $order)) {
+                if (! $this->checkUpdateStatus($request, $order)) {
                     return errorResponse(__('messages.order.error.invalid'));
                 }
             }
 
+
             $order->update($payload);
+
+
+
 
             return successResponse(__('messages.update.success'));
         }, __('messages.update.error'));
@@ -145,15 +149,85 @@ class OrderService extends BaseService implements OrderServiceInterface
      *
      * @param  \Illuminate\Http\Request  $request
      */
+
     public function checkUpdateStatus($request, Order $order): bool
     {
-        if ($request->order_status == Order::ORDER_STATUS_COMPLETED) {
-            if (
-                $order->payment_status != Order::PAYMENT_STATUS_PAID
-                || $order->delivery_status != Order::DELYVERY_STATUS_DELIVERED
-            ) {
+        // Kiểm tra phương thức thanh toán
+        $isCOD = $order->additional_details['payment_method']['id'] == 1;
+
+        // Trường hợp thanh toán sau khi nhận hàng (COD)
+        if ($isCOD) {
+            if ($order->delivery_status == Order::DELYVERY_STATUS_PENDING) {
+                if ($request->delivery_status == Order::DELYVERY_STATUS_DELIVERED) {
+                    return false;
+                }
+            }
+
+            if ($request->payment_status == Order::PAYMENT_STATUS_PAID) {
+                if ($request->delivery_status != Order::DELYVERY_STATUS_DELIVERED) {
+                    return false;
+                }
+            }
+
+
+            if ($order->payment_status == Order::PAYMENT_STATUS_PAID) {
+                if ($request->payment_status == Order::PAYMENT_STATUS_UNPAID) {
+                    return false;
+                }
+
+                if ($request->order_status == Order::ORDER_STATUS_PENDING) {
+                    return false;
+                }
+            }
+
+
+            if ($request->order_status == Order::ORDER_STATUS_COMPLETED) {
+                if (
+                    $order->payment_status != Order::PAYMENT_STATUS_PAID
+                    || $order->delivery_status != Order::DELYVERY_STATUS_DELIVERED
+                ) {
+                    return false;
+                }
+            }
+        } else {
+
+            // Trường hợp thanh toán trước khi nhận hàng
+            if ($order->payment_status == Order::PAYMENT_STATUS_PAID) {
+
+                if ($request->order_status == Order::ORDER_STATUS_COMPLETED && $order->delivery_status != Order::DELYVERY_STATUS_DELIVERED) {
+                    return false;
+                }
+
+                if ($request->delivery_status == Order::DELYVERY_STATUS_PENDING) {
+                    if ($order->delivery_status == Order::DELYVERY_STATUS_DELIVERED) {
+                        return false;
+                    }
+                }
+
+                if ($request->delivery_status == Order::DELYVERY_STATUS_DELIVERED) {
+                    if ($request->order_status == Order::ORDER_STATUS_PENDING) {
+                        return false;
+                    }
+                }
+            } else {
                 return false;
             }
+
+            if ($request->payment_status == Order::PAYMENT_STATUS_UNPAID) {
+                return false;
+            }
+        }
+
+        if ($order->order_status == Order::ORDER_STATUS_COMPLETED) {
+            return false;
+        }
+
+        // Kiểm tra tính hợp lệ của trạng thái đơn hàng và trạng thái giao hàng
+        if (
+            !array_key_exists($request->order_status, Order::ORDER_STATUS) ||
+            !array_key_exists($request->delivery_status, Order::DELYVERY_STATUS)
+        ) {
+            return false;
         }
 
         return true;
@@ -259,7 +333,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (!$paymentMethod) {
+        if (! $paymentMethod) {
             throw new Exception('Payment method not found.');
         }
 
@@ -280,7 +354,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if (!$shippingMethod) {
+        if (! $shippingMethod) {
             throw new Exception('Shipping method not found.');
         }
 
@@ -311,7 +385,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if (!$cart) {
+        if (! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -352,7 +426,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ])->lockForUpdate()->first();
 
-        if (!$voucher) {
+        if (! $voucher) {
             throw new Exception('Voucher not found.');
         }
 
@@ -488,7 +562,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     private function isSalePriceValid($productVariant): bool
     {
-        if (!$productVariant->sale_price || !$productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 
@@ -584,7 +658,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     public function getOrderByUser()
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return [];
         }
 
@@ -628,7 +702,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            if (!auth()->check()) {
+            if (! auth()->check()) {
                 return errorResponse(__('messages.order.error.status'));
             }
 
@@ -657,7 +731,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            if (!auth()->check()) {
+            if (! auth()->check()) {
                 return errorResponse(__('messages.order.error.status'));
             }
 
