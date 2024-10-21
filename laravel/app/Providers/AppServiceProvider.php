@@ -60,8 +60,6 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Order\OrderServiceInterface' => 'App\Services\Order\OrderService',
         // Location
         'App\Services\Interfaces\Location\LocationServiceInterface' => 'App\Services\Location\LocationService',
-        // Slider
-        'App\Services\Interfaces\Slider\SliderServiceInterface' => 'App\Services\Slider\SliderService',
         // Post
         'App\Services\Interfaces\Post\PostServiceInterface' => 'App\Services\Post\PostService',
         // UserAddress
@@ -74,6 +72,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\Chat\ChatServiceInterface' => 'App\Services\Chat\ChatService',
         // Apriori
         'App\Services\Interfaces\Apriori\AprioriServiceInterface' => 'App\Services\Apriori\AprioriService',
+        // FLASH SALE
+        'App\Services\Interfaces\FlashSale\FlashSaleServiceInterface' => 'App\Services\FlashSale\FlashSaleService',
     ];
 
     public function register(): void

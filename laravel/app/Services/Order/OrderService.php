@@ -2,23 +2,26 @@
 
 namespace App\Services\Order;
 
+use Exception;
 use App\Models\Order;
-use App\Models\PaymentMethod;
 use App\Models\Voucher;
+use App\Models\FlashSale;
+use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
+use App\Services\BaseService;
+use PhpParser\Node\Stmt\Return_;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Collection;
+use App\Services\Interfaces\Order\OrderServiceInterface;
 use App\Repositories\Interfaces\Cart\CartRepositoryInterface;
 use App\Repositories\Interfaces\Order\OrderRepositoryInterface;
-use App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface;
-use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
-use App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface;
 use App\Repositories\Interfaces\Voucher\VoucherRepositoryInterface;
-use App\Services\BaseService;
-use App\Services\Interfaces\Order\OrderServiceInterface;
-use Exception;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\Return_;
+use App\Repositories\Interfaces\FlashSale\FlashSaleRepositoryInterface;
+use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
+use App\Repositories\Interfaces\PaymentMethod\PaymentMethodRepositoryInterface;
+use App\Repositories\Interfaces\ShippingMethod\ShippingMethodRepositoryInterface;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
@@ -28,7 +31,8 @@ class OrderService extends BaseService implements OrderServiceInterface
         protected CartRepositoryInterface $cartRepository,
         protected PaymentMethodRepositoryInterface $paymentMethodRepository,
         protected ShippingMethodRepositoryInterface $shippingMethodRepository,
-        protected VoucherRepositoryInterface $voucherRepository
+        protected VoucherRepositoryInterface $voucherRepository,
+        protected FlashSaleRepositoryInterface $flashSaleRepository
     ) {}
 
     /**
@@ -97,7 +101,7 @@ class OrderService extends BaseService implements OrderServiceInterface
                 && $request->has('payment_status')
                 && $request->has('delivery_status')
             ) {
-                if ( ! $this->checkUpdateStatus($request, $order)) {
+                if (! $this->checkUpdateStatus($request, $order)) {
                     return errorResponse(__('messages.order.error.invalid'));
                 }
             }
@@ -331,7 +335,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if ( ! $paymentMethod) {
+        if (! $paymentMethod) {
             throw new Exception('Payment method not found.');
         }
 
@@ -352,7 +356,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ]);
 
-        if ( ! $shippingMethod) {
+        if (! $shippingMethod) {
             throw new Exception('Shipping method not found.');
         }
 
@@ -383,7 +387,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $cart = $this->cartRepository->findByWhere(['user_id' => $userId], ['*'], $relation);
 
-        if ( ! $cart) {
+        if (! $cart) {
             throw new Exception('Cart not found.');
         }
 
@@ -424,7 +428,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'publish' => 1,
         ])->lockForUpdate()->first();
 
-        if ( ! $voucher) {
+        if (! $voucher) {
             throw new Exception('Voucher not found.');
         }
 
@@ -455,7 +459,69 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         $payloadOrderItem = $this->formatPayloadOrderItem($cartItems ?? [], $order->id);
         $order->order_items()->createMany($payloadOrderItem);
+
+        $this->updateFlashSaleQuantities($cartItems);
     }
+
+
+    private function updateFlashSaleQuantities($cartItems): void
+    {
+        foreach ($cartItems as $item) {
+            $productVariantId = $item->product_variant_id;
+
+            $flashSaleProductVariant = DB::table('flash_sale_product_variants')
+                ->join('flash_sales', 'flash_sale_product_variants.flash_sale_id', '=', 'flash_sales.id')
+                ->where([
+                    'flash_sale_product_variants.product_variant_id' => $productVariantId,
+                    'flash_sales.start_date' => '<=',
+                    now(),
+                    'flash_sales.end_date' => '>=',
+                    now(),
+                    'flash_sales.publish' => true,
+                    'flash_sale_product_variants.max_quantity' => '>',
+                    0
+                ])
+                ->first();
+
+            if (! $flashSaleProductVariant) {
+                continue;
+            }
+
+            if ($flashSaleProductVariant->max_quantity > 0) {
+                $newMaxQuantity = $flashSaleProductVariant->max_quantity - $item->quantity;
+                $newSoldQuantity = $flashSaleProductVariant->sold_quantity + $item->quantity;
+
+                $newMaxQuantity = max(0, $newMaxQuantity);
+
+                DB::table('flash_sale_product_variants')
+                    ->where('product_variant_id', $productVariantId)
+                    ->update([
+                        'max_quantity' => $newMaxQuantity,
+                        'sold_quantity' => $newSoldQuantity,
+                    ]);
+
+                if ($newMaxQuantity == 0) {
+                    $productVariant = $this->productVariantRepository->findById($productVariantId);
+
+                    if ($productVariant) {
+                        $productVariant->update([
+                            'sale_price' => null,
+                            'sale_price_start_at' => null,
+                            'sale_price_end_at' => null,
+                            'is_discount_time' => false,
+                        ]);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
 
     /**
      * Format payload for create order items
@@ -560,7 +626,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     private function isSalePriceValid($productVariant): bool
     {
-        if ( ! $productVariant->sale_price || ! $productVariant->price) {
+        if (! $productVariant->sale_price || ! $productVariant->price) {
             return false;
         }
 
@@ -656,7 +722,7 @@ class OrderService extends BaseService implements OrderServiceInterface
      */
     public function getOrderByUser()
     {
-        if ( ! auth()->check()) {
+        if (! auth()->check()) {
             return [];
         }
 
@@ -700,7 +766,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            if ( ! auth()->check()) {
+            if (! auth()->check()) {
                 return errorResponse(__('messages.order.error.status'));
             }
 
@@ -729,7 +795,7 @@ class OrderService extends BaseService implements OrderServiceInterface
     {
         return $this->executeInTransaction(function () use ($id) {
 
-            if ( ! auth()->check()) {
+            if (! auth()->check()) {
                 return errorResponse(__('messages.order.error.status'));
             }
 
