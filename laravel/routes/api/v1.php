@@ -1,34 +1,35 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TestApiController;
-use App\Http\Controllers\Api\V1\Attribute\AttributeController;
-use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
-use App\Http\Controllers\Api\V1\Auth\VerificationController;
-use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\Chat\ChatController;
 use App\Http\Controllers\Api\V1\DashboardController;
-use App\Http\Controllers\Api\V1\Location\LocationController;
-use App\Http\Controllers\Api\V1\NotificationController;
-use App\Http\Controllers\Api\V1\Order\OrderController;
-use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
-use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Post\PostController;
-use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
-use App\Http\Controllers\Api\V1\Product\ProductController;
-use App\Http\Controllers\Api\V1\Product\ProductReviewController;
-use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
-use App\Http\Controllers\Api\V1\Slider\SliderController;
-use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
-use App\Http\Controllers\Api\V1\Upload\UploadController;
-use App\Http\Controllers\Api\V1\User\UserAddressController;
-use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V1\Voucher\VoucherController;
+use App\Http\Controllers\Api\V1\Brand\BrandController;
+use App\Http\Controllers\Api\V1\Order\OrderController;
+use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\Slider\SliderController;
+use App\Http\Controllers\Api\V1\Upload\UploadController;
 use App\Http\Controllers\Api\V1\Widget\WidgetController;
+use App\Http\Controllers\Api\V1\Product\ProductController;
+use App\Http\Controllers\Api\V1\Voucher\VoucherController;
+use App\Http\Controllers\Api\V1\User\UserAddressController;
+use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\Location\LocationController;
 use App\Http\Controllers\Api\V1\WishList\WishListController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\User\UserCatalogueController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeController;
+use App\Http\Controllers\Api\V1\FlashSale\FlashSaleController;
+use App\Http\Controllers\Api\V1\Permission\PermissionController;
+use App\Http\Controllers\Api\V1\Product\ProductReviewController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
+use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
+use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
+use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
+use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +42,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('log.request.response', 'api')->group(function () {
+Route::middleware(['log.request.response', 'api'])->group(function () {
 
     // ROUTE TEST
     Route::post('test/index', [TestApiController::class, 'upload']);
@@ -157,6 +158,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
 
         // PAYMENT METHOD ROUTE
         Route::apiResource('payment-methods', PaymentMethodController::class);
+
+        // Flash Sale ROUTE
+        Route::apiResource('flash-sales', FlashSaleController::class);
 
         // SYSTEM CONFIG ROUTE
         Route::get('system-configs', [SystemConfigController::class, 'index']);
