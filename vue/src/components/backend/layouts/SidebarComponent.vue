@@ -1,16 +1,26 @@
 <template>
-  <aside
-    class="z-30 hidden w-64 flex-shrink-0 overflow-y-auto bg-white shadow-lg dark:bg-gray-800 lg:block"
-  >
-    <div class="py-4 text-gray-500">
-      <RouterLink :to="{ name: 'dashboard' }" class="flex items-center justify-center"
-        ><img
-          class="w-[120px] object-contain object-center"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjsScWYmyfPv3XdkNdEFVJ1wlDKMOgcSWUcg&s"
-          alt="logo"
-      /></RouterLink>
+  <aside class="z-30 hidden w-64 flex-shrink-0 overflow-y-auto bg-[#001529] shadow-lg lg:block">
+    <div class="h-full">
+      <RouterLink :to="{ name: 'dashboard' }" class="flex items-center justify-center border-b border-gray-700">
+        <div class="flex items-center gap-3 py-[18px]">
+          <div>
+            <img
+              class="h-8 w-auto"
+              src="https://adminlte.io/themes/v3/dist/img/AdminLTELogo.png"
+              alt="logo"
+            />
+          </div>
+          <div class="text-[16px] font-bold uppercase text-white">Trang quản trị</div>
+        </div>
+      </RouterLink>
 
-      <a-menu v-model:selectedKeys="selectedKeys" v-model:openKeys="openKeys" mode="inline">
+      <a-menu
+        class="mt-5"
+        v-model:selectedKeys="selectedKeys"
+        v-model:openKeys="openKeys"
+        mode="inline"
+        theme="dark"
+      >
         <a-menu-item v-for="item in menuItems" :key="item.route">
           <RouterLink class="inline-flex cursor-pointer items-center" :to="{ name: item.route }">
             <i :class="item.icon" class="mr-3"></i>

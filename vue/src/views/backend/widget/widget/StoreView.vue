@@ -9,7 +9,7 @@
               <a-card class="mt-3" title="Thông tin chung">
                 <AleartError :errors="state.errors" />
                 <a-row :gutter="[16, 16]">
-                  <a-col :span="24">
+                  <a-col :span="12">
                     <InputComponent
                       name="name"
                       label="Tên widget"
@@ -17,7 +17,7 @@
                       placeholder="Tên widget"
                     />
                   </a-col>
-                  <a-col :span="24">
+                  <a-col :span="12">
                     <InputComponent
                       typeInput="textarea"
                       name="description"
@@ -86,7 +86,7 @@ import { useStore } from 'vuex';
 import * as yup from 'yup';
 import router from '@/router';
 import { useCRUD } from '@/composables';
-import { WIDGET_MODEL, WIDGET_TYPE } from '@/static/constants';
+import { WIDGET_TYPE } from '@/static/constants';
 import SearchProductView from './partials/SearchProductView.vue';
 import AdvertisementView from './partials/AdvertisementView.vue';
 
