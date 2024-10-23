@@ -738,7 +738,7 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         $this->createOrderItems($order, $orderItems);
 
-        // $this->updateStockProductVariants($orderItems);
+        $this->updateStockProductVariants($orderItems);
 
         return $order;
     }
