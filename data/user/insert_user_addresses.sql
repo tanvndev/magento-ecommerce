@@ -1,0 +1,2 @@
+INSERT INTO user_addresses (user_id, province_id, district_id, ward_id, fullname, shipping_address, phone, is_primary) VALUES (2, '01', '017', '00490', 'Nguyen Van J', 'Xã Kim Nỗ, Huyện Đông Anh, Hà Nội, 36000, Việt Nam', '02292993-17', 1);
+INSERT INTO user_addresses (user_id, province_id, district_id, ward_id, fullname, shipping_address, phone, is_primary) VALUES (7, '01', '017', '00490', 'Nguyen Van O', 'Xã Kim Nỗ, Huyện Đông Anh, Hà Nội, 36000, Việt Nam', '02292993-12', 1);

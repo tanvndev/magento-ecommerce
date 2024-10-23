@@ -390,7 +390,7 @@ const onHide = () => (visibleRef.value = false)
         <!-- End of Sidebar -->
       </div>
       <!-- Product Suggestions -->
-      <ProductSuggestion :product="product" />
+      <ProductSuggestion :variant="variant" />
 
       <!-- Start of MoreInfomation -->
       <ProductMoreInfomation :product="product" />

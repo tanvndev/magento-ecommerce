@@ -1,13 +1,38 @@
 <template>
-  <header class="bg-white py-4 shadow-lg">
-    <div class="container mx-auto flex w-[100%] items-center justify-end">
-      <ul class="mb-0 flex flex-shrink-0 items-center justify-end space-x-10">
+  <header class="box-shadow header-wrap z-[200] border-b bg-white">
+    <div class="flex w-[100%] items-center justify-between px-10">
+      <div class="flex items-center">
+        <div class="leading-none">
+          <button type="button" class="leading-none">
+            <i class="fas fa-outdent text-[22px] text-gray-500 hover:text-gray-700"></i>
+          </button>
+        </div>
+        <div class="input-search ml-7">
+          <a-input
+            placeholder="Tìm kiêm tại đây"
+            size="large"
+            class="w-[350px] border-none bg-[#f3f3f9] focus:shadow-none"
+            allowClear
+          >
+            <template #prefix>
+              <i class="fas fa-search pr-1 text-gray-500"></i>
+            </template>
+          </a-input>
+        </div>
+      </div>
+      <ul class="mb-0 flex flex-shrink-0 items-center justify-end space-x-8">
+        <li class="relative inline-block text-left">
+         <button>
+            <i class="fal fa-expand text-[22px] text-gray-500 hover:text-gray-600"></i>
+            <!-- <i class="fal fa-compress-wide text-[22px] text-gray-500 hover:text-gray-600"></i> -->
+         </button>
+        </li>
         <li class="relative inline-block text-left">
           <a-dropdown>
             <button class="relative rounded-md align-middle focus:outline-none">
-              <i class="fal fa-bell text-[22px] text-emerald-400"></i>
+              <i class="fal fa-bell text-[22px] text-gray-500"></i>
               <span
-                class="pulse absolute right-0 top-0 z-10 inline-flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-red-500 p-1 text-xs font-medium leading-none text-red-100"
+                class="pulse absolute left-[22px] top-0 z-10 inline-flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-red-500 p-1 text-xs font-medium leading-none text-red-100"
                 >5</span
               >
             </button>
@@ -44,23 +69,28 @@
           </a-dropdown>
         </li>
 
-        <li class="relative inline-block text-left">
+        <li class="relative inline-block pl-0 text-left">
           <a-dropdown>
-            <div class="flex cursor-pointer items-center gap-x-2">
-              <span class="text-sm uppercase text-gray-700 dark:text-gray-400">{{
-                user && user.fullname
-              }}</span>
+            <div class="flex cursor-pointer items-center gap-x-2 bg-[#f3f3f9] px-8 py-4">
               <button
-                class="mx-auto h-9 w-9 overflow-hidden rounded-full border-2 bg-emerald-500 font-medium text-white focus:outline-none dark:bg-gray-500"
+                class="mx-auto h-9 w-9 overflow-hidden rounded-full border-2 font-medium text-white focus:outline-none"
               >
-                <img
+                <a-avatar
                   class="h-full w-full object-cover"
                   :src="
                     (user && resizeImage(user.image, 100, 100)) || 'https://i.ibb.co/WpM5yZZ/9.png'
                   "
                   loading="lazy"
-                />
+                ></a-avatar>
               </button>
+              <div class="flex flex-col">
+                <span class="mb-1 text-[13px] font-bold leading-none text-gray-700"
+                  >{{ user && user.fullname }}
+                </span>
+                <span class="text-[12px] leading-none text-gray-500"
+                  >{{ user && user.catalogue_name }}
+                </span>
+              </div>
             </div>
             <template #overlay>
               <a-menu>
@@ -98,3 +128,8 @@ import { resizeImage } from '@/utils/helpers';
 const store = useStore();
 const user = computed(() => store.getters['authStore/getUser']);
 </script>
+<style scoped>
+.box-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+</style>

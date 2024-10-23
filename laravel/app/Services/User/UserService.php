@@ -31,7 +31,7 @@ class UserService extends BaseService implements UserServiceInterface
             'searchFields' => ['fullname', 'email', 'phone'],
         ];
 
-        $select = ['id', 'fullname', 'email', 'phone', 'publish', 'user_catalogue_id'];
+        $select = ['id', 'fullname', 'email', 'phone', 'publish', 'user_catalogue_id', 'image'];
         $pageSize = $request->pageSize;
 
         $data = $pageSize && $request->page

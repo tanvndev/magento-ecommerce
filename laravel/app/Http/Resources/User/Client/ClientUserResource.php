@@ -21,7 +21,7 @@ class ClientUserResource extends JsonResource
             'image'          => $this->image,
             'birthday'       => $this->birthday,
             'hint_email'     => hintEmail($this->email),
-            'hint_phone'     => hintPhoneNumber($this->phone),
+            // 'hint_phone'     => hintPhoneNumber($this->phone),
             'addresses'      => UserAddressResource::collection($this->user_addresses),
         ];
     }

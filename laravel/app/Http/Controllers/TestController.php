@@ -3,53 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Classes\Upload;
+use App\Http\Resources\Product\Client\ClientProductVariantCollection;
+use App\Services\Interfaces\Apriori\AprioriServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class TestController extends Controller
 {
-    // public function index()
 
-    // {
-
-    //     $product = Product::query()
-    //         ->with([
-    //             'variants.attribute_values',
-    //             // 'attributes' => function ($query) {
-    //             //     $query->with(['attribute' => function ($queryAttribute) {
-    //             //         $queryAttribute->select(['id', 'name'])
-    //             //             ->with('attribute_values');
-    //             //     }]);
-    //             // }
-    //         ])
-    //         ->find(19);
-    //     dd($product->toArray());
-
-    //     $product->attributes->transform(function ($productAttribute) {
-    //         $attribute = $productAttribute->attribute;
-    //         $attributeValueIds = $productAttribute->attribute_value_ids;
-
-    //         $filteredValues = $attribute->attribute_values->filter(function ($item) use ($attributeValueIds) {
-    //             return in_array($item->id, $attributeValueIds);
-    //         });
-
-    //         $attribute->makeHidden('attribute_values');
-    //         $attribute->values = $filteredValues;
-
-    //         $productAttribute->attribute = $attribute;
-
-    //         return $productAttribute;
-    //     });
-
-    //     dd($product->toArray());
-
-    //     return response()->json($product);
-
-    //     return view('test');
-    // }
-
-    public function upload(Request $request)
+    public function __construct(
+        protected AprioriServiceInterface $aprioriService
+    ) {}
+    public function getOrder(Request $request)
     {
-        $file = $request->file('file');
-        Upload::uploadImage($file);
+
+        // $orders = $this->aprioriService->exportOrdersToCsv();
+        $response = $this->aprioriService->suggestProducts(208);
+
+        $data = new ClientProductVariantCollection($response);
+
+        return successResponse('', $data, true);
     }
 }

@@ -1,34 +1,35 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TestApiController;
-use App\Http\Controllers\Api\V1\Attribute\AttributeController;
-use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
-use App\Http\Controllers\Api\V1\Auth\VerificationController;
-use App\Http\Controllers\Api\V1\Brand\BrandController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
 use App\Http\Controllers\Api\V1\Chat\ChatController;
 use App\Http\Controllers\Api\V1\DashboardController;
-use App\Http\Controllers\Api\V1\Location\LocationController;
-use App\Http\Controllers\Api\V1\NotificationController;
-use App\Http\Controllers\Api\V1\Order\OrderController;
-use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
-use App\Http\Controllers\Api\V1\Permission\PermissionController;
 use App\Http\Controllers\Api\V1\Post\PostController;
-use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
-use App\Http\Controllers\Api\V1\Product\ProductController;
-use App\Http\Controllers\Api\V1\Product\ProductReviewController;
-use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
-use App\Http\Controllers\Api\V1\Slider\SliderController;
-use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
-use App\Http\Controllers\Api\V1\Upload\UploadController;
-use App\Http\Controllers\Api\V1\User\UserAddressController;
-use App\Http\Controllers\Api\V1\User\UserCatalogueController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use App\Http\Controllers\Api\V1\Voucher\VoucherController;
+use App\Http\Controllers\Api\V1\Brand\BrandController;
+use App\Http\Controllers\Api\V1\Order\OrderController;
+use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\Slider\SliderController;
+use App\Http\Controllers\Api\V1\Upload\UploadController;
 use App\Http\Controllers\Api\V1\Widget\WidgetController;
+use App\Http\Controllers\Api\V1\Product\ProductController;
+use App\Http\Controllers\Api\V1\Voucher\VoucherController;
+use App\Http\Controllers\Api\V1\User\UserAddressController;
+use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\Location\LocationController;
 use App\Http\Controllers\Api\V1\WishList\WishListController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\User\UserCatalogueController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeController;
+use App\Http\Controllers\Api\V1\FlashSale\FlashSaleController;
+use App\Http\Controllers\Api\V1\Permission\PermissionController;
+use App\Http\Controllers\Api\V1\Product\ProductReviewController;
+use App\Http\Controllers\Api\V1\Attribute\AttributeValueController;
+use App\Http\Controllers\Api\V1\Product\ProductCatalogueController;
+use App\Http\Controllers\Api\V1\SystemConfig\SystemConfigController;
+use App\Http\Controllers\Api\V1\PaymentMethod\PaymentMethodController;
+use App\Http\Controllers\Api\V1\ShippingMethod\ShippingMethodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +42,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('log.request.response', 'api')->group(function () {
+Route::middleware(['log.request.response', 'api'])->group(function () {
 
     // ROUTE TEST
     Route::post('test/index', [TestApiController::class, 'upload']);
@@ -51,6 +52,7 @@ Route::middleware('log.request.response', 'api')->group(function () {
     Route::get('widgets/codes', [WidgetController::class, 'getAllWidgetCode']);
     Route::get('widgets/{code}/detail', [WidgetController::class, 'getWidget']);
     Route::get('products/{slug}/detail', [ProductController::class, 'getProduct']);
+    Route::get('products/{product_variant_id}/suggest', [ProductController::class, 'getSuggestedProduct']);
     Route::get('vouchers/all', [VoucherController::class, 'getAllVoucher']);
     Route::get('sliders/all', [SliderController::class, 'getAllSlider']);
     Route::get('payment-methods/all', [PaymentMethodController::class, 'getAllPaymentMethod']);
@@ -79,6 +81,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::get('me', [AuthController::class, 'me'])->middleware('jwt.verify');
         Route::post('send-verification-code', [AuthController::class, 'sendVerificationCode']);
         Route::post('verify-code', [AuthController::class, 'verifyCode'])->middleware('jwt.verify');
+
+        Route::get('google', [AuthController::class, 'redirectToGoogle'])->name('google');
+        Route::post('google/callback', [AuthController::class, 'handleGoogleCallback'])->name('google.callback');
     });
     Route::get('/email-register-verify/{id}', [VerificationController::class, 'emailRegisterVerify'])->name('email.register.verify');
 
@@ -154,6 +159,9 @@ Route::middleware('log.request.response', 'api')->group(function () {
         // PAYMENT METHOD ROUTE
         Route::apiResource('payment-methods', PaymentMethodController::class);
 
+        // Flash Sale ROUTE
+        Route::apiResource('flash-sales', FlashSaleController::class);
+
         // SYSTEM CONFIG ROUTE
         Route::get('system-configs', [SystemConfigController::class, 'index']);
         Route::put('system-configs', [SystemConfigController::class, 'update']);
@@ -179,13 +187,16 @@ Route::middleware('log.request.response', 'api')->group(function () {
         Route::delete('wishlists/{id}', [WishListController::class, 'destroy']);
         Route::get('wishlists/send-mail', [WishListController::class, 'sendWishListMail']);
 
+
+        // CREATE ORDER WITH ADMIN
+        Route::post('orders/create', [OrderController::class, 'createOrder']);
+
         // ORDER ROUTE
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{code}', [OrderController::class, 'show'])->name('orders.show');
         Route::put('orders/{id}', [OrderController::class, 'update'])->name('orders.update');
 
-        // CREATE ORDER WITH ADMIN
-        Route::post('orders/create/', [OrderController::class, 'createOrder']);
+
 
 
         // PRODUCT REVIEW ROUTE

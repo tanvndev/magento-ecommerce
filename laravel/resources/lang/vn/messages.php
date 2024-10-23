@@ -145,4 +145,21 @@ return [
         ],
     ],
 
+    'flash_sale' => [
+        'success' => [
+            'create'             => 'Tạo flash sale thành công.',
+            'update'             => 'Cập nhật flash sale thành công.',
+            'delete'             => 'Xóa flash sale thành công.',
+            'publish'            => 'Cập nhật trạng thái flash sale thành công.',
+        ],
+        'error' => [
+            'create'             => 'Tạo flash sale không thành công!',
+            'update'             => 'Cập nhật flash sale không thành công!',
+            'delete'             => 'Xóa flash sale không thành công!',
+            'publish'            => 'Cập nhật trạng thái flash sale không thành công!',
+            'not_found'          => 'Flash sale không tồn tại!',
+            'out_of_stock'       => 'Không tìm thấy mẫu mã sản phẩm trong đợt giảm giá này!',
+            'already_on_sale'    => 'Có biến thể đã tham giá flash sale khác!',
+        ],
+    ],
 ];
