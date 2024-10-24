@@ -52,7 +52,6 @@ class StatisticService extends BaseService implements StatisticServiceInterface
 
         $orderBy = ['order_date' => 'ASC'];
 
-
         $groupBy = ['order_date'];
 
         $rawQuery = [
@@ -73,7 +72,6 @@ class StatisticService extends BaseService implements StatisticServiceInterface
             $rawQuery
         );
 
-
         $moneyReturned = $this->orderRepository->pagination(
             [
                 DB::raw('DATE(ordered_at) as order_date'),
@@ -92,7 +90,6 @@ class StatisticService extends BaseService implements StatisticServiceInterface
             [],
             $rawQuery
         );
-
 
         foreach ($data as $item) {
 
