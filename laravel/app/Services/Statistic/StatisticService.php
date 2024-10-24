@@ -48,9 +48,6 @@ class StatisticService extends BaseService implements StatisticServiceInterface
             'search' => addslashes($request->search),
             'publish' => $request->publish,
             'archive' => $request->boolean('archive'),
-            // 'where' => [
-            //     'order_status' => 'completed' // Chỉ lấy những đơn hàng đã hoàn thành
-            // ]
         ];
 
         $orderBy = ['order_date' => 'ASC'];
@@ -99,10 +96,10 @@ class StatisticService extends BaseService implements StatisticServiceInterface
 
         foreach ($data as $item) {
 
-            $item->net_revenue = number_format($item->total_price -  $item->total_discount, 2, '.', '');
+            $item->net_revenue = number_format($item->total_price - $item->total_discount, 2, '.', '');
 
             foreach ($moneyReturned as $return) {
-    
+
                 if ($item->order_date === $return->order_date) {
 
                     $item->money_returned = number_format($return->money_returned, 2, '.', '');
@@ -114,13 +111,26 @@ class StatisticService extends BaseService implements StatisticServiceInterface
             }
         }
 
+        $rawQuery1 = [
+            'whereRaw' => [
+                ['created_at  BETWEEN ? AND ?', [$start_date, $end_date]],
+            ],
+        ];
 
-        $orderItems = DB::table('order_items')
-            ->selectRaw('DATE(created_at) as order_date, SUM(cost_price * quantity) AS total_cost') // Tổng tiền vốn
-            ->whereRaw('DATE(created_at) >= ? AND DATE(created_at) <= ?', [$start_date, $end_date])
-            ->groupBy('order_date')
-            ->orderBy('order_date')
-            ->get();
+        $orderItems = $this->orderItemRepository->pagination(
+            [
+                DB::raw('DATE(created_at) as order_date'),
+                DB::raw('SUM(cost_price * quantity) AS total_cost'),
+            ],
+            [],
+            null,
+            $orderBy,
+            [],
+            [],
+            $groupBy,
+            [],
+            $rawQuery1
+        );
 
         // Tính lợi nhuận theo từng ngày
         foreach ($data as $item) {
@@ -132,7 +142,5 @@ class StatisticService extends BaseService implements StatisticServiceInterface
         }
 
         return $data;
-
-
     }
 }
