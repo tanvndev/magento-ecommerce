@@ -14,6 +14,7 @@ use App\Repositories\Interfaces\Product\ProductRepositoryInterface;
 use App\Repositories\Interfaces\Product\ProductVariantRepositoryInterface;
 use App\Services\BaseService;
 use App\Services\Interfaces\Product\ProductServiceInterface;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -522,9 +523,11 @@ class ProductService extends BaseService implements ProductServiceInterface
 
         $payload = $this->preparePayload();
 
-        $start_date = $payload['start_date'];
-        $end_date = $payload['end_date'];
-        $condition = $payload['condition'];
+
+        $start_date = isset($payload['start_date']) ? $payload['start_date'] : Carbon::now()->startOfYear()->toDateString();
+        $end_date = isset($payload['end_date']) ? $payload['end_date'] : Carbon::now()->endOfYear()->toDateString();
+
+        $condition = $payload['condition'] ?? "product_sell_best";
         // product_sell_top: sản phẩm có doanh thu cao nhất
         // product_sell_best: sản phẩm bán chạy nhất (đã xong)
         // product_sell_best_type: sản phẩm bán chạy theo loại
@@ -570,9 +573,6 @@ class ProductService extends BaseService implements ProductServiceInterface
                             'reviews' => $item->reviews,
                         ];
                     });
-                break;
-            default:
-                $query = $this->getProductSellTop($start_date, $end_date);
                 break;
         }
 
